@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "jnoortheen.nix-ide",
+    "arrterian.nix-env-selector",
+    "jkillian.custom-local-formatters",
+    "denoland.vscode-deno"
+  ]
+}
