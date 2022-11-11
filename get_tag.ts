@@ -10,6 +10,10 @@ export const getTag = async (db: Database, id: string): Promise<
       title_primary: string;
       image_primary: string;
     }[];
+    context: {
+      id: string;
+      name_primary: string;
+    } | null;
   }>
 > => {
   const tagsColl = getTagsCollection(db);
@@ -17,6 +21,11 @@ export const getTag = async (db: Database, id: string): Promise<
 
   const tagRaw = await tagsColl.findOne({ id: id });
   if (!tagRaw) return { ok: false, error: { status: 404 } };
+
+  const context = tagRaw.context ? await tagsColl.findOne({ _id: tagRaw.context }) : null;
+  if (tagRaw.context && !context) {
+    return { ok: false, error: { status: 404, message: `tag ${id} context does not exists.` } };
+  }
 
   const tagged_videos = await videosColl
     .aggregate<{
@@ -45,6 +54,12 @@ export const getTag = async (db: Database, id: string): Promise<
     value: {
       id: tagRaw.id,
       name_primary: tagRaw.name_primary,
+      context: context
+        ? {
+          id: context.id,
+          name_primary: context.name_primary,
+        }
+        : null,
       tagged_videos,
     },
   };
