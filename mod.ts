@@ -1,6 +1,7 @@
 import { Application, Router } from "oak/mod.ts";
 import { MongoClient, ObjectId } from "mongo/mod.ts";
 import { getVideo } from "./get_video.ts";
+import { getTag } from "./get_tag.ts";
 
 const mc = new MongoClient();
 await mc.connect("mongodb://user:pass@127.0.0.1:27017/otomadb?authSource=admin");
@@ -51,7 +52,7 @@ router.get("/videos", ({ params, request, response }) => {
   },
  */
 
-router.get("/videos/:id", async ({ params, request, response }) => {
+router.get("/videos/:id", async ({ params, response }) => {
   const result = await getVideo(db, params.id);
 
   if (!result.ok) {
@@ -65,13 +66,16 @@ router.get("/videos/:id", async ({ params, request, response }) => {
   return;
 });
 
-router.get("/tags/:id", async ({ params, request, response }) => {
-  const tag = await videosColl.findOne({ id: params.id });
+router.get("/tags/:id", async ({ params, response }) => {
+  const result = await getTag(db, params.id);
 
-  if (!tag) {
+  if (!result.ok) {
     response.status = 404;
     return;
   }
+
+  response.body = result.value;
+  return;
 });
 
 app.use(router.routes());

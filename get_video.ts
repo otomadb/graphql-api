@@ -1,18 +1,30 @@
 import { Database, ObjectId } from "mongo/mod.ts";
 
-export interface TagsDocument {
-  id: string;
-  names: { name: string; primary?: boolean }[];
-  type: string;
-  context?: ObjectId;
-}
+export const getTagsCollection = (db: Database) =>
+  db.collection<{
+    _id: string;
+    id: string;
 
-export interface VideosDocument {
-  id: string;
-  titles: { title: string; primary?: boolean }[];
-  images: { image: string; primary?: boolean }[];
-  tags: ObjectId[];
-}
+    names: { name: string; primary?: boolean }[];
+    name_primary: string;
+
+    type: string;
+    context?: ObjectId;
+  }>("tags");
+
+export const getVideosCollection = (db: Database) =>
+  db.collection<{
+    _id: string;
+    id: string;
+
+    titles: { title: string; primary?: boolean }[];
+    title_primary: string;
+
+    images: { image: string; primary?: boolean }[];
+    image_primary: string;
+
+    tags: ObjectId[];
+  }>("videos");
 
 export interface Tag {
   id: string;
@@ -33,7 +45,7 @@ export type Result<V> =
   | { ok: true; value: V };
 
 export const getTagContextName = async (db: Database, tagId: ObjectId): Promise<Result<string>> => {
-  const tagsColl = db.collection<TagsDocument>("tags");
+  const tagsColl = getTagsCollection(db);
   const tagRaw = await tagsColl.findOne({ _id: tagId });
 
   if (!tagRaw) return { ok: false, error: { status: 404 } };
@@ -46,13 +58,8 @@ export const getTagContextName = async (db: Database, tagId: ObjectId): Promise<
 };
 
 export const getTags = async (db: Database, tagIds: ObjectId[]): Promise<Result<Tag[]>> => {
-  const tagsColl = db.collection<{
-    id: string;
-    names: { name: string; primary?: boolean }[];
-    type: string;
-    context?: ObjectId;
-  }>("tags");
-  const tagsRaw = await tagsColl.find({ _id: { $in: tagIds } }).toArray();
+  const tagsColl = getTagsCollection(db);
+  const tagsRaw = await tagsColl.find({ _id: { $in: tagIds as any } }).toArray();
   const tags: Tag[] = [];
 
   for (const tagRaw of tagsRaw) {
@@ -76,21 +83,11 @@ export const getTags = async (db: Database, tagIds: ObjectId[]): Promise<Result<
 };
 
 export const getVideo = async (db: Database, id: string): Promise<Result<Video>> => {
-  const videosColl = db.collection<VideosDocument>("videos");
+  const videosColl = getVideosCollection(db);
 
   const video = await videosColl.findOne({ id });
 
   if (!video) return { ok: false, error: { status: 404 } };
-
-  const title_primary = video.titles.find(({ primary }) => primary)?.title;
-  if (!title_primary) {
-    return { ok: false, error: { status: 500, message: `video "${id}" primary title doesn't exists.` } };
-  }
-
-  const image_primary = video.images.find(({ primary }) => primary)?.image;
-  if (!image_primary) {
-    return { ok: false, error: { status: 500, message: `video "${id}" primary image doesn't exists.` } };
-  }
 
   const tagsResult = await getTags(db, video.tags);
   if (!tagsResult.ok) return { ok: false, error: tagsResult.error };
@@ -99,8 +96,8 @@ export const getVideo = async (db: Database, id: string): Promise<Result<Video>>
     ok: true,
     value: {
       id: video.id,
-      title_primary: title_primary,
-      image_primary: image_primary,
+      title_primary: video.title_primary,
+      image_primary: video.image_primary,
       tags: tagsResult.value,
     },
   };
