@@ -1,7 +1,8 @@
+import { oakCors } from "cors/mod.ts";
+import { MongoClient } from "mongo/mod.ts";
 import { Application, Router } from "oak/mod.ts";
-import { MongoClient, ObjectId } from "mongo/mod.ts";
-import { getVideo } from "./get_video.ts";
 import { getTag } from "./get_tag.ts";
+import { getVideo } from "./get_video.ts";
 import { search } from "./search.ts";
 
 const mc = new MongoClient();
@@ -59,6 +60,7 @@ router.get("/search", async ({ request, response }) => {
   return;
 });
 
+app.use(oakCors());
 app.use(router.routes());
 app.use(router.allowedMethods());
 
