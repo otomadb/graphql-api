@@ -20,16 +20,14 @@ export const searchVideos = async (db: Database, query: string): Promise<
       {
         "$group": {
           "_id": "$_id",
-          "id": { $first: "$id" },
           "title_search": { $first: "$titles.title" },
           "title_primary": { $first: "$title_primary" },
         },
       },
-      { "$sort": { "id": -1 } },
       {
         "$project": {
-          "_id": 0,
-          "id": 1,
+          "_id": false,
+          "id": "$_id",
           "title_search": "$title_search",
           "title_primary": "$title_primary",
         },
@@ -58,16 +56,14 @@ export const searchTags = async (db: Database, query: string): Promise<
       {
         "$group": {
           "_id": "$_id",
-          "id": { $first: "$id" },
           "name_search": { $first: "$names.name" },
           "name_primary": { $first: "$name_primary" },
         },
       },
-      { "$sort": { "id": -1 } },
       {
         "$project": {
-          "_id": 0,
-          "id": 1,
+          "_id": false,
+          "id": "$_id",
           "name_search": "$name_search",
           "name_primary": "$name_primary",
         },

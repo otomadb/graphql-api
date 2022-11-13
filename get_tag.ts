@@ -19,7 +19,7 @@ export const getTag = async (db: Database, id: string): Promise<
   const tagsColl = getTagsCollection(db);
   const videosColl = getVideosCollection(db);
 
-  const tagRaw = await tagsColl.findOne({ id: id });
+  const tagRaw = await tagsColl.findOne({ _id: id });
   if (!tagRaw) return { ok: false, error: { status: 404 } };
 
   const context = tagRaw.context ? await tagsColl.findOne({ _id: tagRaw.context }) : null;
@@ -40,8 +40,8 @@ export const getTag = async (db: Database, id: string): Promise<
       },
       {
         "$project": {
-          _id: 0,
-          id: true,
+          _id: false,
+          id: "$_id",
           image_primary: true,
           title_primary: true,
         },
@@ -52,11 +52,11 @@ export const getTag = async (db: Database, id: string): Promise<
   return {
     ok: true,
     value: {
-      id: tagRaw.id,
+      id: tagRaw._id,
       name_primary: tagRaw.name_primary,
       context: context
         ? {
-          id: context.id,
+          id: context._id,
           name_primary: context.name_primary,
         }
         : null,

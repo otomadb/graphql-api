@@ -3,7 +3,6 @@ import { Database, ObjectId } from "mongo/mod.ts";
 export const getTagsCollection = (db: Database) =>
   db.collection<{
     _id: string;
-    id: string;
 
     names: { name: string; primary?: boolean }[];
     name_primary: string;
@@ -15,7 +14,6 @@ export const getTagsCollection = (db: Database) =>
 export const getVideosCollection = (db: Database) =>
   db.collection<{
     _id: string;
-    id: string;
 
     titles: { title: string; primary?: boolean }[];
     title_primary: string;
@@ -52,7 +50,7 @@ export const getTagContextName = async (db: Database, tagId: ObjectId): Promise<
 
   const primary_title = tagRaw.names.find(({ primary }) => primary)?.name;
   if (!primary_title) {
-    return { ok: false, error: { status: 500, message: `tag "${tagRaw.id}" primary name doesn't exists.` } };
+    return { ok: false, error: { status: 500, message: `tag "${tagRaw._id}" primary name doesn't exists.` } };
   }
   return { ok: true, value: primary_title };
 };
@@ -65,14 +63,14 @@ export const getTags = async (db: Database, tagIds: ObjectId[]): Promise<Result<
   for (const tagRaw of tagsRaw) {
     const primary_title = tagRaw.names.find(({ primary }) => primary)?.name;
     if (!primary_title) {
-      return { ok: false, error: { status: 500, message: `tag "${tagRaw.id}" primary name doesn't exists.` } };
+      return { ok: false, error: { status: 500, message: `tag "${tagRaw._id}" primary name doesn't exists.` } };
     }
 
     const primary_context_name = tagRaw.context && await getTagContextName(db, tagRaw.context);
     if (primary_context_name && !primary_context_name.ok) return primary_context_name;
 
     tags.push({
-      id: tagRaw.id,
+      id: tagRaw._id,
       type: tagRaw.type,
       name_primary: primary_title,
       context_name_primary: primary_context_name?.value || null,
@@ -85,7 +83,7 @@ export const getTags = async (db: Database, tagIds: ObjectId[]): Promise<Result<
 export const getVideo = async (db: Database, id: string): Promise<Result<Video>> => {
   const videosColl = getVideosCollection(db);
 
-  const video = await videosColl.findOne({ id });
+  const video = await videosColl.findOne({ _id: id });
 
   if (!video) return { ok: false, error: { status: 404 } };
 
@@ -95,7 +93,7 @@ export const getVideo = async (db: Database, id: string): Promise<Result<Video>>
   return {
     ok: true,
     value: {
-      id: video.id,
+      id: video._id,
       title_primary: video.title_primary,
       image_primary: video.image_primary,
       tags: tagsResult.value,
