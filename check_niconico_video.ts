@@ -41,12 +41,12 @@ const schema = z.union([
 
 export const checkNiconicoVideo = async (id: string): Promise<
   Result<{
+    id: string;
     title: string;
-    video_id: string;
     watch_url: string;
     thumbnail_url: string;
     thumbnail_url_large: string;
-    first_retrieve: Date;
+    uploaded_at: Date;
     tags: string[];
     isPossiblyOtomad: boolean;
   }>
@@ -88,12 +88,12 @@ export const checkNiconicoVideo = async (id: string): Promise<
   return {
     ok: true,
     value: {
-      video_id,
+      id: video_id,
+      title,
       watch_url,
       thumbnail_url,
       thumbnail_url_large: `${thumbnail_url}.L`,
-      first_retrieve,
-      title,
+      uploaded_at: first_retrieve,
       tags: normalizedTags,
       isPossiblyOtomad: isPossiblyOtomad,
     },
