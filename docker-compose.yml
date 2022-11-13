@@ -6,7 +6,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: user
       MONGO_INITDB_ROOT_PASSWORD: pass
-      MONGO_INITDB_DATABASE: bookgraph
+      MONGO_INITDB_DATABASE: otomadb
     ports:
       - target: 27017
         published: 27017
