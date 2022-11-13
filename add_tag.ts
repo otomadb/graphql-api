@@ -15,9 +15,16 @@ export const getTagsCollection = (db: Database) =>
   }>("tags");
 
 const payloadSchema = z.object({
-  name_primary: z.string(),
+  primary_name: z.string(),
   extra_names: z.array(z.string()),
-  type: z.enum(["MUSIC", "WORK", "CHARACTER", "MATERIAL", "SERIES"]),
+  type: z.enum([
+    "WORK", // 作品名
+    "CHARACTER", // キャラクター名，必ず作品名を文脈に持つ
+    "MATERIAL", // その他の素材
+    "STYLE", // 音MADの性質
+    "SERIES", // 『BLU-Rayシリーズ』など
+    "MUSIC", // 音楽
+  ]),
 }).partial({
   extra_names: true,
 });
@@ -31,18 +38,18 @@ export const addTag = async (db: Database, payload: unknown): Promise<Result<{ i
     };
   }
 
-  const { name_primary, extra_names, type } = parsedPayload.data;
+  const { primary_name: primary_name, extra_names, type } = parsedPayload.data;
   const id = generateId();
 
   const tagsColl = getTagsCollection(db);
 
-  const already = await tagsColl.findOne({ name_primary: name_primary });
+  const already = await tagsColl.findOne({ name_primary: primary_name });
   if (already) {
     return {
       ok: false,
       error: {
         status: 409,
-        message: `"${name_primary}" is registered already as primary name.`,
+        message: `"${primary_name}" is registered already as primary name.`,
       },
     };
   }
@@ -50,9 +57,9 @@ export const addTag = async (db: Database, payload: unknown): Promise<Result<{ i
   await tagsColl.insertOne({
     _id: id,
     type: type,
-    name_primary: name_primary,
+    name_primary: primary_name,
     names: [
-      { name: name_primary, primary: true },
+      { name: primary_name, primary: true },
       ...(extra_names?.map((extraName) => ({ name: extraName })) || []),
     ],
   });
