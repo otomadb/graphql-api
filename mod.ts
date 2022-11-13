@@ -46,8 +46,16 @@ router.get("/search", async ({ request, response }) => {
     response.status = 400;
     return;
   }
+  const targets = request.url.searchParams.get("targets")?.split(",") || ["videos", "tags"];
 
-  const result = await search(db, query);
+  const result = await search(
+    db,
+    query,
+    {
+      tags: targets.includes("tags"),
+      videos: targets.includes("videos"),
+    },
+  );
 
   if (!result.ok) {
     const { status, message } = result.error;

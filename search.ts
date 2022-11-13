@@ -76,7 +76,7 @@ export const searchTags = async (db: Database, query: string): Promise<
 export const search = async (
   db: Database,
   query: string,
-  target: { videos: boolean; tags: boolean } = { videos: true, tags: true },
+  target: { videos: boolean; tags: boolean },
 ): Promise<
   Result<{
     videos: null | {
