@@ -1,32 +1,56 @@
-import { Database } from "mongo/mod.ts";
-import { compare as compareBcrypt } from "bcrypt/mod.ts";
+import { getClient } from "grpc/client.ts";
+import { GrpcError, Status } from "grpc/error.ts";
+import { RouterMiddleware } from "oak/mod.ts";
 import { z } from "zod/mod.ts";
-import { getUsersCollections } from "./collections.ts";
-import { Result } from "./result.ts";
-import { createToken } from "./token.ts";
+import { Authenticator } from "./proto/authenticator.d.ts";
+
+const protoPath = new URL("./proto/authenticator.proto", import.meta.url);
+const protoFile = await Deno.readTextFile(protoPath);
 
 const payloadSchema = z.object({ name: z.string(), password: z.string() });
 
-export const signin = async (db: Database, payload: unknown): Promise<Result<{ access_token: string }>> => {
+export const routeSignin = (): RouterMiddleware<"/signin"> => async ({ request, response }) => {
+  const payload = await request.body({ type: "json" }).value;
   const parsedPayload = payloadSchema.safeParse(payload);
-  if (!parsedPayload.success) return { ok: false, error: { status: 400 } };
+  if (!parsedPayload.success) {
+    response.status = 400;
+    return;
+  }
 
   const { name, password } = parsedPayload.data;
+  const grpcClient = getClient<Authenticator>({
+    port: 50051,
+    root: protoFile,
+    serviceName: "Authenticator",
+  });
 
-  const usersColl = getUsersCollections(db);
-  const user = await usersColl.findOne({ $or: [{ name: name }, { email: name }] });
-
-  if (!user) return { ok: false, error: { status: 404 } };
-  const isMatchedPassword = await compareBcrypt(password, user.password);
-
-  if (!isMatchedPassword) return { ok: false, error: { status: 401 } };
-
-  const accessToken = await createToken({ id: user._id.toString() });
-
-  return {
-    ok: true,
-    value: {
-      access_token: accessToken,
-    },
-  };
+  try {
+    const { accessToken } = await grpcClient.Signin({ name, password });
+    response.body = { accessToken };
+  } catch (e) {
+    if (e instanceof GrpcError) {
+      switch (e.grpcCode) {
+        case Status.UNAUTHENTICATED: {
+          response.status = 401;
+          response.body = e.grpcMessage;
+          return;
+        }
+        case Status.NOT_FOUND: {
+          response.status = 404;
+          response.body = e.grpcMessage;
+          return;
+        }
+        default: {
+          response.status = 500;
+          response.body = e.grpcMessage;
+          return;
+        }
+      }
+    } else {
+      response.status = 500;
+      return;
+    }
+  } finally {
+    grpcClient.close();
+  }
 };

@@ -3,7 +3,8 @@
     "dev": "deno run --watch -A --import-map=./import_map.json ./mod.ts",
     "test": "deno test --import-map=./import_map.json",
     "lint": "deno lint",
-    "lock": "deno cache --import-map=./import_map.json --lock lock.json --lock-write ./mod.ts"
+    "lock": "deno cache --import-map=./import_map.json --lock lock.json --lock-write ./mod.ts",
+    "generate:authenticator": "deno run --allow-read https://deno.land/x/grpc_basic@0.4.6/gen/dts.ts ./proto/authenticator.proto > ./proto/authenticator.d.ts"
   },
   "fmt": {
     "options": {
@@ -14,7 +15,8 @@
     },
     "files": {
       "exclude": [
-        "./lock.json"
+        "./lock.json",
+        "./proto/*.d.ts"
       ]
     }
   }

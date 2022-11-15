@@ -8,6 +8,7 @@
     "zod/": "https://deno.land/x/zod@v3.16.1/",
     "nanoid/": "https://deno.land/x/nanoid@v3.0.0/",
     "bcrypt/": "https://deno.land/x/bcrypt@v0.4.1/",
-    "djwt/": "https://deno.land/x/djwt@v2.8/"
+    "djwt/": "https://deno.land/x/djwt@v2.8/",
+    "grpc/": "https://deno.land/x/grpc_basic@0.4.6/"
   }
 }

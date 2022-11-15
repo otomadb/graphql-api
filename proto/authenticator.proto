@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package otomadb;
+
+service Authenticator {
+  rpc Signin (SigninRequest) returns (SigninReply) {}
+  rpc Validate (ValidateRequest) returns (ValidateReply) {}
+}
+
+message SigninRequest {
+  string name = 1;
+  string password = 2;
+}
+
+message SigninReply {
+  string access_token = 1;
+}
+
+message ValidateRequest{
+  string access_token = 1;
+}
+
+message ValidateReply {
+  string user_id = 1;
+}
+
