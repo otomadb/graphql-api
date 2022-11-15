@@ -7,6 +7,7 @@ command = "deno"
 options = ["fmt"]
 includes = [
   "*.json",
+  "*.jsonc",
   "*.toml",
   "*.md",
   "*.ts",
