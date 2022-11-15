@@ -26,10 +26,12 @@ export const getVideosCollection = (db: Database) =>
 
 export const getUsersCollections = (db: Database) =>
   db.collection<{
-    _id: ObjectId;
+    _id: string;
 
     name: string;
     email: string;
+    is_email_confirmed: boolean;
     password: string;
-    isConfirmed: boolean;
+
+    display_name: string;
   }>("users");

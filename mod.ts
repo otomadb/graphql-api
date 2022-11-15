@@ -98,7 +98,7 @@ router.post("/tags/add", async ({ params, request, response }) => {
 });
 
 router.post("/signin", routeSignin());
-router.get("/whoami", routeWhoAmI());
+router.get("/whoami", routeWhoAmI(db));
 
 app.use(oakCors());
 app.use(router.routes());
