@@ -1,28 +1,6 @@
 import { Database, ObjectId } from "mongo/mod.ts";
-
-export const getTagsCollection = (db: Database) =>
-  db.collection<{
-    _id: string;
-
-    names: { name: string; primary?: boolean }[];
-    name_primary: string;
-
-    type: string;
-    context?: ObjectId;
-  }>("tags");
-
-export const getVideosCollection = (db: Database) =>
-  db.collection<{
-    _id: string;
-
-    titles: { title: string; primary?: boolean }[];
-    title_primary: string;
-
-    images: { image: string; primary?: boolean }[];
-    image_primary: string;
-
-    tags: ObjectId[];
-  }>("videos");
+import { getTagsCollection, getVideosCollection } from "./collections.ts";
+import { Result } from "./result.ts";
 
 export interface Tag {
   id: string;
@@ -37,10 +15,6 @@ export interface Video {
   image_primary: string;
   tags: Tag[];
 }
-
-export type Result<V> =
-  | { ok: false; error: { status: 404 | 500; message?: string } }
-  | { ok: true; value: V };
 
 export const getTagContextName = async (db: Database, tagId: ObjectId): Promise<Result<string>> => {
   const tagsColl = getTagsCollection(db);

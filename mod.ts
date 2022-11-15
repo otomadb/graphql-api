@@ -6,6 +6,7 @@ import { checkNiconicoVideo } from "./check_niconico_video.ts";
 import { getTag } from "./get_tag.ts";
 import { getVideo } from "./get_video.ts";
 import { search } from "./search.ts";
+import { signin } from "./signin.ts";
 
 const mc = new MongoClient();
 await mc.connect("mongodb://user:pass@127.0.0.1:27017/otomadb?authSource=admin");
@@ -86,6 +87,20 @@ router.post("/tags/add", async ({ params, request, response }) => {
   const payload = await request.body({ type: "json" }).value;
 
   const result = await addTag(db, payload);
+  if (!result.ok) {
+    const { status, message } = result.error;
+    response.status = status;
+    if (message) response.body = message;
+    return;
+  }
+
+  response.body = result.value;
+});
+
+router.post("/signin", async ({ params, request, response }) => {
+  const payload = await request.body({ type: "json" }).value;
+
+  const result = await signin(db, payload);
   if (!result.ok) {
     const { status, message } = result.error;
     response.status = status;

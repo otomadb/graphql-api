@@ -6,6 +6,8 @@
     "cors/": "https://deno.land/x/cors@v1.2.2/",
     "xml/": "https://deno.land/x/xml@2.0.4/",
     "zod/": "https://deno.land/x/zod@v3.16.1/",
-    "nanoid/": "https://deno.land/x/nanoid@v3.0.0/"
+    "nanoid/": "https://deno.land/x/nanoid@v3.0.0/",
+    "bcrypt/": "https://deno.land/x/bcrypt@v0.4.1/",
+    "djwt/": "https://deno.land/x/djwt@v2.8/"
   }
 }

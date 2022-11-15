@@ -1,9 +1,6 @@
 import { parse as parseXML } from "xml/mod.ts";
 import { z } from "zod/mod.ts";
-
-export type Result<V> =
-  | { ok: false; error: { status: 400 | 404 | 409 | 500; message?: string } }
-  | { ok: true; value: V };
+import { Result } from "./result.ts";
 
 const schema = z.union([
   z.object({

@@ -1,18 +1,8 @@
 import { Database, ObjectId } from "mongo/mod.ts";
 import { z } from "zod/mod.ts";
-import { Result } from "./check_niconico_video.ts";
+import { getTagsCollection } from "./collections.ts";
 import { generateId } from "./id.ts";
-
-export const getTagsCollection = (db: Database) =>
-  db.collection<{
-    _id: string;
-
-    names: { name: string; primary?: boolean }[];
-    name_primary: string;
-
-    type: string;
-    context?: ObjectId;
-  }>("tags");
+import { Result } from "./result.ts";
 
 const payloadSchema = z.object({
   primary_name: z.string(),

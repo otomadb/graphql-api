@@ -1,5 +1,6 @@
 import { Database } from "mongo/mod.ts";
-import { getTagsCollection, getVideosCollection, Result } from "./get_video.ts";
+import { Result } from "./result.ts";
+import { getTagsCollection, getVideosCollection } from "./collections.ts";
 
 export const getTag = async (db: Database, id: string): Promise<
   Result<{
