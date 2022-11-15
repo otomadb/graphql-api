@@ -2,13 +2,11 @@ import { oakCors } from "cors/mod.ts";
 import { MongoClient } from "mongo/mod.ts";
 import { Application, Router } from "oak/mod.ts";
 import { addTag } from "./add_tag.ts";
+import { routeSignin, routeWhoAmI } from "./auth/mod.ts";
 import { checkNiconicoVideo } from "./check_niconico_video.ts";
 import { getTag } from "./get_tag.ts";
 import { getVideo } from "./get_video.ts";
-import { getProfile } from "./profile.ts";
 import { search } from "./search.ts";
-import { routeSignin } from "./signin.ts";
-import { verifyToken } from "./token.ts";
 
 const mc = new MongoClient();
 await mc.connect("mongodb://user:pass@127.0.0.1:27017/otomadb?authSource=admin");
@@ -100,36 +98,7 @@ router.post("/tags/add", async ({ params, request, response }) => {
 });
 
 router.post("/signin", routeSignin());
-
-router.get("/whoami", async ({ params, request, response }) => {
-  const authentication = request.headers.get("Authentication");
-  const accessToken = authentication?.split("Bearer ")?.[1];
-
-  if (!accessToken) {
-    response.status = 401;
-    return;
-  }
-
-  const verifyResult = await verifyToken(accessToken);
-
-  if (!verifyResult.ok) {
-    const { status, message } = verifyResult.error;
-    response.status = status;
-    if (message) response.body = message;
-    return;
-  }
-
-  const { sub } = verifyResult.value;
-  const result = await getProfile(db, sub);
-  if (!result.ok) {
-    const { status, message } = result.error;
-    response.status = status;
-    if (message) response.body = message;
-    return;
-  }
-  response.body = result.value;
-  return;
-});
+router.get("/whoami", routeWhoAmI());
 
 app.use(oakCors());
 app.use(router.routes());

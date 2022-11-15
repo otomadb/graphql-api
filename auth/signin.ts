@@ -1,14 +1,9 @@
-import { getClient } from "grpc/client.ts";
 import { GrpcError, Status } from "grpc/error.ts";
 import { RouterMiddleware } from "oak/mod.ts";
 import { z } from "zod/mod.ts";
-import { Authenticator } from "./proto/authenticator.d.ts";
-
-const protoPath = new URL("./proto/authenticator.proto", import.meta.url);
-const protoFile = await Deno.readTextFile(protoPath);
+import { grpcClient } from "./grpc_client.ts";
 
 const payloadSchema = z.object({ name: z.string(), password: z.string() });
-
 export const routeSignin = (): RouterMiddleware<"/signin"> => async ({ request, response }) => {
   const payload = await request.body({ type: "json" }).value;
   const parsedPayload = payloadSchema.safeParse(payload);
@@ -18,11 +13,6 @@ export const routeSignin = (): RouterMiddleware<"/signin"> => async ({ request, 
   }
 
   const { name, password } = parsedPayload.data;
-  const grpcClient = getClient<Authenticator>({
-    port: 50051,
-    root: protoFile,
-    serviceName: "Authenticator",
-  });
 
   try {
     const { accessToken } = await grpcClient.Signin({ name, password });
@@ -50,7 +40,5 @@ export const routeSignin = (): RouterMiddleware<"/signin"> => async ({ request, 
       response.status = 500;
       return;
     }
-  } finally {
-    grpcClient.close();
   }
 };
