@@ -2,7 +2,7 @@ import { oakCors } from "cors/mod.ts";
 import { MongoClient } from "mongo/mod.ts";
 import { Application, Router } from "oak/mod.ts";
 import { addTag } from "./add_tag.ts";
-import { routeSignin, routeWhoAmI } from "./auth/mod.ts";
+import { guard, routeSignin, routeWhoAmI } from "./auth/mod.ts";
 import { checkNiconicoVideo } from "./check_niconico_video.ts";
 import { getTag } from "./get_tag.ts";
 import { getVideo } from "./get_video.ts";
@@ -98,7 +98,7 @@ router.post("/tags/add", async ({ params, request, response }) => {
 });
 
 router.post("/signin", routeSignin());
-router.get("/whoami", routeWhoAmI(db));
+router.get("/whoami", guard(), routeWhoAmI(db));
 
 app.use(oakCors());
 app.use(router.routes());
