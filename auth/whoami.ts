@@ -3,7 +3,7 @@ import { RouterMiddleware } from "oak/mod.ts";
 
 import { grpcClient } from "./grpc_client.ts";
 
-export const routeWhoAmI = (): RouterMiddleware<"/signin"> => async ({ request, response }) => {
+export const routeWhoAmI = (): RouterMiddleware<"/whoami"> => async ({ request, response }) => {
   const authHeader = request.headers.get("Authorization");
   const accessToken = authHeader?.split("Bearer ")?.[1];
 
