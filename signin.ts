@@ -21,7 +21,7 @@ export const signin = async (db: Database, payload: unknown): Promise<Result<{ a
 
   if (!isMatchedPassword) return { ok: false, error: { status: 401 } };
 
-  const accessToken = await createToken({ name: user.name });
+  const accessToken = await createToken({ id: user._id.toString() });
 
   return {
     ok: true,
