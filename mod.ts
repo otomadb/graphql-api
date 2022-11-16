@@ -4,9 +4,9 @@ import { Application, Router } from "oak/mod.ts";
 import { addTag } from "./add_tag.ts";
 import { guard, routeSignin, routeWhoAmI } from "./auth/mod.ts";
 import { checkNiconicoVideo } from "./check_niconico_video.ts";
-import { getTag } from "./get_tag.ts";
+import { routeGetTag } from "./get_tag.ts";
 import { getVideo } from "./get_video.ts";
-import { search } from "./search.ts";
+import { routeSearch } from "./search.ts";
 
 const mc = new MongoClient();
 await mc.connect("mongodb://user:pass@127.0.0.1:27017/otomadb?authSource=admin");
@@ -29,47 +29,8 @@ router.get("/videos/:id", async ({ params, response }) => {
   return;
 });
 
-router.get("/tags/:id", async ({ params, response }) => {
-  const result = await getTag(db, params.id);
-
-  if (!result.ok) {
-    const { status, message } = result.error;
-    response.status = status;
-    if (message) response.body = message;
-    return;
-  }
-
-  response.body = result.value;
-  return;
-});
-
-router.get("/search", async ({ request, response }) => {
-  const query = request.url.searchParams.get("query");
-  if (!query || query === "") {
-    response.status = 400;
-    return;
-  }
-  const targets = request.url.searchParams.get("targets")?.split(",") || ["videos", "tags"];
-
-  const result = await search(
-    db,
-    query,
-    {
-      tags: targets.includes("tags"),
-      videos: targets.includes("videos"),
-    },
-  );
-
-  if (!result.ok) {
-    const { status, message } = result.error;
-    response.status = status;
-    if (message) response.body = message;
-    return;
-  }
-
-  response.body = result.value;
-  return;
-});
+router.get("/tags/:id", routeGetTag(db));
+router.get("/search", routeSearch(db));
 
 router.get("/niconico/check/:id", async ({ params, response }) => {
   const result = await checkNiconicoVideo(params.id);

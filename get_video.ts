@@ -1,4 +1,5 @@
 import { Database, ObjectId } from "mongo/mod.ts";
+import { RouterMiddleware } from "oak/mod.ts";
 import { getTagsCollection, getVideosCollection } from "./collections.ts";
 import { Result } from "./result.ts";
 
@@ -29,7 +30,7 @@ export const getTagContextName = async (db: Database, tagId: ObjectId): Promise<
   return { ok: true, value: primary_title };
 };
 
-export const getTags = async (db: Database, tagIds: ObjectId[]): Promise<Result<Tag[]>> => {
+export const getTags = async (db: Database, tagIds: string[]): Promise<Result<Tag[]>> => {
   const tagsColl = getTagsCollection(db);
   const tagsRaw = await tagsColl.find({ _id: { $in: tagIds as any } }).toArray();
   const tags: Tag[] = [];
@@ -74,3 +75,17 @@ export const getVideo = async (db: Database, id: string): Promise<Result<Video>>
     },
   };
 };
+
+export const routeGetVideo =
+  (db: Database): RouterMiddleware<"/videos/:id"> => async ({ params, request, response }) => {
+    const videosColl = getVideosCollection(db);
+    const tagsColl = getTagsCollection(db);
+
+    const video = await videosColl.findOne({ _id: params.id });
+    if (!video) {
+      response.status = 404;
+      return;
+    }
+
+    const tagsRaw = (await tagsColl.find({ _id: { $in: video.tags } }).toArray());
+  };

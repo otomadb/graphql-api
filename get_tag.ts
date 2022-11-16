@@ -1,31 +1,22 @@
 import { Database } from "mongo/mod.ts";
-import { Result } from "./result.ts";
+import { RouterMiddleware } from "oak/mod.ts";
 import { getTagsCollection, getVideosCollection } from "./collections.ts";
 
-export const getTag = async (db: Database, id: string): Promise<
-  Result<{
-    id: string;
-    name_primary: string;
-    tagged_videos: {
-      id: string;
-      title_primary: string;
-      image_primary: string;
-    }[];
-    context: {
-      id: string;
-      name_primary: string;
-    } | null;
-  }>
-> => {
+export const routeGetTag = (db: Database): RouterMiddleware<"/tags/:id"> => async ({ params, request, response }) => {
   const tagsColl = getTagsCollection(db);
   const videosColl = getVideosCollection(db);
 
-  const tagRaw = await tagsColl.findOne({ _id: id });
-  if (!tagRaw) return { ok: false, error: { status: 404 } };
+  const tagRaw = await tagsColl.findOne({ _id: params.id });
+  if (!tagRaw) {
+    response.status = 404;
+    return;
+  }
 
   const context = tagRaw.context ? await tagsColl.findOne({ _id: tagRaw.context }) : null;
   if (tagRaw.context && !context) {
-    return { ok: false, error: { status: 404, message: `tag ${id} context does not exists.` } };
+    response.status = 404;
+    response.body = `tag ${params.id} context does not exists.`;
+    return;
   }
 
   const tagged_videos = await videosColl
@@ -50,18 +41,11 @@ export const getTag = async (db: Database, id: string): Promise<
     ])
     .toArray();
 
-  return {
-    ok: true,
-    value: {
-      id: tagRaw._id,
-      name_primary: tagRaw.name_primary,
-      context: context
-        ? {
-          id: context._id,
-          name_primary: context.name_primary,
-        }
-        : null,
-      tagged_videos,
-    },
+  response.body = {
+    id: tagRaw._id,
+    name_primary: tagRaw.name_primary,
+    context: context ? { id: context._id, name_primary: context.name_primary } : null,
+    tagged_videos,
   };
+  return;
 };

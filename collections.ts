@@ -1,4 +1,4 @@
-import { Database, ObjectId } from "mongo/mod.ts";
+import { Database } from "mongo/mod.ts";
 
 export const getTagsCollection = (db: Database) =>
   db.collection<{
@@ -8,7 +8,7 @@ export const getTagsCollection = (db: Database) =>
     name_primary: string;
 
     type: string;
-    context?: ObjectId;
+    context?: string;
   }>("tags");
 
 export const getVideosCollection = (db: Database) =>
@@ -21,7 +21,7 @@ export const getVideosCollection = (db: Database) =>
     images: { image: string; primary?: boolean }[];
     image_primary: string;
 
-    tags: ObjectId[];
+    tags: string[];
   }>("videos");
 
 export const getUsersCollections = (db: Database) =>
