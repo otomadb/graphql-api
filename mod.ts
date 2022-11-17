@@ -1,7 +1,11 @@
 import { oakCors } from "cors/mod.ts";
 import { graphql } from "graphql";
+import { MongoClient } from "mongo/mod.ts";
 import { Application, Router } from "oak/mod.ts";
-import { schema } from "./schema.ts";
+import { schema } from "./graphql/schema.ts";
+
+const mongoClient = new MongoClient();
+await mongoClient.connect("mongodb://user:pass@127.0.0.1:27017/otomadb?authSource=admin");
 
 const app = new Application();
 const router = new Router();
@@ -18,6 +22,7 @@ router.post("/graphql", async ({ request, response }) => {
     operationName: operationName,
     contextValue: {
       accessToken,
+      mongo: mongoClient,
     },
   });
   return;

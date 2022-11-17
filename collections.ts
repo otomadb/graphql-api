@@ -1,4 +1,5 @@
 import { Database } from "mongo/mod.ts";
+import { MongoClient } from "mongo/mod.ts";
 
 export const getTagsCollection = (db: Database) =>
   db.collection<{
@@ -35,3 +36,27 @@ export const getUsersCollections = (db: Database) =>
 
     display_name: string;
   }>("users");
+
+export const getTagsCollection2 = (mongo: MongoClient) =>
+  mongo.database().collection<{
+    _id: string;
+
+    names: { name: string; primary?: boolean }[];
+    name_primary: string;
+
+    type: string;
+    context?: string;
+  }>("tags");
+
+export const getVideosCollection2 = (mongo: MongoClient) =>
+  mongo.database().collection<{
+    _id: string;
+
+    titles: { title: string; primary?: boolean }[];
+    title_primary: string;
+
+    images: { image: string; primary?: boolean }[];
+    image_primary: string;
+
+    tags: string[];
+  }>("videos");
