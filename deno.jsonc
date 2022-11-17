@@ -1,10 +1,9 @@
 {
   "importMap": "./import_map.json",
   "tasks": {
-    "dev": "deno run --watch -A ./mod.ts",
+    "dev": "deno run --watch -A --unstable ./mod.ts",
     "test": "deno test",
     "lint": "deno lint",
-    "lock": "deno cache --lock lock.json --lock-write ./mod.ts",
     "generate:authenticator": "deno run --allow-read https://deno.land/x/grpc_basic@0.4.6/gen/dts.ts ./proto/authenticator.proto > ./proto/authenticator.d.ts"
   },
   "fmt": {

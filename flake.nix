@@ -19,7 +19,6 @@
           inherit system;
           overlays = with inputs; [
             devshell.overlay
-            deno2nix.overlays.default
           ];
         };
       in {
@@ -29,7 +28,6 @@
             treefmt
             deno
           ];
-          devshell.startup.deno_lock.text = "deno task lock";
         };
       }
     );

@@ -1,20 +1,29 @@
 import { oakCors } from "cors/mod.ts";
-import { MongoClient } from "mongo/mod.ts";
+import { graphql } from "graphql";
 import { Application, Router } from "oak/mod.ts";
-import { addTag } from "./add_tag.ts";
-import { guard, routeSignin, routeWhoAmI } from "./auth/mod.ts";
-import { checkNiconicoVideo } from "./check_niconico_video.ts";
-import { routeGetTag } from "./get_tag.ts";
-import { getVideo } from "./get_video.ts";
-import { routeSearch } from "./search.ts";
-
-const mc = new MongoClient();
-await mc.connect("mongodb://user:pass@127.0.0.1:27017/otomadb?authSource=admin");
-const db = mc.database();
+import { schema } from "./schema.ts";
 
 const app = new Application();
 const router = new Router();
 
+router.post("/graphql", async ({ request, response }) => {
+  const { query, variables, operationName } = await request.body().value;
+
+  const accessToken = request.headers.get("Authorization")?.split("Bearer ")?.[1];
+
+  response.body = await graphql({
+    schema: schema,
+    source: query,
+    variableValues: variables,
+    operationName: operationName,
+    contextValue: {
+      accessToken,
+    },
+  });
+  return;
+});
+
+/*
 router.get("/videos/:id", async ({ params, response }) => {
   const result = await getVideo(db, params.id);
 
@@ -60,6 +69,7 @@ router.post("/tags/add", async ({ params, request, response }) => {
 
 router.post("/signin", routeSignin());
 router.get("/whoami", guard(), routeWhoAmI(db));
+*/
 
 app.use(oakCors());
 app.use(router.routes());
