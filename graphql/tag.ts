@@ -113,13 +113,28 @@ export const getTag = async (
   });
 };
 
+export class SearchTagsResultItem {
+  matchedName;
+  tag;
+
+  constructor({ matchedName }: { matchedName: string }, tagPayload: ConstructorParameters<typeof Tag>[0]) {
+    this.matchedName = matchedName;
+    this.tag = new Tag(tagPayload);
+  }
+}
+
 export const searchTags = async (
   args: { query: string; limit: number; skip: number },
   context: { mongo: MongoClient },
 ) => {
   const tagsColl = getTagsCollection2(context.mongo);
   const matched = await tagsColl
-    .aggregate([
+    .aggregate<{
+      id: string;
+      names: { name: string; primary?: boolean }[];
+      type: string;
+      matched_name: string;
+    }>([
       {
         $project: {
           _id: true,
@@ -140,20 +155,25 @@ export const searchTags = async (
           _id: "$_id",
           names: { $first: "$names" },
           type: { $first: "$type" },
+          matched_name: { $first: "$names_search.name" },
         },
       },
       {
         $project: {
+          _id: 0,
           id: "$_id",
           names: "$names",
           type: "$type",
+          matched_name: "$matched_name",
         },
       },
       { $skip: args.skip },
       { $limit: args.limit },
     ])
     .toArray()
-    .then((arr) => arr.map((v) => new Tag(v as any)));
+    .then((arr) =>
+      arr.map(({ matched_name, ...rest }) => new SearchTagsResultItem({ matchedName: matched_name }, rest))
+    );
 
   return {
     result: matched,

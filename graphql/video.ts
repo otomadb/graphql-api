@@ -74,19 +74,34 @@ export const getVideo = async (
   });
 };
 
+export class SearchVideosResultItem {
+  matchedTitle;
+  video;
+
+  constructor({ matchedTitle }: { matchedTitle: string }, videoPayload: ConstructorParameters<typeof Video>[0]) {
+    this.matchedTitle = matchedTitle;
+    this.video = new Video(videoPayload);
+  }
+}
+
 export const searchVideos = async (
   args: { query: string; limit: number; skip: number },
   context: { mongo: MongoClient },
 ) => {
   const videosColl = getVideosCollection2(context.mongo);
   const matched = await videosColl
-    .aggregate([
+    .aggregate<{
+      id: string;
+      titles: { title: string; primary?: boolean }[];
+      tags: string[];
+      matched_title: string;
+    }>([
       {
         $project: {
           _id: true,
           titles: true,
           titles_search: "$titles",
-          type: true,
+          tags: true,
         },
       },
       { $unwind: { path: "$titles_search" } },
@@ -100,21 +115,26 @@ export const searchVideos = async (
         $group: {
           _id: "$_id",
           titles: { $first: "$titles" },
-          type: { $first: "$type" },
+          tags: { $first: "$tags" },
+          matched_title: { $first: "$titles_search.title" },
         },
       },
       {
         $project: {
+          _id: 0,
           id: "$_id",
           titles: "$titles",
-          type: "$type",
+          tags: "$tags",
+          matched_title: "$matched_title",
         },
       },
       { $skip: args.skip },
       { $limit: args.limit },
     ])
     .toArray()
-    .then((arr) => arr.map((v) => new Video(v as any)));
+    .then((arr) =>
+      arr.map(({ matched_title, ...rest }) => new SearchVideosResultItem({ matchedTitle: matched_title }, rest))
+    );
 
   return {
     result: matched,

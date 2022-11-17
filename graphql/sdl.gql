@@ -52,10 +52,20 @@ enum TagType {
 
 type SearchVideosResult {
   # count: Int!
-  result: [Video!]!
+  result: [SearchVideosResultItem!]!
+}
+
+type SearchVideosResultItem {
+  matchedTitle: String!
+  video: Video!
 }
 
 type SearchTagsResult {
   # count: Int!
-  result: [Tag!]!
+  result: [SearchTagsResultItem!]!
+}
+
+type SearchTagsResultItem {
+  matchedName: String!
+  tag: Tag!
 }
