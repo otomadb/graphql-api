@@ -45,8 +45,6 @@ export class Video {
   }
 
   title(_: unknown) {
-    console.dir(this.titles());
-
     const title = this.titles().find((v) => v.primary());
     if (!title) throw new GraphQLError("no primary title");
     return title.title();
