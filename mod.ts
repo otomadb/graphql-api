@@ -2,7 +2,7 @@ import { oakCors } from "cors/mod.ts";
 import { graphql } from "graphql";
 import { MongoClient } from "mongo/mod.ts";
 import { Application, Router } from "oak/mod.ts";
-import { schema } from "./graphql/schema.ts";
+import { rootValue, schema } from "./graphql/schema.ts";
 
 const mongoClient = new MongoClient();
 await mongoClient.connect("mongodb://user:pass@127.0.0.1:27017/otomadb?authSource=admin");
@@ -16,8 +16,9 @@ router.post("/graphql", async ({ request, response }) => {
   const accessToken = request.headers.get("Authorization")?.split("Bearer ")?.[1];
 
   response.body = await graphql({
-    schema: schema,
     source: query,
+    schema: schema,
+    rootValue: rootValue,
     variableValues: variables,
     operationName: operationName,
     contextValue: {

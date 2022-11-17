@@ -1,0 +1,40 @@
+type Query {
+  video(id: ID!): Video!
+  tag(id: ID!): Tag!
+}
+
+type Video {
+  id: ID!
+  titles: [VideoTitle]!
+  title: String!
+  tags: [Tag!]!
+}
+
+type VideoTitle {
+  title: String!
+  primary: Boolean!
+}
+
+type Tag {
+  id: ID!
+  type: TagType!
+  name: String!
+  names: [TagName!]!
+  taggedVideos: [Video!]!
+}
+
+type TagName {
+  name: String!
+  primary: Boolean!
+}
+
+enum TagType {
+  COPYRIGHT
+  MATERIAL
+  MUSIC
+  SERIES
+  IMAGE
+  TACTICS
+  CLASS
+  EVENT
+}

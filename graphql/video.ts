@@ -1,51 +1,58 @@
-import { GraphQLError, GraphQLList, GraphQLNonNull, GraphQLObjectType } from "graphql";
+import { GraphQLError } from "graphql";
 import { MongoClient } from "mongo/mod.ts";
 import { getTagsCollection2 } from "../collections.ts";
-import { GraphQLNonNullBoolean, GraphQLNonNullId, GraphQLNonNullString } from "./common.ts";
-import { TagType } from "./tag.ts";
+import { Tag } from "./tag.ts";
 
-export const VideoTitleType = new GraphQLObjectType<{ title: string; primary?: boolean }>({
-  name: "VideoTitle",
-  fields: {
-    title: { type: GraphQLNonNullString },
-    primary: {
-      type: GraphQLNonNullBoolean,
-      resolve({ primary }): boolean {
-        return !!primary;
-      },
-    },
-  },
-});
+export class VideoTitle {
+  private _title;
+  private _primary;
 
-export const VideoType = new GraphQLObjectType<
-  {
+  constructor({ title, primary }: { title: string; primary?: boolean }) {
+    this._title = title;
+    this._primary = primary;
+  }
+
+  title() {
+    return this._title;
+  }
+
+  primary() {
+    return !!this._primary;
+  }
+}
+
+export class Video {
+  private _id;
+  private _titles;
+  private _tags;
+
+  constructor({ id, titles, tags }: {
     id: string;
     titles: { title: string; primary?: boolean }[];
     tags: string[];
-  },
-  { mongo: MongoClient }
->({
-  name: "Video",
-  fields: () => ({
-    id: { type: GraphQLNonNullId },
-    titles: {
-      type: new GraphQLNonNull(new GraphQLList(VideoTitleType)),
-    },
-    title: {
-      type: GraphQLNonNullString,
-      resolve({ titles }) {
-        const title = titles.find(({ primary }) => primary);
-        if (!title) throw new GraphQLError("no primary title");
-        return title.title;
-      },
-    },
-    tags: {
-      type: new GraphQLNonNull(new GraphQLList(TagType)),
-      async resolve({ tags: tagIds }, _args, context) {
-        const tagsColl = getTagsCollection2(context.mongo);
-        const tags = await tagsColl.find({ _id: { $in: tagIds } }).toArray();
-        return tags.map(({ _id, names, type }) => ({ id: _id, names, type }));
-      },
-    },
-  }),
-});
+  }) {
+    this._id = id;
+    this._titles = titles;
+    this._tags = tags;
+  }
+
+  id() {
+    return this._id;
+  }
+
+  titles() {
+    return this._titles.map((v) => new VideoTitle(v));
+  }
+
+  title(_: unknown) {
+    const title = this.titles().find((v) => v.primary());
+    if (!title) throw new GraphQLError("no primary title");
+    return title.title();
+  }
+
+  async tags(_: unknown, context: { mongo: MongoClient }) {
+    const tagsColl = getTagsCollection2(context.mongo);
+    const tags = await tagsColl.find({ _id: { $in: this._tags } }).toArray();
+    return tags.map(({ _id, names, type }) => new Tag({ id: _id, names, type }));
+  }
+}
