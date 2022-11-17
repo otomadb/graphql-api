@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
 import { MongoClient } from "mongo/mod.ts";
-import { getVideosCollection2 } from "../collections.ts";
+import { getTagsCollection2, getVideosCollection2 } from "~/collections.ts";
 
 import { Video } from "./video.ts";
 
@@ -97,3 +97,65 @@ export class Tag {
     return tagged_videos;
   }
 }
+
+export const getTag = async (
+  args: { id: string },
+  context: { mongo: MongoClient },
+) => {
+  const tagsColl = getTagsCollection2(context.mongo);
+  const tag = await tagsColl.findOne({ _id: args.id });
+  if (!tag) throw new GraphQLError("Not Found");
+
+  return new Tag({
+    id: tag._id,
+    type: tag.type,
+    names: tag.names,
+  });
+};
+
+export const searchTags = async (
+  args: { query: string; limit: number; skip: number },
+  context: { mongo: MongoClient },
+) => {
+  const tagsColl = getTagsCollection2(context.mongo);
+  const matched = await tagsColl
+    .aggregate([
+      {
+        $project: {
+          _id: true,
+          names: true,
+          names_search: "$names",
+          type: true,
+        },
+      },
+      { $unwind: { path: "$names_search" } },
+      { $match: { "names_search.name": { "$regex": args.query } } },
+      {
+        $sort: {
+          "names_search.primary": -1,
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          names: { $first: "$names" },
+          type: { $first: "$type" },
+        },
+      },
+      {
+        $project: {
+          id: "$_id",
+          names: "$names",
+          type: "$type",
+        },
+      },
+      { $skip: args.skip },
+      { $limit: args.limit },
+    ])
+    .toArray()
+    .then((arr) => arr.map((v) => new Tag(v as any)));
+
+  return {
+    result: matched,
+  };
+};

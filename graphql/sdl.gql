@@ -1,6 +1,17 @@
 type Query {
   video(id: ID!): Video!
   tag(id: ID!): Tag!
+
+  searchVideos(
+    query: String!
+    limit: Int! = 10
+    skip: Int! = 0
+  ): SearchVideosResult!
+  searchTags(
+    query: String!
+    limit: Int! = 10
+    skip: Int! = 0
+  ): SearchTagsResult!
 }
 
 type Video {
@@ -37,4 +48,14 @@ enum TagType {
   TACTICS
   CLASS
   EVENT
+}
+
+type SearchVideosResult {
+  # count: Int!
+  result: [Video!]!
+}
+
+type SearchTagsResult {
+  # count: Int!
+  result: [Tag!]!
 }

@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
 import { MongoClient } from "mongo/mod.ts";
-import { getTagsCollection2 } from "../collections.ts";
+import { getTagsCollection2, getVideosCollection2 } from "~/collections.ts";
 import { Tag } from "./tag.ts";
 
 export class VideoTitle {
@@ -45,6 +45,8 @@ export class Video {
   }
 
   title(_: unknown) {
+    console.dir(this.titles());
+
     const title = this.titles().find((v) => v.primary());
     if (!title) throw new GraphQLError("no primary title");
     return title.title();
@@ -56,3 +58,65 @@ export class Video {
     return tags.map(({ _id, names, type }) => new Tag({ id: _id, names, type }));
   }
 }
+
+export const getVideo = async (
+  args: { id: string },
+  context: { mongo: MongoClient },
+) => {
+  const videosColl = getVideosCollection2(context.mongo);
+  const video = await videosColl.findOne({ _id: args.id });
+  if (!video) throw new GraphQLError("Not Found");
+
+  return new Video({
+    id: video._id,
+    titles: video.titles,
+    tags: video.tags,
+  });
+};
+
+export const searchVideos = async (
+  args: { query: string; limit: number; skip: number },
+  context: { mongo: MongoClient },
+) => {
+  const videosColl = getVideosCollection2(context.mongo);
+  const matched = await videosColl
+    .aggregate([
+      {
+        $project: {
+          _id: true,
+          titles: true,
+          titles_search: "$titles",
+          type: true,
+        },
+      },
+      { $unwind: { path: "$titles_search" } },
+      { $match: { "titles_search.title": { "$regex": args.query } } },
+      {
+        $sort: {
+          "titles_search.primary": -1,
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          titles: { $first: "$titles" },
+          type: { $first: "$type" },
+        },
+      },
+      {
+        $project: {
+          id: "$_id",
+          titles: "$titles",
+          type: "$type",
+        },
+      },
+      { $skip: args.skip },
+      { $limit: args.limit },
+    ])
+    .toArray()
+    .then((arr) => arr.map((v) => new Video(v as any)));
+
+  return {
+    result: matched,
+  };
+};
