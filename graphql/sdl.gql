@@ -17,6 +17,10 @@ type Query {
   whoami: User!
 }
 
+type Mutation {
+  signin(name: String!, password: String!): SigninPayload!
+}
+
 type Video {
   id: ID!
   titles: [VideoTitle]!
@@ -77,4 +81,8 @@ type User {
   id: ID!
   name: String!
   displayName: String!
+}
+
+type SigninPayload {
+  accessToken: String!
 }
