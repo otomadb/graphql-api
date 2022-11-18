@@ -60,3 +60,14 @@ export const getVideosCollection2 = (mongo: MongoClient) =>
 
     tags: string[];
   }>("videos");
+
+export const getUsersCollection2 = (mongo: MongoClient) =>
+  mongo.database().collection<{
+    _id: string;
+
+    name: string;
+    display_name: string;
+    // email: string;
+    // is_email_confirmed: boolean;
+    // password: string;
+  }>("users");

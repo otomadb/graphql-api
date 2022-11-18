@@ -12,6 +12,9 @@ type Query {
     limit: Int! = 10
     skip: Int! = 0
   ): SearchTagsResult!
+
+  user(name: String!): User!
+  whoami: User!
 }
 
 type Video {
@@ -68,4 +71,10 @@ type SearchTagsResult {
 type SearchTagsResultItem {
   matchedName: String!
   tag: Tag!
+}
+
+type User {
+  id: ID!
+  name: String!
+  displayName: String!
 }

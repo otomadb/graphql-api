@@ -2,32 +2,58 @@ import { oakCors } from "cors/mod.ts";
 import { graphql } from "graphql";
 import { MongoClient } from "mongo/mod.ts";
 import { Application, Router } from "oak/mod.ts";
+import { routeSignin } from "./auth/signin.ts";
+import { getClient as getGrpcClient } from "grpc/client.ts";
 import { rootValue, schema } from "./graphql/schema.ts";
+import { Authenticator } from "./proto/authenticator.d.ts";
+import { authenticatorProtoFile } from "./proto/protos.ts";
 
 const mongoClient = new MongoClient();
 await mongoClient.connect("mongodb://user:pass@127.0.0.1:27017/otomadb?authSource=admin");
 
+const grpcAuthenticatorClient = getGrpcClient<Authenticator>({
+  port: 50051,
+  root: authenticatorProtoFile,
+  serviceName: "Authenticator",
+});
+
 const app = new Application();
 const router = new Router();
 
-router.post("/graphql", async ({ request, response }) => {
-  const { query, variables, operationName } = await request.body().value;
+router.post(
+  "/graphql",
+  async ({ state, request }, next) => {
+    const accessToken = request.headers.get("Authorization")?.split("Bearer ")?.[1];
 
-  const accessToken = request.headers.get("Authorization")?.split("Bearer ")?.[1];
+    if (!accessToken) {
+      await next();
+      return;
+    }
 
-  response.body = await graphql({
-    source: query,
-    schema: schema,
-    rootValue: rootValue,
-    variableValues: variables,
-    operationName: operationName,
-    contextValue: {
-      accessToken,
-      mongo: mongoClient,
-    },
-  });
-  return;
-});
+    const { userId } = await grpcAuthenticatorClient.Validate({ accessToken });
+    state.userId = userId;
+
+    await next();
+    return;
+  },
+  async ({ state, request, response }) => {
+    const { query, variables, operationName } = await request.body().value;
+    const { userId } = state;
+
+    response.body = await graphql({
+      source: query,
+      schema: schema,
+      rootValue: rootValue,
+      variableValues: variables,
+      operationName: operationName,
+      contextValue: {
+        userId,
+        mongo: mongoClient,
+      },
+    });
+    return;
+  },
+);
 
 /*
 router.get("/videos/:id", async ({ params, response }) => {
@@ -73,9 +99,10 @@ router.post("/tags/add", async ({ params, request, response }) => {
   response.body = result.value;
 });
 
-router.post("/signin", routeSignin());
 router.get("/whoami", guard(), routeWhoAmI(db));
 */
+
+router.post("/signin", routeSignin());
 
 app.use(oakCors());
 app.use(router.routes());
