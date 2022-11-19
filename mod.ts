@@ -3,19 +3,11 @@ import { graphql } from "graphql";
 import { MongoClient } from "mongo/mod.ts";
 import { Application, Router } from "oak/mod.ts";
 import { routeSignin } from "./auth/signin.ts";
-import { getClient as getGrpcClient } from "grpc/client.ts";
 import { rootValue, schema } from "./graphql/schema.ts";
-import { Authenticator } from "./proto/authenticator.d.ts";
-import { authenticatorProtoFile } from "./proto/protos.ts";
+import { verifyAccessJWT } from "./jwt.ts";
 
 const mongoClient = new MongoClient();
 await mongoClient.connect("mongodb://user:pass@127.0.0.1:27017/otomadb?authSource=admin");
-
-const grpcAuthenticatorClient = getGrpcClient<Authenticator>({
-  port: 50051,
-  root: authenticatorProtoFile,
-  serviceName: "Authenticator",
-});
 
 const app = new Application();
 const router = new Router();
@@ -30,8 +22,9 @@ router.post(
       return;
     }
 
-    const { userId } = await grpcAuthenticatorClient.Validate({ accessToken });
-    state.userId = userId;
+    const ls = await verifyAccessJWT({ token: accessToken }) as any;
+    console.dir(ls.sub);
+    state.userId = ls.sub;
 
     await next();
     return;

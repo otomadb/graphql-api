@@ -4,7 +4,8 @@
     "dev": "deno run --watch -A --unstable ./mod.ts",
     "test": "deno test",
     "lint": "deno lint",
-    "generate:authenticator": "deno run --allow-read https://deno.land/x/grpc_basic@0.4.6/gen/dts.ts ./proto/authenticator.proto > ./proto/authenticator.d.ts"
+    "generate:authenticator": "deno run --allow-read https://deno.land/x/grpc_basic@0.4.6/gen/dts.ts ./proto/authenticator.proto > ./proto/authenticator.d.ts",
+    "generate-keys": "deno run --allow-write --unstable ./utils/generate_keys.ts"
   },
   "fmt": {
     "options": {

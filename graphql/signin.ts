@@ -1,35 +1,29 @@
-import { GraphQLError } from "graphql";
-import { GrpcClient } from "grpc/client.ts";
-import { GrpcError } from "grpc/error.ts";
-import { Authenticator } from "../proto/authenticator.d.ts";
+import { signAccessJWT, signRefreshJWT } from "~/jwt.ts";
 
 export class SigninPayload {
-  public accessToken;
+  protected accessToken;
+  protected refreshToken;
 
-  constructor({ accessToken }: { accessToken: string }) {
+  constructor({ accessToken, refreshToken }: { accessToken: string; refreshToken: string }) {
     this.accessToken = accessToken;
+    this.refreshToken = refreshToken;
   }
 }
 
-export const signin = async (
-  { name, password }: { name: string; password: string },
-  { authenticator }: { authenticator: GrpcClient & Authenticator },
-) => {
-  try {
-    const { accessToken } = { accessToken: "?" }; // await authenticator.Signin({ name, password });
+export const signin = async ({ name, password }: { name: string; password: string }) => {
+  const accessToken = await signAccessJWT({
+    issuer: "auth.exaple.com",
+    userId: "1",
+    expiresIn: 60 * 60,
+  });
+  const refreshToken = await signRefreshJWT({
+    issuer: "auth.exaple.com",
+    userId: "1",
+    expiresIn: 60 * 60,
+  });
 
-    if (!accessToken) throw new GraphQLError("something wrong");
-
-    return new SigninPayload({ accessToken });
-  } catch (e) {
-    if (e instanceof GrpcError) {
-      switch (e.grpcCode) {
-        default: {
-          throw new GraphQLError("Something wrong");
-        }
-      }
-    } else {
-      throw new GraphQLError("Something wrong");
-    }
-  }
+  return new SigninPayload({
+    accessToken: accessToken,
+    refreshToken: refreshToken,
+  });
 };
