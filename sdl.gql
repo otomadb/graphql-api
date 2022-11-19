@@ -22,8 +22,8 @@ type Query {
 type Mutation {
   signin(name: String!, password: String!): SigninPayload!
 
-  addTag(input: AddTagInput!): AddTagPayload!
-  addVideo(input: AddVideoInput!): AddVideoPayload!
+  registerTag(input: RegisterTagInput!): RegisterTagPayload!
+  registerVideo(input: RegisterVideoInput!): RegisterVideoPayload!
 }
 
 type Video {
@@ -130,22 +130,22 @@ type SigninPayload {
   user: User!
 }
 
-input AddTagInput {
+input RegisterTagInput {
   primaryName: String!
   extraNames: [String!]
   type: TagType!
 }
 
-type AddTagPayload {
+type RegisterTagPayload {
   tag: Tag!
 }
 
-input AddVideoInput {
+input RegisterVideoInput {
   primaryTitle: String!
   extraTitles: [String!]
   tags: [ID!]!
 }
 
-type AddVideoPayload {
+type RegisterVideoPayload {
   video: Video!
 }

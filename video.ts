@@ -214,10 +214,11 @@ export const searchVideos = async (
   const videosColl = getVideosCollection(context.mongo);
   const matched = await videosColl
     .aggregate<{
+      matched_title: string;
       id: string;
       titles: { title: string; primary?: boolean }[];
       tags: string[];
-      matched_title: string;
+      history: ObjectId[];
     }>([
       {
         $project: {
@@ -225,6 +226,7 @@ export const searchVideos = async (
           titles: true,
           titles_search: "$titles",
           tags: true,
+          history: true,
         },
       },
       { $unwind: { path: "$titles_search" } },
@@ -239,6 +241,7 @@ export const searchVideos = async (
           _id: "$_id",
           titles: { $first: "$titles" },
           tags: { $first: "$tags" },
+          history: { $first: "$history" },
           matched_title: { $first: "$titles_search.title" },
         },
       },
@@ -246,9 +249,10 @@ export const searchVideos = async (
         $project: {
           _id: 0,
           id: "$_id",
-          titles: "$titles",
-          tags: "$tags",
-          matched_title: "$matched_title",
+          titles: true,
+          tags: true,
+          history: true,
+          matched_title: true,
         },
       },
       { $skip: args.skip },
@@ -256,7 +260,12 @@ export const searchVideos = async (
     ])
     .toArray()
     .then((arr) =>
-      arr.map(({ matched_title, ...rest }) => new SearchVideosResultItem({ matchedTitle: matched_title }, rest))
+      arr.map(({ matched_title, ...rest }) =>
+        new SearchVideosResultItem(
+          { matchedTitle: matched_title },
+          rest,
+        )
+      )
     );
 
   return {
@@ -264,7 +273,7 @@ export const searchVideos = async (
   };
 };
 
-export const addVideo = async (
+export const registerVideo = async (
   { input }: {
     input: {
       primaryTitle: string;

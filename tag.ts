@@ -179,10 +179,11 @@ export const searchTags = async (
   const tagsColl = getTagsCollection(context.mongo);
   const matched = await tagsColl
     .aggregate<{
+      matched_name: string;
       id: string;
       names: { name: string; primary?: boolean }[];
       type: string;
-      matched_name: string;
+      history: ObjectId[];
     }>([
       {
         $project: {
@@ -190,6 +191,7 @@ export const searchTags = async (
           names: true,
           names_search: "$names",
           type: true,
+          history: true,
         },
       },
       { $unwind: { path: "$names_search" } },
@@ -204,6 +206,7 @@ export const searchTags = async (
           _id: "$_id",
           names: { $first: "$names" },
           type: { $first: "$type" },
+          history: { $first: "$history" },
           matched_name: { $first: "$names_search.name" },
         },
       },
@@ -211,9 +214,10 @@ export const searchTags = async (
         $project: {
           _id: 0,
           id: "$_id",
-          names: "$names",
-          type: "$type",
-          matched_name: "$matched_name",
+          names: true,
+          type: true,
+          history: true,
+          matched_name: true,
         },
       },
       { $skip: args.skip },
@@ -229,7 +233,7 @@ export const searchTags = async (
   };
 };
 
-export const addTag = async (
+export const registerTag = async (
   { input }: {
     input: {
       primaryName: string;
