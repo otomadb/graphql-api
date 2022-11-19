@@ -42,10 +42,10 @@ export const getTagsCollection2 = (mongo: MongoClient) =>
     _id: string;
 
     names: { name: string; primary?: boolean }[];
-    name_primary: string;
-
     type: string;
     context?: string;
+
+    history: { type: string; userId: string }[];
   }>("tags");
 
 export const getVideosCollection2 = (mongo: MongoClient) =>

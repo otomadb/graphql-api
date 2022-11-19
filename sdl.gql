@@ -19,6 +19,8 @@ type Query {
 
 type Mutation {
   signin(name: String!, password: String!): SigninPayload!
+
+  addTag(input: AddTagInput!): AddTagPayload!
 }
 
 type Video {
@@ -87,4 +89,14 @@ type SigninPayload {
   accessToken: String!
   refreshToken: String!
   user: User!
+}
+
+input AddTagInput {
+  primaryName: String!
+  extraNames: [String!]
+  type: TagType!
+}
+
+type AddTagPayload {
+  tag: Tag!
 }

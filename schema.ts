@@ -1,6 +1,6 @@
 import { buildSchema } from "graphql";
 import { signin } from "./signin.ts";
-import { getTag, searchTags } from "./tag.ts";
+import { addTag, getTag, searchTags } from "./tag.ts";
 import { getUser, whoami } from "./user.ts";
 import { getVideo, searchVideos } from "./video.ts";
 
@@ -17,4 +17,5 @@ export const rootValue = {
 
   // mutation
   signin: signin,
+  addTag: addTag,
 };

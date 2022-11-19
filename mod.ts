@@ -22,7 +22,6 @@ router.post(
     }
 
     const ls = await verifyAccessJWT({ token: accessToken }) as any;
-    console.dir(ls.sub);
     state.userId = ls.sub;
 
     await next();

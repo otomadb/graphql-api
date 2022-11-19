@@ -1,6 +1,7 @@
 import { GraphQLError } from "graphql";
 import { MongoClient } from "mongo/mod.ts";
-import { getTagsCollection2, getVideosCollection2 } from "./collections.ts";
+import { getTagsCollection, getTagsCollection2, getUsersCollection2, getVideosCollection2 } from "./collections.ts";
+import { generateId } from "./id.ts";
 import { Video } from "./video.ts";
 
 /*
@@ -176,5 +177,52 @@ export const searchTags = async (
 
   return {
     result: matched,
+  };
+};
+
+export const addTag = async (
+  { input }: {
+    input: {
+      primaryName: string;
+      extraNames?: string[];
+      type: string;
+    };
+  },
+  context: { mongo: MongoClient; userId?: string },
+) => {
+  if (!context.userId) throw new GraphQLError("Not login");
+  // TODO: primaryNameとextraNamesが重複していないことの検証
+
+  const tagsColl = getTagsCollection2(context.mongo);
+
+  const already = await tagsColl.findOne({
+    "names.name": { "$in": [input.primaryName, ...(input.extraNames || [])] },
+    "type": input.type,
+  });
+  if (already) {
+    throw new GraphQLError(`"${input.primaryName}" in "${input.type}" already registered as primary name.`);
+  }
+
+  const id = generateId();
+  const tagAdd = await tagsColl
+    .insertOne({
+      _id: id,
+      type: input.type,
+      names: [
+        { name: input.primaryName, primary: true },
+        ...(input.extraNames?.map((extraName) => ({ name: extraName })) || []),
+      ],
+      history: [{ type: "REGISTER", userId: context.userId }],
+    }).then(
+      (id) => tagsColl.findOne({ _id: id }),
+    );
+  if (!tagAdd) throw new GraphQLError("Something wrong");
+
+  return {
+    tag: new Tag({
+      id: tagAdd._id,
+      names: tagAdd.names,
+      type: tagAdd.type,
+    }),
   };
 };
