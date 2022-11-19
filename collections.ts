@@ -71,3 +71,18 @@ export const getUsersCollection2 = (mongo: MongoClient) =>
     // is_email_confirmed: boolean;
     // password: string;
   }>("users");
+
+export const getAccountsCollection = (mongo: MongoClient) =>
+  mongo.database().collection<{
+    _id: string;
+    user_id: string;
+
+    name: string;
+    email: string;
+    email_confirmed: true;
+
+    password: string;
+    // email: string;
+    // is_email_confirmed: boolean;
+    // password: string;
+  }>("accounts");

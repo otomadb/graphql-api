@@ -86,4 +86,5 @@ type User {
 type SigninPayload {
   accessToken: String!
   refreshToken: String!
+  user: User!
 }
