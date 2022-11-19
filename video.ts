@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
 import { MongoClient } from "mongo/mod.ts";
-import { getTagsCollection2, getVideosCollection2 } from "./collections.ts";
+import { getTagsCollection, getVideosCollection } from "./collections.ts";
 import { Tag } from "./tag.ts";
 
 export class VideoTitle {
@@ -51,7 +51,7 @@ export class Video {
   }
 
   async tags(_: unknown, context: { mongo: MongoClient }) {
-    const tagsColl = getTagsCollection2(context.mongo);
+    const tagsColl = getTagsCollection(context.mongo);
     const tags = await tagsColl.find({ _id: { $in: this._tags } }).toArray();
     return tags.map(({ _id, names, type }) => new Tag({ id: _id, names, type }));
   }
@@ -61,7 +61,7 @@ export const getVideo = async (
   args: { id: string },
   context: { mongo: MongoClient },
 ) => {
-  const videosColl = getVideosCollection2(context.mongo);
+  const videosColl = getVideosCollection(context.mongo);
   const video = await videosColl.findOne({ _id: args.id });
   if (!video) throw new GraphQLError("Not Found");
 
@@ -86,7 +86,7 @@ export const searchVideos = async (
   args: { query: string; limit: number; skip: number },
   context: { mongo: MongoClient },
 ) => {
-  const videosColl = getVideosCollection2(context.mongo);
+  const videosColl = getVideosCollection(context.mongo);
   const matched = await videosColl
     .aggregate<{
       id: string;

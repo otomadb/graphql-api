@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
 import { MongoClient } from "mongo/mod.ts";
-import { getTagsCollection, getTagsCollection2, getUsersCollection2, getVideosCollection2 } from "./collections.ts";
+import { getTagsCollection, getVideosCollection } from "./collections.ts";
 import { generateId } from "./id.ts";
 import { Video } from "./video.ts";
 
@@ -78,7 +78,7 @@ export class Tag {
   }
 
   async taggedVideos(_: unknown, context: { mongo: MongoClient }) {
-    const videosColl = getVideosCollection2(context.mongo);
+    const videosColl = getVideosCollection(context.mongo);
     const tagged_videos = (
       await videosColl
         .aggregate([
@@ -102,7 +102,7 @@ export const getTag = async (
   args: { id: string },
   context: { mongo: MongoClient },
 ) => {
-  const tagsColl = getTagsCollection2(context.mongo);
+  const tagsColl = getTagsCollection(context.mongo);
   const tag = await tagsColl.findOne({ _id: args.id });
   if (!tag) throw new GraphQLError("Not Found");
 
@@ -127,7 +127,7 @@ export const searchTags = async (
   args: { query: string; limit: number; skip: number },
   context: { mongo: MongoClient },
 ) => {
-  const tagsColl = getTagsCollection2(context.mongo);
+  const tagsColl = getTagsCollection(context.mongo);
   const matched = await tagsColl
     .aggregate<{
       id: string;
@@ -193,7 +193,7 @@ export const addTag = async (
   if (!context.userId) throw new GraphQLError("Not login");
   // TODO: primaryNameとextraNamesが重複していないことの検証
 
-  const tagsColl = getTagsCollection2(context.mongo);
+  const tagsColl = getTagsCollection(context.mongo);
 
   const already = await tagsColl.findOne({
     "names.name": { "$in": [input.primaryName, ...(input.extraNames || [])] },

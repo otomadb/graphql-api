@@ -1,6 +1,6 @@
-import { MongoClient } from "mongo/mod.ts";
 import { GraphQLError } from "graphql";
-import { getUsersCollection2 } from "./collections.ts";
+import { MongoClient } from "mongo/mod.ts";
+import { getUsersCollection } from "./collections.ts";
 
 export class User {
   private _id;
@@ -27,7 +27,7 @@ export class User {
 }
 
 export const getUserById = async (id: string, context: { mongo: MongoClient }): Promise<User> => {
-  const usersColl = getUsersCollection2(context.mongo);
+  const usersColl = getUsersCollection(context.mongo);
   const user = await usersColl.findOne({ _id: id });
   if (!user) throw new GraphQLError("Not Found");
 
@@ -39,7 +39,7 @@ export const getUserById = async (id: string, context: { mongo: MongoClient }): 
 };
 
 export const getUserByName = async (name: string, context: { mongo: MongoClient }): Promise<User> => {
-  const usersColl = getUsersCollection2(context.mongo);
+  const usersColl = getUsersCollection(context.mongo);
   const user = await usersColl.findOne({
     name: name.toLowerCase(), // TODO: case insensitive
   });
