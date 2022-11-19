@@ -46,21 +46,6 @@ router.post(
   },
 );
 
-/*
-router.get("/niconico/check/:id", async ({ params, response }) => {
-  const result = await checkNiconicoVideo(params.id);
-  if (!result.ok) {
-    const { status, message } = result.error;
-    response.status = status;
-    if (message) response.body = message;
-    return;
-  }
-  response.body = result.value;
-  return;
-});
-
-*/
-
 app.use(oakCors());
 app.use(router.routes());
 app.use(router.allowedMethods());
