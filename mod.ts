@@ -21,11 +21,14 @@ router.post(
       return;
     }
 
-    const ls = await verifyAccessJWT({ token: accessToken }) as any;
-    state.userId = ls.sub;
-
-    await next();
-    return;
+    try {
+      const payload = await verifyAccessJWT({ token: accessToken });
+      state.userId = payload?.sub;
+    } catch (e) {
+      console.dir(e);
+    } finally {
+      await next();
+    }
   },
   async ({ state, request, response }) => {
     const { query, variables, operationName } = await request.body().value;

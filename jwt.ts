@@ -42,13 +42,9 @@ if (!refreshPubKey) {
   Deno.exit(1);
 }
 
-const verifyJwtFactory = (key: CryptoKey) => async <T>({ token }: { token: string }): Promise<T | null> => {
-  try {
-    return (await verify(token, key)) as T;
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
+const verifyJwtFactory = (key: CryptoKey) => async ({ token }: { token: string }) => {
+  const result = await verify(token, key);
+  return result;
 };
 export const verifyAccessJWT = verifyJwtFactory(accessPubKey);
 export const verifyRefreshJWT = verifyJwtFactory(refreshPubKey);
