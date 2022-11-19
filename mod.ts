@@ -47,23 +47,6 @@ router.post(
 );
 
 /*
-router.get("/videos/:id", async ({ params, response }) => {
-  const result = await getVideo(db, params.id);
-
-  if (!result.ok) {
-    const { status, message } = result.error;
-    response.status = status;
-    if (message) response.body = message;
-    return;
-  }
-
-  response.body = result.value;
-  return;
-});
-
-router.get("/tags/:id", routeGetTag(db));
-router.get("/search", routeSearch(db));
-
 router.get("/niconico/check/:id", async ({ params, response }) => {
   const result = await checkNiconicoVideo(params.id);
   if (!result.ok) {
@@ -76,21 +59,6 @@ router.get("/niconico/check/:id", async ({ params, response }) => {
   return;
 });
 
-router.post("/tags/add", async ({ params, request, response }) => {
-  const payload = await request.body({ type: "json" }).value;
-
-  const result = await addTag(db, payload);
-  if (!result.ok) {
-    const { status, message } = result.error;
-    response.status = status;
-    if (message) response.body = message;
-    return;
-  }
-
-  response.body = result.value;
-});
-
-router.get("/whoami", guard(), routeWhoAmI(db));
 */
 
 app.use(oakCors());
