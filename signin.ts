@@ -1,4 +1,4 @@
-import { signAccessJWT, signRefreshJWT } from "~/jwt.ts";
+import { signAccessJWT, signRefreshJWT } from "./jwt.ts";
 
 export class SigninPayload {
   protected accessToken;

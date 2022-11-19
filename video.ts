@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
 import { MongoClient } from "mongo/mod.ts";
-import { getTagsCollection2, getVideosCollection2 } from "~/collections.ts";
+import { getTagsCollection2, getVideosCollection2 } from "./collections.ts";
 import { Tag } from "./tag.ts";
 
 export class VideoTitle {

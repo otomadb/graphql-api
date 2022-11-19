@@ -1,6 +1,6 @@
 import { MongoClient } from "mongo/mod.ts";
 import { GraphQLError } from "graphql";
-import { getUsersCollection2 } from "../collections.ts";
+import { getUsersCollection2 } from "./collections.ts";
 
 export class User {
   private _id;

@@ -2,9 +2,8 @@ import { oakCors } from "cors/mod.ts";
 import { graphql } from "graphql";
 import { MongoClient } from "mongo/mod.ts";
 import { Application, Router } from "oak/mod.ts";
-import { routeSignin } from "./auth/signin.ts";
-import { rootValue, schema } from "./graphql/schema.ts";
 import { verifyAccessJWT } from "./jwt.ts";
+import { rootValue, schema } from "./schema.ts";
 
 const mongoClient = new MongoClient();
 await mongoClient.connect("mongodb://user:pass@127.0.0.1:27017/otomadb?authSource=admin");
@@ -94,8 +93,6 @@ router.post("/tags/add", async ({ params, request, response }) => {
 
 router.get("/whoami", guard(), routeWhoAmI(db));
 */
-
-router.post("/signin", routeSignin());
 
 app.use(oakCors());
 app.use(router.routes());
