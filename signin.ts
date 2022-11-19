@@ -22,7 +22,7 @@ export class SigninPayload {
 }
 
 export const signin = async (
-  { name, password }: { name: string; password: string },
+  { input: { name, password } }: { input: { name: string; password: string } },
   context: { mongo: MongoClient },
 ) => {
   const accountsColl = await getAccountsCollection(context.mongo);

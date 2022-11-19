@@ -20,10 +20,15 @@ type Query {
 }
 
 type Mutation {
-  signin(name: String!, password: String!): SigninPayload!
+  signin(input: SigninInput): SigninPayload!
 
   registerTag(input: RegisterTagInput!): RegisterTagPayload!
   registerVideo(input: RegisterVideoInput!): RegisterVideoPayload!
+}
+
+input SigninInput {
+  name: String!
+  password: String!
 }
 
 type Video {
