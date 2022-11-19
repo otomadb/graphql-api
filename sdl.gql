@@ -1,3 +1,5 @@
+scalar DateTime
+
 type Query {
   video(id: ID!): Video!
   tag(id: ID!): Tag!
@@ -41,6 +43,7 @@ type Tag {
   name: String!
   names: [TagName!]!
   taggedVideos: [Video!]!
+  history: [TagHistoryItem!]!
 }
 
 type TagName {
@@ -57,6 +60,18 @@ enum TagType {
   TACTICS
   CLASS
   EVENT
+}
+
+interface TagHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+}
+
+type TagRegisterHistoryItem implements TagHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
 }
 
 type SearchVideosResult {

@@ -1,4 +1,4 @@
-import { MongoClient } from "mongo/mod.ts";
+import { MongoClient, ObjectId } from "mongo/mod.ts";
 
 export const getTagsCollection = (mongo: MongoClient) =>
   mongo.database().collection<{
@@ -8,7 +8,7 @@ export const getTagsCollection = (mongo: MongoClient) =>
     type: string;
     context?: string;
 
-    history: { type: string; userId: string }[];
+    history: ObjectId[];
   }>("tags");
 
 export const getVideosCollection = (mongo: MongoClient) =>
@@ -49,3 +49,11 @@ export const getAccountsCollection = (mongo: MongoClient) =>
     // is_email_confirmed: boolean;
     // password: string;
   }>("accounts");
+
+export const getTagHistoryCollection = (mongo: MongoClient) =>
+  mongo.database().collection<{
+    _id: ObjectId;
+    type: string;
+    created_at: Date;
+    user_id: string;
+  }>("tag_history");

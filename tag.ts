@@ -1,7 +1,8 @@
 import { GraphQLError } from "graphql";
-import { MongoClient } from "mongo/mod.ts";
-import { getTagsCollection, getVideosCollection } from "./collections.ts";
+import { MongoClient, ObjectId } from "mongo/mod.ts";
+import { getTagHistoryCollection, getTagsCollection, getUsersCollection, getVideosCollection } from "./collections.ts";
 import { generateId } from "./id.ts";
+import { User } from "./user.ts";
 import { Video } from "./video.ts";
 
 /*
@@ -45,22 +46,21 @@ export class TagName {
 }
 
 export class Tag {
-  private _id;
+  protected id;
+  protected type;
   private _names;
-  private _type;
+  private _history;
 
-  constructor({ id, names, type }: {
+  constructor({ id, names, type, history }: {
     id: string;
     names: { name: string; primary?: boolean }[];
     type: string;
+    history: ObjectId[];
   }) {
-    this._id = id;
+    this.id = id;
     this._names = names;
-    this._type = type;
-  }
-
-  id() {
-    return this._id;
+    this.type = type;
+    this._history = history;
   }
 
   names() {
@@ -73,8 +73,23 @@ export class Tag {
     return name.name();
   }
 
-  type() {
-    return this._type;
+  async history(_: unknown, context: { mongo: MongoClient }) {
+    const taghistColls = getTagHistoryCollection(context.mongo);
+    const items = await taghistColls.find({ _id: { $in: this._history } }).toArray();
+    return items.map(
+      ({ _id, type, user_id, created_at }) => {
+        switch (type) {
+          case "REGISTER":
+            return new TagRegisterHistoryItem({
+              id: _id,
+              userId: user_id,
+              createdAt: created_at,
+            });
+          default:
+            throw new GraphQLError("something wrong");
+        }
+      },
+    );
   }
 
   async taggedVideos(_: unknown, context: { mongo: MongoClient }) {
@@ -82,7 +97,7 @@ export class Tag {
     const tagged_videos = (
       await videosColl
         .aggregate([
-          { "$match": { "tags": this.id() } },
+          { "$match": { "tags": this.id } },
           {
             "$project": {
               _id: false,
@@ -98,6 +113,39 @@ export class Tag {
   }
 }
 
+export class TagRegisterHistoryItem {
+  private _id: ObjectId;
+  private _userId: string;
+  protected createdAt: Date;
+
+  constructor({ id, userId, createdAt }: { id: ObjectId; userId: string; createdAt: Date }) {
+    this._id = id;
+    this._userId = userId;
+    this.createdAt = createdAt;
+  }
+
+  get __typename() {
+    return "TagRegisterHistoryItem";
+  }
+
+  id() {
+    return this._id.toString();
+  }
+
+  async user(_: unknown, { mongo }: { mongo: MongoClient }): Promise<User> {
+    const usersColl = getUsersCollection(mongo);
+
+    const user = await usersColl.findOne({ _id: this._userId });
+    if (!user) throw new GraphQLError("no user found");
+
+    return new User({
+      id: user._id,
+      name: user.name,
+      displayName: user.display_name,
+    });
+  }
+}
+
 export const getTag = async (
   args: { id: string },
   context: { mongo: MongoClient },
@@ -110,6 +158,7 @@ export const getTag = async (
     id: tag._id,
     type: tag.type,
     names: tag.names,
+    history: tag.history,
   });
 };
 
@@ -194,6 +243,7 @@ export const addTag = async (
   // TODO: primaryNameとextraNamesが重複していないことの検証
 
   const tagsColl = getTagsCollection(context.mongo);
+  const taghisColl = getTagHistoryCollection(context.mongo);
 
   const already = await tagsColl.findOne({
     "names.name": { "$in": [input.primaryName, ...(input.extraNames || [])] },
@@ -202,6 +252,12 @@ export const addTag = async (
   if (already) {
     throw new GraphQLError(`"${input.primaryName}" in "${input.type}" already registered as primary name.`);
   }
+
+  const taghistoryId = await taghisColl.insertOne({
+    type: "REGISTER",
+    user_id: context.userId,
+    created_at: new Date(),
+  }) as ObjectId;
 
   const id = generateId();
   const tagAdd = await tagsColl
@@ -212,7 +268,7 @@ export const addTag = async (
         { name: input.primaryName, primary: true },
         ...(input.extraNames?.map((extraName) => ({ name: extraName })) || []),
       ],
-      history: [{ type: "REGISTER", userId: context.userId }],
+      history: [taghistoryId],
     }).then(
       (id) => tagsColl.findOne({ _id: id }),
     );
@@ -223,6 +279,7 @@ export const addTag = async (
       id: tagAdd._id,
       names: tagAdd.names,
       type: tagAdd.type,
+      history: tagAdd.history,
     }),
   };
 };
