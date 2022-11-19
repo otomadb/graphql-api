@@ -23,6 +23,7 @@ type Mutation {
   signin(name: String!, password: String!): SigninPayload!
 
   addTag(input: AddTagInput!): AddTagPayload!
+  addVideo(input: AddVideoInput!): AddVideoPayload!
 }
 
 type Video {
@@ -30,6 +31,29 @@ type Video {
   titles: [VideoTitle]!
   title: String!
   tags: [Tag!]!
+  history: [VideoHistoryItem!]!
+}
+
+interface VideoHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+  video: Video!
+}
+
+type VideoRegisterHistoryItem implements VideoHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+  video: Video!
+}
+
+type VideoAddTagHistoryItem implements VideoHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+  video: Video!
+  tag: Tag!
 }
 
 type VideoTitle {
@@ -114,4 +138,14 @@ input AddTagInput {
 
 type AddTagPayload {
   tag: Tag!
+}
+
+input AddVideoInput {
+  primaryTitle: String!
+  extraTitles: [String!]
+  tags: [ID!]!
+}
+
+type AddVideoPayload {
+  video: Video!
 }

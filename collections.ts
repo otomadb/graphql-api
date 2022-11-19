@@ -14,14 +14,9 @@ export const getTagsCollection = (mongo: MongoClient) =>
 export const getVideosCollection = (mongo: MongoClient) =>
   mongo.database().collection<{
     _id: string;
-
     titles: { title: string; primary?: boolean }[];
-    title_primary: string;
-
-    images: { image: string; primary?: boolean }[];
-    image_primary: string;
-
     tags: string[];
+    history: ObjectId[];
   }>("videos");
 
 export const getUsersCollection = (mongo: MongoClient) =>
@@ -57,3 +52,17 @@ export const getTagHistoryCollection = (mongo: MongoClient) =>
     created_at: Date;
     user_id: string;
   }>("tag_history");
+
+export const getVideoHistoryCollection = (mongo: MongoClient) =>
+  mongo.database().collection<
+    & {
+      _id: ObjectId;
+      created_at: Date;
+      user_id: string;
+      video_id: string;
+    }
+    & (
+      | { type: "REGISTER" }
+      | { type: "ADD_TAG"; tag_id: string }
+    )
+  >("video_history");
