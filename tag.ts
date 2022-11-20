@@ -94,22 +94,18 @@ export class Tag {
 
   async taggedVideos(_: unknown, context: { mongo: MongoClient }) {
     const videosColl = getVideosCollection(context.mongo);
-    const tagged_videos = (
-      await videosColl
-        .aggregate([
-          { "$match": { "tags": this.id } },
-          {
-            "$project": {
-              _id: false,
-              id: "$_id",
-              titles: true,
-              tags: true,
-            },
-          },
-        ])
-        .toArray()
-    ).map((v) => new Video(v as any));
-    return tagged_videos;
+    return (await videosColl
+      .find({ tags: this.id as unknown as string[] })
+      .toArray())
+      .map((v) =>
+        new Video({
+          id: v._id,
+          history: v.history,
+          tags: v.tags,
+          thumbnails: v.thumbnails,
+          titles: v.titles,
+        })
+      );
   }
 }
 
