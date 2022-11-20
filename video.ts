@@ -28,22 +28,39 @@ export class VideoTitle {
   }
 }
 
+export class VideoThumbnail {
+  public imageUrl;
+  private _primary;
+
+  constructor({ image_url, primary }: { image_url: string; primary?: boolean }) {
+    this.imageUrl = image_url;
+    this._primary = primary;
+  }
+
+  primary() {
+    return !!this._primary;
+  }
+}
+
 export class Video {
   private _id;
   private _titles;
   private _tags;
   private _history: ObjectId[];
+  private _thumbnails: { image_url: string; primary?: boolean }[];
 
-  constructor({ id, titles, tags, history }: {
+  constructor({ id, titles, tags, history, thumbnails }: {
     id: string;
     titles: { title: string; primary?: boolean }[];
     tags: string[];
     history: ObjectId[];
+    thumbnails: { image_url: string; primary?: boolean }[];
   }) {
     this._id = id;
     this._titles = titles;
     this._tags = tags;
     this._history = history;
+    this._thumbnails = thumbnails;
   }
 
   id() {
@@ -58,6 +75,16 @@ export class Video {
     const title = this.titles().find((v) => v.primary());
     if (!title) throw new GraphQLError("no primary title");
     return title.title();
+  }
+
+  thumbnailUrl() {
+    const thumbnail = this.thumbnails().find(({ primary }) => primary);
+    if (!thumbnail) throw new GraphQLError("no thumbnail");
+    return thumbnail.imageUrl;
+  }
+
+  thumbnails() {
+    return this._thumbnails.map(({ image_url, primary }) => new VideoThumbnail({ image_url, primary }));
   }
 
   async tags(_: unknown, context: { mongo: MongoClient }) {
@@ -129,6 +156,7 @@ export abstract class VideoHistoryItem {
       titles: video.titles,
       tags: video.tags,
       history: video.history,
+      thumbnails: video.thumbnails,
     });
   }
 
@@ -194,6 +222,7 @@ export const getVideo = async (
     titles: video.titles,
     tags: video.tags,
     history: video.history,
+    thumbnails: video.thumbnails,
   });
 };
 
@@ -315,6 +344,7 @@ export const registerVideo = async (
     ],
     tags: input.tags,
     history: [historyIdRegisterVideo, ...historyIdsAddTag.insertedIds],
+    thumbnails: [], // TODO: add thumbnail
   }).then((id) => videosColl.findOne({ _id: id }));
 
   if (!videoAdd) throw new GraphQLError("somwthing wrong");
@@ -325,6 +355,7 @@ export const registerVideo = async (
       titles: videoAdd.titles,
       tags: videoAdd.tags,
       history: videoAdd.history,
+      thumbnails: videoAdd.thumbnails,
     }),
   };
 };

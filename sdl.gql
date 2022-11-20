@@ -33,10 +33,22 @@ input SigninInput {
 
 type Video {
   id: ID!
-  titles: [VideoTitle]!
   title: String!
+  titles: [VideoTitle!]!
+  thumbnailUrl: String!
+  thumbnails: [VideoThumbnail!]!
   tags: [Tag!]!
   history: [VideoHistoryItem!]!
+}
+
+type VideoTitle {
+  title: String!
+  primary: Boolean!
+}
+
+type VideoThumbnail {
+  imageUrl: String!
+  primary: Boolean!
 }
 
 interface VideoHistoryItem {
@@ -59,11 +71,6 @@ type VideoAddTagHistoryItem implements VideoHistoryItem {
   createdAt: DateTime!
   video: Video!
   tag: Tag!
-}
-
-type VideoTitle {
-  title: String!
-  primary: Boolean!
 }
 
 type Tag {

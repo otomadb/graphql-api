@@ -17,6 +17,7 @@ export const getVideosCollection = (mongo: MongoClient) =>
     titles: { title: string; primary?: boolean }[];
     tags: string[];
     history: ObjectId[];
+    thumbnails: { image_url: string; primary?: boolean }[];
   }>("videos");
 
 export const getUsersCollection = (mongo: MongoClient) =>
