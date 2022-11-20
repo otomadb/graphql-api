@@ -1,30 +1,7 @@
 import { GraphQLError } from "graphql";
 import { MongoClient } from "mongo/mod.ts";
-import { getUsersCollection } from "./collections.ts";
-
-export class User {
-  private _id;
-  private _name;
-  private _displayName;
-
-  constructor({ id, name, displayName }: { id: string; name: string; displayName: string }) {
-    this._id = id;
-    this._name = name;
-    this._displayName = displayName;
-  }
-
-  id() {
-    return this._id;
-  }
-
-  name() {
-    return this._name;
-  }
-
-  displayName() {
-    return this._displayName;
-  }
-}
+import { getUsersCollection } from "~/common/collections.ts";
+import { User } from "./class.ts";
 
 export const getUserById = async (id: string, context: { mongo: MongoClient }): Promise<User> => {
   const usersColl = getUsersCollection(context.mongo);
@@ -53,8 +30,3 @@ export const getUserByName = async (name: string, context: { mongo: MongoClient 
 };
 
 export const getUser = (args: { name: string }, context: { mongo: MongoClient }) => getUserByName(args.name, context);
-
-export const whoami = (_: unknown, { userId, mongo }: { userId: string; mongo: MongoClient }) => {
-  if (!userId) throw new GraphQLError("Not login!");
-  return getUserById(userId, { mongo });
-};

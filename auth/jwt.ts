@@ -1,7 +1,7 @@
 // https://codevoweb.com/deno-jwt-authentication-with-private-and-public-keys/
 
 import { create, getNumericDate, Header, Payload, verify } from "djwt/mod.ts";
-import { accessPrvKey, accessPubKey, refreshPrvKey, refreshPubKey } from "./env.ts";
+import { accessPrvKey, accessPubKey, refreshPrvKey, refreshPubKey } from "~/common/env.ts";
 
 if (!accessPrvKey) {
   console.error(`cannot convert "ACCESS_TOKEN_PRIVATE_KEY"`);

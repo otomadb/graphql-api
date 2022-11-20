@@ -1,44 +1,56 @@
-import { GrpcError, Status } from "grpc/error.ts";
-import { RouterMiddleware } from "oak/mod.ts";
-import { z } from "zod/mod.ts";
-import { grpcClient } from "./grpc_client.ts";
+import { compare as compareBCrypt } from "bcrypt/mod.ts";
+import { GraphQLError } from "graphql";
+import { MongoClient } from "mongo/mod.ts";
+import { getAccountsCollection } from "~/common/collections.ts";
+import { signAccessJWT, signRefreshJWT } from "./jwt.ts";
+import { getUserById } from "~/users/mod.ts";
 
-const payloadSchema = z.object({ name: z.string(), password: z.string() });
-export const routeSignin = (): RouterMiddleware<"/signin"> => async ({ request, response }) => {
-  const payload = await request.body({ type: "json" }).value;
-  const parsedPayload = payloadSchema.safeParse(payload);
-  if (!parsedPayload.success) {
-    response.status = 400;
-    return;
+export class SigninPayload {
+  protected accessToken;
+  protected refreshToken;
+  private userId;
+
+  constructor({ accessToken, refreshToken, userId }: { accessToken: string; refreshToken: string; userId: string }) {
+    this.accessToken = accessToken;
+    this.refreshToken = refreshToken;
+    this.userId = userId;
   }
 
-  const { name, password } = parsedPayload.data;
-
-  try {
-    const { accessToken } = await grpcClient.Signin({ name, password });
-    response.body = { accessToken };
-  } catch (e) {
-    if (e instanceof GrpcError) {
-      switch (e.grpcCode) {
-        case Status.UNAUTHENTICATED: {
-          response.status = 401;
-          response.body = e.grpcMessage;
-          return;
-        }
-        case Status.NOT_FOUND: {
-          response.status = 404;
-          response.body = e.grpcMessage;
-          return;
-        }
-        default: {
-          response.status = 500;
-          response.body = e.grpcMessage;
-          return;
-        }
-      }
-    } else {
-      response.status = 500;
-      return;
-    }
+  user(_: unknown, ctx: { mongo: MongoClient }) {
+    return getUserById(this.userId, ctx);
   }
+}
+
+export const signin = async (
+  { input: { name, password } }: { input: { name: string; password: string } },
+  context: { mongo: MongoClient },
+) => {
+  const accountsColl = await getAccountsCollection(context.mongo);
+  const account = await accountsColl.findOne({ name: name });
+  if (!account) {
+    throw new GraphQLError("Not found user");
+  }
+
+  // TODO: email confirm check
+
+  if (!await compareBCrypt(password, account.password)) {
+    throw new GraphQLError("Not matched password");
+  }
+
+  const accessToken = await signAccessJWT({
+    issuer: "otomadb.com",
+    userId: account.user_id,
+    expiresIn: 60 * 60,
+  });
+  const refreshToken = await signRefreshJWT({
+    issuer: "otomadb.com",
+    userId: account.user_id,
+    expiresIn: 60 * 60,
+  });
+
+  return new SigninPayload({
+    accessToken: accessToken,
+    refreshToken: refreshToken,
+    userId: account.user_id,
+  });
 };
