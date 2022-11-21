@@ -157,6 +157,7 @@ input RegisterVideoInput {
   primaryTitle: String!
   extraTitles: [String!]
   tags: [ID!]!
+  primaryThumbnail: String!
 }
 
 type RegisterVideoPayload {

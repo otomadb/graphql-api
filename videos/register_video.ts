@@ -10,6 +10,7 @@ export const registerVideo = async (
       primaryTitle: string;
       extraTitles: string[];
       tags: string[];
+      primaryThumbnail: string;
     };
   },
   context: { mongo: MongoClient; userId?: string },
@@ -48,7 +49,9 @@ export const registerVideo = async (
     ],
     tags: input.tags,
     history: [historyIdRegisterVideo, ...historyIdsAddTag.insertedIds],
-    thumbnails: [], // TODO: add thumbnail
+    thumbnails: [
+      { image_url: input.primaryThumbnail, primary: true },
+    ],
   }).then((id) => videosColl.findOne({ _id: id }));
 
   if (!videoAdd) {
