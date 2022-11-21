@@ -1,5 +1,11 @@
 import { MongoClient, ObjectId } from "mongo/mod.ts";
 
+/*
+const data = new Identicon("d3b07384d113edec49eaa6238ad5ff00").toString();
+
+console.dir(`data:image/png;base64,${data}`);
+*/
+
 export const getTagsCollection = (mongo: MongoClient) =>
   mongo.database().collection<{
     _id: string;
@@ -26,6 +32,8 @@ export const getUsersCollection = (mongo: MongoClient) =>
 
     name: string;
     display_name: string;
+
+    icon: string;
     // email: string;
     // is_email_confirmed: boolean;
     // password: string;

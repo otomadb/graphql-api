@@ -12,6 +12,7 @@ export const getUserById = async (id: string, context: { mongo: MongoClient }): 
     id: user._id,
     name: user.name,
     displayName: user.display_name,
+    icon: user.icon,
   });
 };
 
@@ -26,6 +27,7 @@ export const getUserByName = async (name: string, context: { mongo: MongoClient 
     id: user._id,
     name: user.name,
     displayName: user.display_name,
+    icon: user.icon,
   });
 };
 

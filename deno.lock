@@ -269,10 +269,19 @@
     "https://raw.githubusercontent.com/protobufjs/protobuf.js/v6.10.2/index.d.ts": "2d00c5da183a0a701d9a242f775a23606d98ea789bb94303d48e272201204d85"
   },
   "npm": {
-    "specifiers": { "graphql": "graphql@16.6.0" },
+    "specifiers": {
+      "graphql": "graphql@16.6.0",
+      "graphql@16.6.0": "graphql@16.6.0",
+      "identicon.js": "identicon.js@2.3.3",
+      "identicon.js@2.3.3": "identicon.js@2.3.3"
+    },
     "packages": {
       "graphql@16.6.0": {
         "integrity": "sha512-KPIBPDlW7NxrbT/eh4qPXz5FiFdL5UbaA0XUNz2Rp3Z3hqBSkbj0GVjwFDztsWVauZUWsbKHgMg++sk8UX0bkw==",
+        "dependencies": {}
+      },
+      "identicon.js@2.3.3": {
+        "integrity": "sha512-/qgOkXKZ7YbeCYbawJ9uQQ3XJ3uBg9VDpvHjabCAPp6aRMhjLaFAxG90+1TxzrhKaj6AYpVGrx6UXQfQA41UEA==",
         "dependencies": {}
       }
     }

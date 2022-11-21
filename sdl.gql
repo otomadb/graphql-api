@@ -134,6 +134,7 @@ type User {
   id: ID!
   name: String!
   displayName: String!
+  icon: String!
 }
 
 type SigninPayload {

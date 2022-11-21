@@ -11,6 +11,7 @@
     "bcrypt/": "https://deno.land/x/bcrypt@v0.4.1/",
     "djwt/": "https://deno.land/x/djwt@v2.8/",
     "grpc/": "https://deno.land/x/grpc_basic@0.4.6/",
-    "graphql": "npm:graphql"
+    "graphql": "npm:graphql@16.6.0",
+    "identicon": "npm:identicon.js@2.3.3"
   }
 }
