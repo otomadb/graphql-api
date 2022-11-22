@@ -91,9 +91,21 @@ export class Video {
     return tags.map(({ _id, names, type, history }) => new Tag({ id: _id, names, type, history }));
   }
 
-  async history(_: unknown, context: { mongo: MongoClient }) {
+  async history(
+    { skip, limit, order }: { skip: number; limit: number; order: { createdAt?: "ASC" | "DESC" } },
+    context: { mongo: MongoClient },
+  ) {
+    console.log(skip, limit, order);
     const taghistColls = getVideoHistoryCollection(context.mongo);
-    const items = await taghistColls.find({ _id: { $in: this._history } }).toArray();
+
+    const items = await taghistColls.find(
+      { _id: { $in: this._history } },
+      {
+        skip,
+        limit,
+        sort: { "created_at": order.createdAt === "ASC" ? 1 : -1 },
+      },
+    ).toArray();
     return items.map(
       (item) => {
         switch (item.type) {

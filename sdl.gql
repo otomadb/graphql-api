@@ -44,7 +44,20 @@ type Video {
   thumbnailUrl: String!
   thumbnails: [VideoThumbnail!]!
   tags: [Tag!]!
-  history: [VideoHistoryItem!]!
+  history(
+    skip: Int! = 0
+    limit: Int! = 10
+    order: VideoHistoryOrder! = { createdAt: DESC }
+  ): [VideoHistoryItem!]!
+}
+
+input VideoHistoryOrder {
+  createdAt: SortOrder
+}
+
+enum SortOrder {
+  ASC
+  DESC
 }
 
 type VideoTitle {
