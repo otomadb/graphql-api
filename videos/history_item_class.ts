@@ -53,6 +53,7 @@ export abstract class VideoHistoryItem {
       id: user._id,
       name: user.name,
       displayName: user.display_name,
+      icon: user.icon,
     });
   }
 }
