@@ -13,7 +13,8 @@ if (!refreshPrvKey) {
 }
 
 const signJwtFactory =
-  (key: CryptoKey) => async ({ userId, issuer, expiresIn }: { userId: string; issuer: string; expiresIn: number }) => {
+  (key: CryptoKey, { issuer, expiresIn }: { issuer: string; expiresIn: number }) =>
+  async ({ userId }: { userId: string }) => {
     const header: Header = { alg: "RS256", typ: "JWT" };
 
     const tokenIssuedAt = Math.floor(Date.now() / 1000);
@@ -30,8 +31,14 @@ const signJwtFactory =
     return token;
   };
 
-export const signAccessJWT = signJwtFactory(accessPrvKey);
-export const signRefreshJWT = signJwtFactory(refreshPrvKey);
+export const signAccessJWT = signJwtFactory(accessPrvKey, {
+  issuer: "otomadb.com",
+  expiresIn: 60 * 60,
+});
+export const signRefreshJWT = signJwtFactory(refreshPrvKey, {
+  issuer: "otomadb.com",
+  expiresIn: 60 * 60 * 24 * 3,
+});
 
 if (!accessPubKey) {
   console.error(`cannot convert "ACCESS_TOKEN_PUBLIC_KEY"`);

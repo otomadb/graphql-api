@@ -38,14 +38,10 @@ export const signin = async (
   }
 
   const accessToken = await signAccessJWT({
-    issuer: "otomadb.com",
     userId: account.user_id,
-    expiresIn: 60 * 60,
   });
   const refreshToken = await signRefreshJWT({
-    issuer: "otomadb.com",
     userId: account.user_id,
-    expiresIn: 60 * 60,
   });
 
   return new SigninPayload({

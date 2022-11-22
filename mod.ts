@@ -3,7 +3,7 @@ import { buildSchema, graphql } from "graphql";
 import { MongoClient } from "mongo/mod.ts";
 import { Application, Router } from "oak/mod.ts";
 import { verifyAccessJWT } from "~/auth/jwt.ts";
-import { signin, whoami } from "~/auth/mod.ts";
+import { refreshToken, signin, whoami } from "~/auth/mod.ts";
 import { getTag, registerTag, searchTags } from "~/tags/mod.ts";
 import { getUser } from "~/users/mod.ts";
 import { getVideo, registerVideo, searchVideos } from "~/videos/mod.ts";
@@ -12,6 +12,7 @@ const mongoClient = new MongoClient();
 await mongoClient.connect("mongodb://user:pass@127.0.0.1:27017/otomadb?authSource=admin");
 
 const app = new Application();
+
 const router = new Router();
 
 export const gqlSchema = buildSchema(await Deno.readTextFile(new URL("./sdl.gql", import.meta.url)));
@@ -28,6 +29,7 @@ export const gqlRootValue = {
   signin: signin,
   registerTag: registerTag,
   registerVideo: registerVideo,
+  refreshToken: refreshToken,
 };
 
 router.post(
