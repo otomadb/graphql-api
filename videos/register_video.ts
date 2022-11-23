@@ -8,7 +8,7 @@ export const registerVideo = async (
   { input }: {
     input: {
       primaryTitle: string;
-      extraTitles: string[];
+      extraTitles?: string[];
       tags: string[];
       primaryThumbnail: string;
     };
@@ -21,37 +21,84 @@ export const registerVideo = async (
   const { userId } = context;
 
   const videosColl = getVideosCollection(context.mongo);
-  const videoHisColl = getVideoHistoryCollection(context.mongo);
+  const historyColl = getVideoHistoryCollection(context.mongo);
 
-  const videoId = generateId();
+  const reservedVideoId = generateId();
 
-  const historyIdRegisterVideo = await videoHisColl.insertOne({
-    type: "REGISTER",
-    user_id: userId,
-    video_id: videoId,
-    created_at: new Date(),
-  }) as ObjectId;
-  const historyIdsAddTag = await videoHisColl.insertMany(
-    input.tags.map((tag) => ({
-      type: "ADD_TAG",
-      user_id: userId,
-      video_id: videoId,
-      created_at: new Date(),
-      tag_id: tag,
-    })),
+  await historyColl.insertMany(
+    [
+      {
+        type: "REGISTER",
+        user_id: userId,
+        video_id: reservedVideoId,
+        created_at: new Date(),
+      },
+      {
+        user_id: userId,
+        video_id: reservedVideoId,
+        created_at: new Date(),
+        type: "ADD_TITLE",
+        title: input.primaryTitle,
+      } as any,
+      {
+        user_id: userId,
+        video_id: reservedVideoId,
+        created_at: new Date(),
+        type: "CHANGE_PRIMARY_TITLE",
+        from: null,
+        to: input.primaryTitle,
+      } as any,
+      ...(input.extraTitles?.map(
+        (extraTitle) => (
+          {
+            user_id: context.userId,
+            created_at: new Date(),
+            video_id: reservedVideoId,
+            type: "ADD_TITLE",
+            title: extraTitle,
+          } as any
+        ),
+      ) || []),
+      {
+        user_id: userId,
+        video_id: reservedVideoId,
+        created_at: new Date(),
+        type: "ADD_THUMBNAIL",
+        thumbnail: input.primaryThumbnail,
+      } as any,
+      {
+        user_id: userId,
+        video_id: reservedVideoId,
+        created_at: new Date(),
+        type: "CHANGE_PRIMARY_THUMBNAIL",
+        from: null,
+        to: input.primaryThumbnail,
+      } as any,
+      ...input.tags.map(
+        (tagId) => (
+          {
+            user_id: context.userId,
+            created_at: new Date(),
+            video_id: reservedVideoId,
+            type: "ADD_TAG",
+            tag_id: tagId,
+          } as any
+        ),
+      ),
+    ],
   );
 
   const videoAdd = await videosColl.insertOne({
-    _id: videoId,
+    _id: reservedVideoId,
     titles: [
       { title: input.primaryTitle, primary: true },
       ...(input.extraTitles?.map((extraTitle) => ({ title: extraTitle })) || []),
     ],
-    tags: input.tags,
-    history: [historyIdRegisterVideo, ...historyIdsAddTag.insertedIds],
     thumbnails: [
       { image_url: input.primaryThumbnail, primary: true },
     ],
+    tags: input.tags,
+    history: [],
   }).then((id) => videosColl.findOne({ _id: id }));
 
   if (!videoAdd) {

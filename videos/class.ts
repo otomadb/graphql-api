@@ -115,7 +115,7 @@ export class Video {
     const taghistColls = getVideoHistoryCollection(context.mongo);
 
     const items = await taghistColls.find(
-      { _id: { $in: this._history } },
+      { video_id: this._id },
       {
         skip,
         limit,
