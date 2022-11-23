@@ -2,6 +2,8 @@ scalar DateTime
 
 type Query {
   video(id: ID!): Video!
+  videos(input: GetVideosInput = { limit: 10, skip: 0 }): VideoCollection!
+
   tag(id: ID!): Tag!
 
   searchVideos(
@@ -49,6 +51,7 @@ type Video {
     limit: Int! = 10
     order: VideoHistoryOrder! = { createdAt: DESC }
   ): [VideoHistoryItem!]!
+  registeredAt: DateTime!
 }
 
 input VideoHistoryOrder {
@@ -90,6 +93,15 @@ type VideoAddTagHistoryItem implements VideoHistoryItem {
   createdAt: DateTime!
   video: Video!
   tag: Tag!
+}
+
+input GetVideosInput {
+  limit: Int
+  skip: Int
+}
+
+type VideoCollection {
+  nodes: [Video!]!
 }
 
 type Tag {

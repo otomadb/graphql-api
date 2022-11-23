@@ -6,7 +6,7 @@ import { verifyAccessJWT } from "~/auth/jwt.ts";
 import { refreshToken, signin, whoami } from "~/auth/mod.ts";
 import { getTag, registerTag, searchTags } from "~/tags/mod.ts";
 import { getUser } from "~/users/mod.ts";
-import { getVideo, registerVideo, searchVideos } from "~/videos/mod.ts";
+import { getVideo, getVideos, registerVideo, searchVideos } from "~/videos/mod.ts";
 
 const mongoClient = new MongoClient();
 await mongoClient.connect("mongodb://user:pass@127.0.0.1:27017/otomadb?authSource=admin");
@@ -19,6 +19,7 @@ export const gqlSchema = buildSchema(await Deno.readTextFile(new URL("./sdl.gql"
 export const gqlRootValue = {
   // query
   video: getVideo,
+  videos: getVideos,
   tag: getTag,
   searchVideos: searchVideos,
   searchTags: searchTags,

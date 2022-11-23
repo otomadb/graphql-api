@@ -85,6 +85,14 @@ export class Video {
     return this._thumbnails.map(({ image_url, primary }) => new VideoThumbnail({ image_url, primary }));
   }
 
+  async registeredAt(_: unknown, context: { mongo: MongoClient }) {
+    const historyColl = getVideoHistoryCollection(context.mongo);
+    const item = await historyColl.findOne({ video_id: this._id });
+
+    if (!item) throw new GraphQLError("something wrong");
+    return item.created_at;
+  }
+
   async tags(_: unknown, context: { mongo: MongoClient }) {
     const tagsColl = getTagsCollection(context.mongo);
     const tags = await tagsColl.find({ _id: { $in: this._tags } }).toArray();
