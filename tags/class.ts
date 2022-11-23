@@ -13,7 +13,6 @@ export class Tag {
   protected id;
   protected type;
   private _names;
-  private _history;
 
   constructor({ id, names, type, history }: {
     id: string;
@@ -24,7 +23,6 @@ export class Tag {
     this.id = id;
     this._names = names;
     this.type = type;
-    this._history = history;
   }
 
   names() {
@@ -41,7 +39,10 @@ export class Tag {
 
   async history(_: unknown, context: { mongo: MongoClient }) {
     const taghistColls = getTagHistoryCollection(context.mongo);
-    const items = await taghistColls.find({ _id: { $in: this._history } }).toArray();
+    const items = await taghistColls.find(
+      { tag_id: this.id },
+      { sort: { "created_at": -1 } },
+    ).toArray();
     return items.map(
       (item) => {
         switch (item.type) {
