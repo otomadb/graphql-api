@@ -14,11 +14,10 @@ export class Tag {
   protected type;
   private _names;
 
-  constructor({ id, names, type, history }: {
+  constructor({ id, names, type }: {
     id: string;
     names: { name: string; primary?: boolean }[];
     type: string;
-    history: ObjectId[];
   }) {
     this.id = id;
     this._names = names;
@@ -101,7 +100,6 @@ export class Tag {
       .map((v) =>
         new Video({
           id: v._id,
-          history: v.history,
           tags: v.tags,
           thumbnails: v.thumbnails,
           titles: v.titles,

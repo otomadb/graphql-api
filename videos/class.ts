@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import { MongoClient, ObjectId } from "mongo/mod.ts";
+import { MongoClient } from "mongo/mod.ts";
 import { getTagsCollection, getVideoHistoryCollection } from "~/common/collections.ts";
 import { Tag } from "~/tags/mod.ts";
 import {
@@ -49,20 +49,17 @@ export class Video {
   private _id;
   private _titles;
   private _tags;
-  private _history: ObjectId[];
   private _thumbnails: { image_url: string; primary?: boolean }[];
 
-  constructor({ id, titles, tags, history, thumbnails }: {
+  constructor({ id, titles, tags, thumbnails }: {
     id: string;
     titles: { title: string; primary?: boolean }[];
     tags: string[];
-    history: ObjectId[];
     thumbnails: { image_url: string; primary?: boolean }[];
   }) {
     this._id = id;
     this._titles = titles;
     this._tags = tags;
-    this._history = history;
     this._thumbnails = thumbnails;
   }
 
@@ -105,7 +102,7 @@ export class Video {
   async tags(_: unknown, context: { mongo: MongoClient }) {
     const tagsColl = getTagsCollection(context.mongo);
     const tags = await tagsColl.find({ _id: { $in: this._tags } }).toArray();
-    return tags.map(({ _id, names, type, history }) => new Tag({ id: _id, names, type, history }));
+    return tags.map(({ _id, names, type }) => new Tag({ id: _id, names, type }));
   }
 
   async history(

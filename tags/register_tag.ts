@@ -81,7 +81,6 @@ export const registerTag = async (
         { name: input.primaryName, primary: true },
         ...(input.extraNames?.map((extraName) => ({ name: extraName })) || []),
       ],
-      history: [],
     }).then((id) => tagsColl.findOne({ _id: id }));
   if (!add) throw new GraphQLError("Something wrong");
 
@@ -90,7 +89,6 @@ export const registerTag = async (
       id: add._id,
       names: add.names,
       type: add.type,
-      history: add.history,
     }),
   };
 };

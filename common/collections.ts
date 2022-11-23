@@ -13,8 +13,6 @@ export const getTagsCollection = (mongo: MongoClient) =>
     names: { name: string; primary?: boolean }[];
     type: string;
     context?: string;
-
-    history: ObjectId[];
   }>("tags");
 
 export const getVideosCollection = (mongo: MongoClient) =>
@@ -22,7 +20,6 @@ export const getVideosCollection = (mongo: MongoClient) =>
     _id: string;
     titles: { title: string; primary?: boolean }[];
     tags: string[];
-    history: ObjectId[];
     thumbnails: { image_url: string; primary?: boolean }[];
   }>("videos");
 

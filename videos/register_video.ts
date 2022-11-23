@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import { MongoClient, ObjectId } from "mongo/mod.ts";
+import { MongoClient } from "mongo/mod.ts";
 import { getVideoHistoryCollection, getVideosCollection } from "~/common/collections.ts";
 import { generateId } from "~/common/id.ts";
 import { Video } from "./class.ts";
@@ -98,7 +98,6 @@ export const registerVideo = async (
       { image_url: input.primaryThumbnail, primary: true },
     ],
     tags: input.tags,
-    history: [],
   }).then((id) => videosColl.findOne({ _id: id }));
 
   if (!videoAdd) {
@@ -110,7 +109,6 @@ export const registerVideo = async (
       id: videoAdd._id,
       titles: videoAdd.titles,
       tags: videoAdd.tags,
-      history: videoAdd.history,
       thumbnails: videoAdd.thumbnails,
     }),
   };
