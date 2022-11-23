@@ -197,6 +197,32 @@ type TagRegisterHistoryItem implements TagHistoryItem {
   id: ID!
   user: User!
   createdAt: DateTime!
+  tag: Tag!
+}
+
+type TagAddNameHistoryItem implements TagHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+  tag: Tag!
+  name: String!
+}
+
+type TagDeleteNameHistoryItem implements TagHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+  tag: Tag!
+  name: String!
+}
+
+type TagChangePrimaryNameHistoryItem implements TagHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+  tag: Tag!
+  from: String
+  to: String!
 }
 
 type SearchVideosResult {

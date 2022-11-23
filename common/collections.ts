@@ -1,8 +1,8 @@
 import { MongoClient, ObjectId } from "mongo/mod.ts";
 
 /*
-const data = new Identicon("d3b07384d113edec49eaa6238ad5ff00").toString();
-
+import Identicon from "identicon";
+const data = new Identicon("d3b07384d113edec49eaa62300").toString();
 console.dir(`data:image/png;base64,${data}`);
 */
 
@@ -55,12 +55,31 @@ export const getAccountsCollection = (mongo: MongoClient) =>
   }>("accounts");
 
 export const getTagHistoryCollection = (mongo: MongoClient) =>
-  mongo.database().collection<{
-    _id: ObjectId;
-    type: string;
-    created_at: Date;
-    user_id: string;
-  }>("tag_history");
+  mongo.database().collection<
+    & {
+      _id: ObjectId;
+      created_at: Date;
+      user_id: string;
+      tag_id: string;
+    }
+    & (
+      | { type: "REGISTER" }
+      // name
+      | {
+        type: "ADD_NAME";
+        name: string;
+      }
+      | {
+        type: "DELETE_NAME";
+        name: string;
+      }
+      | {
+        type: "CHANGE_PRIMARY_NAME";
+        from: null | string;
+        to: string;
+      }
+    )
+  >("tag_history");
 
 export const getVideoHistoryCollection = (mongo: MongoClient) =>
   mongo.database().collection<

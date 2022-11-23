@@ -1,8 +1,13 @@
 import { GraphQLError } from "graphql";
 import { MongoClient, ObjectId } from "mongo/mod.ts";
-import { getTagHistoryCollection, getUsersCollection, getVideosCollection } from "~/common/collections.ts";
-import { User } from "~/users/mod.ts";
+import { getTagHistoryCollection, getVideosCollection } from "~/common/collections.ts";
 import { Video } from "~/videos/mod.ts";
+import {
+  TagAddNameHistoryItem,
+  TagChangePrimaryNameHistoryItem,
+  TagDeleteNameHistoryItem,
+  TagRegisterHistoryItem,
+} from "./history_item_class.ts";
 
 export class Tag {
   protected id;
@@ -38,14 +43,48 @@ export class Tag {
     const taghistColls = getTagHistoryCollection(context.mongo);
     const items = await taghistColls.find({ _id: { $in: this._history } }).toArray();
     return items.map(
-      ({ _id, type, user_id, created_at }) => {
-        switch (type) {
-          case "REGISTER":
+      (item) => {
+        switch (item.type) {
+          case "REGISTER": {
+            const { _id, created_at, tag_id, user_id } = item;
             return new TagRegisterHistoryItem({
               id: _id,
               userId: user_id,
+              tagId: tag_id,
               createdAt: created_at,
             });
+          }
+          case "ADD_NAME": {
+            const { _id, created_at, tag_id, user_id, name } = item;
+            return new TagAddNameHistoryItem({
+              id: _id,
+              userId: user_id,
+              tagId: tag_id,
+              createdAt: created_at,
+              name,
+            });
+          }
+          case "DELETE_NAME": {
+            const { _id, created_at, tag_id, user_id, name } = item;
+            return new TagDeleteNameHistoryItem({
+              id: _id,
+              userId: user_id,
+              tagId: tag_id,
+              createdAt: created_at,
+              name,
+            });
+          }
+          case "CHANGE_PRIMARY_NAME": {
+            const { _id, created_at, tag_id, user_id, from, to } = item;
+            return new TagChangePrimaryNameHistoryItem({
+              id: _id,
+              userId: user_id,
+              tagId: tag_id,
+              createdAt: created_at,
+              from,
+              to,
+            });
+          }
           default:
             throw new GraphQLError("something wrong");
         }
@@ -67,41 +106,6 @@ export class Tag {
           titles: v.titles,
         })
       );
-  }
-}
-
-export class TagRegisterHistoryItem {
-  private _id: ObjectId;
-  private _userId: string;
-  protected createdAt: Date;
-
-  constructor({ id, userId, createdAt }: { id: ObjectId; userId: string; createdAt: Date }) {
-    this._id = id;
-    this._userId = userId;
-    this.createdAt = createdAt;
-  }
-
-  get __typename() {
-    return "TagRegisterHistoryItem";
-  }
-
-  id() {
-    return this._id.toString();
-  }
-
-  async user(_: unknown, { mongo }: { mongo: MongoClient }): Promise<User> {
-    const usersColl = getUsersCollection(mongo);
-
-    const user = await usersColl.findOne({ _id: this._userId });
-    if (!user) {
-      throw new GraphQLError("no user found");
-    }
-
-    return new User({
-      id: user._id,
-      name: user.name,
-      displayName: user.display_name,
-    });
   }
 }
 
