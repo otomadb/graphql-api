@@ -17,7 +17,6 @@ export const getVideo = async (
     id: video._id,
     titles: video.titles,
     tags: video.tags,
-    history: video.history,
     thumbnails: video.thumbnails,
   });
 };

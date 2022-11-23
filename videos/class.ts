@@ -4,6 +4,7 @@ import { getTagsCollection, getVideoHistoryCollection } from "~/common/collectio
 import { Tag } from "~/tags/mod.ts";
 import {
   VideoAddTagHistoryItem,
+  VideoAddThumbnailHistoryItem,
   VideoAddTitleHistoryItem,
   VideoChangePrimaryThumbnailHistoryItem,
   VideoChangePrimaryTitleHistoryItem,
@@ -164,7 +165,7 @@ export class Video {
           }
           case "ADD_THUMBNAIL": {
             const { _id, user_id, created_at, video_id, thumbnail } = item;
-            return new VideoDeleteThumbnailHistoryItem({
+            return new VideoAddThumbnailHistoryItem({
               id: _id,
               userId: user_id,
               createdAt: created_at,

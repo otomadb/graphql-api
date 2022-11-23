@@ -30,7 +30,6 @@ export const getVideos = async (
         titles: video.titles,
         thumbnails: video.thumbnails,
         tags: video.tags,
-        history: video.history,
       });
     }),
   );

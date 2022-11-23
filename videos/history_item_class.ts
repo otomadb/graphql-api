@@ -36,7 +36,6 @@ export abstract class VideoHistoryItem {
       id: video._id,
       titles: video.titles,
       tags: video.tags,
-      history: video.history,
       thumbnails: video.thumbnails,
     });
   }
@@ -86,7 +85,6 @@ export abstract class VideoTagHistoryItem extends VideoHistoryItem {
       id: tag._id,
       names: tag.names,
       type: tag.type,
-      history: tag.history,
     });
   }
 }
