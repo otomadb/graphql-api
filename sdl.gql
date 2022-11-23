@@ -87,7 +87,65 @@ type VideoRegisterHistoryItem implements VideoHistoryItem {
   video: Video!
 }
 
+type VideoAddTitleHistoryItem implements VideoHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+  video: Video!
+  title: String!
+}
+
+type VideoDeleteTitleHistoryItem implements VideoHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+  video: Video!
+  title: String!
+}
+
+type VideoChangePrimaryTitleHistoryItem implements VideoHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+  video: Video!
+  from: String
+  to: String!
+}
+
+type VideoAddThumbnailHistoryItem implements VideoHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+  video: Video!
+  thumbnail: String!
+}
+
+type VideoDeleteThumbnailHistoryItem implements VideoHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+  video: Video!
+  thumbnail: String!
+}
+
+type VideoChangePrimaryThumbnailHistoryItem implements VideoHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+  video: Video!
+  from: String
+  to: String!
+}
+
 type VideoAddTagHistoryItem implements VideoHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+  video: Video!
+  tag: Tag!
+}
+
+type VideoDeleteTagHistoryItem implements VideoHistoryItem {
   id: ID!
   user: User!
   createdAt: DateTime!

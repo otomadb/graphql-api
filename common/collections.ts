@@ -72,6 +72,42 @@ export const getVideoHistoryCollection = (mongo: MongoClient) =>
     }
     & (
       | { type: "REGISTER" }
-      | { type: "ADD_TAG"; tag_id: string }
+      // titles
+      | {
+        type: "ADD_TITLE";
+        title: string;
+      }
+      | {
+        type: "DELETE_TITLE";
+        title: string;
+      }
+      | {
+        type: "CHANGE_PRIMARY_TITLE";
+        from: null | string;
+        to: string;
+      }
+      // thumbnails
+      | {
+        type: "ADD_THUMBNAIL";
+        thumbnail: string;
+      }
+      | {
+        type: "DELETE_THUMBNAIL";
+        thumbnail: string;
+      }
+      | {
+        type: "CHANGE_PRIMARY_THUMBNAIL";
+        from: null | string;
+        to: string;
+      }
+      // tags
+      | {
+        type: "ADD_TAG";
+        tag_id: string;
+      }
+      | {
+        type: "DELETE_TAG";
+        tag_id: string;
+      }
     )
   >("video_history");

@@ -2,7 +2,16 @@ import { GraphQLError } from "graphql";
 import { MongoClient, ObjectId } from "mongo/mod.ts";
 import { getTagsCollection, getVideoHistoryCollection } from "~/common/collections.ts";
 import { Tag } from "~/tags/mod.ts";
-import { VideoAddTagHistoryItem, VideoRegisterHistoryItem } from "./history_item_class.ts";
+import {
+  VideoAddTagHistoryItem,
+  VideoAddTitleHistoryItem,
+  VideoChangePrimaryThumbnailHistoryItem,
+  VideoChangePrimaryTitleHistoryItem,
+  VideoDeleteTagHistoryItem,
+  VideoDeleteThumbnailHistoryItem,
+  VideoDeleteTitleHistoryItem,
+  VideoRegisterHistoryItem,
+} from "./history_item_class.ts";
 
 export class VideoTitle {
   private _title;
@@ -103,7 +112,6 @@ export class Video {
     { skip, limit, order }: { skip: number; limit: number; order: { createdAt?: "ASC" | "DESC" } },
     context: { mongo: MongoClient },
   ) {
-    console.log(skip, limit, order);
     const taghistColls = getVideoHistoryCollection(context.mongo);
 
     const items = await taghistColls.find(
@@ -126,9 +134,81 @@ export class Video {
               videoId: video_id,
             });
           }
+          case "ADD_TITLE": {
+            const { _id, user_id, created_at, video_id, title } = item;
+            return new VideoAddTitleHistoryItem({
+              id: _id,
+              userId: user_id,
+              createdAt: created_at,
+              videoId: video_id,
+              title,
+            });
+          }
+          case "DELETE_TITLE": {
+            const { _id, user_id, created_at, video_id, title } = item;
+            return new VideoDeleteTitleHistoryItem({
+              id: _id,
+              userId: user_id,
+              createdAt: created_at,
+              videoId: video_id,
+              title,
+            });
+          }
+          case "CHANGE_PRIMARY_TITLE": {
+            const { _id, user_id, created_at, video_id, from, to } = item;
+            return new VideoChangePrimaryTitleHistoryItem({
+              id: _id,
+              userId: user_id,
+              createdAt: created_at,
+              videoId: video_id,
+              from,
+              to,
+            });
+          }
+          case "ADD_THUMBNAIL": {
+            const { _id, user_id, created_at, video_id, thumbnail } = item;
+            return new VideoDeleteThumbnailHistoryItem({
+              id: _id,
+              userId: user_id,
+              createdAt: created_at,
+              videoId: video_id,
+              thumbnail,
+            });
+          }
+          case "DELETE_THUMBNAIL": {
+            const { _id, user_id, created_at, video_id, thumbnail } = item;
+            return new VideoDeleteThumbnailHistoryItem({
+              id: _id,
+              userId: user_id,
+              createdAt: created_at,
+              videoId: video_id,
+              thumbnail,
+            });
+          }
+          case "CHANGE_PRIMARY_THUMBNAIL": {
+            const { _id, user_id, created_at, video_id, from, to } = item;
+            return new VideoChangePrimaryThumbnailHistoryItem({
+              id: _id,
+              userId: user_id,
+              createdAt: created_at,
+              videoId: video_id,
+              from,
+              to,
+            });
+          }
           case "ADD_TAG": {
             const { _id, user_id, created_at, tag_id, video_id } = item;
             return new VideoAddTagHistoryItem({
+              id: _id,
+              userId: user_id,
+              createdAt: created_at,
+              tagId: tag_id,
+              videoId: video_id,
+            });
+          }
+          case "DELETE_TAG": {
+            const { _id, user_id, created_at, tag_id, video_id } = item;
+            return new VideoDeleteTagHistoryItem({
               id: _id,
               userId: user_id,
               createdAt: created_at,

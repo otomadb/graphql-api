@@ -68,16 +68,12 @@ export class VideoRegisterHistoryItem extends VideoHistoryItem {
   }
 }
 
-export class VideoAddTagHistoryItem extends VideoHistoryItem {
+export abstract class VideoTagHistoryItem extends VideoHistoryItem {
   private tagId: string;
 
   constructor({ tagId, ...rest }: { id: ObjectId; userId: string; createdAt: Date; tagId: string; videoId: string }) {
     super(rest);
     this.tagId = tagId;
-  }
-
-  get __typename() {
-    return "VideoAddTagHistoryItem";
   }
 
   async tag(_: unknown, { mongo }: { mongo: MongoClient }): Promise<Tag> {
@@ -92,5 +88,133 @@ export class VideoAddTagHistoryItem extends VideoHistoryItem {
       type: tag.type,
       history: tag.history,
     });
+  }
+}
+
+export class VideoAddTagHistoryItem extends VideoTagHistoryItem {
+  constructor({ ...rest }: { id: ObjectId; userId: string; createdAt: Date; tagId: string; videoId: string }) {
+    super(rest);
+  }
+
+  get __typename() {
+    return "VideoAddTagHistoryItem";
+  }
+}
+
+export class VideoDeleteTagHistoryItem extends VideoTagHistoryItem {
+  constructor({ ...rest }: { id: ObjectId; userId: string; createdAt: Date; tagId: string; videoId: string }) {
+    super(rest);
+  }
+
+  get __typename() {
+    return "VideoDeleteTagHistoryItem";
+  }
+}
+
+export class VideoAddTitleHistoryItem extends VideoHistoryItem {
+  public title: string;
+
+  constructor(
+    { title, ...rest }: { id: ObjectId; userId: string; createdAt: Date; title: string; videoId: string },
+  ) {
+    super(rest);
+    this.title = title;
+  }
+
+  get __typename() {
+    return "VideoAddTitleHistoryItem";
+  }
+}
+
+export class VideoDeleteTitleHistoryItem extends VideoHistoryItem {
+  public title: string;
+
+  constructor(
+    { title, ...rest }: { id: ObjectId; userId: string; createdAt: Date; title: string; videoId: string },
+  ) {
+    super(rest);
+    this.title = title;
+  }
+
+  get __typename() {
+    return "VideoDeleteTitleHistoryItem";
+  }
+}
+
+export class VideoChangePrimaryTitleHistoryItem extends VideoHistoryItem {
+  public from: string | null;
+  public to: string;
+
+  constructor(
+    { from, to, ...rest }: {
+      id: ObjectId;
+      userId: string;
+      createdAt: Date;
+      videoId: string;
+      from: string | null;
+      to: string;
+    },
+  ) {
+    super(rest);
+    this.from = from;
+    this.to = to;
+  }
+
+  get __typename() {
+    return "VideoChangePrimaryTitleHistoryItem";
+  }
+}
+
+export class VideoAddThumbnailHistoryItem extends VideoHistoryItem {
+  public thumbnail: string;
+
+  constructor(
+    { thumbnail, ...rest }: { id: ObjectId; userId: string; createdAt: Date; thumbnail: string; videoId: string },
+  ) {
+    super(rest);
+    this.thumbnail = thumbnail;
+  }
+
+  get __typename() {
+    return "VideoAddThumbnailHistoryItem";
+  }
+}
+
+export class VideoDeleteThumbnailHistoryItem extends VideoHistoryItem {
+  public thumbnail: string;
+
+  constructor(
+    { thumbnail, ...rest }: { id: ObjectId; userId: string; createdAt: Date; thumbnail: string; videoId: string },
+  ) {
+    super(rest);
+    this.thumbnail = thumbnail;
+  }
+
+  get __typename() {
+    return "VideoDeleteThumbnailHistoryItem";
+  }
+}
+
+export class VideoChangePrimaryThumbnailHistoryItem extends VideoHistoryItem {
+  public from: string | null;
+  public to: string;
+
+  constructor(
+    { from, to, ...rest }: {
+      id: ObjectId;
+      userId: string;
+      createdAt: Date;
+      videoId: string;
+      from: string | null;
+      to: string;
+    },
+  ) {
+    super(rest);
+    this.from = from;
+    this.to = to;
+  }
+
+  get __typename() {
+    return "VideoChangePrimaryThumbnailHistoryItem";
   }
 }
