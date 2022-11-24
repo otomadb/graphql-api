@@ -50,8 +50,16 @@ if (!refreshPubKey) {
 }
 
 const verifyJwtFactory = (key: CryptoKey) => async ({ token }: { token: string }) => {
-  const result = await verify(token, key);
-  return result;
+  try {
+    const result = await verify(token, key);
+    return result;
+  } catch (e) {
+    if (e instanceof RangeError) {
+      return null;
+    } else {
+      throw e;
+    }
+  }
 };
 export const verifyAccessJWT = verifyJwtFactory(accessPubKey);
 export const verifyRefreshJWT = verifyJwtFactory(refreshPubKey);

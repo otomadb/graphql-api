@@ -47,7 +47,7 @@ router.post(
       const payload = await verifyAccessJWT({ token: accessToken });
       state.userId = payload?.sub;
     } catch (e) {
-      console.dir(e);
+      console.error(e);
     } finally {
       await next();
     }
