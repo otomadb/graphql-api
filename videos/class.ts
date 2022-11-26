@@ -100,10 +100,15 @@ export class Video {
     return item.created_at;
   }
 
-  async tags(_: unknown, context: { mongo: MongoClient }) {
+  async tags(_: unknown, context: { mongo: MongoClient }): Promise<Tag[]> {
     const tagsColl = getTagsCollection(context.mongo);
     const tags = await tagsColl.find({ _id: { $in: this._tags } }).toArray();
     return tags.map(({ _id, names, type }) => new Tag({ id: _id, names, type }));
+  }
+
+  async hasTag({ id }: { id: string }, context: { mongo: MongoClient }) {
+    const tags = await this.tags({}, context);
+    return tags.findIndex((tag) => tag.id === id) !== -1;
   }
 
   async history(
@@ -117,7 +122,9 @@ export class Video {
       {
         skip,
         limit,
-        sort: { "created_at": order.createdAt === "ASC" ? 1 : -1 },
+        sort: {
+          _id: order.createdAt === "ASC" ? -1 : 1,
+        },
       },
     ).toArray();
     return items.map(

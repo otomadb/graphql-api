@@ -48,6 +48,7 @@ type Video {
   thumbnailUrl: String!
   thumbnails: [VideoThumbnail!]!
   tags: [Tag!]!
+  hasTag(id: ID!): Boolean!
   history(
     skip: Int! = 0
     limit: Int! = 10

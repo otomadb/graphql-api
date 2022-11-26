@@ -10,8 +10,8 @@ import {
 } from "./history_item_class.ts";
 
 export class Tag {
-  protected id;
-  protected type;
+  public id;
+  public type;
   private _names;
 
   constructor({ id, names, type }: {
