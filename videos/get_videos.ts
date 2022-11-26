@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
-import { MongoClient } from "mongo/mod.ts";
-import { getVideoHistoryCollection, getVideosCollection } from "~/common/collections.ts";
-import { Video } from "./class.ts";
+import { MongoClient } from "mongodb";
+import { getVideoHistoryCollection, getVideosCollection } from "../common/collections.js";
+import { Video } from "./class.js";
 
 export const getVideos = async (
   { input }: { input: { limit?: number; skip?: number } },

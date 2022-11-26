@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
-import { MongoClient } from "mongo/mod.ts";
-import { getTagsCollection, getVideoHistoryCollection } from "~/common/collections.ts";
-import { Tag } from "~/tags/mod.ts";
+import { MongoClient } from "mongodb";
+import { getTagsCollection, getVideoHistoryCollection } from "../common/collections.js";
+import { Tag } from "../tags/mod.js";
 import {
   VideoAddTagHistoryItem,
   VideoAddThumbnailHistoryItem,
@@ -12,7 +12,7 @@ import {
   VideoDeleteThumbnailHistoryItem,
   VideoDeleteTitleHistoryItem,
   VideoRegisterHistoryItem,
-} from "./history_item_class.ts";
+} from "./history_item_class.js";
 
 export class VideoTitle {
   private _title;

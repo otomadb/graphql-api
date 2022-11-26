@@ -1,4 +1,4 @@
-import { customAlphabet } from "nanoid/customAlphabet.ts";
+import { customAlphabet } from "nanoid";
 
 const idGenerator = customAlphabet(
   // abcdefghijklmnopqrstuvwxyz0123456789 - 0o1il

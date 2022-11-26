@@ -1,6 +1,6 @@
-import { MongoClient, ObjectId } from "mongo/mod.ts";
-import { getTagsCollection } from "~/common/collections.ts";
-import { SearchTagsResultItem } from "./class.ts";
+import { MongoClient, ObjectId } from "mongodb";
+import { getTagsCollection } from "../common/collections.js";
+import { SearchTagsResultItem } from "./class.js";
 
 export const searchTags = async (
   args: { query: string; limit: number; skip: number },

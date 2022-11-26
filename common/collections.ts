@@ -1,4 +1,4 @@
-import { MongoClient, ObjectId } from "mongo/mod.ts";
+import { MongoClient, ObjectId } from "mongodb";
 
 /*
 import Identicon from "identicon";
@@ -7,7 +7,7 @@ console.dir(`data:image/png;base64,${data}`);
 */
 
 export const getTagsCollection = (mongo: MongoClient) =>
-  mongo.database().collection<{
+  mongo.db().collection<{
     _id: string;
 
     names: { name: string; primary?: boolean }[];
@@ -16,7 +16,7 @@ export const getTagsCollection = (mongo: MongoClient) =>
   }>("tags");
 
 export const getVideosCollection = (mongo: MongoClient) =>
-  mongo.database().collection<{
+  mongo.db().collection<{
     _id: string;
     titles: { title: string; primary?: boolean }[];
     tags: string[];
@@ -24,7 +24,7 @@ export const getVideosCollection = (mongo: MongoClient) =>
   }>("videos");
 
 export const getUsersCollection = (mongo: MongoClient) =>
-  mongo.database().collection<{
+  mongo.db().collection<{
     _id: string;
 
     name: string;
@@ -37,7 +37,7 @@ export const getUsersCollection = (mongo: MongoClient) =>
   }>("users");
 
 export const getAccountsCollection = (mongo: MongoClient) =>
-  mongo.database().collection<{
+  mongo.db().collection<{
     _id: string;
     user_id: string;
 
@@ -52,7 +52,7 @@ export const getAccountsCollection = (mongo: MongoClient) =>
   }>("accounts");
 
 export const getTagHistoryCollection = (mongo: MongoClient) =>
-  mongo.database().collection<
+  mongo.db().collection<
     & {
       _id: ObjectId;
       created_at: Date;
@@ -79,7 +79,7 @@ export const getTagHistoryCollection = (mongo: MongoClient) =>
   >("tag_history");
 
 export const getVideoHistoryCollection = (mongo: MongoClient) =>
-  mongo.database().collection<
+  mongo.db().collection<
     & {
       _id: ObjectId;
       created_at: Date;

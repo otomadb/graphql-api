@@ -1,8 +1,8 @@
 import { GraphQLError } from "graphql";
-import { MongoClient, ObjectId } from "mongo/mod.ts";
-import { getTagsCollection, getUsersCollection } from "~/common/collections.ts";
-import { User } from "~/users/mod.ts";
-import { Tag } from "./class.ts";
+import { MongoClient, ObjectId } from "mongodb";
+import { getTagsCollection, getUsersCollection } from "../common/collections.js";
+import { User } from "../users/mod.js";
+import { Tag } from "./class.js";
 
 export abstract class TagHistoryItem {
   protected _id: ObjectId;
@@ -35,7 +35,7 @@ export abstract class TagHistoryItem {
 
     return new Tag({
       id: tag._id,
-      history: tag.history,
+      // history: tag.history,
       names: tag.names,
       type: tag.type,
     });

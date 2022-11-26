@@ -1,6 +1,6 @@
-import { MongoClient, ObjectId } from "mongo/mod.ts";
-import { getVideosCollection } from "~/common/collections.ts";
-import { Video } from "./class.ts";
+import { MongoClient, ObjectId } from "mongodb";
+import { getVideosCollection } from "../common/collections.js";
+import { Video } from "./class.js";
 
 export class SearchVideosResultItem {
   matchedTitle;
@@ -24,6 +24,7 @@ export const searchVideos = async (
       titles: { title: string; primary?: boolean }[];
       tags: string[];
       history: ObjectId[];
+      thumbnails: any,
     }>([
       {
         $project: {
@@ -32,6 +33,7 @@ export const searchVideos = async (
           titles_search: "$titles",
           tags: true,
           history: true,
+          thumbnails: true,
         },
       },
       { $unwind: { path: "$titles_search" } },

@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
-import { MongoClient } from "mongo/mod.ts";
-import { getTagsCollection, getVideoHistoryCollection, getVideosCollection } from "~/common/collections.ts";
-import { VideoDeleteTagHistoryItem } from "./history_item_class.ts";
+import { MongoClient } from "mongodb";
+import { getTagsCollection, getVideoHistoryCollection, getVideosCollection } from "../common/collections.js";
+import { VideoDeleteTagHistoryItem } from "./history_item_class.js";
 
 export const untagVideo = async (
   { input }: {

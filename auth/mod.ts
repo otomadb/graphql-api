@@ -1,3 +1,3 @@
-export { signin, SigninPayload } from "./signin.ts";
-export { whoami } from "./whoami.ts";
-export { refreshToken } from "./refresh_token.ts";
+export { signin, SigninPayload } from "./signin.js";
+export { whoami } from "./whoami.js";
+export { refreshToken } from "./refresh_token.js";

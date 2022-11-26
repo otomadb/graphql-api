@@ -1,22 +1,23 @@
-import { oakCors } from "cors/mod.ts";
+// import { oakCors } from "cors/mod.js";
 import { buildSchema, graphql } from "graphql";
-import { MongoClient } from "mongo/mod.ts";
-import { Application, Router } from "oak/mod.ts";
-import { verifyAccessJWT } from "~/auth/jwt.ts";
-import { refreshToken, signin, whoami } from "~/auth/mod.ts";
-import { getTag, registerTag, searchTags } from "~/tags/mod.ts";
-import { getUser } from "~/users/mod.ts";
-import { getVideo, getVideos, registerVideo, searchVideos, tagVideo } from "~/videos/mod.ts";
-import { untagVideo } from "./videos/untag_video.ts";
+import { MongoClient } from "mongodb";
+import { Application, Router } from "@oakserver/oak";
+import { verifyAccessJWT } from "./auth/jwt.js";
+import { refreshToken, signin, whoami } from "./auth/mod.js";
+import { getTag, registerTag, searchTags } from "./tags/mod.js";
+import { getUser } from "./users/mod.js";
+import { getVideo, getVideos, registerVideo, searchVideos, tagVideo } from "./videos/mod.js";
+import { untagVideo } from "./videos/untag_video.js";
+import fsPromises from "node:fs/promises"
 
-const mongoClient = new MongoClient();
-await mongoClient.connect("mongodb://user:pass@127.0.0.1:27017/otomadb?authSource=admin");
+const mongoClient = new MongoClient("mongodb://user:pass@127.0.0.1:27017/otomadb?authSource=admin");
+await mongoClient.connect();
 
 const app = new Application();
 
 const router = new Router();
 
-export const gqlSchema = buildSchema(await Deno.readTextFile(new URL("./sdl.gql", import.meta.url)));
+export const gqlSchema = buildSchema(await fsPromises.readFile(new URL("./sdl.gql", import.meta.url), { encoding: "utf-8" }));
 export const gqlRootValue = {
   // query
   video: getVideo,
@@ -74,7 +75,7 @@ router.post(
   },
 );
 
-app.use(oakCors());
+// app.use(oakCors());
 app.use(router.routes());
 app.use(router.allowedMethods());
 

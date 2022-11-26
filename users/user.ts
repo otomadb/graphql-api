@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
-import { MongoClient } from "mongo/mod.ts";
-import { getUsersCollection } from "~/common/collections.ts";
-import { User } from "./class.ts";
+import { MongoClient } from "mongodb";
+import { getUsersCollection } from "../common/collections.js";
+import { User } from "./class.js";
 
 export const getUserById = async (id: string, context: { mongo: MongoClient }): Promise<User> => {
   const usersColl = getUsersCollection(context.mongo);

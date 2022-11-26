@@ -1,2 +1,2 @@
-export { getUser, getUserById, getUserByName } from "./user.ts";
-export { User } from "./class.ts";
+export { getUser, getUserById, getUserByName } from "./user.js";
+export { User } from "./class.js";
