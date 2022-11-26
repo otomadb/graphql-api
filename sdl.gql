@@ -27,6 +27,8 @@ type Mutation {
   signin(input: SigninInput): SigninPayload!
   registerTag(input: RegisterTagInput!): RegisterTagPayload!
   registerVideo(input: RegisterVideoInput!): RegisterVideoPayload!
+
+  tagVideo(input: TagVideoInput!): VideoAddTagHistoryItem!
 }
 
 type RefreshTokenPayload {
@@ -277,4 +279,9 @@ input RegisterVideoInput {
 
 type RegisterVideoPayload {
   video: Video!
+}
+
+input TagVideoInput {
+  videoId: ID!
+  tagId: ID!
 }

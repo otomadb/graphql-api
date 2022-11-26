@@ -4,3 +4,4 @@ export { VideoAddTagHistoryItem, VideoHistoryItem, VideoRegisterHistoryItem } fr
 export { registerVideo } from "./register_video.ts";
 export { searchVideos, SearchVideosResultItem } from "./search_videos.ts";
 export { getVideos } from "./get_videos.ts";
+export { tagVideo } from "./tag_video.ts";
