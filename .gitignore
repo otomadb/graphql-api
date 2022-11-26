@@ -4,3 +4,5 @@ result
 
 # env
 .env
+
+node_modules
