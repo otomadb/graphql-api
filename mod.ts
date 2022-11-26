@@ -7,6 +7,7 @@ import { refreshToken, signin, whoami } from "~/auth/mod.ts";
 import { getTag, registerTag, searchTags } from "~/tags/mod.ts";
 import { getUser } from "~/users/mod.ts";
 import { getVideo, getVideos, registerVideo, searchVideos, tagVideo } from "~/videos/mod.ts";
+import { untagVideo } from "./videos/untag_video.ts";
 
 const mongoClient = new MongoClient();
 await mongoClient.connect("mongodb://user:pass@127.0.0.1:27017/otomadb?authSource=admin");
@@ -32,6 +33,7 @@ export const gqlRootValue = {
   registerTag: registerTag,
   registerVideo: registerVideo,
   tagVideo: tagVideo,
+  untagVideo: untagVideo,
 };
 
 router.post(

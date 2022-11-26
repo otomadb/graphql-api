@@ -5,3 +5,4 @@ export { registerVideo } from "./register_video.ts";
 export { searchVideos, SearchVideosResultItem } from "./search_videos.ts";
 export { getVideos } from "./get_videos.ts";
 export { tagVideo } from "./tag_video.ts";
+export { untagVideo } from "./untag_video.ts";
