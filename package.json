@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "type": "module",
+  "scripts": {
+    "start": "node --loader ts-node/esm mod.ts"
+  },
   "repository": "https://github.com/otomad-database/api",
   "license": "MIT",
   "devDependencies": {
