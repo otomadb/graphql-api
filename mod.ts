@@ -37,6 +37,13 @@ export const gqlRootValue = {
   untagVideo: untagVideo,
 };
 
+app.use((context, next) => {
+  context.response.headers.set("Access-Control-Allow-Origin", "*")
+  context.response.headers.set("Access-Control-Allow-Methods", "GET, POST")
+  context.response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+  return next()
+})
+
 router.post(
   "/graphql",
   async ({ state, request }, next) => {
