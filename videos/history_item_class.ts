@@ -1,6 +1,12 @@
 import { GraphQLError } from "graphql";
 import { MongoClient, ObjectId } from "mongodb";
-import { getTagsCollection, getUsersCollection, getVideosCollection } from "../common/collections.js";
+import {
+  getNiconicoCollection,
+  getTagsCollection,
+  getUsersCollection,
+  getVideosCollection,
+} from "../common/collections.js";
+import { Niconico } from "../niconico/find.js";
 import { Tag } from "../tags/mod.js";
 import { User } from "../users/mod.js";
 import { Video } from "./class.js";
@@ -214,5 +220,37 @@ export class VideoChangePrimaryThumbnailHistoryItem extends VideoHistoryItem {
 
   get __typename() {
     return "VideoChangePrimaryThumbnailHistoryItem";
+  }
+}
+
+export class VideoAddNiconicoSourceHistoryItem extends VideoHistoryItem {
+  private niconicoId: string;
+
+  constructor(
+    { niconicoId, ...rest }: {
+      id: ObjectId;
+      userId: string;
+      createdAt: Date;
+      videoId: string;
+      niconicoId: string;
+    },
+  ) {
+    super(rest);
+    this.niconicoId = niconicoId;
+  }
+
+  get __typename() {
+    return "VideoAddNiconicoSourceHistoryItem";
+  }
+
+  public async niconico(_: unknown, { mongo }: { mongo: MongoClient }): Promise<Niconico> {
+    const niconicoColl = await getNiconicoCollection(mongo);
+    const niconico = await niconicoColl.findOne({ _id: this.niconicoId });
+    if (!niconico) throw new GraphQLError("not found");
+
+    return new Niconico({
+      id: niconico._id,
+      videoId: niconico.video_id,
+    });
   }
 }
