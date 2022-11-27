@@ -39,7 +39,7 @@ export const untagVideo = async (
         video_id: input.videoId,
       } as any,
     )
-    .then((id) => historyColl.findOne({ _id: id }));
+    .then(({ insertedId: id }) => historyColl.findOne({ _id: id }));
   if (!history || history.type !== "DELETE_TAG") throw new GraphQLError("something wrong");
 
   await videosColl.updateOne(
