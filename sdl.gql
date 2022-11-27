@@ -277,6 +277,7 @@ input RegisterVideoInput {
   extraTitles: [String!]
   tags: [ID!]!
   primaryThumbnail: String!
+  niconico: [String!]
 }
 
 type RegisterVideoPayload {
