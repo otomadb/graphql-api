@@ -1,12 +1,6 @@
 {
   "nixEnvSelector.nixFile": "${workspaceRoot}/shell.nix",
 
-  "deno.enable": true,
-  "deno.lint": true,
-  "deno.unstable": true,
-  "deno.importMap": "./import_map.json",
-  "deno.internalDebug": true,
-
   "files.exclude": {
     "**/node_modules": true,
     "**/dist": true
@@ -38,5 +32,5 @@
   },
   "[toml]": {
     "editor.defaultFormatter": "jkillian.custom-local-formatters"
-  },
+  }
 }
