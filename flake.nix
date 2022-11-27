@@ -30,11 +30,11 @@
             nodejs
             (mkCorepack {
               nodejs = nodejs;
-              pm = "yarn";
+              pm = "pnpm";
             })
             dprint
           ];
-          devshell.startup.yarn_install.text = "yarn install";
+          devshell.startup.yarn_install.text = "pnpm install";
           env = [
             {
               name = "PATH";

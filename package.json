@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "start": "node --loader ts-node/esm index.ts"
+    "start": "node --loader ts-node/esm mod.ts",
+    "dev": "nodemon -x \"yarn start\" -e ts,gql"
   },
   "repository": "https://github.com/otomad-database/api",
   "license": "MIT",
@@ -14,6 +15,7 @@
     "@types/koa": "^2.13.5",
     "@types/koa__router": "^12.0.0",
     "@types/node": "^18.11.9",
+    "nodemon": "^2.0.20",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.3"
   },

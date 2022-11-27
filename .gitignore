@@ -6,3 +6,6 @@ result
 .env
 
 node_modules
+
+# log
+*.log

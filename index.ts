@@ -1,11 +1,12 @@
-import Router from '@koa/router';
+import Router from "@koa/router";
 import { buildSchema, graphql } from "graphql";
-import Koa from 'koa';
-import { koaBody } from 'koa-body';
+import Koa from "koa";
+import { koaBody } from "koa-body";
 import { MongoClient } from "mongodb";
 import fsPromises from "node:fs/promises";
 import { verifyAccessJWT } from "./auth/jwt.js";
 import { refreshToken, signin, whoami } from "./auth/mod.js";
+import { findNiconico } from "./niconico/find.js";
 import { getTag, registerTag, searchTags } from "./tags/mod.js";
 import { getUser } from "./users/mod.js";
 import { getVideo, getVideos, registerVideo, searchVideos, tagVideo } from "./videos/mod.js";
@@ -30,6 +31,7 @@ export const gqlRootValue = {
   searchTags: searchTags,
   user: getUser,
   whoami: whoami,
+  findNiconico: findNiconico,
 
   // mutation
   signin: signin,
@@ -40,15 +42,14 @@ export const gqlRootValue = {
   untagVideo: untagVideo,
 };
 
-
 app.use(koaBody());
 
 app.use((ctx, next) => {
-  ctx.res.setHeader("Access-Control-Allow-Origin", "*")
-  ctx.res.setHeader("Access-Control-Allow-Methods", "GET, POST")
-  ctx.res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization")
-  return next()
-})
+  ctx.res.setHeader("Access-Control-Allow-Origin", "*");
+  ctx.res.setHeader("Access-Control-Allow-Methods", "GET, POST");
+  ctx.res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  return next();
+});
 
 router.post(
   "/graphql",
