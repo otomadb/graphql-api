@@ -1,6 +1,7 @@
-// import { oakCors } from "cors/mod.js";
-import { Application, Router } from "@oakserver/oak";
+import Router from "@koa/router";
 import { buildSchema, graphql } from "graphql";
+import Koa from "koa";
+import { koaBody } from "koa-body";
 import { MongoClient } from "mongodb";
 import fsPromises from "node:fs/promises";
 import { verifyAccessJWT } from "./auth/jwt.js";
@@ -14,7 +15,7 @@ import { untagVideo } from "./videos/untag_video.js";
 const mongoClient = new MongoClient("mongodb://user:pass@127.0.0.1:27017/otomadb?authSource=admin");
 await mongoClient.connect();
 
-const app = new Application();
+const app = new Koa();
 
 const router = new Router();
 
@@ -41,17 +42,19 @@ export const gqlRootValue = {
   untagVideo: untagVideo,
 };
 
-app.use((context, next) => {
-  context.response.headers.set("Access-Control-Allow-Origin", "*");
-  context.response.headers.set("Access-Control-Allow-Methods", "GET, POST");
-  context.response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+app.use(koaBody());
+
+app.use((ctx, next) => {
+  ctx.res.setHeader("Access-Control-Allow-Origin", "*");
+  ctx.res.setHeader("Access-Control-Allow-Methods", "GET, POST");
+  ctx.res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   return next();
 });
 
 router.post(
   "/graphql",
-  async ({ state, request }, next) => {
-    const accessToken = request.headers.get("Authorization")?.split("Bearer ")?.[1];
+  async (ctx, next) => {
+    const accessToken = ctx.get("Authorization")?.split("Bearer ")?.[1];
 
     if (!accessToken) {
       await next();
@@ -60,18 +63,18 @@ router.post(
 
     try {
       const payload = await verifyAccessJWT({ token: accessToken });
-      state.userId = payload?.sub;
+      ctx.state.userId = payload?.sub;
     } catch (e) {
       console.error(e);
     } finally {
       await next();
     }
   },
-  async ({ state, request, response }) => {
-    const { query, variables, operationName } = await request.body().value;
-    const { userId } = state;
+  async (ctx) => {
+    const { query, variables, operationName } = ctx.request.body;
+    const { userId } = ctx.state;
 
-    response.body = await graphql({
+    ctx.body = await graphql({
       source: query,
       schema: gqlSchema,
       rootValue: gqlRootValue,
@@ -86,8 +89,7 @@ router.post(
   },
 );
 
-// app.use(oakCors());
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-await app.listen({ port: 8080 });
+app.listen({ port: 8080 });
