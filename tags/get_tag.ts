@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
-import { MongoClient } from "mongo/mod.ts";
-import { getTagsCollection } from "~/common/collections.ts";
-import { Tag } from "./class.ts";
+import { MongoClient } from "mongodb";
+import { getTagsCollection } from "../common/collections.js";
+import { Tag } from "./class.js";
 
 export const getTag = async (
   args: { id: string },
@@ -15,6 +15,6 @@ export const getTag = async (
     id: tag._id,
     type: tag.type,
     names: tag.names,
-    history: tag.history,
+    // history: tag.history,
   });
 };

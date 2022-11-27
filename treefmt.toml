@@ -2,13 +2,17 @@
 command = "alejandra"
 includes = ["*.nix"]
 
-[formatter.deno-fmt]
-command = "deno"
+[formatter.dprint]
+command = "dprint"
 options = ["fmt"]
 includes = [
   "*.json",
-  "*.jsonc",
   "*.toml",
   "*.md",
+  "*.js",
+  "*.jsx",
   "*.ts",
+  "*.tsx",
+  "*.cjs",
+  "*.mjs",
 ]

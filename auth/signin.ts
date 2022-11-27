@@ -1,9 +1,9 @@
-import { compare as compareBCrypt } from "bcrypt/mod.ts";
+import { compare as compareBCrypt } from "bcrypt";
 import { GraphQLError } from "graphql";
-import { MongoClient } from "mongo/mod.ts";
-import { getAccountsCollection } from "~/common/collections.ts";
-import { signAccessJWT, signRefreshJWT } from "./jwt.ts";
-import { getUserById } from "~/users/mod.ts";
+import { MongoClient } from "mongodb";
+import { getAccountsCollection } from "../common/collections.js";
+import { getUserById } from "../users/mod.js";
+import { signAccessJWT, signRefreshJWT } from "./jwt.js";
 
 export class SigninPayload {
   protected accessToken;

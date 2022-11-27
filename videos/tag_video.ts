@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
-import { MongoClient } from "mongo/mod.ts";
-import { getTagsCollection, getVideoHistoryCollection, getVideosCollection } from "~/common/collections.ts";
-import { VideoAddTagHistoryItem } from "./history_item_class.ts";
+import { MongoClient } from "mongodb";
+import { getTagsCollection, getVideoHistoryCollection, getVideosCollection } from "../common/collections.js";
+import { VideoAddTagHistoryItem } from "./history_item_class.js";
 
 export const tagVideo = async (
   { input }: {

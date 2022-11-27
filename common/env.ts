@@ -1,4 +1,4 @@
-import { crypto } from "std/crypto/mod.ts";
+import { importPKCS8, importSPKI } from "jose";
 
 function removeLines(str: string) {
   return str.replace("\n", "");
@@ -47,34 +47,44 @@ function convertToCryptoKey({ pemKey, type }: { pemKey: string; type: "PUBLIC" |
   }
 }
 
+function loadPublicKey(input: string) {
+  let spki = Buffer.from(input, "base64").toString("ascii");
+  return importSPKI(spki, "RS256");
+}
+
+function loadPrivateKey(input: string) {
+  let pem = Buffer.from(input, "base64").toString("ascii");
+  return importPKCS8(pem, "RS256");
+}
+
 /* access public */
-const accessPubKeyRaw = Deno.env.get("ACCESS_TOKEN_PUBLIC_KEY");
+const accessPubKeyRaw = process.env["ACCESS_TOKEN_PUBLIC_KEY"];
 if (!accessPubKeyRaw) {
   console.error(`cannot get "ACCESS_TOKEN_PUBLIC_KEY"`);
-  Deno.exit(1);
+  process.exit(1);
 }
-export const accessPubKey = await convertToCryptoKey({ pemKey: atob(accessPubKeyRaw), type: "PUBLIC" });
+export const accessPubKey = await loadPublicKey(accessPubKeyRaw);
 
 /* access private */
-const accessPrvKeyRaw = Deno.env.get("ACCESS_TOKEN_PRIVATE_KEY");
+const accessPrvKeyRaw = process.env["ACCESS_TOKEN_PRIVATE_KEY"];
 if (!accessPrvKeyRaw) {
   console.error(`cannot get "ACCESS_TOKEN_PRIVATE_KEY"`);
-  Deno.exit(1);
+  process.exit(1);
 }
-export const accessPrvKey = await convertToCryptoKey({ pemKey: atob(accessPrvKeyRaw), type: "PRIVATE" });
+export const accessPrvKey = await loadPrivateKey(accessPrvKeyRaw);
 
 /* refresh public */
-const refreshPubKeyRaw = Deno.env.get("REFRESH_TOKEN_PUBLIC_KEY");
+const refreshPubKeyRaw = process.env["REFRESH_TOKEN_PUBLIC_KEY"];
 if (!refreshPubKeyRaw) {
   console.error(`cannot get "REFRESH_TOKEN_PUBLIC_KEY"`);
-  Deno.exit(1);
+  process.exit(1);
 }
-export const refreshPubKey = await convertToCryptoKey({ pemKey: atob(refreshPubKeyRaw), type: "PUBLIC" });
+export const refreshPubKey = await loadPublicKey(refreshPubKeyRaw);
 
 /* refresh private */
-const refreshPrvKeyRaw = Deno.env.get("REFRESH_TOKEN_PRIVATE_KEY");
+const refreshPrvKeyRaw = process.env["REFRESH_TOKEN_PRIVATE_KEY"];
 if (!refreshPrvKeyRaw) {
   console.error(`cannot get "REFRESH_TOKEN_PRIVATE_KEY"`);
-  Deno.exit(1);
+  process.exit(1);
 }
-export const refreshPrvKey = await convertToCryptoKey({ pemKey: atob(refreshPrvKeyRaw), type: "PRIVATE" });
+export const refreshPrvKey = await loadPrivateKey(refreshPrvKeyRaw);

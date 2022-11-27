@@ -1,8 +1,8 @@
 import { GraphQLError } from "graphql";
-import { MongoClient, ObjectId } from "mongo/mod.ts";
-import { getTagHistoryCollection, getTagsCollection } from "~/common/collections.ts";
-import { generateId } from "~/common/id.ts";
-import { Tag } from "./class.ts";
+import { MongoClient, ObjectId } from "mongodb";
+import { getTagHistoryCollection, getTagsCollection } from "../common/collections.js";
+import { generateId } from "../common/id.js";
+import { Tag } from "./class.js";
 
 export const registerTag = async (
   { input }: {

@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
-import { MongoClient } from "mongo/mod.ts";
-import { getVideosCollection } from "~/common/collections.ts";
-import { Video } from "./class.ts";
+import { MongoClient } from "mongodb";
+import { getVideosCollection } from "../common/collections.js";
+import { Video } from "./class.js";
 
 export const getVideo = async (
   args: { id: string },

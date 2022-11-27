@@ -1,33 +1,29 @@
 // https://codevoweb.com/deno-jwt-authentication-with-private-and-public-keys/
 
-import { create, getNumericDate, Header, Payload, verify } from "djwt/mod.ts";
-import { accessPrvKey, accessPubKey, refreshPrvKey, refreshPubKey } from "~/common/env.ts";
+import type { KeyLike } from "jose";
+import { jwtVerify, SignJWT } from "jose";
+import { accessPrvKey, accessPubKey, refreshPrvKey, refreshPubKey } from "../common/env.js";
 
 if (!accessPrvKey) {
   console.error(`cannot convert "ACCESS_TOKEN_PRIVATE_KEY"`);
-  Deno.exit(1);
+  process.exit(1);
 }
 if (!refreshPrvKey) {
   console.error(`cannot convert "REFRESH_TOKEN_PRIVATE_KEY"`);
-  Deno.exit(1);
+  process.exit(1);
 }
 
 const signJwtFactory =
-  (key: CryptoKey, { issuer, expiresIn }: { issuer: string; expiresIn: number }) =>
+  (key: KeyLike, { issuer, expiresIn }: { issuer: string; expiresIn: number }) =>
   async ({ userId }: { userId: string }) => {
-    const header: Header = { alg: "RS256", typ: "JWT" };
-
-    const tokenIssuedAt = Math.floor(Date.now() / 1000);
-    const tokenExpiredIn = getNumericDate(expiresIn);
-
-    const payload: Payload = {
-      iss: issuer,
-      iat: tokenIssuedAt,
-      exp: tokenExpiredIn,
-      sub: userId,
-    };
-
-    const token = await create(header, payload, key);
+    // const token = await create(header, payload, key);
+    const token = await new SignJWT({})
+      .setProtectedHeader({ alg: "RS256" })
+      .setIssuedAt()
+      .setIssuer(issuer)
+      .setExpirationTime(`${expiresIn}s`)
+      .setSubject(userId)
+      .sign(key);
     return token;
   };
 
@@ -42,17 +38,17 @@ export const signRefreshJWT = signJwtFactory(refreshPrvKey, {
 
 if (!accessPubKey) {
   console.error(`cannot convert "ACCESS_TOKEN_PUBLIC_KEY"`);
-  Deno.exit(1);
+  process.exit(1);
 }
 if (!refreshPubKey) {
   console.error(`cannot convert "REFRESH_TOKEN_PUBLIC_KEY"`);
-  Deno.exit(1);
+  process.exit(1);
 }
 
-const verifyJwtFactory = (key: CryptoKey) => async ({ token }: { token: string }) => {
+const verifyJwtFactory = (key: KeyLike) => async ({ token }: { token: string }) => {
   try {
-    const result = await verify(token, key);
-    return result;
+    const result = await jwtVerify(token, key);
+    return result.payload;
   } catch (e) {
     if (e instanceof RangeError) {
       return null;

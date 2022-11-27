@@ -1,9 +1,9 @@
 import { GraphQLError } from "graphql";
-import { MongoClient, ObjectId } from "mongo/mod.ts";
-import { getTagsCollection, getUsersCollection, getVideosCollection } from "~/common/collections.ts";
-import { Tag } from "~/tags/mod.ts";
-import { User } from "~/users/mod.ts";
-import { Video } from "./class.ts";
+import { MongoClient, ObjectId } from "mongodb";
+import { getTagsCollection, getUsersCollection, getVideosCollection } from "../common/collections.js";
+import { Tag } from "../tags/mod.js";
+import { User } from "../users/mod.js";
+import { Video } from "./class.js";
 
 export abstract class VideoHistoryItem {
   protected _id: ObjectId;

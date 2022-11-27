@@ -1,13 +1,13 @@
 import { GraphQLError } from "graphql";
-import { MongoClient, ObjectId } from "mongo/mod.ts";
-import { getTagHistoryCollection, getVideosCollection } from "~/common/collections.ts";
-import { Video } from "~/videos/mod.ts";
+import { MongoClient, ObjectId } from "mongodb";
+import { getTagHistoryCollection, getVideosCollection } from "../common/collections.js";
+import { Video } from "../videos/mod.js";
 import {
   TagAddNameHistoryItem,
   TagChangePrimaryNameHistoryItem,
   TagDeleteNameHistoryItem,
   TagRegisterHistoryItem,
-} from "./history_item_class.ts";
+} from "./history_item_class.js";
 
 export class Tag {
   public id;

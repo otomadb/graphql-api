@@ -1,8 +1,8 @@
 import { GraphQLError } from "graphql";
-import { MongoClient } from "mongo/mod.ts";
-import { getVideoHistoryCollection, getVideosCollection } from "~/common/collections.ts";
-import { generateId } from "~/common/id.ts";
-import { Video } from "./class.ts";
+import { MongoClient } from "mongodb";
+import { getVideoHistoryCollection, getVideosCollection } from "../common/collections.js";
+import { generateId } from "../common/id.js";
+import { Video } from "./class.js";
 
 export const registerVideo = async (
   { input }: {

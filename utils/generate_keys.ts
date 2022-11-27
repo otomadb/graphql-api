@@ -1,6 +1,6 @@
 // https://codevoweb.com/deno-jwt-authentication-with-private-and-public-keys/
 
-import { crypto } from "std/crypto/mod.ts";
+import { crypto } from "std/crypto/mod.js";
 
 function arrayBufferToBase64(arrayBuffer: ArrayBuffer): string {
   const byteArray = new Uint8Array(arrayBuffer);

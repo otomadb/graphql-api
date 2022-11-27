@@ -2,7 +2,7 @@
   # main
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    deno2nix.url = "github:SnO2WMaN/deno2nix";
+    corepack.url = "github:SnO2WMaN/corepack-flake";
     devshell.url = "github:numtide/devshell";
     flake-utils.url = "github:numtide/flake-utils";
   };
@@ -19,6 +19,7 @@
           inherit system;
           overlays = with inputs; [
             devshell.overlay
+            corepack.overlays.default
           ];
         };
       in {
@@ -26,7 +27,19 @@
           packages = with pkgs; [
             alejandra
             treefmt
-            deno
+            nodejs
+            (mkCorepack {
+              nodejs = nodejs;
+              pm = "yarn";
+            })
+            dprint
+          ];
+          devshell.startup.yarn_install.text = "yarn install";
+          env = [
+            {
+              name = "PATH";
+              prefix = "$PRJ_ROOT/node_modules/.bin";
+            }
           ];
         };
       }
