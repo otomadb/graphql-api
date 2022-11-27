@@ -6,7 +6,8 @@ import { MongoClient } from "mongodb";
 import fsPromises from "node:fs/promises";
 import { verifyAccessJWT } from "./auth/jwt.js";
 import { refreshToken, signin, whoami } from "./auth/mod.js";
-import { findNiconico } from "./niconico/find.js";
+import { findNiconicoSource } from "./niconico/find.js";
+import { getNiconicoSource } from "./niconico/get.js";
 import { getTag, registerTag, searchTags } from "./tags/mod.js";
 import { getUser } from "./users/mod.js";
 import { getVideo, getVideos, registerVideo, searchVideos, tagVideo } from "./videos/mod.js";
@@ -31,7 +32,8 @@ export const gqlRootValue = {
   searchTags: searchTags,
   user: getUser,
   whoami: whoami,
-  findNiconico: findNiconico,
+  niconicoSource: getNiconicoSource,
+  findNiconicoSource: findNiconicoSource,
 
   // mutation
   signin: signin,

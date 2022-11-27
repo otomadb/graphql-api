@@ -20,7 +20,8 @@ type Query {
   user(name: String!): User!
   whoami: User!
 
-  findNiconico(id: ID!): NiconicoVideo!
+  niconicoSource(id: ID!): NiconicoSource!
+  findNiconicoSource(id: ID!): NiconicoSource
 }
 
 type Mutation {
@@ -164,7 +165,7 @@ type VideoAddNiconicoSourceHistoryItem implements VideoHistoryItem {
   user: User!
   createdAt: DateTime!
   video: Video!
-  niconico: NiconicoVideo!
+  niconico: NiconicoSource!
 }
 
 input GetVideosInput {
@@ -304,7 +305,7 @@ input UntagVideoInput {
   tagId: ID!
 }
 
-type NiconicoVideo {
+type NiconicoSource {
   id: ID!
   video: Video
 }

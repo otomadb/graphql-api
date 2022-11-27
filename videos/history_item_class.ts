@@ -6,7 +6,7 @@ import {
   getUsersCollection,
   getVideosCollection,
 } from "../common/collections.js";
-import { Niconico } from "../niconico/find.js";
+import { NiconicoSource } from "../niconico/class.js";
 import { Tag } from "../tags/mod.js";
 import { User } from "../users/mod.js";
 import { Video } from "./class.js";
@@ -243,12 +243,12 @@ export class VideoAddNiconicoSourceHistoryItem extends VideoHistoryItem {
     return "VideoAddNiconicoSourceHistoryItem";
   }
 
-  public async niconico(_: unknown, { mongo }: { mongo: MongoClient }): Promise<Niconico> {
+  public async niconico(_: unknown, { mongo }: { mongo: MongoClient }): Promise<NiconicoSource> {
     const niconicoColl = await getNiconicoCollection(mongo);
     const niconico = await niconicoColl.findOne({ _id: this.niconicoId });
     if (!niconico) throw new GraphQLError("not found");
 
-    return new Niconico({
+    return new NiconicoSource({
       id: niconico._id,
       videoId: niconico.video_id,
     });
