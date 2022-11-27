@@ -24,7 +24,7 @@ export const searchVideos = async (
       titles: { title: string; primary?: boolean }[];
       tags: string[];
       history: ObjectId[];
-      thumbnails: any,
+      thumbnails: any;
     }>([
       {
         $project: {

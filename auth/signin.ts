@@ -2,8 +2,8 @@ import { compare as compareBCrypt } from "bcrypt";
 import { GraphQLError } from "graphql";
 import { MongoClient } from "mongodb";
 import { getAccountsCollection } from "../common/collections.js";
-import { signAccessJWT, signRefreshJWT } from "./jwt.js";
 import { getUserById } from "../users/mod.js";
+import { signAccessJWT, signRefreshJWT } from "./jwt.js";
 
 export class SigninPayload {
   protected accessToken;
