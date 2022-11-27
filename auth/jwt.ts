@@ -1,7 +1,7 @@
 // https://codevoweb.com/deno-jwt-authentication-with-private-and-public-keys/
 
-import type { KeyLike } from "jose"
-import { SignJWT, jwtVerify } from "jose"
+import type { KeyLike } from "jose";
+import { jwtVerify, SignJWT } from "jose";
 import { accessPrvKey, accessPubKey, refreshPrvKey, refreshPubKey } from "../common/env.js";
 
 if (!accessPrvKey) {
@@ -16,7 +16,6 @@ if (!refreshPrvKey) {
 const signJwtFactory =
   (key: KeyLike, { issuer, expiresIn }: { issuer: string; expiresIn: number }) =>
   async ({ userId }: { userId: string }) => {
-
     // const token = await create(header, payload, key);
     const token = await new SignJWT({})
       .setProtectedHeader({ alg: "RS256" })

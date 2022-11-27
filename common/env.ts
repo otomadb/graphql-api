@@ -1,4 +1,4 @@
-import { importSPKI, importPKCS8 } from "jose"
+import { importPKCS8, importSPKI } from "jose";
 
 function removeLines(str: string) {
   return str.replace("\n", "");
@@ -48,13 +48,13 @@ function convertToCryptoKey({ pemKey, type }: { pemKey: string; type: "PUBLIC" |
 }
 
 function loadPublicKey(input: string) {
-  let spki = Buffer.from(input, "base64").toString("ascii")
-  return importSPKI(spki, "RS256")
+  let spki = Buffer.from(input, "base64").toString("ascii");
+  return importSPKI(spki, "RS256");
 }
 
 function loadPrivateKey(input: string) {
-  let pem = Buffer.from(input, "base64").toString("ascii")
-  return importPKCS8(pem, "RS256")
+  let pem = Buffer.from(input, "base64").toString("ascii");
+  return importPKCS8(pem, "RS256");
 }
 
 /* access public */
@@ -63,7 +63,7 @@ if (!accessPubKeyRaw) {
   console.error(`cannot get "ACCESS_TOKEN_PUBLIC_KEY"`);
   process.exit(1);
 }
-export const accessPubKey = await loadPublicKey(accessPubKeyRaw)
+export const accessPubKey = await loadPublicKey(accessPubKeyRaw);
 
 /* access private */
 const accessPrvKeyRaw = process.env["ACCESS_TOKEN_PRIVATE_KEY"];
