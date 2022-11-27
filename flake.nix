@@ -32,6 +32,7 @@
               nodejs = nodejs;
               pm = "yarn";
             })
+            dprint
           ];
           devshell.startup.yarn_install.text = "yarn install";
           env = [
