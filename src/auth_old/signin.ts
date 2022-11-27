@@ -23,7 +23,7 @@ export class SigninPayload {
 
 export const signin = async (
   { input: { name, password } }: { input: { name: string; password: string } },
-  context: { mongo: MongoClient },
+  context: { mongo: MongoClient }
 ) => {
   const accountsColl = await getAccountsCollection(context.mongo);
   const account = await accountsColl.findOne({ name: name });
@@ -33,7 +33,7 @@ export const signin = async (
 
   // TODO: email confirm check
 
-  if (!await compareBCrypt(password, account.password)) {
+  if (!(await compareBCrypt(password, account.password))) {
     throw new GraphQLError("Not matched password");
   }
 
