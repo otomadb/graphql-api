@@ -19,6 +19,7 @@ const signJwtFactory =
 
     // const token = await create(header, payload, key);
     const token = await new SignJWT({})
+      .setProtectedHeader({ alg: "RS256" })
       .setIssuedAt()
       .setIssuer(issuer)
       .setExpirationTime(`${expiresIn}s`)
