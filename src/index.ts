@@ -1,28 +1,21 @@
 import Router from "@koa/router";
-import { buildSchema, graphql } from "graphql";
 import Koa from "koa";
 import { koaBody } from "koa-body";
-import { MongoClient } from "mongodb";
-import fsPromises from "node:fs/promises";
-import { verifyAccessJWT } from "./auth/jwt.js";
-import { refreshToken, signin, whoami } from "./auth/mod.js";
-import { findNiconicoSource } from "./niconico/find.js";
-import { getNiconicoSource } from "./niconico/get.js";
-import { getTag, registerTag, searchTags } from "./tags/mod.js";
-import { getUser } from "./users/mod.js";
-import { getVideo, getVideos, registerVideo, searchVideos, tagVideo } from "./videos/mod.js";
-import { untagVideo } from "./videos/untag_video.js";
+import "reflect-metadata";
+import { router as authRouter } from "./auth/index.js";
+import { dataSource } from "./db/data-source.js";
 
-const mongoClient = new MongoClient("mongodb://user:pass@127.0.0.1:27017/otomadb?authSource=admin");
-await mongoClient.connect();
+await dataSource.initialize();
 
 const app = new Koa();
 
 const router = new Router();
 
+/*
 export const gqlSchema = buildSchema(
-  await fsPromises.readFile(new URL("./sdl.gql", import.meta.url), { encoding: "utf-8" }),
+  await fsPromises.readFile(new URL("./sdl.gql", import.meta.url), { encoding: "utf-8" })
 );
+
 export const gqlRootValue = {
   // query
   video: getVideo,
@@ -43,6 +36,7 @@ export const gqlRootValue = {
   tagVideo: tagVideo,
   untagVideo: untagVideo,
 };
+*/
 
 app.use(koaBody());
 
@@ -53,6 +47,10 @@ app.use((ctx, next) => {
   return next();
 });
 
+router.use("/auth", authRouter.routes());
+router.use("/auth", authRouter.allowedMethods());
+
+/*
 router.post(
   "/graphql",
   async (ctx, next) => {
@@ -88,10 +86,11 @@ router.post(
       },
     });
     return;
-  },
+  }
 );
+*/
 
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-app.listen({ port: 8080 });
+app.listen({ port: 8080 }, () => console.log("listening now"));

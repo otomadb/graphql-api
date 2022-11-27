@@ -6,12 +6,13 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon -x \"pnpm run start\" -e ts,gql",
-    "start": "node --loader ts-node/esm src/index.ts"
+    "start": "node --loader ts-node/esm src/index.ts",
+    "typeorm": "typeorm-ts-node-esm -d ./src/db/data-source.ts",
+    "migration:generate": "run(){ pnpm run typeorm migration:generate -p \"src/db/migrations/$1\"; }; run"
   },
   "repository": "https://github.com/otomad-database/api",
   "license": "MIT",
   "devDependencies": {
-    "@types/bcrypt": "^5.0.0",
     "@types/koa": "^2.13.5",
     "@types/koa__router": "^12.0.0",
     "@types/node": "^18.11.9",
@@ -22,17 +23,16 @@
   },
   "dependencies": {
     "@koa/router": "^12.0.0",
-    "bcrypt": "^5.1.0",
+    "argon2": "^0.30.2",
     "graphql": "^16.6.0",
     "identicon.js": "^2.3.3",
     "jose": "^4.11.1",
     "koa": "^2.13.4",
     "koa-body": "^6.0.1",
-    "mongodb": "^4.12.1",
-    "nanoid": "^4.0.0",
     "pg": "^8.8.0",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.10",
+    "ulid": "^2.3.0",
     "zod": "^3.19.1"
   }
 }
