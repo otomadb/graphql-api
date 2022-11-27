@@ -19,6 +19,8 @@ type Query {
 
   user(name: String!): User!
   whoami: User!
+
+  findNiconico(id: ID!): NiconicoVideo!
 }
 
 type Mutation {
@@ -291,4 +293,9 @@ input TagVideoInput {
 input UntagVideoInput {
   videoId: ID!
   tagId: ID!
+}
+
+type NiconicoVideo {
+  id: ID!
+  video: Video
 }

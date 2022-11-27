@@ -127,3 +127,9 @@ export const getVideoHistoryCollection = (mongo: MongoClient) =>
       }
     )
   >("video_history");
+
+export const getNiconicoCollection = (mongo: MongoClient) =>
+  mongo.db().collection<{
+    _id: string;
+    video_id: string;
+  }>("niconico");

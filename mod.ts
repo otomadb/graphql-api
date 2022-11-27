@@ -5,6 +5,7 @@ import { MongoClient } from "mongodb";
 import fsPromises from "node:fs/promises";
 import { verifyAccessJWT } from "./auth/jwt.js";
 import { refreshToken, signin, whoami } from "./auth/mod.js";
+import { findNiconico } from "./niconico/find.js";
 import { getTag, registerTag, searchTags } from "./tags/mod.js";
 import { getUser } from "./users/mod.js";
 import { getVideo, getVideos, registerVideo, searchVideos, tagVideo } from "./videos/mod.js";
@@ -29,6 +30,7 @@ export const gqlRootValue = {
   searchTags: searchTags,
   user: getUser,
   whoami: whoami,
+  findNiconico: findNiconico,
 
   // mutation
   signin: signin,
@@ -40,11 +42,11 @@ export const gqlRootValue = {
 };
 
 app.use((context, next) => {
-  context.response.headers.set("Access-Control-Allow-Origin", "*")
-  context.response.headers.set("Access-Control-Allow-Methods", "GET, POST")
-  context.response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-  return next()
-})
+  context.response.headers.set("Access-Control-Allow-Origin", "*");
+  context.response.headers.set("Access-Control-Allow-Methods", "GET, POST");
+  context.response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  return next();
+});
 
 router.post(
   "/graphql",
