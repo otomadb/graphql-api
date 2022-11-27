@@ -125,6 +125,11 @@ export const getVideoHistoryCollection = (mongo: MongoClient) =>
         type: "DELETE_TAG";
         tag_id: string;
       }
+      // niconico source
+      | {
+        type: "ADD_NICONICO_SOURCE";
+        niconico_id: string;
+      }
     )
   >("video_history");
 

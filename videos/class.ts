@@ -3,6 +3,7 @@ import { MongoClient } from "mongodb";
 import { getTagsCollection, getVideoHistoryCollection } from "../common/collections.js";
 import { Tag } from "../tags/mod.js";
 import {
+  VideoAddNiconicoSourceHistoryItem,
   VideoAddTagHistoryItem,
   VideoAddThumbnailHistoryItem,
   VideoAddTitleHistoryItem,
@@ -219,6 +220,16 @@ export class Video {
               createdAt: created_at,
               tagId: tag_id,
               videoId: video_id,
+            });
+          }
+          case "ADD_NICONICO_SOURCE": {
+            const { _id, user_id, created_at, video_id, niconico_id } = item;
+            return new VideoAddNiconicoSourceHistoryItem({
+              id: _id,
+              userId: user_id,
+              createdAt: created_at,
+              videoId: video_id,
+              niconicoId: niconico_id,
             });
           }
           default:

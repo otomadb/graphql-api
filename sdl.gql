@@ -159,6 +159,14 @@ type VideoDeleteTagHistoryItem implements VideoHistoryItem {
   tag: Tag!
 }
 
+type VideoAddNiconicoSourceHistoryItem implements VideoHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+  video: Video!
+  niconico: NiconicoVideo!
+}
+
 input GetVideosInput {
   limit: Int
   skip: Int
@@ -279,6 +287,7 @@ input RegisterVideoInput {
   extraTitles: [String!]
   tags: [ID!]!
   primaryThumbnail: String!
+  niconico: [String!]
 }
 
 type RegisterVideoPayload {
