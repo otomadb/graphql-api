@@ -5,8 +5,8 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "start": "node --loader ts-node/esm mod.ts",
-    "dev": "nodemon -x \"yarn start\" -e ts,gql"
+    "start": "node --loader ts-node/esm index.ts",
+    "dev": "nodemon -x \"pnpm run start\" -e ts,gql"
   },
   "repository": "https://github.com/otomad-database/api",
   "license": "MIT",
