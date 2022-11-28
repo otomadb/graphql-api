@@ -55,6 +55,21 @@ type VideoThumbnail {
   primary: Boolean!
 }
 
+interface VideoSource {
+  videoId: String!
+  url: String!
+}
+
+type NiconicoVideoSource implements VideoSource {
+  videoId: String!
+  url: String!
+}
+
+type YoutubeVideoSource implements VideoSource {
+  videoId: String!
+  url: String!
+}
+
 interface VideoHistoryItem {
   id: ID!
   user: User!
@@ -275,7 +290,17 @@ input RegisterVideoInput {
   extraTitles: [String!]
   tags: [ID!]!
   primaryThumbnail: String!
-  niconico: [String!]
+  sources: [RegisterVideoInputSource!]!
+}
+
+enum RegisterVideoInputSourceType {
+  NICOVIDEO
+  # YOUTUBE
+}
+
+input RegisterVideoInputSource {
+  type: RegisterVideoInputSourceType!
+  sourceId: String!
 }
 
 type RegisterVideoPayload {
