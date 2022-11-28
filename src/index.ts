@@ -1,35 +1,33 @@
+import "reflect-metadata";
+
+import { makeExecutableSchema } from "@graphql-tools/schema";
 import Router from "@koa/router";
-import { buildSchema, graphql } from "graphql";
+import { graphql } from "graphql";
 import Koa from "koa";
 import { koaBody } from "koa-body";
+import logger from "koa-logger";
 import { readFile } from "node:fs/promises";
-import "reflect-metadata";
 import { z } from "zod";
 import { router as authRouter } from "./auth/index.js";
 import { getUserFromSession } from "./auth/session.js";
+import { Context } from "./context.js";
 import { dataSource } from "./db/data-source.js";
-import { findNiconicoSource } from "./niconico/find.js";
-import { getNiconicoSource } from "./niconico/get.js";
-import { getTag } from "./tags/get_tag.js";
-import { registerTag } from "./tags/register_tag.js";
-import { searchTags } from "./tags/search_tags.js";
-import { getUser } from "./users/user.js";
-import { whoami } from "./users/whoami.js";
-import { getVideo } from "./videos/get_video.js";
-import { getVideos } from "./videos/get_videos.js";
-import { registerVideo } from "./videos/register_video.js";
-import { searchVideos } from "./videos/search_videos.js";
-import { tagVideo } from "./videos/tag_video.js";
-import { untagVideo } from "./videos/untag_video.js";
+import { resolvers } from "./resolvers/index.js";
 
 await dataSource.initialize();
 
 const app = new Koa();
 
+app.use(logger());
+app.use(koaBody());
+
 const router = new Router();
 
-export const gqlSchema = buildSchema(await readFile(new URL("../sdl.gql", import.meta.url), { encoding: "utf-8" }));
+export const typeDefs = await readFile(new URL("../schema.gql", import.meta.url), { encoding: "utf-8" });
 
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+/*
 export const gqlRootValue = {
   // query
   video: getVideo,
@@ -48,8 +46,7 @@ export const gqlRootValue = {
   tagVideo: tagVideo,
   untagVideo: untagVideo,
 };
-
-app.use(koaBody());
+*/
 
 app.use((ctx, next) => {
   ctx.res.setHeader("Access-Control-Allow-Origin", "*");
@@ -62,7 +59,8 @@ router.use("/auth", authRouter.routes());
 router.use("/auth", authRouter.allowedMethods());
 
 router.post("/graphql", async (ctx) => {
-  const session = await getUserFromSession(ctx.cookies.get("otmd-session"));
+  console.log("!");
+  const user = await getUserFromSession(ctx.cookies.get("otmd-session"));
   const { query, variables, operationName } = z
     .object({
       query: z.string(),
@@ -71,16 +69,16 @@ router.post("/graphql", async (ctx) => {
     })
     .parse(ctx.request.body);
 
+  const contextValue: Context = { user };
+
   ctx.body = await graphql({
+    contextValue,
+    operationName,
+    schema,
     source: query,
-    schema: gqlSchema,
-    rootValue: gqlRootValue,
     variableValues: variables,
-    operationName: operationName,
-    contextValue: {
-      session,
-    },
   });
+
   return;
 });
 

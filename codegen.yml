@@ -1,0 +1,9 @@
+# codegen.yml
+schema: ./schema.gql
+generates:
+  ./src/graphql/resolvers.ts:
+    config:
+      contextType: ../context.js#Context
+    plugins:
+      - typescript
+      - typescript-resolvers
