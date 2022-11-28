@@ -55,6 +55,12 @@ export type NiconicoSource = {
   video?: Maybe<Video>;
 };
 
+export type NiconicoVideoSource = VideoSource & {
+  __typename?: 'NiconicoVideoSource';
+  url: Scalars['String'];
+  videoId: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   findNiconicoSource?: Maybe<NiconicoSource>;
@@ -125,11 +131,20 @@ export type RegisterTagPayload = {
 
 export type RegisterVideoInput = {
   extraTitles?: InputMaybe<Array<Scalars['String']>>;
-  niconico?: InputMaybe<Array<Scalars['String']>>;
   primaryThumbnail: Scalars['String'];
   primaryTitle: Scalars['String'];
+  sources: Array<RegisterVideoInputSource>;
   tags: Array<Scalars['ID']>;
 };
+
+export type RegisterVideoInputSource = {
+  sourceId: Scalars['String'];
+  type: RegisterVideoInputSourceType;
+};
+
+export enum RegisterVideoInputSourceType {
+  Nicovideo = 'NICOVIDEO'
+}
 
 export type RegisterVideoPayload = {
   __typename?: 'RegisterVideoPayload';
@@ -175,7 +190,6 @@ export type Tag = {
   history: Array<TagHistoryItem>;
   id: Scalars['ID'];
   name: Scalars['String'];
-  names: Array<TagName>;
   taggedVideos: Array<Video>;
   type: TagType;
 };
@@ -212,12 +226,6 @@ export type TagHistoryItem = {
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
   user: User;
-};
-
-export type TagName = {
-  __typename?: 'TagName';
-  name: Scalars['String'];
-  primary: Scalars['Boolean'];
 };
 
 export type TagRegisterHistoryItem = TagHistoryItem & {
@@ -389,6 +397,11 @@ export type VideoRegisterHistoryItem = VideoHistoryItem & {
   video: Video;
 };
 
+export type VideoSource = {
+  url: Scalars['String'];
+  videoId: Scalars['String'];
+};
+
 export type VideoThumbnail = {
   __typename?: 'VideoThumbnail';
   imageUrl: Scalars['String'];
@@ -399,6 +412,12 @@ export type VideoTitle = {
   __typename?: 'VideoTitle';
   primary: Scalars['Boolean'];
   title: Scalars['String'];
+};
+
+export type YoutubeVideoSource = VideoSource & {
+  __typename?: 'YoutubeVideoSource';
+  url: Scalars['String'];
+  videoId: Scalars['String'];
 };
 
 
@@ -477,10 +496,13 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
   NiconicoSource: ResolverTypeWrapper<NiconicoSource>;
+  NiconicoVideoSource: ResolverTypeWrapper<NiconicoVideoSource>;
   Query: ResolverTypeWrapper<{}>;
   RegisterTagInput: RegisterTagInput;
   RegisterTagPayload: ResolverTypeWrapper<RegisterTagPayload>;
   RegisterVideoInput: RegisterVideoInput;
+  RegisterVideoInputSource: RegisterVideoInputSource;
+  RegisterVideoInputSourceType: RegisterVideoInputSourceType;
   RegisterVideoPayload: ResolverTypeWrapper<RegisterVideoPayload>;
   SearchTagsResult: ResolverTypeWrapper<SearchTagsResult>;
   SearchTagsResultItem: ResolverTypeWrapper<SearchTagsResultItem>;
@@ -494,7 +516,6 @@ export type ResolversTypes = {
   TagChangePrimaryNameHistoryItem: ResolverTypeWrapper<TagChangePrimaryNameHistoryItem>;
   TagDeleteNameHistoryItem: ResolverTypeWrapper<TagDeleteNameHistoryItem>;
   TagHistoryItem: ResolversTypes['TagAddNameHistoryItem'] | ResolversTypes['TagChangePrimaryNameHistoryItem'] | ResolversTypes['TagDeleteNameHistoryItem'] | ResolversTypes['TagRegisterHistoryItem'];
-  TagName: ResolverTypeWrapper<TagName>;
   TagRegisterHistoryItem: ResolverTypeWrapper<TagRegisterHistoryItem>;
   TagType: TagType;
   TagVideoInput: TagVideoInput;
@@ -514,8 +535,10 @@ export type ResolversTypes = {
   VideoHistoryItem: ResolversTypes['VideoAddNiconicoSourceHistoryItem'] | ResolversTypes['VideoAddTagHistoryItem'] | ResolversTypes['VideoAddThumbnailHistoryItem'] | ResolversTypes['VideoAddTitleHistoryItem'] | ResolversTypes['VideoChangePrimaryThumbnailHistoryItem'] | ResolversTypes['VideoChangePrimaryTitleHistoryItem'] | ResolversTypes['VideoDeleteTagHistoryItem'] | ResolversTypes['VideoDeleteThumbnailHistoryItem'] | ResolversTypes['VideoDeleteTitleHistoryItem'] | ResolversTypes['VideoRegisterHistoryItem'];
   VideoHistoryOrder: VideoHistoryOrder;
   VideoRegisterHistoryItem: ResolverTypeWrapper<VideoRegisterHistoryItem>;
+  VideoSource: ResolversTypes['NiconicoVideoSource'] | ResolversTypes['YoutubeVideoSource'];
   VideoThumbnail: ResolverTypeWrapper<VideoThumbnail>;
   VideoTitle: ResolverTypeWrapper<VideoTitle>;
+  YoutubeVideoSource: ResolverTypeWrapper<YoutubeVideoSource>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -527,10 +550,12 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'];
   Mutation: {};
   NiconicoSource: NiconicoSource;
+  NiconicoVideoSource: NiconicoVideoSource;
   Query: {};
   RegisterTagInput: RegisterTagInput;
   RegisterTagPayload: RegisterTagPayload;
   RegisterVideoInput: RegisterVideoInput;
+  RegisterVideoInputSource: RegisterVideoInputSource;
   RegisterVideoPayload: RegisterVideoPayload;
   SearchTagsResult: SearchTagsResult;
   SearchTagsResultItem: SearchTagsResultItem;
@@ -543,7 +568,6 @@ export type ResolversParentTypes = {
   TagChangePrimaryNameHistoryItem: TagChangePrimaryNameHistoryItem;
   TagDeleteNameHistoryItem: TagDeleteNameHistoryItem;
   TagHistoryItem: ResolversParentTypes['TagAddNameHistoryItem'] | ResolversParentTypes['TagChangePrimaryNameHistoryItem'] | ResolversParentTypes['TagDeleteNameHistoryItem'] | ResolversParentTypes['TagRegisterHistoryItem'];
-  TagName: TagName;
   TagRegisterHistoryItem: TagRegisterHistoryItem;
   TagVideoInput: TagVideoInput;
   UntagVideoInput: UntagVideoInput;
@@ -562,8 +586,10 @@ export type ResolversParentTypes = {
   VideoHistoryItem: ResolversParentTypes['VideoAddNiconicoSourceHistoryItem'] | ResolversParentTypes['VideoAddTagHistoryItem'] | ResolversParentTypes['VideoAddThumbnailHistoryItem'] | ResolversParentTypes['VideoAddTitleHistoryItem'] | ResolversParentTypes['VideoChangePrimaryThumbnailHistoryItem'] | ResolversParentTypes['VideoChangePrimaryTitleHistoryItem'] | ResolversParentTypes['VideoDeleteTagHistoryItem'] | ResolversParentTypes['VideoDeleteThumbnailHistoryItem'] | ResolversParentTypes['VideoDeleteTitleHistoryItem'] | ResolversParentTypes['VideoRegisterHistoryItem'];
   VideoHistoryOrder: VideoHistoryOrder;
   VideoRegisterHistoryItem: VideoRegisterHistoryItem;
+  VideoSource: ResolversParentTypes['NiconicoVideoSource'] | ResolversParentTypes['YoutubeVideoSource'];
   VideoThumbnail: VideoThumbnail;
   VideoTitle: VideoTitle;
+  YoutubeVideoSource: YoutubeVideoSource;
 };
 
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
@@ -580,6 +606,12 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
 export type NiconicoSourceResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NiconicoSource'] = ResolversParentTypes['NiconicoSource']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   video?: Resolver<Maybe<ResolversTypes['Video']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type NiconicoVideoSourceResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NiconicoVideoSource'] = ResolversParentTypes['NiconicoVideoSource']> = {
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  videoId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -638,7 +670,6 @@ export type TagResolvers<ContextType = Context, ParentType extends ResolversPare
   history?: Resolver<Array<ResolversTypes['TagHistoryItem']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  names?: Resolver<Array<ResolversTypes['TagName']>, ParentType, ContextType>;
   taggedVideos?: Resolver<Array<ResolversTypes['Video']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['TagType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -677,12 +708,6 @@ export type TagHistoryItemResolvers<ContextType = Context, ParentType extends Re
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-};
-
-export type TagNameResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TagName'] = ResolversParentTypes['TagName']> = {
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  primary?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type TagRegisterHistoryItemResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TagRegisterHistoryItem'] = ResolversParentTypes['TagRegisterHistoryItem']> = {
@@ -818,6 +843,12 @@ export type VideoRegisterHistoryItemResolvers<ContextType = Context, ParentType 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type VideoSourceResolvers<ContextType = Context, ParentType extends ResolversParentTypes['VideoSource'] = ResolversParentTypes['VideoSource']> = {
+  __resolveType: TypeResolveFn<'NiconicoVideoSource' | 'YoutubeVideoSource', ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  videoId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+};
+
 export type VideoThumbnailResolvers<ContextType = Context, ParentType extends ResolversParentTypes['VideoThumbnail'] = ResolversParentTypes['VideoThumbnail']> = {
   imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   primary?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -830,10 +861,17 @@ export type VideoTitleResolvers<ContextType = Context, ParentType extends Resolv
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type YoutubeVideoSourceResolvers<ContextType = Context, ParentType extends ResolversParentTypes['YoutubeVideoSource'] = ResolversParentTypes['YoutubeVideoSource']> = {
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  videoId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = Context> = {
   DateTime?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   NiconicoSource?: NiconicoSourceResolvers<ContextType>;
+  NiconicoVideoSource?: NiconicoVideoSourceResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   RegisterTagPayload?: RegisterTagPayloadResolvers<ContextType>;
   RegisterVideoPayload?: RegisterVideoPayloadResolvers<ContextType>;
@@ -847,7 +885,6 @@ export type Resolvers<ContextType = Context> = {
   TagChangePrimaryNameHistoryItem?: TagChangePrimaryNameHistoryItemResolvers<ContextType>;
   TagDeleteNameHistoryItem?: TagDeleteNameHistoryItemResolvers<ContextType>;
   TagHistoryItem?: TagHistoryItemResolvers<ContextType>;
-  TagName?: TagNameResolvers<ContextType>;
   TagRegisterHistoryItem?: TagRegisterHistoryItemResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   Video?: VideoResolvers<ContextType>;
@@ -863,7 +900,9 @@ export type Resolvers<ContextType = Context> = {
   VideoDeleteTitleHistoryItem?: VideoDeleteTitleHistoryItemResolvers<ContextType>;
   VideoHistoryItem?: VideoHistoryItemResolvers<ContextType>;
   VideoRegisterHistoryItem?: VideoRegisterHistoryItemResolvers<ContextType>;
+  VideoSource?: VideoSourceResolvers<ContextType>;
   VideoThumbnail?: VideoThumbnailResolvers<ContextType>;
   VideoTitle?: VideoTitleResolvers<ContextType>;
+  YoutubeVideoSource?: YoutubeVideoSourceResolvers<ContextType>;
 };
 
