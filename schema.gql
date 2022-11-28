@@ -6,16 +6,8 @@ type Query {
 
   tag(id: ID!): Tag!
 
-  searchVideos(
-    query: String!
-    limit: Int! = 10
-    skip: Int! = 0
-  ): SearchVideosResult!
-  searchTags(
-    query: String!
-    limit: Int! = 10
-    skip: Int! = 0
-  ): SearchTagsResult!
+  searchVideos(query: String!, limit: Int! = 10, skip: Int! = 0): SearchVideosResult!
+  searchTags(query: String!, limit: Int! = 10, skip: Int! = 0): SearchTagsResult!
 
   user(name: String!): User!
   whoami: User!
@@ -25,24 +17,11 @@ type Query {
 }
 
 type Mutation {
-  refreshToken(token: String!): RefreshTokenPayload
-
-  signin(input: SigninInput): SigninPayload!
   registerTag(input: RegisterTagInput!): RegisterTagPayload!
   registerVideo(input: RegisterVideoInput!): RegisterVideoPayload!
 
   tagVideo(input: TagVideoInput!): VideoAddTagHistoryItem!
   untagVideo(input: UntagVideoInput!): VideoDeleteTagHistoryItem!
-}
-
-type RefreshTokenPayload {
-  accessToken: String!
-  refreshToken: String!
-}
-
-input SigninInput {
-  name: String!
-  password: String!
 }
 
 type Video {
@@ -53,11 +32,7 @@ type Video {
   thumbnails: [VideoThumbnail!]!
   tags: [Tag!]!
   hasTag(id: ID!): Boolean!
-  history(
-    skip: Int! = 0
-    limit: Int! = 10
-    order: VideoHistoryOrder! = { createdAt: DESC }
-  ): [VideoHistoryItem!]!
+  history(skip: Int! = 0, limit: Int! = 10, order: VideoHistoryOrder! = { createdAt: DESC }): [VideoHistoryItem!]!
   registeredAt: DateTime!
 }
 
