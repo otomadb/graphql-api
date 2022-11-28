@@ -11,10 +11,13 @@ export const getTag = async (
   const tag = await tagsColl.findOne({ _id: args.id });
   if (!tag) throw new GraphQLError("Not Found");
 
+  console.dir(tag);
+
   return new Tag({
     id: tag._id,
     type: tag.type,
     names: tag.names,
     // history: tag.history,
+    parents: tag.parents || [],
   });
 };

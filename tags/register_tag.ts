@@ -89,6 +89,7 @@ export const registerTag = async (
       id: add._id,
       names: add.names,
       type: add.type,
+      parents: add.parents || [],
     }),
   };
 };

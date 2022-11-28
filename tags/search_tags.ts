@@ -14,6 +14,7 @@ export const searchTags = async (
       names: { name: string; primary?: boolean }[];
       type: string;
       history: ObjectId[];
+      parents: { id: string; explicit: boolean }[]; // TODO: 嘘
     }>([
       {
         $project: {
@@ -55,7 +56,11 @@ export const searchTags = async (
     ])
     .toArray()
     .then((arr) =>
-      arr.map(({ matched_name, ...rest }) => new SearchTagsResultItem({ matchedName: matched_name }, rest))
+      arr.map(({ matched_name, ...rest }) =>
+        new SearchTagsResultItem({
+          matchedName: matched_name,
+        }, rest)
+      )
     );
 
   return {

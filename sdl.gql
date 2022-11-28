@@ -186,9 +186,14 @@ type Tag {
   taggedVideos: [Video!]!
   history: [TagHistoryItem!]!
 
-  explicitParent: Tag!
+  explicitParent: Tag
   parents: [TagParent!]!
   meaningless: Boolean!
+}
+
+type TagName {
+  name: String!
+  primary: Boolean!
 }
 
 type TagParent {
