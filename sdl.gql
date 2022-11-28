@@ -179,7 +179,7 @@ type VideoCollection {
 
 type Tag {
   id: ID!
-  type: TagType!
+  type: TagType! @deprecated
   name: String!
   names: [TagName!]!
 
