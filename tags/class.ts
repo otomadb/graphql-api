@@ -69,6 +69,10 @@ export class Tag {
       .map(({ id, explicit }) => new TagParent({ id, explicit }));
   }
 
+  meaningless() {
+    return false; // TODO: 応急処置
+  }
+
   async explicitParent(args: unknown, ctx: { mongo: MongoClient }) {
     const exp = this.parents().find(({ explicit }) => explicit);
     if (!exp) return null;
