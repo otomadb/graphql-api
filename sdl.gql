@@ -182,13 +182,18 @@ type Tag {
   type: TagType!
   name: String!
   names: [TagName!]!
+
   taggedVideos: [Video!]!
   history: [TagHistoryItem!]!
+
+  explicitParent: Tag!
+  parents: [TagParent!]!
+  meaningless: Boolean!
 }
 
-type TagName {
-  name: String!
-  primary: Boolean!
+type TagParent {
+  tag: Tag!
+  explicit: Boolean!
 }
 
 enum TagType {
