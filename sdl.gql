@@ -286,7 +286,9 @@ type SigninPayload {
 input RegisterTagInput {
   primaryName: String!
   extraNames: [String!]
-  type: TagType!
+
+  explicitParent: ID
+  implicitParents: [ID!]
 }
 
 type RegisterTagPayload {

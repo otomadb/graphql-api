@@ -9,7 +9,9 @@ export const registerTag = async (
     input: {
       primaryName: string;
       extraNames?: string[];
-      type: string;
+
+      explicitParent?: string;
+      implicitParents?: string[];
     };
   },
   context: { mongo: MongoClient; userId?: string },
@@ -21,12 +23,17 @@ export const registerTag = async (
   const historyColl = getTagHistoryCollection(context.mongo);
 
   const already = await tagsColl.findOne({
-    "names.name": { "$in": [input.primaryName, ...(input.extraNames || [])] },
-    "type": input.type,
+    "names.name": {
+      $in: [input.primaryName, ...(input.extraNames || [])],
+    },
+    "parents.id": {
+      $in: [
+        ...(input.explicitParent ? [input.explicitParent] : []),
+        ...(input.implicitParents || []),
+      ],
+    },
   });
-  if (already) {
-    throw new GraphQLError(`"${input.primaryName}" in "${input.type}" already registered as primary name.`);
-  }
+  if (already) throw new GraphQLError(`already registered`);
 
   const reservedTagId = generateId();
 
@@ -76,12 +83,16 @@ export const registerTag = async (
   const add = await tagsColl
     .insertOne({
       _id: reservedTagId,
-      type: input.type,
+      type: "MATERIAL",
       names: [
         { name: input.primaryName, primary: true },
         ...(input.extraNames?.map((extraName) => ({ name: extraName })) || []),
       ],
-    }).then((id) => tagsColl.findOne({ _id: id }));
+      parents: [
+        ...(input.explicitParent ? [{ id: input.explicitParent, explicit: true }] : []),
+        ...(input.implicitParents?.map((id) => ({ id, explicit: false })) || []),
+      ],
+    }).then(({ insertedId }) => tagsColl.findOne({ _id: insertedId }));
   if (!add) throw new GraphQLError("Something wrong");
 
   return {
@@ -93,3 +104,5 @@ export const registerTag = async (
     }),
   };
 };
+
+// { "names.name": {$in: ["姫坂乃愛"]}, "parents.id": "rdtvsdgdzzdb" }
