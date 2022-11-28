@@ -23,17 +23,10 @@ export type GetVideosInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  refreshToken?: Maybe<RefreshTokenPayload>;
   registerTag: RegisterTagPayload;
   registerVideo: RegisterVideoPayload;
-  signin: SigninPayload;
   tagVideo: VideoAddTagHistoryItem;
   untagVideo: VideoDeleteTagHistoryItem;
-};
-
-
-export type MutationRefreshTokenArgs = {
-  token: Scalars['String'];
 };
 
 
@@ -44,11 +37,6 @@ export type MutationRegisterTagArgs = {
 
 export type MutationRegisterVideoArgs = {
   input: RegisterVideoInput;
-};
-
-
-export type MutationSigninArgs = {
-  input?: InputMaybe<SigninInput>;
 };
 
 
@@ -124,12 +112,6 @@ export type QueryVideosArgs = {
   input?: InputMaybe<GetVideosInput>;
 };
 
-export type RefreshTokenPayload = {
-  __typename?: 'RefreshTokenPayload';
-  accessToken: Scalars['String'];
-  refreshToken: Scalars['String'];
-};
-
 export type RegisterTagInput = {
   extraNames?: InputMaybe<Array<Scalars['String']>>;
   primaryName: Scalars['String'];
@@ -174,11 +156,6 @@ export type SearchVideosResultItem = {
   __typename?: 'SearchVideosResultItem';
   matchedTitle: Scalars['String'];
   video: Video;
-};
-
-export type SigninInput = {
-  name: Scalars['String'];
-  password: Scalars['String'];
 };
 
 export type SigninPayload = {
@@ -501,7 +478,6 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   NiconicoSource: ResolverTypeWrapper<NiconicoSource>;
   Query: ResolverTypeWrapper<{}>;
-  RefreshTokenPayload: ResolverTypeWrapper<RefreshTokenPayload>;
   RegisterTagInput: RegisterTagInput;
   RegisterTagPayload: ResolverTypeWrapper<RegisterTagPayload>;
   RegisterVideoInput: RegisterVideoInput;
@@ -510,7 +486,6 @@ export type ResolversTypes = {
   SearchTagsResultItem: ResolverTypeWrapper<SearchTagsResultItem>;
   SearchVideosResult: ResolverTypeWrapper<SearchVideosResult>;
   SearchVideosResultItem: ResolverTypeWrapper<SearchVideosResultItem>;
-  SigninInput: SigninInput;
   SigninPayload: ResolverTypeWrapper<SigninPayload>;
   SortOrder: SortOrder;
   String: ResolverTypeWrapper<Scalars['String']>;
@@ -553,7 +528,6 @@ export type ResolversParentTypes = {
   Mutation: {};
   NiconicoSource: NiconicoSource;
   Query: {};
-  RefreshTokenPayload: RefreshTokenPayload;
   RegisterTagInput: RegisterTagInput;
   RegisterTagPayload: RegisterTagPayload;
   RegisterVideoInput: RegisterVideoInput;
@@ -562,7 +536,6 @@ export type ResolversParentTypes = {
   SearchTagsResultItem: SearchTagsResultItem;
   SearchVideosResult: SearchVideosResult;
   SearchVideosResultItem: SearchVideosResultItem;
-  SigninInput: SigninInput;
   SigninPayload: SigninPayload;
   String: Scalars['String'];
   Tag: Tag;
@@ -598,10 +571,8 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 }
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  refreshToken?: Resolver<Maybe<ResolversTypes['RefreshTokenPayload']>, ParentType, ContextType, RequireFields<MutationRefreshTokenArgs, 'token'>>;
   registerTag?: Resolver<ResolversTypes['RegisterTagPayload'], ParentType, ContextType, RequireFields<MutationRegisterTagArgs, 'input'>>;
   registerVideo?: Resolver<ResolversTypes['RegisterVideoPayload'], ParentType, ContextType, RequireFields<MutationRegisterVideoArgs, 'input'>>;
-  signin?: Resolver<ResolversTypes['SigninPayload'], ParentType, ContextType, Partial<MutationSigninArgs>>;
   tagVideo?: Resolver<ResolversTypes['VideoAddTagHistoryItem'], ParentType, ContextType, RequireFields<MutationTagVideoArgs, 'input'>>;
   untagVideo?: Resolver<ResolversTypes['VideoDeleteTagHistoryItem'], ParentType, ContextType, RequireFields<MutationUntagVideoArgs, 'input'>>;
 };
@@ -622,12 +593,6 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   video?: Resolver<ResolversTypes['Video'], ParentType, ContextType, RequireFields<QueryVideoArgs, 'id'>>;
   videos?: Resolver<ResolversTypes['VideoCollection'], ParentType, ContextType, RequireFields<QueryVideosArgs, 'input'>>;
   whoami?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-};
-
-export type RefreshTokenPayloadResolvers<ContextType = Context, ParentType extends ResolversParentTypes['RefreshTokenPayload'] = ResolversParentTypes['RefreshTokenPayload']> = {
-  accessToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RegisterTagPayloadResolvers<ContextType = Context, ParentType extends ResolversParentTypes['RegisterTagPayload'] = ResolversParentTypes['RegisterTagPayload']> = {
@@ -870,7 +835,6 @@ export type Resolvers<ContextType = Context> = {
   Mutation?: MutationResolvers<ContextType>;
   NiconicoSource?: NiconicoSourceResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-  RefreshTokenPayload?: RefreshTokenPayloadResolvers<ContextType>;
   RegisterTagPayload?: RegisterTagPayloadResolvers<ContextType>;
   RegisterVideoPayload?: RegisterVideoPayloadResolvers<ContextType>;
   SearchTagsResult?: SearchTagsResultResolvers<ContextType>;
