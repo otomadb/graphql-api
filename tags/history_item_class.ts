@@ -38,6 +38,7 @@ export abstract class TagHistoryItem {
       // history: tag.history,
       names: tag.names,
       type: tag.type,
+      parents: tag.parents || [],
     });
   }
 

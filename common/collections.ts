@@ -13,6 +13,8 @@ export const getTagsCollection = (mongo: MongoClient) =>
     names: { name: string; primary?: boolean }[];
     type: string;
     context?: string;
+
+    parents?: { id: string; explicit: boolean }[];
   }>("tags");
 
 export const getVideosCollection = (mongo: MongoClient) =>

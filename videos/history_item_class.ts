@@ -91,6 +91,7 @@ export abstract class VideoTagHistoryItem extends VideoHistoryItem {
       id: tag._id,
       names: tag.names,
       type: tag.type,
+      parents: tag.parents || [],
     });
   }
 }

@@ -104,7 +104,14 @@ export class Video {
   async tags(_: unknown, context: { mongo: MongoClient }): Promise<Tag[]> {
     const tagsColl = getTagsCollection(context.mongo);
     const tags = await tagsColl.find({ _id: { $in: this._tags } }).toArray();
-    return tags.map(({ _id, names, type }) => new Tag({ id: _id, names, type }));
+    return tags.map(({ _id, names, type, parents }) =>
+      new Tag({
+        id: _id,
+        names,
+        type,
+        parents: parents || [],
+      })
+    );
   }
 
   async hasTag({ id }: { id: string }, context: { mongo: MongoClient }) {

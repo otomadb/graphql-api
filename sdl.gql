@@ -179,16 +179,26 @@ type VideoCollection {
 
 type Tag {
   id: ID!
-  type: TagType!
+  type: TagType! @deprecated
   name: String!
   names: [TagName!]!
+
   taggedVideos: [Video!]!
   history: [TagHistoryItem!]!
+
+  explicitParent: Tag
+  parents: [TagParent!]!
+  meaningless: Boolean!
 }
 
 type TagName {
   name: String!
   primary: Boolean!
+}
+
+type TagParent {
+  tag: Tag!
+  explicit: Boolean!
 }
 
 enum TagType {
@@ -276,7 +286,9 @@ type SigninPayload {
 input RegisterTagInput {
   primaryName: String!
   extraNames: [String!]
-  type: TagType!
+
+  explicitParent: ID
+  implicitParents: [ID!]
 }
 
 type RegisterTagPayload {

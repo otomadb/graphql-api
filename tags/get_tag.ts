@@ -16,5 +16,6 @@ export const getTag = async (
     type: tag.type,
     names: tag.names,
     // history: tag.history,
+    parents: tag.parents || [],
   });
 };
