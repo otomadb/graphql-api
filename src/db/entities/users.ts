@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, Relation, UpdateDateColumn } from "typeorm";
+import { Session } from "./sessions.js";
 
 @Entity("users")
 export class User {
@@ -28,4 +29,7 @@ export class User {
 
   @UpdateDateColumn({ type: "timestamptz" })
   readonly updatedAt!: Date;
+
+  @OneToMany((_type) => Session, (session) => session.user)
+  sessions!: Relation<Session[]>;
 }

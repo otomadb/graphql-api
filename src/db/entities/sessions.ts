@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn, Relation, UpdateDateColumn } from "typeorm";
 import { User } from "./users.js";
 
 @Entity("sessions")
@@ -6,8 +6,8 @@ export class Session {
   @PrimaryColumn("varchar", { length: 26 })
   id!: string;
 
-  @ManyToOne((type) => User, { nullable: false })
-  user!: User;
+  @ManyToOne(() => User, { nullable: false })
+  user!: Relation<User>;
 
   @Column("varchar", { length: 64 })
   secret!: string;

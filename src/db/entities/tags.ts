@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, Relation, UpdateDateColumn } from "typeorm";
+import { VideoTag } from "./video_tags.js";
 
 @Entity("tags")
 export class Tag {
@@ -13,4 +14,7 @@ export class Tag {
 
   @UpdateDateColumn({ type: "timestamptz" })
   readonly updatedAt!: Date;
+
+  @OneToMany(() => VideoTag, (videoTag) => videoTag.tag)
+  videoTags!: Relation<VideoTag[]>;
 }
