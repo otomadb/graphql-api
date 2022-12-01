@@ -38,7 +38,6 @@ router.use("/auth", authRouter.routes());
 router.use("/auth", authRouter.allowedMethods());
 
 router.post("/graphql", async (ctx) => {
-  console.log("!");
   const user = await getUserFromSession(ctx.cookies.get("otmd-session"));
   const { query, variables, operationName } = z
     .object({
