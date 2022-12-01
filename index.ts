@@ -21,7 +21,7 @@ const app = new Koa();
 const router = new Router();
 
 export const gqlSchema = buildSchema(
-  await fsPromises.readFile(new URL("./sdl.gql", import.meta.url), { encoding: "utf-8" }),
+  await fsPromises.readFile(new URL("./schema.gql", import.meta.url), { encoding: "utf-8" }),
 );
 export const gqlRootValue = {
   // query
