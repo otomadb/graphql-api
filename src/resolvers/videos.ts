@@ -1,10 +1,35 @@
+import { GraphQLError } from "graphql";
 import { ulid } from "ulid";
 import { dataSource } from "../db/data-source.js";
 import { Video } from "../db/entities/videos.js";
 import { VideoSource } from "../db/entities/video_sources.js";
 import { VideoThumbnail } from "../db/entities/video_thumbnails.js";
 import { VideoTitle } from "../db/entities/video_titles.js";
-import { MutationResolvers } from "../graphql/resolvers.js";
+import { MutationResolvers, QueryResolvers } from "../graphql/resolvers.js";
+
+export const video: QueryResolvers["video"] = async (_parent, { id }, _context, _info) => {
+  const video = await dataSource.getRepository(Video).findOne({
+    relations: {
+      sources: true,
+      thumbnails: true,
+      titles: true,
+    },
+    where: { id },
+  });
+  if (!video) throw new GraphQLError("Not Found");
+
+  return {
+    id: "video:" + video.id,
+    title: video.titles.find((t) => t.isPrimary)?.title!,
+    titles: video.titles.map((t) => ({ title: t.title, primary: t.isPrimary })),
+    thumbnailUrl: video.thumbnails.find((t) => t.primary)?.imageUrl!,
+    thumbnails: video.thumbnails.map((t) => ({ imageUrl: t.imageUrl, primary: t.primary })),
+    tags: [],
+    hasTag: false,
+    history: [],
+    registeredAt: video.createdAt,
+  };
+};
 
 export const registerVideo: MutationResolvers["registerVideo"] = async (_parent, { input }, _context, _info) => {
   const video = new Video();
