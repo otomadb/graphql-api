@@ -1,10 +1,10 @@
+import koaCORS from "@koa/cors";
 import Router from "@koa/router";
 import { buildSchema, graphql } from "graphql";
 import Koa from "koa";
 import { koaBody } from "koa-body";
 import { MongoClient } from "mongodb";
 import fsPromises from "node:fs/promises";
-import { verifyAccessJWT } from "./auth/jwt.js";
 import { refreshToken, signin, whoami } from "./auth/mod.js";
 import { findNiconicoSource } from "./niconico/find.js";
 import { getNiconicoSource } from "./niconico/get.js";
@@ -45,13 +45,19 @@ export const gqlRootValue = {
 };
 
 app.use(koaBody());
+app.use(koaCORS({
+  credentials: true,
+}));
 
+/*
 app.use((ctx, next) => {
-  ctx.res.setHeader("Access-Control-Allow-Origin", "*");
+  ctx.res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
   ctx.res.setHeader("Access-Control-Allow-Methods", "GET, POST");
   ctx.res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  ctx.res.setHeader("Access-Control-Allow-Credentials", "true");
   return next();
 });
+*/
 
 router.post(
   "/graphql",
