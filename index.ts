@@ -46,19 +46,7 @@ export const gqlRootValue = {
 };
 
 app.use(koaBody());
-app.use(koaCORS({
-  credentials: true,
-}));
-
-/*
-app.use((ctx, next) => {
-  ctx.res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-  ctx.res.setHeader("Access-Control-Allow-Methods", "GET, POST");
-  ctx.res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  ctx.res.setHeader("Access-Control-Allow-Credentials", "true");
-  return next();
-});
-*/
+app.use(koaCORS({ credentials: true }));
 
 router.post(
   "/graphql",
