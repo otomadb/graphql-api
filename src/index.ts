@@ -38,7 +38,9 @@ router.use("/auth", authRouter.routes());
 router.use("/auth", authRouter.allowedMethods());
 
 router.post("/graphql", async (ctx) => {
-  const user = await getUserFromSession(ctx.cookies.get("otmd-session"));
+  // まずは Cookie からセッションを取る、取れなければ Authorization ヘッダーから取る、形式は `Authorization: Bearer session_token`
+  // FIXME: 危なそうなので開発環境だけ有効にしたい
+  const user = await getUserFromSession(ctx.cookies.get("otmd-session") ?? ctx.get("authorization").split(" ").at(1));
   const { query, variables, operationName } = z
     .object({
       query: z.string(),
