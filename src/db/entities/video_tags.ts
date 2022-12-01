@@ -1,4 +1,4 @@
-import { CreateDateColumn, Entity, ManyToOne, PrimaryColumn, Unique, UpdateDateColumn } from "typeorm";
+import { CreateDateColumn, Entity, ManyToOne, PrimaryColumn, Relation, Unique, UpdateDateColumn } from "typeorm";
 import { Tag } from "./tags.js";
 import { Video } from "./videos.js";
 
@@ -8,11 +8,11 @@ export class VideoTag {
   @PrimaryColumn("varchar", { length: 26 })
   id!: string;
 
-  @ManyToOne((type) => Tag, { nullable: false })
-  tag!: Tag;
+  @ManyToOne(() => Tag, { nullable: false })
+  tag!: Relation<Tag>;
 
-  @ManyToOne((type) => Video, { nullable: false })
-  video!: Video;
+  @ManyToOne(() => Video, { nullable: false })
+  video!: Relation<Video>;
 
   @CreateDateColumn({ type: "timestamptz" })
   readonly createdAt!: Date;

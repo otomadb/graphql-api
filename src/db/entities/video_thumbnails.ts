@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn, Relation, UpdateDateColumn } from "typeorm";
 import { Video } from "./videos.js";
 
 @Entity("video_thumbnails")
@@ -12,8 +12,8 @@ export class VideoThumbnail {
   @Column("boolean", { nullable: false, default: false })
   primary!: boolean;
 
-  @ManyToOne((type) => Video, { nullable: false })
-  video!: Video;
+  @ManyToOne(() => Video, { nullable: false })
+  video!: Relation<Video>;
 
   @CreateDateColumn({ type: "timestamptz" })
   readonly createdAt!: Date;
