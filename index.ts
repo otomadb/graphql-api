@@ -62,6 +62,22 @@ app.use((ctx, next) => {
 router.post(
   "/graphql",
   async (ctx, next) => {
+    const session = ctx.cookies.get("otmd-session");
+    console.log(session);
+
+    if (!session) {
+      await next();
+      return;
+    }
+
+    const [sessionId, secret] = session.split("-");
+
+    if (sessionId && secret === "secret") ctx.state.userId = sessionId;
+
+    await next();
+    return;
+
+    /*
     const accessToken = ctx.get("Authorization")?.split("Bearer ")?.[1];
 
     if (!accessToken) {
@@ -70,13 +86,15 @@ router.post(
     }
 
     try {
-      const payload = await verifyAccessJWT({ token: accessToken });
-      ctx.state.userId = payload?.sub;
+      // const payload = await verifyAccessJWT({ token: accessToken });
+      ctx.state.userId = "1";
+      // ctx.state.userId = payload?.sub;
     } catch (e) {
       console.error(e);
     } finally {
       await next();
     }
+    */
   },
   async (ctx) => {
     const { query, variables, operationName } = ctx.request.body;
@@ -100,4 +118,7 @@ router.post(
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-app.listen({ port: 8080 });
+app.listen(
+  { port: 8080 },
+  () => console.log("listening now"),
+);
