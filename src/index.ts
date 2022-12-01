@@ -27,27 +27,6 @@ export const typeDefs = await readFile(new URL("../schema.gql", import.meta.url)
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 
-/*
-export const gqlRootValue = {
-  // query
-  video: getVideo,
-  videos: getVideos,
-  tag: getTag,
-  searchVideos: searchVideos,
-  searchTags: searchTags,
-  user: getUser,
-  whoami: whoami,
-  niconicoSource: getNiconicoSource,
-  findNiconicoSource: findNiconicoSource,
-
-  // mutation
-  registerTag: registerTag,
-  registerVideo: registerVideo,
-  tagVideo: tagVideo,
-  untagVideo: untagVideo,
-};
-*/
-
 app.use((ctx, next) => {
   ctx.res.setHeader("Access-Control-Allow-Origin", "*");
   ctx.res.setHeader("Access-Control-Allow-Methods", "GET, POST");
