@@ -3,6 +3,11 @@ version: "3.9"
 services:
   postgres:
     image: postgres:15
+    healthcheck:
+      test: pg_isready
+      interval: 10s
+      timeout: 5s
+      retries: 5
     ports:
       - target: 5432
         published: 5432
@@ -14,6 +19,18 @@ services:
       - type: volume
         source: postgres_data
         target: /var/lib/postgresql/data
+
+  pgweb:
+    image: sosedoff/pgweb:latest
+    ports:
+      - target: 8081
+        published: 8081
+    environment:
+      DATABASE_URL: postgres://user:pass@postgres:5432/test?sslmode=disable
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 
 volumes:
   postgres_data:
