@@ -5,6 +5,7 @@ import Koa from "koa";
 import { koaBody } from "koa-body";
 import { MongoClient } from "mongodb";
 import fsPromises from "node:fs/promises";
+import { verifyAccessJWT } from "./auth/jwt.js";
 import { refreshToken, signin, whoami } from "./auth/mod.js";
 import { findNiconicoSource } from "./niconico/find.js";
 import { getNiconicoSource } from "./niconico/get.js";
@@ -62,8 +63,29 @@ app.use((ctx, next) => {
 router.post(
   "/graphql",
   async (ctx, next) => {
+    const accessToken = ctx.get("Authorization")?.split("Bearer ")?.[1];
+
+    if (!accessToken) {
+      await next();
+      return;
+    }
+
+    try {
+      const payload = await verifyAccessJWT({ token: accessToken });
+      ctx.state.userId = payload?.sub;
+    } catch (e) {
+      console.error(e);
+    } finally {
+      await next();
+    }
+  },
+  async (ctx, next) => {
+    if (ctx.state.userId) {
+      next();
+      return;
+    }
+
     const session = ctx.cookies.get("otmd-session");
-    console.log(session);
 
     if (!session) {
       await next();
