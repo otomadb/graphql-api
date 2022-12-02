@@ -140,3 +140,20 @@ export const getNiconicoCollection = (mongo: MongoClient) =>
     _id: string;
     video_id: string;
   }>("niconico");
+
+export const getMylistsCollection = (mongo: MongoClient) =>
+  mongo.db().collection<{
+    _id: string;
+    title: string;
+    holder_id: string;
+    created_at: Date;
+    range: "PUBLIC" | "KNOW_LINK" | "PRIVATE";
+  }>("mylists");
+
+export const getMylistRegistrationsCollection = (mongo: MongoClient) =>
+  mongo.db().collection<{
+    _id: string;
+    created_at: Date;
+    updated_at: Date;
+    video_id: string;
+  }>("mylist_registrations");
