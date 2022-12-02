@@ -157,4 +157,5 @@ export const getMylistRegistrationsCollection = (mongo: MongoClient) =>
     updated_at: Date;
     video_id: string;
     mylist_id: string;
+    favorites: boolean;
   }>("mylist_registrations");
