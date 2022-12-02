@@ -47,4 +47,50 @@ export class User {
       range: mylist.range,
     });
   }
+
+  async mylists(
+    { input: input }: {
+      input: {
+        limit?: number;
+        skip?: number;
+        order: Record<"createdAt" | "updatedAt", "ASC" | "DESC" | undefined>;
+        range: ("PUBLIC" | "KNOW_LINK" | "PRIVATE")[];
+      };
+    },
+    { userId, mongo }: { userId?: string; mongo: MongoClient },
+  ) {
+    if (
+      (input.range.includes("KNOW_LINK") || input.range.includes("PRIVATE"))
+      && this._id !== userId
+    ) {
+      throw new GraphQLError("you can't view other's private mylists");
+    }
+
+    const mylistsColl = getMylistsCollection(mongo);
+    const nodes = (await mylistsColl
+      .find({ holder_id: this._id, range: { $in: input.range } }, {
+        sort: {
+          created_at: input.order.createdAt === "ASC" ? 1 : -1,
+          // updated_at: input.order.updatedAt === "ASC" ? 1 : -1,
+        },
+        ...(input.limit ? { limit: input.limit } : {}),
+        ...(input.skip ? { skip: input.skip } : {}),
+      })
+      .toArray()).map(({
+        _id,
+        created_at,
+        holder_id,
+        range,
+        title,
+      }) =>
+        new Mylist({
+          id: _id,
+          holderId: holder_id,
+          range: range,
+          title,
+        })
+      );
+
+    return { nodes: nodes };
+  }
 }
