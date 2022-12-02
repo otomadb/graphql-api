@@ -148,14 +148,25 @@ export const getMylistsCollection = (mongo: MongoClient) =>
     holder_id: string;
     created_at: Date;
     range: "PUBLIC" | "KNOW_LINK" | "PRIVATE";
+    favorites: boolean;
   }>("mylists");
 
 export const getMylistRegistrationsCollection = (mongo: MongoClient) =>
   mongo.db().collection<{
-    _id: string;
     created_at: Date;
     updated_at: Date;
     video_id: string;
     mylist_id: string;
-    favorites: boolean;
+    note: string | null;
   }>("mylist_registrations");
+
+export const getMylistEventsCollection = (mongo: MongoClient) =>
+  mongo.db().collection<
+    & {
+      created_at: Date;
+    }
+    & (
+      | { type: "ADD_TO_LIST"; registration_id: ObjectId }
+      | { type: "REMOVE_FROM_LIST" }
+    )
+  >("mylist_events");
