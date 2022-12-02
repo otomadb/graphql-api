@@ -18,5 +18,6 @@ export const getMylist = async (
     title: mylist.title,
     holderId: mylist.holder_id,
     range: mylist.range,
+    createdAt: mylist.created_at,
   });
 };

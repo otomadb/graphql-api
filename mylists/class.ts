@@ -65,6 +65,7 @@ export class MylistRegistration {
       title: mylist.title,
       holderId: mylist.holder_id,
       range: mylist.range,
+      createdAt: mylist.created_at,
     });
   }
 }
@@ -74,17 +75,20 @@ export class Mylist {
   public title;
   private holderId;
   public range;
+  public createdAt;
 
-  constructor({ id, title, holderId, range }: {
+  constructor({ id, title, holderId, range, createdAt }: {
     id: string;
     title: string;
     holderId: string;
     range: "PUBLIC" | "KNOW_LINK" | "PRIVATE";
+    createdAt: Date;
   }) {
     this.id = id;
     this.title = title;
     this.holderId = holderId;
     this.range = range;
+    this.createdAt = createdAt;
   }
 
   async holder(_: unknown, { mongo }: { mongo: MongoClient }): Promise<User> {

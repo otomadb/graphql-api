@@ -45,6 +45,7 @@ export class User {
       title: mylist.title,
       holderId: mylist.holder_id,
       range: mylist.range,
+      createdAt: mylist.created_at,
     });
   }
 
@@ -88,6 +89,7 @@ export class User {
           holderId: holder_id,
           range: range,
           title,
+          createdAt: created_at,
         })
       );
 
