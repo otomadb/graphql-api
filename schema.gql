@@ -25,24 +25,11 @@ type Query {
 }
 
 type Mutation {
-  refreshToken(token: String!): RefreshTokenPayload
-
-  signin(input: SigninInput): SigninPayload!
   registerTag(input: RegisterTagInput!): RegisterTagPayload!
   registerVideo(input: RegisterVideoInput!): RegisterVideoPayload!
 
   tagVideo(input: TagVideoInput!): VideoAddTagHistoryItem!
   untagVideo(input: UntagVideoInput!): VideoDeleteTagHistoryItem!
-}
-
-type RefreshTokenPayload {
-  accessToken: String!
-  refreshToken: String!
-}
-
-input SigninInput {
-  name: String!
-  password: String!
 }
 
 type Video {
@@ -275,12 +262,6 @@ type User {
   name: String!
   displayName: String!
   icon: String!
-}
-
-type SigninPayload {
-  accessToken: String!
-  refreshToken: String!
-  user: User!
 }
 
 input RegisterTagInput {
