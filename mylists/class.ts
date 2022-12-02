@@ -117,6 +117,14 @@ export class Mylist {
     }
   }
 
+  async updatedAt(_: unknown, context: { mongo: MongoClient }) {
+    const { nodes } = await this.registrations(
+      { input: { limit: 1, order: { updatedAt: "DESC" } } },
+      context,
+    );
+    return nodes.at(0)?.updatedAt || this.createdAt;
+  }
+
   async registrations(
     { input: { limit, skip, order } }: {
       input: {
