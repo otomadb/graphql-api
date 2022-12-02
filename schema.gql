@@ -363,7 +363,7 @@ type MylistRegisteredVideo {
   id: ID!
   video: Video!
   registeredAt: DateTime!
-  notes: String
+  note: String
 }
 
 type MylistRegisteredVideoCollection {
