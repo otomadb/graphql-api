@@ -1,3 +1,4 @@
+import koaCORS from "@koa/cors";
 import Router from "@koa/router";
 import { buildSchema, graphql } from "graphql";
 import Koa from "koa";
@@ -45,13 +46,7 @@ export const gqlRootValue = {
 };
 
 app.use(koaBody());
-
-app.use((ctx, next) => {
-  ctx.res.setHeader("Access-Control-Allow-Origin", "*");
-  ctx.res.setHeader("Access-Control-Allow-Methods", "GET, POST");
-  ctx.res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  return next();
-});
+app.use(koaCORS({ credentials: true }));
 
 router.post(
   "/graphql",
@@ -71,6 +66,45 @@ router.post(
     } finally {
       await next();
     }
+  },
+  async (ctx, next) => {
+    if (ctx.state.userId) {
+      next();
+      return;
+    }
+
+    const session = ctx.cookies.get("otmd-session");
+
+    if (!session) {
+      await next();
+      return;
+    }
+
+    const [sessionId, secret] = session.split("-");
+
+    if (sessionId && secret === "secret") ctx.state.userId = sessionId;
+
+    await next();
+    return;
+
+    /*
+    const accessToken = ctx.get("Authorization")?.split("Bearer ")?.[1];
+
+    if (!accessToken) {
+      await next();
+      return;
+    }
+
+    try {
+      // const payload = await verifyAccessJWT({ token: accessToken });
+      ctx.state.userId = "1";
+      // ctx.state.userId = payload?.sub;
+    } catch (e) {
+      console.error(e);
+    } finally {
+      await next();
+    }
+    */
   },
   async (ctx) => {
     const { query, variables, operationName } = ctx.request.body;
@@ -94,4 +128,7 @@ router.post(
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-app.listen({ port: 8080 });
+app.listen(
+  { port: 8080 },
+  () => console.log("listening now"),
+);
