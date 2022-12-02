@@ -38,8 +38,11 @@ type Mutation {
 
   createMylist(input: CreateMylistInput!): CreateMylistPayload!
 
-  like(videoId: ID!): MylistAddition!
-  addToMylist(input: AddToMylistInput!): MylistAddition!
+  addLike(input: AddLikeInput!): AddLikePayload!
+  removeLike(input: RemoveLikeInput!): RemoveLikePayload!
+
+  addToMylist(input: AddToMylistInput!): AddToMylistPayload!
+  removeFromMylist(input: RemoveFromMylistInput!): RemoveFromMylistPayload!
 }
 
 type RefreshTokenPayload {
@@ -356,9 +359,12 @@ type Mylist {
   createdAt: DateTime!
   updatedAt: DateTime!
 
-  registeredVideos(
-    input: MylistRegisteredVideosInput!
-  ): MylistAdditionCollection!
+  registrations(input: MylistRegistrationsInput!): MylistRegistrationCollection!
+
+  """
+  マイリストの中にビデオが追加されているか．
+  """
+  includes(videoId: ID!): Boolean!
 }
 
 enum MylistShareRange {
@@ -367,27 +373,29 @@ enum MylistShareRange {
   PRIVATE
 }
 
-type MylistAddition {
+type MylistRegistration {
   id: ID!
   video: Video!
   mylist: Mylist!
 
-  registeredAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   note: String
 }
 
-type MylistAdditionCollection {
-  nodes: [MylistAddition!]!
+type MylistRegistrationCollection {
+  nodes: [MylistRegistration!]!
 }
 
-input MylistRegisteredVideosInput {
+input MylistRegistrationsInput {
   limit: Int
   skip: Int
-  order: MylistRegisteredVideosInputOrder = { registeredAt: ASC }
+  order: MylistRegistrationsInputOrder = { registeredAt: ASC }
 }
 
-input MylistRegisteredVideosInputOrder {
-  registeredAt: SortOrder
+input MylistRegistrationsInputOrder {
+  createdAt: SortOrder
+  updatedAt: SortOrder
 }
 
 input CreateMylistInput {
@@ -399,8 +407,39 @@ type CreateMylistPayload {
   mylist: Mylist!
 }
 
+input AddLikeInput {
+  videoId: ID!
+}
+
+type AddLikePayload {
+  id: ID!
+  registration: MylistRegistration!
+}
+
+input RemoveLikeInput {
+  videoId: ID!
+}
+
+type RemoveLikePayload {
+  id: ID!
+}
+
 input AddToMylistInput {
   videoId: ID!
   mylistId: ID!
   note: String
+}
+
+type AddToMylistPayload {
+  id: ID!
+  registration: MylistRegistration!
+}
+
+input RemoveFromMylistInput {
+  videoId: ID!
+  mylistId: ID!
+}
+
+type RemoveFromMylistPayload {
+  id: ID!
 }
