@@ -35,6 +35,11 @@ type Mutation {
 
   tagVideo(input: TagVideoInput!): VideoAddTagHistoryItem!
   untagVideo(input: UntagVideoInput!): VideoDeleteTagHistoryItem!
+
+  createMylist(input: CreateMylistInput!): CreateMylistPayload!
+
+  like(videoId: ID!): MylistAddition!
+  addToMylist(input: AddToMylistInput!): MylistAddition!
 }
 
 type RefreshTokenPayload {
@@ -285,11 +290,12 @@ type User {
 input UserMylistsInput {
   limit: Int
   skip: Int
-  order: UserMylistsInputOrder = { updatedAt: ASC }
+  order: UserMylistsInputOrder = { createdAt: ASC }
   range: [MylistShareRange!] = [PUBLIC]
 }
 
 input UserMylistsInputOrder {
+  createdAt: SortOrder
   updatedAt: SortOrder
 }
 
@@ -347,10 +353,12 @@ type Mylist {
   title: String!
   holder: User!
   range: MylistShareRange!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
   registeredVideos(
     input: MylistRegisteredVideosInput!
-  ): MylistRegisteredVideoCollection!
-  updatedAt: DateTime!
+  ): MylistAdditionCollection!
 }
 
 enum MylistShareRange {
@@ -359,15 +367,17 @@ enum MylistShareRange {
   PRIVATE
 }
 
-type MylistRegisteredVideo {
+type MylistAddition {
   id: ID!
   video: Video!
+  mylist: Mylist!
+
   registeredAt: DateTime!
   note: String
 }
 
-type MylistRegisteredVideoCollection {
-  nodes: [MylistRegisteredVideo!]!
+type MylistAdditionCollection {
+  nodes: [MylistAddition!]!
 }
 
 input MylistRegisteredVideosInput {
@@ -378,4 +388,19 @@ input MylistRegisteredVideosInput {
 
 input MylistRegisteredVideosInputOrder {
   registeredAt: SortOrder
+}
+
+input CreateMylistInput {
+  title: String!
+  range: MylistShareRange!
+}
+
+type CreateMylistPayload {
+  mylist: Mylist!
+}
+
+input AddToMylistInput {
+  videoId: ID!
+  mylistId: ID!
+  note: String
 }
