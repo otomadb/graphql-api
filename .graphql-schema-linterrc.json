@@ -1,0 +1,9 @@
+{
+  "rules": [
+    "enum-values-all-caps",
+    "defined-types-are-used",
+    "fields-are-camel-cased",
+    "types-are-capitalized",
+    "input-object-values-are-camel-cased"
+  ]
+}

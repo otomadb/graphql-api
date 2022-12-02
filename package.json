@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node --loader ts-node/esm index.ts",
-    "dev": "nodemon -x \"pnpm run start\" -e ts,gql"
+    "dev": "nodemon -x \"pnpm run start\" -e ts,gql",
+    "lint:schema": "graphql-schema-linter ./schema.gql"
   },
   "repository": "https://github.com/otomad-database/api",
   "license": "MIT",
@@ -16,6 +17,7 @@
     "@types/koa__cors": "^3.3.0",
     "@types/koa__router": "^12.0.0",
     "@types/node": "^18.11.9",
+    "graphql-schema-linter": "^3.0.1",
     "nodemon": "^2.0.20",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.3"
