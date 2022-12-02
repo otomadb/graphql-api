@@ -66,11 +66,12 @@ router.post(
       console.error(e);
     } finally {
       await next();
+      return;
     }
   },
   async (ctx, next) => {
     if (ctx.state.userId) {
-      next();
+      await next();
       return;
     }
 
