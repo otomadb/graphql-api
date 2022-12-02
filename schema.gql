@@ -6,6 +6,8 @@ type Query {
 
   tag(id: ID!): Tag!
 
+  mylist(id: ID!): Mylist!
+
   searchVideos(
     query: String!
     limit: Int! = 10
@@ -275,6 +277,24 @@ type User {
   name: String!
   displayName: String!
   icon: String!
+
+  favorites: Mylist!
+  mylists(input: UserMylistsInput!): UserMylistsConnection!
+}
+
+input UserMylistsInput {
+  limit: Int
+  skip: Int
+  order: UserMylistsInputOrder = { updatedAt: ASC }
+  range: [MylistShareRange!] = [PUBLIC]
+}
+
+input UserMylistsInputOrder {
+  updatedAt: SortOrder
+}
+
+type UserMylistsConnection {
+  nodes: [Mylist!]!
 }
 
 type SigninPayload {
@@ -320,4 +340,42 @@ input UntagVideoInput {
 type NiconicoSource {
   id: ID!
   video: Video
+}
+
+type Mylist {
+  id: ID!
+  title: String!
+  holder: User!
+  range: MylistShareRange!
+  registeredVideos(
+    input: MylistRegisteredVideosInput!
+  ): MylistRegisteredVideoCollection!
+  updatedAt: DateTime!
+}
+
+enum MylistShareRange {
+  PUBLIC
+  KNOW_LINK
+  PRIVATE
+}
+
+type MylistRegisteredVideo {
+  id: ID!
+  video: Video!
+  registeredAt: DateTime!
+  notes: String
+}
+
+type MylistRegisteredVideoCollection {
+  nodes: [MylistRegisteredVideo!]!
+}
+
+input MylistRegisteredVideosInput {
+  limit: Int
+  skip: Int
+  order: MylistRegisteredVideosInputOrder = { registeredAt: ASC }
+}
+
+input MylistRegisteredVideosInputOrder {
+  registeredAt: SortOrder
 }
