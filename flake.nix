@@ -33,6 +33,8 @@
               pm = "pnpm";
             })
             dprint
+            act
+            actionlint
           ];
           devshell.startup.yarn_install.text = "pnpm install";
           env = [
