@@ -156,4 +156,5 @@ export const getMylistRegistrationsCollection = (mongo: MongoClient) =>
     created_at: Date;
     updated_at: Date;
     video_id: string;
+    mylist_id: string;
   }>("mylist_registrations");

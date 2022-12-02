@@ -103,13 +103,25 @@ export class Mylist {
     });
   }
 
+  async includes({ videoId }: { videoId: string }, { mongo }: { mongo: MongoClient }) {
+    try {
+      return getMylistRegistrationsCollection(mongo)
+        .findOne({ mylist_id: this.id, video_id: videoId })
+        .then((v) => !!v);
+    } catch (e) {
+      throw new GraphQLError("something broken");
+    }
+  }
+
   async registrations(
-    { limit, skip, order }: {
-      limit?: number;
-      skip?: number;
-      order?: {
-        createdAt?: "ASC" | "DESC";
-        updatedAt?: "ASC" | "DESC";
+    { input: { limit, skip, order } }: {
+      input: {
+        limit?: number;
+        skip?: number;
+        order?: {
+          createdAt?: "ASC" | "DESC";
+          updatedAt?: "ASC" | "DESC";
+        };
       };
     },
     { mongo }: { mongo: MongoClient },
