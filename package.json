@@ -11,7 +11,8 @@
     "migration:generate": "run(){ pnpm run typeorm migration:generate -p \"src/db/migrations/$1\"; }; run",
     "start": "node --loader ts-node/esm src/index.ts",
     "type-check": "tsc --noEmit",
-    "typeorm": "typeorm-ts-node-esm -d ./src/db/data-source.ts"
+    "typeorm": "typeorm-ts-node-esm -d ./src/db/data-source.ts",
+    "test": "node --loader ts-node/esm src/tools/basic-test.ts"
   },
   "repository": "https://github.com/otomad-database/api",
   "license": "MIT",
