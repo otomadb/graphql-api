@@ -2,7 +2,7 @@ import { type Resolvers } from "../graphql/resolvers.js";
 import { registerTag, searchTags, tag, tags } from "./tags.js";
 import { user, whoami } from "./users.js";
 import { registerVideo, searchVideos, tagVideo, untagVideo, video, videos } from "./videos.js";
-import { mylist, createMylist } from "./mylists.js";
+import { mylist, createMylist, addVideoToMylist } from "./mylists.js";
 
 export const resolvers: Resolvers = {
   Query: {
@@ -24,5 +24,6 @@ export const resolvers: Resolvers = {
     tagVideo,
     untagVideo,
     createMylist,
+    addVideoToMylist,
   },
 };

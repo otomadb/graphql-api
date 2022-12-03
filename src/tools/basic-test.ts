@@ -186,4 +186,61 @@ await runGraphQLQuery(
   false
 );
 
+const queryForAddVideoToMylist = `mutation($input: AddVideoToMylistInput!) {
+    addVideoToMylist(input: $input) {
+        id
+        registration {
+            id
+        }
+    }
+}`;
+
+const zAddVideoToMyListRes = z.object({
+  data: z.object({
+    addVideoToMylist: z.object({
+      id: z.string(),
+      registration: z.object({
+        id: z.string(),
+      }),
+    }),
+  }),
+});
+
+const addedMylistRegist = await runGraphQLQuery(zAddVideoToMyListRes, queryForAddVideoToMylist, {
+  input: {
+    videoId: createVideo.data.registerVideo.video.id,
+    mylistId: createPublicMylist.data.createMylist.mylist.id,
+    note: "a note",
+  },
+});
+
+const queryForCheckRegistsOnMylist = `query($id: ID!) {
+  mylist(id: $id) {
+    registrations(input: {}) {
+      nodes {
+        id
+      }
+    }
+  }
+}`;
+await runGraphQLQuery(
+  z.object({
+    data: z.object({
+      mylist: z.object({
+        registrations: z.object({
+          nodes: z.array(
+            z.object({
+              id: z.literal(addedMylistRegist.data.addVideoToMylist.registration.id),
+            })
+          ),
+        }),
+      }),
+    }),
+  }),
+  queryForCheckRegistsOnMylist,
+  {
+    id: createPublicMylist.data.createMylist.mylist.id,
+  }
+);
+
 await dataSource.destroy();
