@@ -16,7 +16,7 @@ export const resolvers: Resolvers = {
     whoami,
   },
   Mutation: {
-    registerTag, // 最悪まだ実装しなくてもいい
+    registerTag,
     registerVideo,
     tagVideo,
     untagVideo,
