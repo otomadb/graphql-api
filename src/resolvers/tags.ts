@@ -88,6 +88,9 @@ export const searchTags: QueryResolvers["searchTags"] = async (_parent, { limit,
 export const registerTag: MutationResolvers["registerTag"] = async (parent, { input }, context, info) => {
   const tag = new Tag();
   tag.id = ulid();
+  tag.videoTags = [];
+  tag.tagNames = [];
+  tag.tagParents = [];
 
   const tagNames: TagName[] = [];
 
