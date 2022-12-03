@@ -27,11 +27,11 @@ type Mutation {
 
   createMylist(input: CreateMylistInput!): CreateMylistPayload!
 
-  addLike(input: AddLikeInput!): AddLikePayload!
-  removeLike(input: RemoveLikeInput!): RemoveLikePayload!
+  likeVideo(input: LikeVideoInput!): LikeVideoPayload!
+  undoLikeVideo(input: UndoLikeVideoInput!): UndoLikeVideoPayload!
 
-  addToMylist(input: AddToMylistInput!): AddToMylistPayload!
-  removeFromMylist(input: RemoveFromMylistInput!): RemoveFromMylistPayload!
+  addVideoToMylist(input: AddVideoToMylistInput!): AddVideoToMylistPayload!
+  removeVideoFromMylist(input: RemoveVideoFromMylistInput!): RemoveVideoFromMylistPayload!
 }
 
 type Video {
@@ -401,39 +401,39 @@ type CreateMylistPayload {
   mylist: Mylist!
 }
 
-input AddLikeInput {
+input LikeVideoInput {
   videoId: ID!
 }
 
-type AddLikePayload {
+type LikeVideoPayload {
   id: ID!
   registration: MylistRegistration!
 }
 
-input RemoveLikeInput {
+input UndoLikeVideoInput {
   videoId: ID!
 }
 
-type RemoveLikePayload {
+type UndoLikeVideoPayload {
   id: ID!
 }
 
-input AddToMylistInput {
+input AddVideoToMylistInput {
   videoId: ID!
   mylistId: ID!
   note: String
 }
 
-type AddToMylistPayload {
+type AddVideoToMylistPayload {
   id: ID!
   registration: MylistRegistration!
 }
 
-input RemoveFromMylistInput {
+input RemoveVideoFromMylistInput {
   videoId: ID!
   mylistId: ID!
 }
 
-type RemoveFromMylistPayload {
+type RemoveVideoFromMylistPayload {
   id: ID!
 }
