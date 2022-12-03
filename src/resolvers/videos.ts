@@ -42,7 +42,13 @@ export const video: QueryResolvers["video"] = async (_parent, { id }, _context, 
 };
 
 export const videos: QueryResolvers["videos"] = async (_parent, _args, _context, _info) => {
-  const videos = await dataSource.getRepository(Video).find();
+  const videos = await dataSource.getRepository(Video).find({
+    relations: {
+      sources: true,
+      thumbnails: true,
+      titles: true,
+    },
+  });
 
   return { nodes: videos.map((v) => videoEntityToGraphQLType(v)) };
 };
