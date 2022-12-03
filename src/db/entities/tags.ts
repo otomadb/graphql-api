@@ -1,4 +1,6 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, Relation, UpdateDateColumn } from "typeorm";
+import { TagName } from "./tag_names.js";
+import { TagParent } from "./tag_parents.js";
 import { VideoTag } from "./video_tags.js";
 
 @Entity("tags")
@@ -9,6 +11,9 @@ export class Tag {
   @Column("text", { nullable: false, unique: true })
   name!: string;
 
+  @Column("boolean", { nullable: false })
+  meaningless!: boolean;
+
   @CreateDateColumn({ type: "timestamptz" })
   readonly createdAt!: Date;
 
@@ -17,4 +22,10 @@ export class Tag {
 
   @OneToMany(() => VideoTag, (videoTag) => videoTag.tag)
   videoTags!: Relation<VideoTag[]>;
+
+  @OneToMany(() => TagName, (tagName) => tagName.tag)
+  tagNames!: Relation<TagName[]>;
+
+  @OneToMany(() => TagParent, (tagParent) => tagParent.tag)
+  tagParents!: Relation<TagParent[]>;
 }
