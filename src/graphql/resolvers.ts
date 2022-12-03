@@ -119,9 +119,10 @@ export type QueryVideosArgs = {
 };
 
 export type RegisterTagInput = {
+  explicitParent?: InputMaybe<Scalars['ID']>;
   extraNames?: InputMaybe<Array<Scalars['String']>>;
+  implicitParents?: InputMaybe<Array<Scalars['ID']>>;
   primaryName: Scalars['String'];
-  type: TagType;
 };
 
 export type RegisterTagPayload = {
@@ -173,13 +174,6 @@ export type SearchVideosResultItem = {
   video: Video;
 };
 
-export type SigninPayload = {
-  __typename?: 'SigninPayload';
-  accessToken: Scalars['String'];
-  refreshToken: Scalars['String'];
-  user: User;
-};
-
 export enum SortOrder {
   Asc = 'ASC',
   Desc = 'DESC'
@@ -187,10 +181,15 @@ export enum SortOrder {
 
 export type Tag = {
   __typename?: 'Tag';
+  explicitParent?: Maybe<Tag>;
   history: Array<TagHistoryItem>;
   id: Scalars['ID'];
+  meaningless: Scalars['Boolean'];
   name: Scalars['String'];
+  names: Array<TagName>;
+  parents: Array<TagParent>;
   taggedVideos: Array<Video>;
+  /** @deprecated Field no longer supported */
   type: TagType;
 };
 
@@ -226,6 +225,18 @@ export type TagHistoryItem = {
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
   user: User;
+};
+
+export type TagName = {
+  __typename?: 'TagName';
+  name: Scalars['String'];
+  primary: Scalars['Boolean'];
+};
+
+export type TagParent = {
+  __typename?: 'TagParent';
+  explicit: Scalars['Boolean'];
+  tag: Tag;
 };
 
 export type TagRegisterHistoryItem = TagHistoryItem & {
@@ -508,7 +519,6 @@ export type ResolversTypes = {
   SearchTagsResultItem: ResolverTypeWrapper<SearchTagsResultItem>;
   SearchVideosResult: ResolverTypeWrapper<SearchVideosResult>;
   SearchVideosResultItem: ResolverTypeWrapper<SearchVideosResultItem>;
-  SigninPayload: ResolverTypeWrapper<SigninPayload>;
   SortOrder: SortOrder;
   String: ResolverTypeWrapper<Scalars['String']>;
   Tag: ResolverTypeWrapper<Tag>;
@@ -516,6 +526,8 @@ export type ResolversTypes = {
   TagChangePrimaryNameHistoryItem: ResolverTypeWrapper<TagChangePrimaryNameHistoryItem>;
   TagDeleteNameHistoryItem: ResolverTypeWrapper<TagDeleteNameHistoryItem>;
   TagHistoryItem: ResolversTypes['TagAddNameHistoryItem'] | ResolversTypes['TagChangePrimaryNameHistoryItem'] | ResolversTypes['TagDeleteNameHistoryItem'] | ResolversTypes['TagRegisterHistoryItem'];
+  TagName: ResolverTypeWrapper<TagName>;
+  TagParent: ResolverTypeWrapper<TagParent>;
   TagRegisterHistoryItem: ResolverTypeWrapper<TagRegisterHistoryItem>;
   TagType: TagType;
   TagVideoInput: TagVideoInput;
@@ -561,13 +573,14 @@ export type ResolversParentTypes = {
   SearchTagsResultItem: SearchTagsResultItem;
   SearchVideosResult: SearchVideosResult;
   SearchVideosResultItem: SearchVideosResultItem;
-  SigninPayload: SigninPayload;
   String: Scalars['String'];
   Tag: Tag;
   TagAddNameHistoryItem: TagAddNameHistoryItem;
   TagChangePrimaryNameHistoryItem: TagChangePrimaryNameHistoryItem;
   TagDeleteNameHistoryItem: TagDeleteNameHistoryItem;
   TagHistoryItem: ResolversParentTypes['TagAddNameHistoryItem'] | ResolversParentTypes['TagChangePrimaryNameHistoryItem'] | ResolversParentTypes['TagDeleteNameHistoryItem'] | ResolversParentTypes['TagRegisterHistoryItem'];
+  TagName: TagName;
+  TagParent: TagParent;
   TagRegisterHistoryItem: TagRegisterHistoryItem;
   TagVideoInput: TagVideoInput;
   UntagVideoInput: UntagVideoInput;
@@ -659,17 +672,14 @@ export type SearchVideosResultItemResolvers<ContextType = Context, ParentType ex
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type SigninPayloadResolvers<ContextType = Context, ParentType extends ResolversParentTypes['SigninPayload'] = ResolversParentTypes['SigninPayload']> = {
-  accessToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type TagResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Tag'] = ResolversParentTypes['Tag']> = {
+  explicitParent?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType>;
   history?: Resolver<Array<ResolversTypes['TagHistoryItem']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  meaningless?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  names?: Resolver<Array<ResolversTypes['TagName']>, ParentType, ContextType>;
+  parents?: Resolver<Array<ResolversTypes['TagParent']>, ParentType, ContextType>;
   taggedVideos?: Resolver<Array<ResolversTypes['Video']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['TagType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -708,6 +718,18 @@ export type TagHistoryItemResolvers<ContextType = Context, ParentType extends Re
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+};
+
+export type TagNameResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TagName'] = ResolversParentTypes['TagName']> = {
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  primary?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TagParentResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TagParent'] = ResolversParentTypes['TagParent']> = {
+  explicit?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  tag?: Resolver<ResolversTypes['Tag'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type TagRegisterHistoryItemResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TagRegisterHistoryItem'] = ResolversParentTypes['TagRegisterHistoryItem']> = {
@@ -879,12 +901,13 @@ export type Resolvers<ContextType = Context> = {
   SearchTagsResultItem?: SearchTagsResultItemResolvers<ContextType>;
   SearchVideosResult?: SearchVideosResultResolvers<ContextType>;
   SearchVideosResultItem?: SearchVideosResultItemResolvers<ContextType>;
-  SigninPayload?: SigninPayloadResolvers<ContextType>;
   Tag?: TagResolvers<ContextType>;
   TagAddNameHistoryItem?: TagAddNameHistoryItemResolvers<ContextType>;
   TagChangePrimaryNameHistoryItem?: TagChangePrimaryNameHistoryItemResolvers<ContextType>;
   TagDeleteNameHistoryItem?: TagDeleteNameHistoryItemResolvers<ContextType>;
   TagHistoryItem?: TagHistoryItemResolvers<ContextType>;
+  TagName?: TagNameResolvers<ContextType>;
+  TagParent?: TagParentResolvers<ContextType>;
   TagRegisterHistoryItem?: TagRegisterHistoryItemResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   Video?: VideoResolvers<ContextType>;

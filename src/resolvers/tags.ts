@@ -3,22 +3,27 @@ import { In, Like } from "typeorm";
 import { dataSource } from "../db/data-source.js";
 import { Tag } from "../db/entities/tags.js";
 import { TagName } from "../db/entities/tag_names.js";
-import { QueryResolvers, TagType } from "../graphql/resolvers.js";
+import { QueryResolvers, Tag as GqlTag, TagType } from "../graphql/resolvers.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "../utils/id.js";
-import { videoEntityToGraphQLVideo } from "./videos.js";
+import { videoEntityToGraphQLType } from "./videos.js";
 
-export function tagEntityToGraphQLTag(tag: Tag) {
+export function tagEntityToGraphQLType(tag: Tag): GqlTag {
   return {
     id: addIDPrefix(ObjectType.Tag, tag.id),
     type: TagType.Material,
     name: tag.name,
     names: tag.tagNames,
 
-    taggedVideos: tag.videoTags.map((t) => videoEntityToGraphQLVideo(t.video)),
+    taggedVideos: tag.videoTags.map((t) => videoEntityToGraphQLType(t.video)),
     history: [],
 
     explicitParent: null,
-    parents: tag.tagParents,
+    parents: tag.tagParents.map((parent) => {
+      return {
+        tag: tagEntityToGraphQLType(parent.tag),
+        explicit: parent.explicit,
+      };
+    }),
     meaningless: tag.meaningless,
   };
 }
@@ -40,7 +45,7 @@ export const tag: QueryResolvers["tag"] = async (_parent, { id }, _context, _inf
   });
   if (!tag) throw new GraphQLError("Not Found");
 
-  return tagEntityToGraphQLTag(tag);
+  return tagEntityToGraphQLType(tag);
 };
 
 export const searchTags: QueryResolvers["searchTags"] = async (_parent, { limit, query, skip }, _context, _info) => {
@@ -73,7 +78,7 @@ export const searchTags: QueryResolvers["searchTags"] = async (_parent, { limit,
       if (!tag) throw new Error(`Failed to find tag ${n.tag.id}`);
       return {
         matchedName: n.name,
-        tag: tagEntityToGraphQLTag(tag),
+        tag: tagEntityToGraphQLType(tag),
       };
     }),
   };
