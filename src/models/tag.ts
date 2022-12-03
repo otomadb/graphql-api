@@ -26,9 +26,9 @@ export class TagModel implements TagResolvers {
 
   async name() {
     const names = await this.names();
-    const name = names.find((n) => n.primary);
+    const name = names.find((n) => n.primary());
 
-    if (name === undefined) throw new GraphQLError(`primary title for tag ${this.tag.id} is not found`);
+    if (name === undefined) throw new GraphQLError(`primary name for tag ${this.tag.id} is not found`);
     return name.name();
   }
 
@@ -51,7 +51,7 @@ export class TagModel implements TagResolvers {
 
   async explicitParent() {
     const parents = await this.parents();
-    const parent = parents.find((p) => p.explicit);
+    const parent = parents.find((p) => p.explicit());
     return parent?.tag() ?? null;
   }
 

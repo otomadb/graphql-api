@@ -20,7 +20,7 @@ export class VideoModel implements VideoResolvers {
 
   async title() {
     const videoTitles = await this.titles();
-    const videoTitle = videoTitles.find((t) => t.primary);
+    const videoTitle = videoTitles.find((t) => t.primary());
     if (videoTitle === undefined) throw new GraphQLError(`primary title for video ${this.video.id} is not found`);
 
     return videoTitle.title();
@@ -36,8 +36,9 @@ export class VideoModel implements VideoResolvers {
 
   async thumbnailUrl() {
     const videoThumbnails = await this.thumbnails();
-    const videoThumbnail = videoThumbnails.find((t) => t.primary);
-    if (videoThumbnail === undefined) throw new GraphQLError(`primary title for video ${this.video.id} is not found`);
+    const videoThumbnail = videoThumbnails.find((t) => t.primary());
+    if (videoThumbnail === undefined)
+      throw new GraphQLError(`primary thumbnail for video ${this.video.id} is not found`);
 
     return videoThumbnail.imageUrl();
   }
