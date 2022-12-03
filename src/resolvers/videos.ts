@@ -79,6 +79,7 @@ export const registerVideo: MutationResolvers["registerVideo"] = async (_parent,
     if (source.type !== "NICOVIDEO") {
       throw new Error("TODO: Add source type to VideoSource");
     }
+    s.source = source.type;
     s.sourceVideoId = source.sourceId;
     return s;
   });
