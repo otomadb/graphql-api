@@ -90,26 +90,13 @@ export const registerVideo: MutationResolvers["registerVideo"] = async (_parent,
     await manager.getRepository(VideoThumbnail).insert(primaryThumbnail);
     await manager.getRepository(VideoSource).insert(sources);
   });
+
+  video.titles = titles;
+  video.thumbnails = [primaryThumbnail];
+  video.sources = sources;
+
   return {
-    video: {
-      id: "video:" + video.id,
-      title: primaryTitle.title,
-      titles: titles.map((t) => ({
-        title: t.title,
-        primary: t.isPrimary,
-      })),
-      thumbnailUrl: primaryThumbnail.imageUrl,
-      thumbnails: [
-        {
-          imageUrl: primaryThumbnail.imageUrl,
-          primary: true,
-        },
-      ],
-      tags: [],
-      hasTag: false,
-      history: [],
-      registeredAt: video.createdAt,
-    },
+    video: videoEntityToGraphQLType(video),
   };
 };
 
