@@ -1,4 +1,5 @@
 import { GraphQLError } from "graphql";
+import { In, Like } from "typeorm";
 import { ulid } from "ulid";
 import { dataSource } from "../db/data-source.js";
 import { Video } from "../db/entities/videos.js";
@@ -102,5 +103,36 @@ export const registerVideo: MutationResolvers["registerVideo"] = async (_parent,
       history: [],
       registeredAt: video.createdAt,
     },
+  };
+};
+
+export const searchVideos: QueryResolvers["searchVideos"] = async (
+  _parent,
+  { limit, query, skip },
+  _context,
+  _info
+) => {
+  const videoTitles = await dataSource
+    .getRepository(VideoTitle)
+    .createQueryBuilder("videoTitle")
+    .where({ name: Like(`%${query}%`) })
+    .leftJoinAndSelect("videoTitle.video", "videos")
+    .distinctOn(["videoTitle.video.id"])
+    .getMany();
+
+  const videos = await dataSource.getRepository(Video).find({
+    where: { id: In(videoTitles.map((t) => t.video.id)) },
+    relations: ["sources", "thumbnails", "titles"],
+  });
+
+  return {
+    result: videoTitles.map((t) => {
+      const video = videos.find((v) => v.id === t.video.id);
+      if (!video) throw new Error(`Failed to find tag ${t.video.id}`);
+      return {
+        matchedTitle: t.title,
+        video: videoEntityToGraphQLVideo(video),
+      };
+    }),
   };
 };
