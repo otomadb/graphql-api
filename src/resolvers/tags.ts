@@ -24,15 +24,17 @@ export function tagEntityToGraphQLTag(tag: Tag) {
 
 export const tag: QueryResolvers["tag"] = async (_parent, { id }, _context, _info) => {
   const tag = await dataSource.getRepository(Tag).findOne({
-    relations: [
-      "tagNames",
-      "tagParents",
-      "videoTags",
-      "videoTags.video",
-      "videoTags.video.source",
-      "videoTags.video.thumbnails",
-      "videoTags.video.titles",
-    ],
+    relations: {
+      tagNames: true,
+      tagParents: true,
+      videoTags: {
+        video: {
+          sources: true,
+          thumbnails: true,
+          titles: true,
+        },
+      },
+    },
     where: { id },
   });
   if (!tag) throw new GraphQLError("Not Found");
@@ -51,15 +53,17 @@ export const searchTags: QueryResolvers["searchTags"] = async (_parent, { limit,
 
   const tags = await dataSource.getRepository(Tag).find({
     where: { id: In(tagNames.map((t) => t.tag.id)) },
-    relations: [
-      "tagNames",
-      "tagParents",
-      "videoTags",
-      "videoTags.video",
-      "videoTags.video.source",
-      "videoTags.video.thumbnails",
-      "videoTags.video.titles",
-    ],
+    relations: {
+      tagNames: true,
+      tagParents: true,
+      videoTags: {
+        video: {
+          sources: true,
+          thumbnails: true,
+          titles: true,
+        },
+      },
+    },
   });
 
   return {
