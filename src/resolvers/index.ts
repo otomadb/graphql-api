@@ -1,5 +1,5 @@
 import { type Resolvers } from "../graphql/resolvers.js";
-import { searchTags, tag } from "./tags.js";
+import { registerTag, searchTags, tag } from "./tags.js";
 import { user, whoami } from "./users.js";
 import { registerVideo, searchVideos, tagVideo, untagVideo, video, videos } from "./videos.js";
 
@@ -16,7 +16,7 @@ export const resolvers: Resolvers = {
     whoami,
   },
   Mutation: {
-    // registerTag, // 最悪まだ実装しなくてもいい
+    registerTag, // 最悪まだ実装しなくてもいい
     registerVideo,
     tagVideo,
     untagVideo,

@@ -8,10 +8,7 @@ export class Tag {
   @PrimaryColumn("varchar", { length: 26 })
   id!: string;
 
-  @Column("text", { nullable: false, unique: true })
-  name!: string;
-
-  @Column("boolean", { nullable: false })
+  @Column("boolean", { default: false, nullable: false })
   meaningless!: boolean;
 
   @CreateDateColumn({ type: "timestamptz" })
