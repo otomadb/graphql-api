@@ -10,7 +10,10 @@ export class TagParent {
   explicit!: boolean;
 
   @ManyToOne(() => Tag)
-  tag!: Relation<Tag>;
+  parent!: Relation<Tag>;
+
+  @ManyToOne(() => Tag)
+  child!: Relation<Tag>;
 
   @CreateDateColumn({ type: "timestamptz" })
   readonly createdAt!: Date;
