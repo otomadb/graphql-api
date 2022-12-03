@@ -14,7 +14,7 @@ export class TagModel implements TagResolvers {
   constructor(private readonly tag: Tag) {}
 
   id() {
-    return addIDPrefix(ObjectType.Video, this.tag.id);
+    return addIDPrefix(ObjectType.Tag, this.tag.id);
   }
 
   /**
