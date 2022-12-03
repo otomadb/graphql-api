@@ -2,7 +2,7 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import { graphql } from "graphql";
 import { readFile } from "node:fs/promises";
 import { ulid } from "ulid";
-import { z } from "zod";
+import { z, ZodType } from "zod";
 import { dataSource } from "../db/data-source.js";
 import { User } from "../db/entities/users.js";
 import { resolvers } from "../resolvers/index.js";
@@ -22,6 +22,20 @@ user.icon = ""
 
 await dataSource.getRepository(User).insert(user)
 
+export async function runGraphQLQuery<T extends ZodType>(zType: z.infer<T>, source: string, variableValues: any) {
+    const res = await graphql({
+        contextValue: { user },
+        source,
+        schema,
+        variableValues,
+    })
+    try {
+        return zType.parse(res)
+    } catch(e) {
+        console.error(JSON.stringify(res, null, 4))
+    }
+}
+
 const zCreateTagRes = z.object({
     data: z.object({
         registerTag: z.object({
@@ -40,30 +54,21 @@ const queryForRegisterTag = `mutation ($input: RegisterTagInput!) {
     }
 }`
 
-const createParentTag = await graphql({
-    contextValue: { user },
-    source: queryForRegisterTag,
-    schema,
-    variableValues: {
-        input: {
-            primaryName: "東方",
-            extraNames: ["Touhou"]
-        }
+const createParentTag = await runGraphQLQuery(zCreateTagRes, queryForRegisterTag, {
+    input: {
+        primaryName: "東方",
+        extraNames: ["Touhou"]
     }
-}).then(r => zCreateTagRes.parse(r))
+})
 
-const createTag = await graphql({
-    contextValue: { user },
-    source: queryForRegisterTag,
-    schema,
-    variableValues: {
+const createTag = await runGraphQLQuery(zCreateTagRes, queryForRegisterTag, {
         input: {
             primaryName: "U.N.オーエンは彼女なのか？",
             extraNames: ["U.N. Owen Was Her?"],
             explicitParent: createParentTag.data.registerTag.tag.id
         }
     }
-}).then(r => zCreateTagRes.parse(r))
+).then(r => zCreateTagRes.parse(r))
 
 const queryForRegisterVideo = `mutation ($input: RegisterVideoInput!) {
     registerVideo(input: $input) {
@@ -82,23 +87,18 @@ const zCreateVideoRes = z.object({
     })
 })
 
-const createVideo = await graphql({
-    contextValue: { user },
-    source: queryForRegisterVideo,
-    schema,
-    variableValues: {
-        input: {
-            primaryTitle: "M.C.ドナルドはダンスに夢中なのか？最終鬼畜道化師ドナルド・Ｍ",
-            extraTitles: ["Ronald McDonald insanity"],
-            tags: [createTag.data.registerTag.tag.id],
-            primaryThumbnail: "https://img.cdn.nimg.jp/s/nicovideo/thumbnails/2057168/2057168.original/r1280x720l?key=64c3379f18890e6747830c596be0a7276dab4e0fe574a98671b3b0c58c1f54c8",
-            sources: [{
-                type: "NICOVIDEO",
-                sourceId: "sm2057168"
-            }]
-        }
+const createVideo = await runGraphQLQuery(zCreateVideoRes, queryForRegisterVideo, {
+    input: {
+        primaryTitle: "M.C.ドナルドはダンスに夢中なのか？最終鬼畜道化師ドナルド・Ｍ",
+        extraTitles: ["Ronald McDonald insanity"],
+        tags: [createTag.data.registerTag.tag.id],
+        primaryThumbnail: "https://img.cdn.nimg.jp/s/nicovideo/thumbnails/2057168/2057168.original/r1280x720l?key=64c3379f18890e6747830c596be0a7276dab4e0fe574a98671b3b0c58c1f54c8",
+        sources: [{
+            type: "NICOVIDEO",
+            sourceId: "sm2057168"
+        }]
     }
-}).then(v => zCreateVideoRes.parse(v))
+})
 
 console.log(createVideo)
 

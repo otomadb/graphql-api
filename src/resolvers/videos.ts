@@ -66,11 +66,24 @@ export const registerVideo: MutationResolvers["registerVideo"] = async (_parent,
     return s;
   });
 
+  const tags = await dataSource.getRepository(Tag).findBy({ id: In(input.tags.map(t => removeIDPrefix(ObjectType.Tag, t))) })
+  if (tags.length !== input.tags.length) {
+    throw new GraphQLError("Some of tag IDs are wrong")
+  }
+  const videoTags = tags.map(tag => {
+    const videoTag = new VideoTag()
+    videoTag.id = ulid()
+    videoTag.video = video
+    videoTag.tag = tag
+    return videoTag
+  })
+
   await dataSource.transaction(async (manager) => {
     await manager.getRepository(Video).insert(video);
     await manager.getRepository(VideoTitle).insert(titles);
     await manager.getRepository(VideoThumbnail).insert(primaryThumbnail);
     await manager.getRepository(VideoSource).insert(sources);
+    await manager.getRepository(VideoTag).insert(videoTags)
   });
 
   video.titles = titles;
