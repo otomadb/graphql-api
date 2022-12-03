@@ -71,6 +71,7 @@ export const registerVideo: MutationResolvers["registerVideo"] = async (_parent,
   primaryThumbnail.id = ulid();
   primaryThumbnail.imageUrl = input.primaryThumbnail;
   primaryThumbnail.video = video;
+  primaryThumbnail.primary = true;
   const sources = input.sources.map((source) => {
     const s = new VideoSource();
     s.id = ulid();
