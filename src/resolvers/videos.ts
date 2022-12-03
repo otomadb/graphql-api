@@ -2,11 +2,14 @@ import { GraphQLError } from "graphql";
 import { In, Like } from "typeorm";
 import { ulid } from "ulid";
 import { dataSource } from "../db/data-source.js";
+import { Tag } from "../db/entities/tags.js";
 import { Video } from "../db/entities/videos.js";
 import { VideoSource } from "../db/entities/video_sources.js";
+import { VideoTag } from "../db/entities/video_tags.js";
 import { VideoThumbnail } from "../db/entities/video_thumbnails.js";
 import { VideoTitle } from "../db/entities/video_titles.js";
 import { MutationResolvers, QueryResolvers } from "../graphql/resolvers.js";
+import { tagEntityToGraphQLTag } from "./tags.js";
 
 export function videoEntityToGraphQLVideo(video: Video) {
   return {
@@ -134,5 +137,67 @@ export const searchVideos: QueryResolvers["searchVideos"] = async (
         video: videoEntityToGraphQLVideo(video),
       };
     }),
+  };
+};
+
+export const tagVideo: MutationResolvers["tagVideo"] = async (
+  parent,
+  { input: { tagId, videoId } },
+  { user },
+  info
+) => {
+  const video = await dataSource.getRepository(Video).findOne({ where: { id: videoId } });
+  if (video == null) throw new GraphQLError("Video Not Found");
+  const tag = await dataSource.getRepository(Tag).findOne({ where: { id: tagId } });
+  if (tag == null) throw new GraphQLError("Tag Not Found");
+  const videoTag = new VideoTag();
+  videoTag.id = ulid();
+  videoTag.video = video;
+  videoTag.tag = tag;
+  await dataSource.getRepository(VideoTag).insert(videoTag);
+
+  return {
+    createdAt: new Date(),
+    id: videoTag.id,
+    tag: tagEntityToGraphQLTag(tag),
+    user: {
+      displayName: "stub",
+      icon: "stub",
+      id: "stub",
+      name: "stub",
+    },
+    video: videoEntityToGraphQLVideo(video),
+  };
+};
+
+export const untagVideo: MutationResolvers["untagVideo"] = async (
+  _parent,
+  { input: { tagId, videoId } },
+  _context,
+  _info
+) => {
+  const repository = dataSource.getRepository(VideoTag);
+
+  const videoTag = await repository.findOne({
+    relations: { video: { sources: true, thumbnails: true, titles: true }, tag: { tagNames: true, tagParents: true } },
+    where: { video: { id: videoId }, tag: { id: tagId } },
+  });
+  if (!videoTag) {
+    throw new GraphQLError("Not Found");
+  }
+
+  await repository.remove(videoTag);
+
+  return {
+    createdAt: new Date(),
+    id: videoTag.id,
+    tag: tagEntityToGraphQLTag(videoTag.tag),
+    user: {
+      displayName: "stub",
+      icon: "stub",
+      id: "stub",
+      name: "stub",
+    },
+    video: videoEntityToGraphQLVideo(videoTag.video),
   };
 };

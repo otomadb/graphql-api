@@ -1,7 +1,7 @@
 import { type Resolvers } from "../graphql/resolvers.js";
 import { searchTags, tag } from "./tags.js";
 import { user, whoami } from "./users.js";
-import { registerVideo, searchVideos, video, videos } from "./videos.js";
+import { registerVideo, searchVideos, tagVideo, untagVideo, video, videos } from "./videos.js";
 
 export const resolvers: Resolvers = {
   Query: {
@@ -18,7 +18,7 @@ export const resolvers: Resolvers = {
   Mutation: {
     // registerTag, // 最悪まだ実装しなくてもいい
     registerVideo,
-    // tagVideo,
-    // untagVideo,
+    tagVideo,
+    untagVideo,
   },
 };
