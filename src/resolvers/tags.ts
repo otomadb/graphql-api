@@ -4,11 +4,12 @@ import { dataSource } from "../db/data-source.js";
 import { Tag } from "../db/entities/tags.js";
 import { TagName } from "../db/entities/tag_names.js";
 import { QueryResolvers, TagType } from "../graphql/resolvers.js";
+import { addIDPrefix, ObjectType, removeIDPrefix } from "../utils/id.js";
 import { videoEntityToGraphQLVideo } from "./videos.js";
 
 export function tagEntityToGraphQLTag(tag: Tag) {
   return {
-    id: "tag:" + tag.id,
+    id: addIDPrefix(ObjectType.Tag, tag.id),
     type: TagType.Material,
     name: tag.name,
     names: tag.tagNames,
@@ -35,7 +36,7 @@ export const tag: QueryResolvers["tag"] = async (_parent, { id }, _context, _inf
         },
       },
     },
-    where: { id },
+    where: { id: removeIDPrefix(ObjectType.Tag, id) },
   });
   if (!tag) throw new GraphQLError("Not Found");
 

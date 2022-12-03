@@ -9,11 +9,13 @@ import { VideoTag } from "../db/entities/video_tags.js";
 import { VideoThumbnail } from "../db/entities/video_thumbnails.js";
 import { VideoTitle } from "../db/entities/video_titles.js";
 import { MutationResolvers, QueryResolvers } from "../graphql/resolvers.js";
+import { addIDPrefix, ObjectType, removeIDPrefix } from "../utils/id.js";
 import { tagEntityToGraphQLTag } from "./tags.js";
+import { userEntityToGraphQLType } from "./users.js";
 
 export function videoEntityToGraphQLVideo(video: Video) {
   return {
-    id: "video:" + video.id,
+    id: addIDPrefix(ObjectType.Video, video.id),
     title: video.titles.find((t) => t.isPrimary)?.title!,
     titles: video.titles.map((t) => ({ title: t.title, primary: t.isPrimary })),
     thumbnailUrl: video.thumbnails.find((t) => t.primary)?.imageUrl!,
@@ -32,7 +34,7 @@ export const video: QueryResolvers["video"] = async (_parent, { id }, _context, 
       thumbnails: true,
       titles: true,
     },
-    where: { id },
+    where: { id: removeIDPrefix(ObjectType.Video, id) },
   });
   if (!video) throw new GraphQLError("Not Found");
 
@@ -141,14 +143,20 @@ export const searchVideos: QueryResolvers["searchVideos"] = async (
 };
 
 export const tagVideo: MutationResolvers["tagVideo"] = async (
-  parent,
+  _parent,
   { input: { tagId, videoId } },
   { user },
-  info
+  _info
 ) => {
-  const video = await dataSource.getRepository(Video).findOne({ where: { id: videoId } });
+  if (!user) {
+    throw new GraphQLError("required to sign in");
+  }
+
+  const video = await dataSource
+    .getRepository(Video)
+    .findOne({ where: { id: removeIDPrefix(ObjectType.Video, videoId) } });
   if (video == null) throw new GraphQLError("Video Not Found");
-  const tag = await dataSource.getRepository(Tag).findOne({ where: { id: tagId } });
+  const tag = await dataSource.getRepository(Tag).findOne({ where: { id: removeIDPrefix(ObjectType.Tag, tagId) } });
   if (tag == null) throw new GraphQLError("Tag Not Found");
   const videoTag = new VideoTag();
   videoTag.id = ulid();
@@ -158,14 +166,9 @@ export const tagVideo: MutationResolvers["tagVideo"] = async (
 
   return {
     createdAt: new Date(),
-    id: videoTag.id,
+    id: addIDPrefix(ObjectType.VideoTag, videoTag.id),
     tag: tagEntityToGraphQLTag(tag),
-    user: {
-      displayName: "stub",
-      icon: "stub",
-      id: "stub",
-      name: "stub",
-    },
+    user: userEntityToGraphQLType(user),
     video: videoEntityToGraphQLVideo(video),
   };
 };
@@ -173,14 +176,21 @@ export const tagVideo: MutationResolvers["tagVideo"] = async (
 export const untagVideo: MutationResolvers["untagVideo"] = async (
   _parent,
   { input: { tagId, videoId } },
-  _context,
+  { user },
   _info
 ) => {
+  if (!user) {
+    throw new GraphQLError("required to sign in");
+  }
+
   const repository = dataSource.getRepository(VideoTag);
 
   const videoTag = await repository.findOne({
     relations: { video: { sources: true, thumbnails: true, titles: true }, tag: { tagNames: true, tagParents: true } },
-    where: { video: { id: videoId }, tag: { id: tagId } },
+    where: {
+      video: { id: removeIDPrefix(ObjectType.Video, videoId) },
+      tag: { id: removeIDPrefix(ObjectType.Tag, tagId) },
+    },
   });
   if (!videoTag) {
     throw new GraphQLError("Not Found");
@@ -190,14 +200,9 @@ export const untagVideo: MutationResolvers["untagVideo"] = async (
 
   return {
     createdAt: new Date(),
-    id: videoTag.id,
+    id: addIDPrefix(ObjectType.VideoTag, videoTag.id),
     tag: tagEntityToGraphQLTag(videoTag.tag),
-    user: {
-      displayName: "stub",
-      icon: "stub",
-      id: "stub",
-      name: "stub",
-    },
+    user: userEntityToGraphQLType(user),
     video: videoEntityToGraphQLVideo(videoTag.video),
   };
 };
