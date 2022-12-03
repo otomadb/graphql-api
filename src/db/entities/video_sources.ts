@@ -7,7 +7,10 @@ export class VideoSource {
   id!: string;
 
   @Column("text", { nullable: false })
-  videoId!: string;
+  source!: string;
+
+  @Column("text", { nullable: false })
+  sourceVideoId!: string;
 
   @ManyToOne(() => Video, { nullable: false })
   video!: Relation<Video>;

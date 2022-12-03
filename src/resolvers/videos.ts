@@ -7,7 +7,7 @@ import { VideoThumbnail } from "../db/entities/video_thumbnails.js";
 import { VideoTitle } from "../db/entities/video_titles.js";
 import { MutationResolvers, QueryResolvers } from "../graphql/resolvers.js";
 
-function videoEntityToGraphQLVideo(video: Video) {
+export function videoEntityToGraphQLVideo(video: Video) {
   return {
     id: "video:" + video.id,
     title: video.titles.find((t) => t.isPrimary)?.title!,
@@ -72,7 +72,7 @@ export const registerVideo: MutationResolvers["registerVideo"] = async (_parent,
     if (source.type !== "NICOVIDEO") {
       throw new Error("TODO: Add source type to VideoSource");
     }
-    s.videoId = source.sourceId;
+    s.sourceVideoId = source.sourceId;
     return s;
   });
 
