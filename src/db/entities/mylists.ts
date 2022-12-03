@@ -26,8 +26,8 @@ export class Mylist {
   title!: string;
 
   @ManyToOne((type) => User, { nullable: false })
-  @Index("IDX_mylists_holder_like_list", { unique: true, where: '"isLikeList" == true' })
-  @Index("IDX_mylists_holder_mylists", { where: '"isLikeList" == false' })
+  @Index("IDX_mylists_holder_like_list", { unique: true, where: '"isLikeList" = true' })
+  @Index("IDX_mylists_holder_mylists", { where: '"isLikeList" = false' })
   holder!: User;
 
   @Column("enum", { enum: MylistShareRange })

@@ -21,11 +21,11 @@ export class AddMylistTable1670103864786 implements MigrationInterface {
         `);
         await queryRunner.query(`
             CREATE INDEX "IDX_mylists_holder_mylists" ON "mylists" ("holderId")
-            WHERE "isLikeList" == false
+            WHERE "isLikeList" = false
         `);
         await queryRunner.query(`
             CREATE UNIQUE INDEX "IDX_mylists_holder_like_list" ON "mylists" ("holderId")
-            WHERE "isLikeList" == true
+            WHERE "isLikeList" = true
         `);
         await queryRunner.query(`
             CREATE TABLE "mylist_registrations" (
