@@ -21,7 +21,7 @@ const app = new Koa();
 
 app.use(logger());
 app.use(koaBody());
-app.use(koaCors({credentials:true}))
+app.use(koaCors({ credentials: true }))
 
 const router = new Router();
 
