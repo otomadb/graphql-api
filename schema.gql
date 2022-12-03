@@ -267,12 +267,6 @@ type User {
   icon: String!
 }
 
-type SigninPayload {
-  accessToken: String!
-  refreshToken: String!
-  user: User!
-}
-
 input RegisterTagInput {
   primaryName: String!
   extraNames: [String!]
