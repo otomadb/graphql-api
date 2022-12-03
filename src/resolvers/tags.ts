@@ -1,50 +1,20 @@
 import { GraphQLError } from "graphql";
-import { FindOptionsRelations, In, Like } from "typeorm";
+import { In, Like } from "typeorm";
 import { ulid } from "ulid";
 import { dataSource } from "../db/data-source.js";
 import { Tag } from "../db/entities/tags.js";
 import { TagName } from "../db/entities/tag_names.js";
-import { MutationResolvers, QueryResolvers, Tag as GqlTag, TagType } from "../graphql/resolvers.js";
-import { addIDPrefix, ObjectType, removeIDPrefix } from "../utils/id.js";
-import { videoEntityToGraphQLType } from "./videos.js";
-
-export const tagEntityToGraphQLTypeRelations: FindOptionsRelations<Tag> = {
-  tagNames: true,
-  tagParents: { tag: true },
-  videoTags: {
-    video: true,
-  },
-};
-
-export function tagEntityToGraphQLType(tag: Tag): GqlTag {
-  return {
-    id: addIDPrefix(ObjectType.Tag, tag.id),
-    type: TagType.Material,
-    name: tag.tagNames.find((n) => n.primary)?.name!,
-    names: tag.tagNames,
-
-    taggedVideos: tag.videoTags.map((t) => videoEntityToGraphQLType(t.video)),
-    history: [],
-
-    explicitParent: null,
-    parents: tag.tagParents.map((parent) => {
-      return {
-        tag: tagEntityToGraphQLType(parent.tag),
-        explicit: parent.explicit,
-      };
-    }),
-    meaningless: tag.meaningless,
-  };
-}
+import { MutationResolvers, QueryResolvers } from "../graphql/resolvers.js";
+import { TagModel } from "../models/tag.js";
+import { ObjectType, removeIDPrefix } from "../utils/id.js";
 
 export const tag: QueryResolvers["tag"] = async (_parent, { id }, _context, _info) => {
   const tag = await dataSource.getRepository(Tag).findOne({
-    relations: tagEntityToGraphQLTypeRelations,
     where: { id: removeIDPrefix(ObjectType.Tag, id) },
   });
   if (!tag) throw new GraphQLError("Not Found");
 
-  return tagEntityToGraphQLType(tag);
+  return new TagModel(tag);
 };
 
 export const searchTags: QueryResolvers["searchTags"] = async (_parent, { limit, query, skip }, _context, _info) => {
@@ -58,7 +28,6 @@ export const searchTags: QueryResolvers["searchTags"] = async (_parent, { limit,
 
   const tags = await dataSource.getRepository(Tag).find({
     where: { id: In(tagNames.map((t) => t.tag.id)) },
-    relations: tagEntityToGraphQLTypeRelations,
   });
 
   return {
@@ -67,7 +36,7 @@ export const searchTags: QueryResolvers["searchTags"] = async (_parent, { limit,
       if (!tag) throw new Error(`Failed to find tag ${n.tag.id}`);
       return {
         matchedName: n.name,
-        tag: tagEntityToGraphQLType(tag),
+        tag: new TagModel(tag),
       };
     }),
   };
@@ -110,5 +79,5 @@ export const registerTag: MutationResolvers["registerTag"] = async (parent, { in
 
   tag.tagNames = tagNames;
 
-  return { tag: tagEntityToGraphQLType(tag) };
+  return { tag: new TagModel(tag) };
 };
