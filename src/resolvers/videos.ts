@@ -20,7 +20,7 @@ export function videoEntityToGraphQLType(video: Video): GqlVideo {
     titles: video.titles.map((t) => ({ title: t.title, primary: t.isPrimary })),
     thumbnailUrl: video.thumbnails.find((t) => t.primary)?.imageUrl!,
     thumbnails: video.thumbnails.map((t) => ({ imageUrl: t.imageUrl, primary: t.primary })),
-    tags: [],
+    tags: video.videoTags.map((t) => tagEntityToGraphQLType(t.tag)),
     hasTag: false,
     history: [],
     registeredAt: video.createdAt,
@@ -147,13 +147,19 @@ export const tagVideo: MutationResolvers["tagVideo"] = async (
     throw new GraphQLError("required to sign in");
   }
 
-  const video = await dataSource
-    .getRepository(Video)
-    .findOne({ where: { id: removeIDPrefix(ObjectType.Video, videoId) } });
+  const video = await dataSource.getRepository(Video).findOne({
+    relations: {
+      titles: true,
+      thumbnails: true,
+    },
+    where: { id: removeIDPrefix(ObjectType.Video, videoId) },
+  });
   if (video == null) throw new GraphQLError("Video Not Found");
   const tag = await dataSource.getRepository(Tag).findOne({
     relations: {
       tagNames: true,
+      videoTags: true,
+      tagParents: true,
     },
     where: { id: removeIDPrefix(ObjectType.Tag, tagId) },
   });
