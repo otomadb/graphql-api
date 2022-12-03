@@ -5,6 +5,8 @@ export const ObjectType = {
   User: "user",
   Video: "video",
   VideoTag: "videoTag",
+  Mylist: "mylist",
+  MylistRegistration: "mylistRegistration",
 } as const;
 export type ObjectType = typeof ObjectType[keyof typeof ObjectType];
 

@@ -3,6 +3,7 @@ import { graphql } from "graphql";
 import { readFile } from "node:fs/promises";
 import { ulid } from "ulid";
 import { z, ZodType } from "zod";
+import { Context } from "../context.js";
 import { dataSource } from "../db/data-source.js";
 import { User } from "../db/entities/users.js";
 import { resolvers } from "../resolvers/index.js";
@@ -22,9 +23,9 @@ user.icon = ""
 
 await dataSource.getRepository(User).insert(user)
 
-export async function runGraphQLQuery<T extends ZodType>(zType: z.infer<T>, source: string, variableValues: any) {
+export async function runGraphQLQuery<T extends ZodType>(zType: T, source: string, variableValues: any, loggedIn = true): Promise<z.infer<T>> {
     const res = await graphql({
-        contextValue: { user },
+        contextValue: { user: loggedIn ? user : null } as Context,
         source,
         schema,
         variableValues,
@@ -33,6 +34,7 @@ export async function runGraphQLQuery<T extends ZodType>(zType: z.infer<T>, sour
         return zType.parse(res)
     } catch(e) {
         console.error(JSON.stringify(res, null, 4))
+        throw e
     }
 }
 
@@ -100,6 +102,69 @@ const createVideo = await runGraphQLQuery(zCreateVideoRes, queryForRegisterVideo
     }
 })
 
-console.log(createVideo)
+const queryForCreateMylist = `mutation($input: CreateMylistInput!) {
+    createMylist(input: $input) {
+        mylist {
+            id
+        }
+    }
+}`
+
+const zCreateMylistRes = z.object({
+    data: z.object({
+        createMylist: z.object({
+            mylist: z.object({
+                id: z.string(),
+            })
+        })
+    })
+})
+
+const createPublicMylist = await runGraphQLQuery(zCreateMylistRes, queryForCreateMylist, {
+    input: {
+        title: "Public Mylist",
+        range: "PUBLIC"
+    }
+})
+
+const createKnowLinkMylist = await runGraphQLQuery(zCreateMylistRes, queryForCreateMylist, {
+    input: {
+        title: "KnowLink Mylist",
+        range: "KNOW_LINK"
+    }
+})
+
+const createPrivateMylist = await runGraphQLQuery(zCreateMylistRes, queryForCreateMylist, {
+    input: {
+        title: "Private Mylist",
+        range: "PRIVATE"
+    }
+})
+
+const queryForGetMylist = `query($id: ID!) {
+    mylist(id: $id) {
+        id
+    }
+}`
+
+const zGetMylistRes = z.object({
+    data: z.object({
+        mylist: z.object({
+            id: z.string(),
+        })
+    })
+})
+
+await runGraphQLQuery(zGetMylistRes, queryForGetMylist, { id: createPublicMylist.data.createMylist.mylist.id })
+await runGraphQLQuery(zGetMylistRes, queryForGetMylist, { id: createKnowLinkMylist.data.createMylist.mylist.id })
+await runGraphQLQuery(zGetMylistRes, queryForGetMylist, { id: createPrivateMylist.data.createMylist.mylist.id })
+await runGraphQLQuery(zGetMylistRes, queryForGetMylist, { id: createPublicMylist.data.createMylist.mylist.id }, false)
+await runGraphQLQuery(zGetMylistRes, queryForGetMylist, { id: createKnowLinkMylist.data.createMylist.mylist.id }, false)
+await runGraphQLQuery(z.object({
+    errors: z.array(z.object({
+        message: z.literal("Mylist Not Found or Private")
+    })),
+    data: z.null(),
+}), queryForGetMylist, { id: createPrivateMylist.data.createMylist.mylist.id }, false)
 
 await dataSource.destroy()
