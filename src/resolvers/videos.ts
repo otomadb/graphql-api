@@ -122,7 +122,7 @@ export const searchVideos: QueryResolvers["searchVideos"] = async (
 
   const videos = await dataSource.getRepository(Video).find({
     where: { id: In(videoTitles.map((t) => t.video.id)) },
-    relations: ["sources", "thumbnails", "titles"],
+    relations: { sources: true, thumbnails: true, titles: true },
   });
 
   return {
