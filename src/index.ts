@@ -44,8 +44,8 @@ router.post("/graphql", async (ctx) => {
   const { query, variables, operationName } = z
     .object({
       query: z.string(),
-      variables: z.optional(z.record(z.string(), z.any())),
-      operationName: z.optional(z.string()),
+      variables: z.record(z.string(), z.any()).nullish(),
+      operationName: z.string().nullish(),
     })
     .parse(ctx.request.body);
 
