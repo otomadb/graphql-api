@@ -151,7 +151,12 @@ export const tagVideo: MutationResolvers["tagVideo"] = async (
     .getRepository(Video)
     .findOne({ where: { id: removeIDPrefix(ObjectType.Video, videoId) } });
   if (video == null) throw new GraphQLError("Video Not Found");
-  const tag = await dataSource.getRepository(Tag).findOne({ where: { id: removeIDPrefix(ObjectType.Tag, tagId) } });
+  const tag = await dataSource.getRepository(Tag).findOne({
+    relations: {
+      tagNames: true,
+    },
+    where: { id: removeIDPrefix(ObjectType.Tag, tagId) },
+  });
   if (tag == null) throw new GraphQLError("Tag Not Found");
   const videoTag = new VideoTag();
   videoTag.id = ulid();
