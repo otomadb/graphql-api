@@ -33,7 +33,7 @@ export class TagModel implements TagResolvers {
   }
 
   async names() {
-    const names = await dataSource.getRepository(TagName).find({ where: { tag: this.tag } });
+    const names = await dataSource.getRepository(TagName).find({ where: { tag: { id: this.tag.id } } });
     return names.map((n) => new TagNameModel(n));
   }
 
