@@ -60,4 +60,4 @@ router.post("/graphql", async (ctx) => {
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-app.listen({ port: 9090 }, () => console.log("listening now"));
+app.listen({ port: 8080 }, () => console.log("listening now"));
