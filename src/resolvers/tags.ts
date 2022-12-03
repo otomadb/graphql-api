@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import { In, Like } from "typeorm";
+import { FindOptionsRelations, In, Like } from "typeorm";
 import { ulid } from "ulid";
 import { dataSource } from "../db/data-source.js";
 import { Tag } from "../db/entities/tags.js";
@@ -7,6 +7,14 @@ import { TagName } from "../db/entities/tag_names.js";
 import { MutationResolvers, QueryResolvers, Tag as GqlTag, TagType } from "../graphql/resolvers.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "../utils/id.js";
 import { videoEntityToGraphQLType } from "./videos.js";
+
+export const tagEntityToGraphQLTypeRelations: FindOptionsRelations<Tag> = {
+  tagNames: true,
+  tagParents: { tag: true },
+  videoTags: {
+    video: true,
+  },
+};
 
 export function tagEntityToGraphQLType(tag: Tag): GqlTag {
   return {
@@ -31,17 +39,7 @@ export function tagEntityToGraphQLType(tag: Tag): GqlTag {
 
 export const tag: QueryResolvers["tag"] = async (_parent, { id }, _context, _info) => {
   const tag = await dataSource.getRepository(Tag).findOne({
-    relations: {
-      tagNames: true,
-      tagParents: true,
-      videoTags: {
-        video: {
-          sources: true,
-          thumbnails: true,
-          titles: true,
-        },
-      },
-    },
+    relations: tagEntityToGraphQLTypeRelations,
     where: { id: removeIDPrefix(ObjectType.Tag, id) },
   });
   if (!tag) throw new GraphQLError("Not Found");
@@ -60,17 +58,7 @@ export const searchTags: QueryResolvers["searchTags"] = async (_parent, { limit,
 
   const tags = await dataSource.getRepository(Tag).find({
     where: { id: In(tagNames.map((t) => t.tag.id)) },
-    relations: {
-      tagNames: true,
-      tagParents: true,
-      videoTags: {
-        video: {
-          sources: true,
-          thumbnails: true,
-          titles: true,
-        },
-      },
-    },
+    relations: tagEntityToGraphQLTypeRelations,
   });
 
   return {

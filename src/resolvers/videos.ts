@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import { In, Like } from "typeorm";
+import { FindOptionsRelations, In, Like } from "typeorm";
 import { ulid } from "ulid";
 import { dataSource } from "../db/data-source.js";
 import { Tag } from "../db/entities/tags.js";
@@ -10,8 +10,14 @@ import { VideoThumbnail } from "../db/entities/video_thumbnails.js";
 import { VideoTitle } from "../db/entities/video_titles.js";
 import { MutationResolvers, QueryResolvers, Video as GqlVideo } from "../graphql/resolvers.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "../utils/id.js";
-import { tagEntityToGraphQLType } from "./tags.js";
+import { tagEntityToGraphQLType, tagEntityToGraphQLTypeRelations } from "./tags.js";
 import { userEntityToGraphQLType } from "./users.js";
+
+export const videoEntityToGraphQLTypeRelations: FindOptionsRelations<Video> = {
+  titles: true,
+  thumbnails: true,
+  videoTags: { tag: true },
+};
 
 export function videoEntityToGraphQLType(video: Video): GqlVideo {
   return {
@@ -29,11 +35,7 @@ export function videoEntityToGraphQLType(video: Video): GqlVideo {
 
 export const video: QueryResolvers["video"] = async (_parent, { id }, _context, _info) => {
   const video = await dataSource.getRepository(Video).findOne({
-    relations: {
-      sources: true,
-      thumbnails: true,
-      titles: true,
-    },
+    relations: videoEntityToGraphQLTypeRelations,
     where: { id: removeIDPrefix(ObjectType.Video, id) },
   });
   if (!video) throw new GraphQLError("Not Found");
@@ -43,11 +45,7 @@ export const video: QueryResolvers["video"] = async (_parent, { id }, _context, 
 
 export const videos: QueryResolvers["videos"] = async (_parent, _args, _context, _info) => {
   const videos = await dataSource.getRepository(Video).find({
-    relations: {
-      sources: true,
-      thumbnails: true,
-      titles: true,
-    },
+    relations: videoEntityToGraphQLTypeRelations,
   });
 
   return { nodes: videos.map((v) => videoEntityToGraphQLType(v)) };
@@ -122,7 +120,7 @@ export const searchVideos: QueryResolvers["searchVideos"] = async (
 
   const videos = await dataSource.getRepository(Video).find({
     where: { id: In(videoTitles.map((t) => t.video.id)) },
-    relations: { sources: true, thumbnails: true, titles: true },
+    relations: videoEntityToGraphQLTypeRelations,
   });
 
   return {
@@ -148,19 +146,12 @@ export const tagVideo: MutationResolvers["tagVideo"] = async (
   }
 
   const video = await dataSource.getRepository(Video).findOne({
-    relations: {
-      titles: true,
-      thumbnails: true,
-    },
+    relations: videoEntityToGraphQLTypeRelations,
     where: { id: removeIDPrefix(ObjectType.Video, videoId) },
   });
   if (video == null) throw new GraphQLError("Video Not Found");
   const tag = await dataSource.getRepository(Tag).findOne({
-    relations: {
-      tagNames: true,
-      videoTags: true,
-      tagParents: true,
-    },
+    relations: tagEntityToGraphQLTypeRelations,
     where: { id: removeIDPrefix(ObjectType.Tag, tagId) },
   });
   if (tag == null) throw new GraphQLError("Tag Not Found");
@@ -192,7 +183,10 @@ export const untagVideo: MutationResolvers["untagVideo"] = async (
   const repository = dataSource.getRepository(VideoTag);
 
   const videoTag = await repository.findOne({
-    relations: { video: { sources: true, thumbnails: true, titles: true }, tag: { tagNames: true, tagParents: true } },
+    relations: {
+      tag: tagEntityToGraphQLTypeRelations,
+      video: videoEntityToGraphQLTypeRelations,
+    },
     where: {
       video: { id: removeIDPrefix(ObjectType.Video, videoId) },
       tag: { id: removeIDPrefix(ObjectType.Tag, tagId) },
