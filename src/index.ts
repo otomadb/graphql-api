@@ -4,6 +4,7 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import Router from "@koa/router";
 import { graphql } from "graphql";
 import Koa from "koa";
+import koaCors from "@koa/cors";
 import { koaBody } from "koa-body";
 import logger from "koa-logger";
 import { readFile } from "node:fs/promises";
@@ -20,19 +21,13 @@ const app = new Koa();
 
 app.use(logger());
 app.use(koaBody());
+app.use(koaCors({ credentials: true }))
 
 const router = new Router();
 
 export const typeDefs = await readFile(new URL("../schema.gql", import.meta.url), { encoding: "utf-8" });
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
-
-app.use((ctx, next) => {
-  ctx.res.setHeader("Access-Control-Allow-Origin", "*");
-  ctx.res.setHeader("Access-Control-Allow-Methods", "GET, POST");
-  ctx.res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  return next();
-});
 
 router.use("/auth", authRouter.routes());
 router.use("/auth", authRouter.allowedMethods());
