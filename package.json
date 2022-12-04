@@ -8,7 +8,7 @@
     "codegen": "graphql-codegen-esm",
     "codegen:watch": "pnpm run codegen --watch",
     "dev": "nodemon -x \"pnpm run start\" -e ts,gql",
-    "fmt": "pnpm run lint:prettier --write",
+    "fmt": "prettier --write ./**/*.{js,ts,json,yml,md}",
     "typecheck": "tsc --noEmit",
     "lint:eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:prettier": "prettier --check ./**/*.{js,ts,json,yml,md}",

@@ -28,10 +28,10 @@ export const videos: QueryResolvers["videos"] = async (_parent, { input }, _cont
   const videos = await dataSource.getRepository(Video).find({
     take: input?.limit || 0,
     skip: input?.skip || 0,
-    order:   {
-          createdAt: input?.order?.createdAt || undefined,
-          updatedAt: input?.order?.updatedAt || undefined,
-        }
+    order: {
+      createdAt: input?.order?.createdAt || undefined,
+      updatedAt: input?.order?.updatedAt || undefined,
+    },
   });
 
   return { nodes: videos.map((v) => new VideoModel(v)) };
