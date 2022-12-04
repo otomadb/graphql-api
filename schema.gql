@@ -2,7 +2,7 @@ scalar DateTime
 
 type Query {
   video(id: ID!): Video!
-  videos(input: GetVideosInput = { limit: 10, skip: 0 }): VideoCollection!
+  videos(input: GetVideosInput): VideoCollection!
 
   tag(id: ID!): Tag!
 
@@ -159,8 +159,14 @@ type VideoAddNiconicoSourceHistoryItem implements VideoHistoryItem {
 }
 
 input GetVideosInput {
-  limit: Int
-  skip: Int
+  limit: Int = 10
+  skip: Int = 0
+  order: GetVideosInputOrder = { createdAt: DESC }
+}
+
+input GetVideosInputOrder {
+  updatedAt: SortOrder
+  createdAt: SortOrder
 }
 
 type VideoCollection {
