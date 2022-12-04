@@ -5,7 +5,7 @@ type Query {
   videos(input: GetVideosInput = { limit: 10, skip: 0 }): VideoCollection!
 
   tag(id: ID!): Tag!
-  tags(input: GetTagsInput = { limit: 10, skip: 0 }): TagCollection!
+  tags(input: GetTagsInput): TagCollection!
 
   searchVideos(query: String!, limit: Int! = 10, skip: Int! = 0): SearchVideosResult!
   searchTags(query: String!, limit: Int! = 10, skip: Int! = 0): SearchTagsResult!
@@ -189,6 +189,12 @@ type TagCollection {
 input GetTagsInput {
   limit: Int
   skip: Int
+  order: GetTagsInputOrder = { updatedAt: DESC }
+}
+
+input GetTagsInputOrder {
+  updatedAt: SortOrder
+  createdAt: SortOrder
 }
 
 type TagName {
