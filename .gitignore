@@ -9,3 +9,6 @@ node_modules
 
 # log
 *.log
+
+# codegen
+src/graphql/resolver.ts
