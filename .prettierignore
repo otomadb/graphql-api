@@ -3,4 +3,4 @@
 pnpm-lock.yaml
 
 src/graphql/resolvers.ts
-src/db/migration/
+src/db/migrations/
