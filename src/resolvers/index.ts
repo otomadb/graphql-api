@@ -1,5 +1,5 @@
 import { type Resolvers } from "../graphql/resolvers.js";
-import { registerTag, searchTags, tag } from "./tags.js";
+import { registerTag, searchTags, tag, tags } from "./tags.js";
 import { user, whoami } from "./users.js";
 import { registerVideo, searchVideos, tagVideo, untagVideo, video, videos } from "./videos.js";
 
@@ -10,6 +10,7 @@ export const resolvers: Resolvers = {
     searchTags,
     searchVideos,
     tag,
+    tags: tags,
     user,
     video,
     videos,

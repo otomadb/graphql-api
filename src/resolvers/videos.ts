@@ -24,8 +24,15 @@ export const video: QueryResolvers["video"] = async (_parent, { id }, _context, 
   return new VideoModel(video);
 };
 
-export const videos: QueryResolvers["videos"] = async (_parent, _args, _context, _info) => {
-  const videos = await dataSource.getRepository(Video).find({});
+export const videos: QueryResolvers["videos"] = async (_parent, { input }, _context, _info) => {
+  const videos = await dataSource.getRepository(Video).find({
+    take: input?.limit || 0,
+    skip: input?.skip || 0,
+    order:   {
+          createdAt: input?.order?.createdAt || undefined,
+          updatedAt: input?.order?.updatedAt || undefined,
+        }
+  });
 
   return { nodes: videos.map((v) => new VideoModel(v)) };
 };
