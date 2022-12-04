@@ -9,7 +9,7 @@
     "dev": "run-p 'dev:*'",
     "dev:node": "nodemon -w dist/ -e json,js dist/index.js",
     "dev:tsc": "tsc -w --preserveWatchOutput",
-    "dev:gql": "nodemon --watch schema.gql -x graphql-codegen-esm",
+    "dev:gql": "graphql-codegen-esm -w",
     "lint:schema": "graphql-schema-linter ./schema.gql",
     "migration:generate": "run(){ pnpm run typeorm migration:generate -p \"src/db/migrations/$1\"; }; run",
     "start": "node --loader ts-node/esm src/index.ts",
