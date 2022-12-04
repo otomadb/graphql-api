@@ -40,7 +40,7 @@ export class TagModel implements TagResolvers {
   async taggedVideos() {
     const videoTags = await dataSource
       .getRepository(VideoTag)
-      .find({ where: { tag: this.tag }, relations: { video: true } });
+      .find({ where: { tag: {id: this.tag.id} }, relations: { video: true } });
 
     return await Promise.all(videoTags.map((t) => new VideoModel(t.video)));
   }
