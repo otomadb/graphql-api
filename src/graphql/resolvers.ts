@@ -23,6 +23,11 @@ export type Scalars = {
   DateTime: Date;
 };
 
+export type GetTagsInput = {
+  limit?: InputMaybe<Scalars['Int']>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
 export type GetVideosInput = {
   limit?: InputMaybe<Scalars['Int']>;
   skip?: InputMaybe<Scalars['Int']>;
@@ -75,6 +80,7 @@ export type Query = {
   searchTags: SearchTagsResult;
   searchVideos: SearchVideosResult;
   tag: Tag;
+  tags: TagCollection;
   user: User;
   video: Video;
   videos: VideoCollection;
@@ -108,6 +114,11 @@ export type QuerySearchVideosArgs = {
 
 export type QueryTagArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QueryTagsArgs = {
+  input?: InputMaybe<GetTagsInput>;
 };
 
 
@@ -217,6 +228,11 @@ export type TagChangePrimaryNameHistoryItem = TagHistoryItem & {
   tag: Tag;
   to: Scalars['String'];
   user: User;
+};
+
+export type TagCollection = {
+  __typename?: 'TagCollection';
+  nodes: Array<Tag>;
 };
 
 export type TagDeleteNameHistoryItem = TagHistoryItem & {
@@ -509,6 +525,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
+  GetTagsInput: GetTagsInput;
   GetVideosInput: GetVideosInput;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
@@ -531,6 +548,7 @@ export type ResolversTypes = {
   Tag: ResolverTypeWrapper<TagModel>;
   TagAddNameHistoryItem: ResolverTypeWrapper<Omit<TagAddNameHistoryItem, 'tag'> & { tag: ResolversTypes['Tag'] }>;
   TagChangePrimaryNameHistoryItem: ResolverTypeWrapper<Omit<TagChangePrimaryNameHistoryItem, 'tag'> & { tag: ResolversTypes['Tag'] }>;
+  TagCollection: ResolverTypeWrapper<Omit<TagCollection, 'nodes'> & { nodes: Array<ResolversTypes['Tag']> }>;
   TagDeleteNameHistoryItem: ResolverTypeWrapper<Omit<TagDeleteNameHistoryItem, 'tag'> & { tag: ResolversTypes['Tag'] }>;
   TagHistoryItem: ResolversTypes['TagAddNameHistoryItem'] | ResolversTypes['TagChangePrimaryNameHistoryItem'] | ResolversTypes['TagDeleteNameHistoryItem'] | ResolversTypes['TagRegisterHistoryItem'];
   TagName: ResolverTypeWrapper<TagNameModel>;
@@ -564,6 +582,7 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   DateTime: Scalars['DateTime'];
+  GetTagsInput: GetTagsInput;
   GetVideosInput: GetVideosInput;
   ID: Scalars['ID'];
   Int: Scalars['Int'];
@@ -584,6 +603,7 @@ export type ResolversParentTypes = {
   Tag: TagModel;
   TagAddNameHistoryItem: Omit<TagAddNameHistoryItem, 'tag'> & { tag: ResolversParentTypes['Tag'] };
   TagChangePrimaryNameHistoryItem: Omit<TagChangePrimaryNameHistoryItem, 'tag'> & { tag: ResolversParentTypes['Tag'] };
+  TagCollection: Omit<TagCollection, 'nodes'> & { nodes: Array<ResolversParentTypes['Tag']> };
   TagDeleteNameHistoryItem: Omit<TagDeleteNameHistoryItem, 'tag'> & { tag: ResolversParentTypes['Tag'] };
   TagHistoryItem: ResolversParentTypes['TagAddNameHistoryItem'] | ResolversParentTypes['TagChangePrimaryNameHistoryItem'] | ResolversParentTypes['TagDeleteNameHistoryItem'] | ResolversParentTypes['TagRegisterHistoryItem'];
   TagName: TagNameModel;
@@ -641,6 +661,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   searchTags?: Resolver<ResolversTypes['SearchTagsResult'], ParentType, ContextType, RequireFields<QuerySearchTagsArgs, 'limit' | 'query' | 'skip'>>;
   searchVideos?: Resolver<ResolversTypes['SearchVideosResult'], ParentType, ContextType, RequireFields<QuerySearchVideosArgs, 'limit' | 'query' | 'skip'>>;
   tag?: Resolver<ResolversTypes['Tag'], ParentType, ContextType, RequireFields<QueryTagArgs, 'id'>>;
+  tags?: Resolver<ResolversTypes['TagCollection'], ParentType, ContextType, RequireFields<QueryTagsArgs, 'input'>>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'name'>>;
   video?: Resolver<ResolversTypes['Video'], ParentType, ContextType, RequireFields<QueryVideoArgs, 'id'>>;
   videos?: Resolver<ResolversTypes['VideoCollection'], ParentType, ContextType, RequireFields<QueryVideosArgs, 'input'>>;
@@ -708,6 +729,11 @@ export type TagChangePrimaryNameHistoryItemResolvers<ContextType = Context, Pare
   tag?: Resolver<ResolversTypes['Tag'], ParentType, ContextType>;
   to?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TagCollectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TagCollection'] = ResolversParentTypes['TagCollection']> = {
+  nodes?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -911,6 +937,7 @@ export type Resolvers<ContextType = Context> = {
   Tag?: TagResolvers<ContextType>;
   TagAddNameHistoryItem?: TagAddNameHistoryItemResolvers<ContextType>;
   TagChangePrimaryNameHistoryItem?: TagChangePrimaryNameHistoryItemResolvers<ContextType>;
+  TagCollection?: TagCollectionResolvers<ContextType>;
   TagDeleteNameHistoryItem?: TagDeleteNameHistoryItemResolvers<ContextType>;
   TagHistoryItem?: TagHistoryItemResolvers<ContextType>;
   TagName?: TagNameResolvers<ContextType>;
