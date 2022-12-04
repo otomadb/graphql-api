@@ -5,6 +5,7 @@ type Query {
   videos(input: GetVideosInput): VideoCollection!
 
   tag(id: ID!): Tag!
+  tags(input: GetTagsInput): TagCollection!
 
   searchVideos(query: String!, limit: Int! = 10, skip: Int! = 0): SearchVideosResult!
   searchTags(query: String!, limit: Int! = 10, skip: Int! = 0): SearchTagsResult!
@@ -185,6 +186,21 @@ type Tag {
   explicitParent: Tag
   parents: [TagParent!]!
   meaningless: Boolean!
+}
+
+type TagCollection {
+  nodes: [Tag!]!
+}
+
+input GetTagsInput {
+  limit: Int
+  skip: Int
+  order: GetTagsInputOrder = { updatedAt: DESC }
+}
+
+input GetTagsInputOrder {
+  updatedAt: SortOrder
+  createdAt: SortOrder
 }
 
 type TagName {
