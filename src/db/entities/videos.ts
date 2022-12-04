@@ -1,4 +1,5 @@
 import { CreateDateColumn, Entity, OneToMany, PrimaryColumn, Relation, UpdateDateColumn } from "typeorm";
+
 import { VideoSource } from "./video_sources.js";
 import { VideoTag } from "./video_tags.js";
 import { VideoThumbnail } from "./video_thumbnails.js";

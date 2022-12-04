@@ -1,8 +1,10 @@
+import { readFile } from "node:fs/promises";
+
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { graphql } from "graphql";
-import { readFile } from "node:fs/promises";
 import { ulid } from "ulid";
 import { z, ZodType } from "zod";
+
 import { dataSource } from "../db/data-source.js";
 import { User } from "../db/entities/users.js";
 import { resolvers } from "../resolvers/index.js";
