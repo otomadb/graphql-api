@@ -5,7 +5,7 @@ import { Session } from "../db/entities/sessions.js";
 import { User } from "../db/entities/users.js";
 
 export async function getUserFromSession(cookieValue: string | undefined): Promise<User | null> {
-  if (cookieValue == null) return null;
+  if (!cookieValue) return null;
   const [sessionId, secret] = cookieValue.split("-");
   const session = await dataSource.getRepository(Session).findOne({
     where: {
@@ -13,7 +13,7 @@ export async function getUserFromSession(cookieValue: string | undefined): Promi
     },
     relations: ["user"],
   });
-  if (session == null) return null; // TODO: clear session cookie
+  if (!session) return null; // TODO: clear session cookie
   const hashedSecret = createHash("sha256").update(secret).digest("hex");
   if (hashedSecret === session.secret) return session.user;
   // TODO: clear session cookie

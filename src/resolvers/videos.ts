@@ -40,7 +40,7 @@ export const registerVideo: MutationResolvers["registerVideo"] = async (_parent,
   primaryTitle.video = video;
   primaryTitle.isPrimary = true;
   titles.push(primaryTitle);
-  if (input.extraTitles != null) {
+  if (input.extraTitles) {
     for (const extraTitle of input.extraTitles) {
       const title = new VideoTitle();
       title.id = ulid();
@@ -67,24 +67,26 @@ export const registerVideo: MutationResolvers["registerVideo"] = async (_parent,
     return s;
   });
 
-  const tags = await dataSource.getRepository(Tag).findBy({ id: In(input.tags.map(t => removeIDPrefix(ObjectType.Tag, t))) })
+  const tags = await dataSource
+    .getRepository(Tag)
+    .findBy({ id: In(input.tags.map((t) => removeIDPrefix(ObjectType.Tag, t))) });
   if (tags.length !== input.tags.length) {
-    throw new GraphQLError("Some of tag IDs are wrong")
+    throw new GraphQLError("Some of tag IDs are wrong");
   }
-  const videoTags = tags.map(tag => {
-    const videoTag = new VideoTag()
-    videoTag.id = ulid()
-    videoTag.video = video
-    videoTag.tag = tag
-    return videoTag
-  })
+  const videoTags = tags.map((tag) => {
+    const videoTag = new VideoTag();
+    videoTag.id = ulid();
+    videoTag.video = video;
+    videoTag.tag = tag;
+    return videoTag;
+  });
 
   await dataSource.transaction(async (manager) => {
     await manager.getRepository(Video).insert(video);
     await manager.getRepository(VideoTitle).insert(titles);
     await manager.getRepository(VideoThumbnail).insert(primaryThumbnail);
     await manager.getRepository(VideoSource).insert(sources);
-    await manager.getRepository(VideoTag).insert(videoTags)
+    await manager.getRepository(VideoTag).insert(videoTags);
   });
 
   video.titles = titles;
@@ -139,11 +141,11 @@ export const tagVideo: MutationResolvers["tagVideo"] = async (
   const video = await dataSource.getRepository(Video).findOne({
     where: { id: removeIDPrefix(ObjectType.Video, videoId) },
   });
-  if (video == null) throw new GraphQLError("Video Not Found");
+  if (video === null) throw new GraphQLError("Video Not Found");
   const tag = await dataSource.getRepository(Tag).findOne({
     where: { id: removeIDPrefix(ObjectType.Tag, tagId) },
   });
-  if (tag == null) throw new GraphQLError("Tag Not Found");
+  if (tag === null) throw new GraphQLError("Tag Not Found");
   const videoTag = new VideoTag();
   videoTag.id = ulid();
   videoTag.video = video;
