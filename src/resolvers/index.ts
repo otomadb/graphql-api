@@ -10,7 +10,7 @@ export const resolvers: Resolvers = {
     searchTags,
     searchVideos,
     tag,
-    tags: tags,
+    tags,
     user,
     video,
     videos,
