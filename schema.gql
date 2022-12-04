@@ -5,6 +5,7 @@ type Query {
   videos(input: GetVideosInput = { limit: 10, skip: 0 }): VideoCollection!
 
   tag(id: ID!): Tag!
+  tags(input: GetTagsInput = { limit: 10, skip: 0 }): TagCollection!
 
   searchVideos(query: String!, limit: Int! = 10, skip: Int! = 0): SearchVideosResult!
   searchTags(query: String!, limit: Int! = 10, skip: Int! = 0): SearchTagsResult!
@@ -179,6 +180,15 @@ type Tag {
   explicitParent: Tag
   parents: [TagParent!]!
   meaningless: Boolean!
+}
+
+type TagCollection {
+  nodes: [Tag!]!
+}
+
+input GetTagsInput {
+  limit: Int
+  skip: Int
 }
 
 type TagName {

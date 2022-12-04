@@ -17,6 +17,13 @@ export const tag: QueryResolvers["tag"] = async (_parent, { id }, _context, _inf
   return new TagModel(tag);
 };
 
+
+export const tags: QueryResolvers["tags"] = async (_parent, _args, _context, _info) => {
+  const tags = await dataSource.getRepository(Tag).find({});
+
+  return { nodes: tags.map((t) => new TagModel(t)) };
+};
+
 export const searchTags: QueryResolvers["searchTags"] = async (_parent, { limit, query, skip }, _context, _info) => {
   const tagNames = await dataSource
     .getRepository(TagName)
