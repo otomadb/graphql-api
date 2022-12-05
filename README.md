@@ -2,37 +2,20 @@
 
 ## Setup
 
-### Requirements
+### docker compose
 
-#### Nixユーザ
-
-- `direnv allow`
-
-#### その他のユーザ
-
-- deno 1.27.1
-
-### 手順
-
-1. `docker compose up -d`
-2. `deno task dev`
-3. 適当なGraphQLクライアント（[Altair](https://altairgraphql.dev/)など）で`localhost:8080`を見る
-4. クエリなどは[web](https://github.com/otomad-database/web)などを参照
-5. access tokenが必要な場合は次のLoginクエリを叩く
-
-```graphql
-mutation Login($name: String!, $password: String!) {
-  signin(input: { name: $name, password: $password }) {
-    accessToken
-    refreshToken
-    user {
-      id
-    }
-  }
-}
+```
+docker-compose up -d
 ```
 
-### `data`
+8081番ポートにpgwebが立ち上がる．
 
-- `accounts.json`
-  - `testuser1`のパスワード: `password`
+### migrationの実行
+
+環境変数`DATABASE_URL`にpostgresの接続先を入れておく．(`.env.example`参照．)
+
+```bash
+pnpm i
+pnpm run typeorm migration:run
+```
+
