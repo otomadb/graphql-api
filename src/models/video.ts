@@ -11,7 +11,8 @@ import { TagModel } from "./tag.js";
 import { VideoThumbnailModel } from "./video_thumbnail.js";
 import { VideoTitleModel } from "./video_title.js";
 
-export class VideoModel implements VideoResolvers {
+// TODO: 全然実際の挙動と型推論が乖離していたので一旦外す
+export class VideoModel /* implements VideoResolvers */ {
   constructor(private readonly video: Video) {}
 
   id() {
