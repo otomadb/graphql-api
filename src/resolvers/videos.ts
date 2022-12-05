@@ -11,8 +11,11 @@ import { VideoTitle } from "../db/entities/video_titles.js";
 import { MutationResolvers, QueryResolvers } from "../graphql/resolvers.js";
 import { TagModel } from "../models/tag.js";
 import { VideoModel } from "../models/video.js";
-import { registerVideo as registerVideoToNeo4j } from "../neo4j/register_video.js";
+import { registerVideo as registerVideoInNeo4j } from "../neo4j/register_video.js";
+import { tagVideo as tagVideoInNeo4j } from "../neo4j/tag_video.js";
+import { untagVideo as untagVideoInNeo4j } from "../neo4j/untag_video.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "../utils/id.js";
+import { tag } from "./tags.js";
 import { userEntityToGraphQLType } from "./users.js";
 
 export const video: QueryResolvers["video"] = async (_parent, { id }, _context, _info) => {
@@ -100,7 +103,7 @@ export const registerVideo: MutationResolvers["registerVideo"] = async (_parent,
   video.thumbnails = [primaryThumbnail];
   video.sources = sources;
 
-  await registerVideoToNeo4j(video.id, {
+  await registerVideoInNeo4j(video.id, {
     tagIds: tags.map(({ id }) => id),
   });
 
@@ -163,6 +166,8 @@ export const tagVideo: MutationResolvers["tagVideo"] = async (
   videoTag.tag = tag;
   await dataSource.getRepository(VideoTag).insert(videoTag);
 
+  await tagVideoInNeo4j({ tagId: tag.id, videoId: video.id });
+
   return {
     createdAt: new Date(),
     id: addIDPrefix(ObjectType.VideoTag, videoTag.id),
@@ -199,6 +204,11 @@ export const untagVideo: MutationResolvers["untagVideo"] = async (
   }
 
   await repository.remove(videoTag);
+
+  await untagVideoInNeo4j({
+    tagId: removeIDPrefix(ObjectType.Tag, tagId),
+    videoId: removeIDPrefix(ObjectType.Video, videoId),
+  });
 
   return {
     createdAt: new Date(),

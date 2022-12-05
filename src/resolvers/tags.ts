@@ -6,7 +6,7 @@ import { Tag } from "../db/entities/tags.js";
 import { TagName } from "../db/entities/tag_names.js";
 import { MutationResolvers, QueryResolvers } from "../graphql/resolvers.js";
 import { TagModel } from "../models/tag.js";
-import { registerTag as registerTagToNeo4j } from "../neo4j/register_tag.js";
+import { registerTag as registerTagInNeo4j } from "../neo4j/register_tag.js";
 import { ObjectType, removeIDPrefix } from "../utils/id.js";
 
 export const tag: QueryResolvers["tag"] = async (_parent, { id }, _context, _info) => {
@@ -93,7 +93,7 @@ export const registerTag: MutationResolvers["registerTag"] = async (parent, { in
 
   tag.tagNames = tagNames;
 
-  await registerTagToNeo4j(tag.id);
+  await registerTagInNeo4j(tag.id);
 
   return { tag: new TagModel(tag) };
 };
