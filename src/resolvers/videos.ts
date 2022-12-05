@@ -11,6 +11,7 @@ import { VideoTitle } from "../db/entities/video_titles.js";
 import { MutationResolvers, QueryResolvers } from "../graphql/resolvers.js";
 import { TagModel } from "../models/tag.js";
 import { VideoModel } from "../models/video.js";
+import { registerVideo as registerVideoToNeo4j } from "../neo4j/register_video.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "../utils/id.js";
 import { userEntityToGraphQLType } from "./users.js";
 
@@ -27,10 +28,10 @@ export const videos: QueryResolvers["videos"] = async (_parent, { input }, _cont
   const videos = await dataSource.getRepository(Video).find({
     take: input?.limit || 0,
     skip: input?.skip || 0,
-    order:   {
-          createdAt: input?.order?.createdAt || undefined,
-          updatedAt: input?.order?.updatedAt || undefined,
-        }
+    order: {
+      createdAt: input?.order?.createdAt || undefined,
+      updatedAt: input?.order?.updatedAt || undefined,
+    },
   });
 
   return { nodes: videos.map((v) => new VideoModel(v)) };
@@ -98,6 +99,10 @@ export const registerVideo: MutationResolvers["registerVideo"] = async (_parent,
   video.titles = titles;
   video.thumbnails = [primaryThumbnail];
   video.sources = sources;
+
+  await registerVideoToNeo4j(video.id, {
+    tagIds: tags.map(({ id }) => id),
+  });
 
   return {
     video: new VideoModel(video),
