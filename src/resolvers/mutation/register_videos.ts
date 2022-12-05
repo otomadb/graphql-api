@@ -10,6 +10,7 @@ import { VideoTitle } from "../../db/entities/video_titles.js";
 import { Video } from "../../db/entities/videos.js";
 import { VideoModel } from "../../graphql/models.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
+import { registerVideo as registerVideoInNeo4j } from "../../neo4j/register_video.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 
 export const registerVideo =
@@ -76,6 +77,10 @@ export const registerVideo =
     video.titles = titles;
     video.thumbnails = [primaryThumbnail];
     video.sources = sources;
+
+    await registerVideoInNeo4j(video.id, {
+      tagIds: tags.map(({ id }) => id),
+    });
 
     return {
       video: new VideoModel(video),
