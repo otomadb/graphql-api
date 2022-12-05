@@ -8,7 +8,7 @@
 docker-compose up -d
 ```
 
-8081番ポートにpgwebが立ち上がる．
+8081番ポートにadminerが立ち上がる．
 
 ### migrationの実行
 
