@@ -17,6 +17,7 @@ specifiers:
   '@whatwg-node/server': ^0.4.17
   argon2: ^0.30.2
   eslint: 8.28.0
+  eslint-config-prettier: ^8.5.0
   eslint-plugin-eslint-comments: 3.2.0
   eslint-plugin-simple-import-sort: 8.0.0
   eslint-plugin-unused-imports: 2.0.0
@@ -67,6 +68,7 @@ devDependencies:
   '@typescript-eslint/eslint-plugin': 5.45.0_czs5uoqkd3podpy6vgtsxfc7au
   '@typescript-eslint/parser': 5.45.0_hsf322ms6xhhd4b5ne6lb74y4a
   eslint: 8.28.0
+  eslint-config-prettier: 8.5.0_eslint@8.28.0
   eslint-plugin-eslint-comments: 3.2.0_eslint@8.28.0
   eslint-plugin-simple-import-sort: 8.0.0_eslint@8.28.0
   eslint-plugin-unused-imports: 2.0.0_5am2datodjm2qi4eijrjrnoz54
@@ -2603,6 +2605,15 @@ packages:
   /escape-string-regexp/4.0.0:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
+    dev: true
+
+  /eslint-config-prettier/8.5.0_eslint@8.28.0:
+    resolution: {integrity: sha512-obmWKLUNCnhtQRKc+tmnYuQl0pFU1ibYJQ5BGhTVB08bHe9wC8qUeG7c08dj9XX+AuPj1YSGSQIHl1pnDHZR0Q==}
+    hasBin: true
+    peerDependencies:
+      eslint: '>=7.0.0'
+    dependencies:
+      eslint: 8.28.0
     dev: true
 
   /eslint-plugin-eslint-comments/3.2.0_eslint@8.28.0:
