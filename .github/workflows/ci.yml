@@ -24,6 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgres://postgres:pass@localhost/postgres
+      NEO4J_URL: bolt://neo4j:password@localhost:7687
+      NEO4J_USERNAME: neo4j
+      NEO4J_PASSWORD: password
     services:
       postgres:
         image: postgres:15
@@ -31,6 +34,12 @@ jobs:
         - 5432:5432
         env:
           POSTGRES_PASSWORD: pass
+      neo4j:
+        image: neo4j:5.2
+        ports:
+          - 7687:7687
+        env:
+          NEO4J_AUTH: neo4j/password
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
