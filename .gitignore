@@ -15,3 +15,6 @@ node_modules
 
 # codegen
 src/graphql/resolvers.ts
+
+# tsc
+dist/
