@@ -35,6 +35,7 @@ type Video {
   hasTag(id: ID!): Boolean!
   history(skip: Int! = 0, limit: Int! = 10, order: VideoHistoryOrder! = { createdAt: DESC }): [VideoHistoryItem!]!
   registeredAt: DateTime!
+  similarVideos(input: VideoSimilarVideosInput): VideoSimilarVideosPayload!
 }
 
 input VideoHistoryOrder {
@@ -172,6 +173,19 @@ input GetVideosInputOrder {
 
 type VideoCollection {
   nodes: [Video!]!
+}
+
+input VideoSimilarVideosInput {
+  limit: Int = 10
+}
+
+type VideoSimilarVideosPayload {
+  nodes: [VideoSimilarVideoItem!]!
+}
+
+type VideoSimilarVideoItem {
+  video: Video!
+  score: Float!
 }
 
 type Tag {
