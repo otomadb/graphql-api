@@ -4,6 +4,7 @@ import { DataSource } from "typeorm";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { TagModel, UserModel, VideoModel } from "../../graphql/models.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
+import { untagVideo as untagVideoInNeo4j } from "../../neo4j/untag_video.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "../../utils/id.js";
 
 export const untagVideo =
@@ -30,6 +31,10 @@ export const untagVideo =
     }
 
     await repository.remove(videoTag);
+    await untagVideoInNeo4j({
+      tagId: removeIDPrefix(ObjectType.Tag, tagId),
+      videoId: removeIDPrefix(ObjectType.Video, videoId),
+    });
 
     return {
       createdAt: new Date(),

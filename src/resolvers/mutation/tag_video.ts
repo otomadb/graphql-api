@@ -7,6 +7,7 @@ import { VideoTag } from "../../db/entities/video_tags.js";
 import { Video } from "../../db/entities/videos.js";
 import { TagModel, UserModel, VideoModel } from "../../graphql/models.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
+import { tagVideo as tagVideoInNeo4j } from "../../neo4j/tag_video.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "../../utils/id.js";
 
 export const tagVideo =
@@ -29,6 +30,8 @@ export const tagVideo =
     videoTag.video = video;
     videoTag.tag = tag;
     await dataSource.getRepository(VideoTag).insert(videoTag);
+
+    await tagVideoInNeo4j({ tagId: tag.id, videoId: video.id });
 
     return {
       createdAt: new Date(),
