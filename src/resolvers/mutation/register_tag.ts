@@ -5,6 +5,7 @@ import { TagName } from "../../db/entities/tag_names.js";
 import { Tag } from "../../db/entities/tags.js";
 import { TagModel } from "../../graphql/models.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
+import { registerTag as registerTagInNeo4j } from "../../neo4j/register_tag.js";
 
 export const registerTag =
   ({ dataSource }: { dataSource: DataSource }): MutationResolvers["registerTag"] =>
@@ -44,6 +45,8 @@ export const registerTag =
     });
 
     tag.tagNames = tagNames;
+
+    await registerTagInNeo4j(tag.id);
 
     return { tag: new TagModel(tag) };
   };
