@@ -21,6 +21,7 @@ specifiers:
   koa: ^2.13.4
   koa-body: ^6.0.1
   koa-logger: ^3.2.1
+  neo4j-driver: ^5.3.0
   nodemon: ^2.0.20
   npm-run-all: ^4.1.5
   pg: ^8.8.0
@@ -44,6 +45,7 @@ dependencies:
   koa: 2.13.4
   koa-body: 6.0.1
   koa-logger: 3.2.1
+  neo4j-driver: 5.3.0
   pg: 8.8.0
   reflect-metadata: 0.1.13
   typeorm: 0.3.10_pg@8.8.0+ts-node@10.9.1
@@ -639,7 +641,6 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.13.11
-    dev: true
 
   /@babel/template/7.18.10:
     resolution: {integrity: sha512-TI+rCtooWHr3QJ27kJxfjutghu44DLnasDMwpDqCXVTal9RLp3RSYNh4NdBrRP2cQAoG9A8juOQl6P6oZG4JxA==}
@@ -3566,6 +3567,27 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
+  /neo4j-driver-bolt-connection/5.3.0:
+    resolution: {integrity: sha512-/JMlyf2nBjyqNBBHmXh0eHkkUu+PHok5A0wUh+lcwcXKAzR95tHvDYPthlPp1zXVfK2XbaiV4iO2rVQuzpbCVA==}
+    dependencies:
+      buffer: 6.0.3
+      neo4j-driver-core: 5.3.0
+      string_decoder: 1.3.0
+    dev: false
+
+  /neo4j-driver-core/5.3.0:
+    resolution: {integrity: sha512-MGxHCU0Pt13ElxYZkObWoxZ8O5y0Guf/R3rcogDUktG6cp69rc+lWxZAR7HbsL+gc8NrdJlIxR7dIud7B3bhAA==}
+    dev: false
+
+  /neo4j-driver/5.3.0:
+    resolution: {integrity: sha512-u3+idq50BZj4zN9kVBbWA7u5H5/v837PP+iWbHElWgUbCCD1LX7E4V5Yq3g25XHm/CJu8Qfq9gfWCBbYCxgWBw==}
+    dependencies:
+      '@babel/runtime': 7.20.6
+      neo4j-driver-bolt-connection: 5.3.0
+      neo4j-driver-core: 5.3.0
+      rxjs: 7.5.7
+    dev: false
+
   /nice-try/1.0.5:
     resolution: {integrity: sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==}
     dev: true
@@ -4091,7 +4113,6 @@ packages:
 
   /regenerator-runtime/0.13.11:
     resolution: {integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==}
-    dev: true
 
   /regexp.prototype.flags/1.4.3:
     resolution: {integrity: sha512-fjggEOO3slI6Wvgjwflkc4NFRCTZAu5CnNfBd5qOMYhWdn67nJBBu34/TkD++eeFmd8C9r9jfXJ27+nSiRkSUA==}
@@ -4195,7 +4216,6 @@ packages:
     resolution: {integrity: sha512-z9MzKh/UcOqB3i20H6rtrlaE/CgjLOvheWK/9ILrbhROGTweAi1BaFsTT9FbwZi5Trr1qNRs+MXkhmR06awzQA==}
     dependencies:
       tslib: 2.4.1
-    dev: true
 
   /safe-buffer/5.2.1:
     resolution: {integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==}

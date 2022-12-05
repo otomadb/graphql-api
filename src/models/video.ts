@@ -1,10 +1,12 @@
 import { GraphQLError } from "graphql";
+import { In } from "typeorm";
 import { dataSource } from "../db/data-source.js";
 import { Video } from "../db/entities/videos.js";
 import { VideoTag } from "../db/entities/video_tags.js";
 import { VideoThumbnail } from "../db/entities/video_thumbnails.js";
 import { VideoTitle as VideoTitleEntity } from "../db/entities/video_titles.js";
 import { VideoResolvers } from "../graphql/resolvers.js";
+import { calcVideoSimilarities } from "../neo4j/video_similarities.js";
 import { addIDPrefix, ObjectType } from "../utils/id.js";
 import { ResolverArgs } from "../utils/type.js";
 import { TagModel } from "./tag.js";
@@ -74,5 +76,24 @@ export class VideoModel /* implements VideoResolvers */ {
 
   registeredAt() {
     return this.video.createdAt;
+  }
+
+  async similarVideos(args: { input?: { limit?: number } }) {
+    const similarities = await calcVideoSimilarities(this.video.id, { limit: args.input?.limit || 0 });
+
+    const items = await dataSource
+      .getRepository(Video)
+      .find({ where: { id: In(similarities.map(({ videoId }) => videoId)) } })
+      .then((vs) =>
+        vs.map((v) => {
+          const { score } = similarities.find(({ videoId }) => videoId === v.id)!; // TODO: 危険
+          return {
+            video: new VideoModel(v),
+            score,
+          };
+        })
+      );
+
+    return { items: items };
   }
 }
