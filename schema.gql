@@ -190,7 +190,7 @@ input VideoSimilarVideosInput {
 }
 
 type VideoSimilarVideosPayload {
-  nodes: [VideoSimilarVideoItem!]!
+  items: [VideoSimilarVideoItem!]!
 }
 
 type VideoSimilarVideoItem {
