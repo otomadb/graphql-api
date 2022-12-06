@@ -10,6 +10,7 @@
     "dev:node": "nodemon -w dist/ -e json,js dist/index.js",
     "dev:tsc": "tsc -w --preserveWatchOutput",
     "dev:gql": "graphql-codegen-esm -w",
+    "build": "tsc",
     "fmt": "prettier --write ./**/*.{js,ts,json,yml,md}",
     "typecheck": "tsc --noEmit",
     "lint:eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
