@@ -1,13 +1,14 @@
 import { GraphQLError } from "graphql";
 import { In, Like } from "typeorm";
 import { ulid } from "ulid";
+
 import { dataSource } from "../db/data-source.js";
 import { Tag } from "../db/entities/tags.js";
-import { Video } from "../db/entities/videos.js";
 import { VideoSource } from "../db/entities/video_sources.js";
 import { VideoTag } from "../db/entities/video_tags.js";
 import { VideoThumbnail } from "../db/entities/video_thumbnails.js";
 import { VideoTitle } from "../db/entities/video_titles.js";
+import { Video } from "../db/entities/videos.js";
 import { MutationResolvers, QueryResolvers } from "../graphql/resolvers.js";
 import { TagModel } from "../models/tag.js";
 import { VideoModel } from "../models/video.js";
@@ -27,10 +28,10 @@ export const videos: QueryResolvers["videos"] = async (_parent, { input }, _cont
   const videos = await dataSource.getRepository(Video).find({
     take: input?.limit || 0,
     skip: input?.skip || 0,
-    order:   {
-          createdAt: input?.order?.createdAt || undefined,
-          updatedAt: input?.order?.updatedAt || undefined,
-        }
+    order: {
+      createdAt: input?.order?.createdAt || undefined,
+      updatedAt: input?.order?.updatedAt || undefined,
+    },
   });
 
   return { nodes: videos.map((v) => new VideoModel(v)) };
@@ -39,16 +40,16 @@ export const videos: QueryResolvers["videos"] = async (_parent, { input }, _cont
 export const registerVideo: MutationResolvers["registerVideo"] = async (_parent, { input }, _context, _info) => {
   const video = new Video();
   video.id = ulid();
-  let titles: VideoTitle[] = [];
+  const titles: VideoTitle[] = [];
   const primaryTitle = new VideoTitle();
   primaryTitle.id = ulid();
   primaryTitle.title = input.primaryTitle;
   primaryTitle.video = video;
   primaryTitle.isPrimary = true;
   titles.push(primaryTitle);
-  if (input.extraTitles != null) {
+  if (input.extraTitles) {
     for (const extraTitle of input.extraTitles) {
-      let title = new VideoTitle();
+      const title = new VideoTitle();
       title.id = ulid();
       title.title = extraTitle;
       title.video = video;
@@ -147,11 +148,11 @@ export const tagVideo: MutationResolvers["tagVideo"] = async (
   const video = await dataSource.getRepository(Video).findOne({
     where: { id: removeIDPrefix(ObjectType.Video, videoId) },
   });
-  if (video == null) throw new GraphQLError("Video Not Found");
+  if (video === null) throw new GraphQLError("Video Not Found");
   const tag = await dataSource.getRepository(Tag).findOne({
     where: { id: removeIDPrefix(ObjectType.Tag, tagId) },
   });
-  if (tag == null) throw new GraphQLError("Tag Not Found");
+  if (tag === null) throw new GraphQLError("Tag Not Found");
   const videoTag = new VideoTag();
   videoTag.id = ulid();
   videoTag.video = video;

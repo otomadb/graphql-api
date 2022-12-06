@@ -1,4 +1,0 @@
-{
-  "nixEnvSelector.nixFile": "${workspaceRoot}/shell.nix",
-  "typescript.tsdk": "node_modules/typescript/lib"
-}

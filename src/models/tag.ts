@@ -1,8 +1,9 @@
 import { GraphQLError } from "graphql";
+
 import { dataSource } from "../db/data-source.js";
-import { Tag } from "../db/entities/tags.js";
 import { TagName } from "../db/entities/tag_names.js";
 import { TagParent } from "../db/entities/tag_parents.js";
+import { Tag } from "../db/entities/tags.js";
 import { VideoTag } from "../db/entities/video_tags.js";
 import { TagResolvers, TagType } from "../graphql/resolvers.js";
 import { addIDPrefix, ObjectType } from "../utils/id.js";
@@ -40,7 +41,7 @@ export class TagModel implements TagResolvers {
   async taggedVideos() {
     const videoTags = await dataSource
       .getRepository(VideoTag)
-      .find({ where: { tag: {id: this.tag.id} }, relations: { video: true } });
+      .find({ where: { tag: { id: this.tag.id } }, relations: { video: true } });
 
     return await Promise.all(videoTags.map((t) => new VideoModel(t.video)));
   }

@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn, Relation, UpdateDateColumn } from "typeorm";
+
 import { Video } from "./videos.js";
 
 @Entity("video_thumbnails")
