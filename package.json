@@ -18,6 +18,7 @@
     "lint:schema": "graphql-schema-linter ./schema.gql",
     "lintfix": "run-s 'lintfix:*' 'fmt'",
     "lintfix:eslint": "pnpm run lint:eslint --fix",
+    "migration:run": "pnpm run typeorm migration:run",
     "migration:generate": "run(){ pnpm run typeorm migration:generate -p \"src/db/migrations/$1\"; }; run",
     "start": "node --loader ts-node/esm src/index.ts",
     "type-check": "tsc --noEmit",
