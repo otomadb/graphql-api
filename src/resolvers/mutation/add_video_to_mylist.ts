@@ -40,6 +40,13 @@ export const addVideoToMylist: MutationResolvers["addVideoToMylist"] = async (_p
 
   return {
     id: registration.id,
-    registration: new MylistRegistrationModel(registration),
+    registration: new MylistRegistrationModel({
+      id: registration.id,
+      note: registration.note,
+      createdAt: registration.createdAt,
+      updatedAt: registration.updatedAt,
+      mylistId: registration.mylist.id,
+      videoId: registration.video.id,
+    }),
   };
 };

@@ -49,24 +49,27 @@ export class MylistModel {
 
 export class MylistRegistrationModel {
   public id;
+  public note;
   public createdAt;
   public updatedAt;
-  public video: VideoModel;
-  public mylist: MylistModel;
+  public videoId;
+  public mylistId;
 
   constructor(
     private readonly reg: {
       id: string;
+      note: string | null;
       createdAt: Date;
       updatedAt: Date;
-      video: Video;
-      mylist: Mylist;
+      videoId: string;
+      mylistId: string;
     }
   ) {
     this.id = reg.id;
+    this.note = reg.note;
     this.createdAt = reg.createdAt;
     this.updatedAt = reg.updatedAt;
-    this.video = new VideoModel(reg.video);
-    this.mylist = new MylistModel(reg.mylist);
+    this.videoId = reg.videoId;
+    this.mylistId = reg.mylistId;
   }
 }

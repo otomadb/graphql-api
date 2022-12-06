@@ -11,7 +11,7 @@ generates:
         User: ./models.js#UserModel
         Video: ./models.js#VideoModel
         Mylist: ./models.js#MylistModel
-        MylistRegistrationModel: ./models.js#MylistRegistrationModel
+        MylistRegistration: ./models.js#MylistRegistrationModel
     plugins:
       - typescript
       - typescript-resolvers
