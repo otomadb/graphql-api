@@ -1,9 +1,9 @@
 import { GraphQLError } from "graphql";
 
-import { TagModel } from "../../graphql/models.js";
-import { QueryResolvers } from "../../graphql/resolvers.js";
 import { dataSource } from "../../db/data-source.js";
 import { Tag } from "../../db/entities/tags.js";
+import { TagModel } from "../../graphql/models.js";
+import { QueryResolvers } from "../../graphql/resolvers.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 
 export const getTag: QueryResolvers["tag"] = async (_parent, { id }) => {

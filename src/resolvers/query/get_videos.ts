@@ -1,7 +1,7 @@
-import { VideoModel } from "../../graphql/models.js";
-import { QueryResolvers } from "../../graphql/resolvers.js";
 import { dataSource } from "../../db/data-source.js";
 import { Video } from "../../db/entities/videos.js";
+import { VideoModel } from "../../graphql/models.js";
+import { QueryResolvers } from "../../graphql/resolvers.js";
 
 export const getVideos: QueryResolvers["videos"] = async (_parent, { input }) => {
   const videos = await dataSource.getRepository(Video).find({

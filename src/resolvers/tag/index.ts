@@ -1,11 +1,11 @@
 import { GraphQLError } from "graphql";
 
-import { TagModel, VideoModel } from "../../graphql/models.js";
-import { Resolvers, TagType } from "../../graphql/resolvers.js";
 import { dataSource } from "../../db/data-source.js";
 import { TagName } from "../../db/entities/tag_names.js";
 import { TagParent } from "../../db/entities/tag_parents.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
+import { TagModel, VideoModel } from "../../graphql/models.js";
+import { Resolvers, TagType } from "../../graphql/resolvers.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
 
 export const resolveTag: Resolvers["Tag"] = {

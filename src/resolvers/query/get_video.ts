@@ -1,9 +1,9 @@
 import { GraphQLError } from "graphql";
 
-import { VideoModel } from "../../graphql/models.js";
-import { QueryResolvers } from "../../graphql/resolvers.js";
 import { dataSource } from "../../db/data-source.js";
 import { Video } from "../../db/entities/videos.js";
+import { VideoModel } from "../../graphql/models.js";
+import { QueryResolvers } from "../../graphql/resolvers.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 
 export const getVideo: QueryResolvers["video"] = async (_parent, { id }) => {
