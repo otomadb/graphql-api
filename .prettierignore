@@ -2,5 +2,6 @@
 
 pnpm-lock.yaml
 
+dist/
 src/codegen/resolvers.ts
 src/db/migrations/
