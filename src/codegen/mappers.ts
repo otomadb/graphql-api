@@ -10,4 +10,5 @@ export type Video = {
 
 export type Tag = {
   id: string;
+  meaningless: boolean;
 };
