@@ -11,6 +11,7 @@
     "dev:tsc": "tsc -w --preserveWatchOutput",
     "dev:gql": "graphql-codegen-esm -w",
     "lint:schema": "graphql-schema-linter ./schema.gql",
+    "migration:run": "pnpm run typeorm migration:run",
     "migration:generate": "run(){ pnpm run typeorm migration:generate -p \"src/db/migrations/$1\"; }; run",
     "start": "node --loader ts-node/esm src/index.ts",
     "type-check": "tsc --noEmit",
