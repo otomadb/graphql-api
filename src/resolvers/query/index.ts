@@ -9,7 +9,7 @@ import { searchTags } from "./search_tags.js";
 import { searchVideos } from "./search_videos.js";
 import { whoami } from "./whoami.js";
 
-export const queryResolvers: Resolvers["Query"] = {
+export const resolveQuery: Resolvers["Query"] = {
   // findNiconicoSource, // 最悪まだ実装しなくてもいい
   // niconicoSource, // 最悪まだ実装しなくてもいい
   searchTags,
