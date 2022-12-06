@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryColumn, Unique, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryColumn, UpdateDateColumn } from "typeorm";
+
 import { User } from "./users.js";
 
 // 項目を変更する時は TypeORM が生成するマイグレーションコードをちゃんと読むこと！
