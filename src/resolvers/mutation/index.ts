@@ -1,5 +1,6 @@
 import { type Resolvers } from "../../graphql/resolvers.js";
-import { addVideoToMylist, createMylist } from "../mylists.js";
+import { addVideoToMylist } from "./add_video_to_mylist.js";
+import { createMylist } from "./create_mylist.js";
 import { registerTag } from "./register_tag.js";
 import { registerVideo } from "./register_videos.js";
 import { tagVideo } from "./tag_video.js";
