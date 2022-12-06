@@ -9,7 +9,7 @@ import { Resolvers } from "../../graphql/resolvers.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
 
 export const resolveTag: Resolvers["Mylist"] = {
-  id: ({ id }) => addIDPrefix(ObjectType.Tag, id),
+  id: ({ id }) => addIDPrefix(ObjectType.Mylist, id),
   range: ({ range }) => {
     switch (range) {
       case MylistShareRange.PUBLIC:
