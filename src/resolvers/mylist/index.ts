@@ -8,7 +8,7 @@ import { MylistShareRange as MylistGQLShareRange } from "../../graphql/resolvers
 import { Resolvers } from "../../graphql/resolvers.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
 
-export const resolveTag: Resolvers["Mylist"] = {
+export const resolveMylist: Resolvers["Mylist"] = {
   id: ({ id }) => addIDPrefix(ObjectType.Mylist, id),
   range: ({ range }) => {
     switch (range) {
