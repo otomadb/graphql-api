@@ -1,6 +1,6 @@
-import { User } from "../db/entities/users.js";
-import { UserResolvers } from "../graphql/resolvers.js";
-import { addIDPrefix, ObjectType } from "../utils/id.js";
+import { UserResolvers } from "~/codegen/resolvers.js";
+import { User } from "~/db/entities/users.js";
+import { addIDPrefix, ObjectType } from "~/utils/id.js";
 
 export class UserModel implements UserResolvers {
   constructor(private readonly user: User) {}

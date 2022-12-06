@@ -1,8 +1,8 @@
 import { createHash } from "node:crypto";
 
-import { dataSource } from "../db/data-source.js";
-import { Session } from "../db/entities/sessions.js";
-import { User } from "../db/entities/users.js";
+import { dataSource } from "~/db/data-source.js";
+import { Session } from "~/db/entities/sessions.js";
+import { User } from "~/db/entities/users.js";
 
 export async function getUserFromSession(cookieValue: string | undefined): Promise<User | null> {
   if (!cookieValue) return null;

@@ -1,5 +1,6 @@
-import { TagParent } from "../db/entities/tag_parents.js";
-import { TagParentResolvers } from "../graphql/resolvers.js";
+import { TagParentResolvers } from "~/codegen/resolvers.js";
+import { TagParent } from "~/db/entities/tag_parents.js";
+
 import { TagModel } from "./tag.js";
 
 export class TagParentModel implements TagParentResolvers {

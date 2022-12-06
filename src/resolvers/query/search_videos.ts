@@ -1,10 +1,10 @@
 import { In, Like } from "typeorm";
 
-import { dataSource } from "../db/data-source.js";
-import { VideoTitle } from "../db/entities/video_titles.js";
-import { Video } from "../db/entities/videos.js";
-import { QueryResolvers } from "../graphql/resolvers.js";
-import { VideoModel } from "../models/video.js";
+import { QueryResolvers } from "~/codegen/resolvers.js";
+import { dataSource } from "~/db/data-source.js";
+import { VideoTitle } from "~/db/entities/video_titles.js";
+import { Video } from "~/db/entities/videos.js";
+import { VideoModel } from "~/models/video.js";
 
 export const searchVideos: QueryResolvers["searchVideos"] = async (
   _parent,

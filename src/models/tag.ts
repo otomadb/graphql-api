@@ -1,12 +1,13 @@
 import { GraphQLError } from "graphql";
 
-import { dataSource } from "../db/data-source.js";
-import { TagName } from "../db/entities/tag_names.js";
-import { TagParent } from "../db/entities/tag_parents.js";
-import { Tag } from "../db/entities/tags.js";
-import { VideoTag } from "../db/entities/video_tags.js";
-import { TagResolvers, TagType } from "../graphql/resolvers.js";
-import { addIDPrefix, ObjectType } from "../utils/id.js";
+import { TagResolvers, TagType } from "~/codegen/resolvers.js";
+import { dataSource } from "~/db/data-source.js";
+import { TagName } from "~/db/entities/tag_names.js";
+import { TagParent } from "~/db/entities/tag_parents.js";
+import { Tag } from "~/db/entities/tags.js";
+import { VideoTag } from "~/db/entities/video_tags.js";
+import { addIDPrefix, ObjectType } from "~/utils/id.js";
+
 import { TagNameModel } from "./tag_name.js";
 import { TagParentModel } from "./tag_parent.js";
 import { VideoModel } from "./video.js";

@@ -4,9 +4,9 @@ import { createHash, randomBytes } from "crypto";
 import { ulid } from "ulid";
 import { z } from "zod";
 
-import { dataSource } from "../db/data-source.js";
-import { Session } from "../db/entities/sessions.js";
-import { User } from "../db/entities/users.js";
+import { dataSource } from "~/db/data-source.js";
+import { Session } from "~/db/entities/sessions.js";
+import { User } from "~/db/entities/users.js";
 
 export const router = new Router();
 

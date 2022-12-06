@@ -1,5 +1,5 @@
-import { VideoThumbnail } from "../db/entities/video_thumbnails.js";
-import { VideoThumbnailResolvers } from "../graphql/resolvers.js";
+import { VideoThumbnailResolvers } from "~/codegen/resolvers.js";
+import { VideoThumbnail } from "~/db/entities/video_thumbnails.js";
 
 export class VideoThumbnailModel implements VideoThumbnailResolvers {
   constructor(private readonly videoThumbnail: VideoThumbnail) {}
