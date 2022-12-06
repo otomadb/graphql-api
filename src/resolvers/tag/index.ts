@@ -1,11 +1,11 @@
 import { GraphQLError } from "graphql";
 
+import { TagModel, VideoModel } from "~/codegen/models.js";
 import { Resolvers, TagType } from "~/codegen/resolvers.js";
 import { dataSource } from "~/db/data-source.js";
 import { TagName } from "~/db/entities/tag_names.js";
 import { TagParent } from "~/db/entities/tag_parents.js";
 import { VideoTag } from "~/db/entities/video_tags.js";
-import { TagParentModel } from "~/models/tag_parent.js";
 import { addIDPrefix, ObjectType } from "~/utils/id.js";
 
 export const resolveTag: Resolvers["Tag"] = {
@@ -32,10 +32,10 @@ export const resolveTag: Resolvers["Tag"] = {
   parents: async ({ id: tagId }) => {
     const rel = await dataSource.getRepository(TagParent).find({
       where: { child: { id: tagId } },
-      relations: TagParentModel.needRelations,
+      relations: { parent: true },
     });
     return rel.map(({ parent, explicit }) => ({
-      tag: { id: parent.id, meaningless: parent.meaningless },
+      tag: new TagModel(parent),
       explicit,
     }));
   },
@@ -43,12 +43,12 @@ export const resolveTag: Resolvers["Tag"] = {
   explicitParent: async ({ id: tagId }) => {
     const rel = await dataSource.getRepository(TagParent).findOne({
       where: { child: { id: tagId }, explicit: true },
-      relations: TagParentModel.needRelations,
+      relations: { parent: true },
     });
     if (!rel) return null;
 
     const { parent } = rel;
-    return { id: parent.id, meaningless: parent.meaningless };
+    return new TagModel(parent);
   },
 
   taggedVideos: async ({ id: tagId }) => {
@@ -56,10 +56,7 @@ export const resolveTag: Resolvers["Tag"] = {
       .getRepository(VideoTag)
       .find({ where: { tag: { id: tagId } }, relations: { video: true } });
 
-    return videoTags.map(({ video }) => ({
-      id: video.id,
-      registeredAt: video.createdAt,
-    }));
+    return videoTags.map(({ video }) => new VideoModel(video));
   },
 
   history() {

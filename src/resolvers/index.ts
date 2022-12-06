@@ -2,7 +2,8 @@ import { type Resolvers } from "~/codegen/resolvers.js";
 
 import { resolveMutation } from "./mutation/index.js";
 import { resolveQuery } from "./query/index.js";
-import { resolveTag } from "./tags/index.js";
+import { resolveTag } from "./tag/index.js";
+import { resolveUser } from "./user/index.js";
 import { resolveVideo } from "./video/index.js";
 
 export const resolvers: Resolvers = {
@@ -10,4 +11,5 @@ export const resolvers: Resolvers = {
   Mutation: resolveMutation,
   Tag: resolveTag,
   Video: resolveVideo,
+  User: resolveUser,
 };

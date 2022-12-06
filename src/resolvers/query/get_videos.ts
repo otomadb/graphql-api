@@ -1,9 +1,9 @@
+import { VideoModel } from "~/codegen/models.js";
 import { QueryResolvers } from "~/codegen/resolvers.js";
 import { dataSource } from "~/db/data-source.js";
 import { Video } from "~/db/entities/videos.js";
-import { VideoModel } from "~/models/video.js";
 
-export const getVideos: QueryResolvers["videos"] = async (_parent, { input }, _context, _info) => {
+export const getVideos: QueryResolvers["videos"] = async (_parent, { input }) => {
   const videos = await dataSource.getRepository(Video).find({
     take: input?.limit || 0,
     skip: input?.skip || 0,
@@ -13,5 +13,7 @@ export const getVideos: QueryResolvers["videos"] = async (_parent, { input }, _c
     },
   });
 
-  return { nodes: videos.map((v) => new VideoModel(v)) };
+  return {
+    nodes: videos.map((v) => new VideoModel(v)),
+  };
 };

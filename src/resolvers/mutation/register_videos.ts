@@ -2,6 +2,7 @@ import { GraphQLError } from "graphql";
 import { In } from "typeorm";
 import { ulid } from "ulid";
 
+import { VideoModel } from "~/codegen/models.js";
 import { MutationResolvers } from "~/codegen/resolvers.js";
 import { dataSource } from "~/db/data-source.js";
 import { Tag } from "~/db/entities/tags.js";
@@ -10,10 +11,9 @@ import { VideoTag } from "~/db/entities/video_tags.js";
 import { VideoThumbnail } from "~/db/entities/video_thumbnails.js";
 import { VideoTitle } from "~/db/entities/video_titles.js";
 import { Video } from "~/db/entities/videos.js";
-import { VideoModel } from "~/models/video.js";
 import { ObjectType, removeIDPrefix } from "~/utils/id.js";
 
-export const registerVideo: MutationResolvers["registerVideo"] = async (_parent, { input }, _context, _info) => {
+export const registerVideo: MutationResolvers["registerVideo"] = async (_parent, { input }) => {
   const video = new Video();
   video.id = ulid();
   const titles: VideoTitle[] = [];

@@ -1,19 +1,12 @@
 import { GraphQLError } from "graphql";
 
+import { TagModel, UserModel, VideoModel } from "~/codegen/models.js";
 import { MutationResolvers } from "~/codegen/resolvers.js";
 import { dataSource } from "~/db/data-source.js";
 import { VideoTag } from "~/db/entities/video_tags.js";
-import { TagModel } from "~/models/tag.js";
-import { UserModel } from "~/models/user.js";
-import { VideoModel } from "~/models/video.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "~/utils/id.js";
 
-export const untagVideo: MutationResolvers["untagVideo"] = async (
-  _parent,
-  { input: { tagId, videoId } },
-  { user },
-  _info
-) => {
+export const untagVideo: MutationResolvers["untagVideo"] = async (_parent, { input: { tagId, videoId } }, { user }) => {
   if (!user) {
     throw new GraphQLError("required to sign in");
   }

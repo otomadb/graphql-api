@@ -1,5 +1,6 @@
 import { GraphQLError } from "graphql";
 
+import { TagModel } from "~/codegen/models.js";
 import { Resolvers } from "~/codegen/resolvers.js";
 import { dataSource } from "~/db/data-source.js";
 import { VideoTag } from "~/db/entities/video_tags.js";
@@ -46,7 +47,7 @@ export const resolveVideo: Resolvers["Video"] = {
         tag: true,
       },
     });
-    return tags.map(({ tag }) => ({ id: tag.id, meaningless: tag.meaningless }));
+    return tags.map(({ tag }) => new TagModel(tag));
   },
   hasTag: async ({ id: videoId }, { id: tagId }) => {
     return await dataSource
