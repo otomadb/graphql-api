@@ -1,4 +1,5 @@
 import { GraphQLError } from "graphql";
+
 import { dataSource } from "../db/data-source.js";
 import { Video } from "../db/entities/videos.js";
 import { QueryResolvers } from "../graphql/resolvers.js";

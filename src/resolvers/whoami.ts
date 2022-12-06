@@ -1,4 +1,5 @@
 import { GraphQLError } from "graphql";
+
 import { QueryResolvers } from "../graphql/resolvers.js";
 import { UserModel } from "../models/user.js";
 

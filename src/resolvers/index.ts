@@ -14,21 +14,21 @@ import { whoami } from "./whoami.js";
 
 export const resolvers: Resolvers = {
   Query: {
-    // findNiconicoSource,　// 最悪まだ実装しなくてもいい
-    // niconicoSource,　// 最悪まだ実装しなくてもいい
-    searchTags: searchTags,
-    searchVideos: searchVideos,
+    // findNiconicoSource, // 最悪まだ実装しなくてもいい
+    // niconicoSource, // 最悪まだ実装しなくてもいい
+    searchTags,
+    searchVideos,
     tag: getTag,
     tags: getTags,
     user: getUser,
     video: getVideo,
     videos: getVideos,
-    whoami: whoami,
+    whoami,
   },
   Mutation: {
-    registerTag: registerTag,
-    registerVideo: registerVideo,
-    tagVideo: tagVideo,
-    untagVideo: untagVideo,
+    registerTag,
+    registerVideo,
+    tagVideo,
+    untagVideo,
   },
 };

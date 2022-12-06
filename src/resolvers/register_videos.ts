@@ -4,11 +4,11 @@ import { ulid } from "ulid";
 
 import { dataSource } from "../db/data-source.js";
 import { Tag } from "../db/entities/tags.js";
-import { Video } from "../db/entities/videos.js";
 import { VideoSource } from "../db/entities/video_sources.js";
 import { VideoTag } from "../db/entities/video_tags.js";
 import { VideoThumbnail } from "../db/entities/video_thumbnails.js";
 import { VideoTitle } from "../db/entities/video_titles.js";
+import { Video } from "../db/entities/videos.js";
 import { MutationResolvers } from "../graphql/resolvers.js";
 import { VideoModel } from "../models/video.js";
 import { ObjectType, removeIDPrefix } from "../utils/id.js";
