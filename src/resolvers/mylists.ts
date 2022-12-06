@@ -8,6 +8,8 @@ import { ulid } from "ulid";
 import { MylistRegistration } from "../db/entities/mylist_registrations.js";
 import { Video } from "../db/entities/videos.js";
 import { MylistRegistrationModel } from "../models/mylist_registration.js";
+import { createMylist as createMylistInNeo4j } from "../neo4j/create_mylist.js";
+import { addVideoToMylist as addVideoToMylistInNeo4j } from "../neo4j/add_video_to_mylist.js";
 
 const MYLIST_NOT_FOUND_OR_PRIVATE_ERROR = "Mylist Not Found or Private";
 const MYLIST_NOT_HOLDED_BY_YOU = "This mylist is not holded by you";
@@ -49,6 +51,10 @@ export const createMylist: MutationResolvers["createMylist"] = async (_parent, {
   mylist.isLikeList = false;
 
   await dataSource.getRepository(Mylist).insert(mylist);
+  await createMylistInNeo4j({
+    mylistId: mylist.id,
+    userId: user.id,
+  });
 
   return {
     mylist: new MylistModel(mylist),
@@ -82,6 +88,11 @@ export const addVideoToMylist: MutationResolvers["addVideoToMylist"] = async (_p
   registration.video = video;
   registration.note = input.note ?? null;
   await dataSource.getRepository(MylistRegistration).insert(registration);
+
+  await addVideoToMylistInNeo4j({
+    mylistId: mylist.id,
+    videoId: video.id,
+  });
 
   return {
     id: registration.id,
