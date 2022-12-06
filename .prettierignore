@@ -3,5 +3,5 @@
 pnpm-lock.yaml
 
 dist/
-src/codegen/resolvers.ts
+src/graphql/resolvers.ts
 src/db/migrations/

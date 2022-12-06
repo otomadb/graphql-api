@@ -1,7 +1,7 @@
 # codegen.yml
 schema: ./schema.gql
 generates:
-  ./src/codegen/resolvers.ts:
+  ./src/graphql/resolvers.ts:
     config:
       contextType: ../context.js#Context
       scalars:
