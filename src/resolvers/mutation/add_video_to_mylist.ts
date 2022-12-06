@@ -5,8 +5,8 @@ import { dataSource } from "../../db/data-source.js";
 import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
 import { Mylist, MylistShareRange as MylistEntityShareRange } from "../../db/entities/mylists.js";
 import { Video } from "../../db/entities/videos.js";
+import { MylistRegistrationModel } from "../../graphql/models.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
-import { MylistRegistrationModel } from "../../models/mylist_registration.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 import { MYLIST_NOT_FOUND_OR_PRIVATE_ERROR, MYLIST_NOT_HOLDED_BY_YOU } from "../query/get_mylist.js";
 

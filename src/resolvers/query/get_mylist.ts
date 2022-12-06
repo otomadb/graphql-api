@@ -2,8 +2,8 @@ import { GraphQLError } from "graphql";
 
 import { dataSource } from "../../db/data-source.js";
 import { Mylist, MylistShareRange as MylistEntityShareRange } from "../../db/entities/mylists.js";
+import { MylistModel } from "../../graphql/models.js";
 import { QueryResolvers } from "../../graphql/resolvers.js";
-import { MylistModel } from "../../models/mylist.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 
 export const MYLIST_NOT_FOUND_OR_PRIVATE_ERROR = "Mylist Not Found or Private";
