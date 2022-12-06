@@ -39,4 +39,10 @@ export const resolveTag: Resolvers["Mylist"] = {
       nodes: regs.map((r) => new MylistRegistrationModel(r)),
     };
   },
+  includes: async ({ id: mylistId }, { videoId }) => {
+    return dataSource
+      .getRepository(MylistRegistration)
+      .findOne({ where: { mylist: { id: mylistId }, video: { id: videoId } } })
+      .then((r) => !!r);
+  },
 };
