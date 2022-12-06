@@ -33,10 +33,13 @@ export const resolveMylist: Resolvers["Mylist"] = {
   registrations: async ({ id: mylistId }) => {
     const regs = await dataSource.getRepository(MylistRegistration).find({
       where: { mylist: { id: mylistId } },
+      relations: { mylist: true, video: true },
     });
-
     return {
-      nodes: regs.map((r) => new MylistRegistrationModel(r)),
+      nodes: regs.map(
+        ({ id, note, createdAt, updatedAt, video: { id: videoId }, mylist: { id: mylistId } }) =>
+          new MylistRegistrationModel({ id, note, createdAt, updatedAt, videoId, mylistId })
+      ),
     };
   },
   includes: async ({ id: mylistId }, { videoId }) => {
