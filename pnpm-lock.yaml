@@ -34,8 +34,6 @@ specifiers:
   prettier: ^2.8.0
   reflect-metadata: ^0.1.13
   ts-node: ^10.9.1
-  tsc-alias: ^1.8.1
-  tsconfig-paths: ^4.1.1
   typeorm: ^0.3.10
   typescript: ^4.9.3
   ulid: ^2.3.0
@@ -80,8 +78,6 @@ devDependencies:
   npm-run-all: 4.1.5
   prettier: 2.8.0
   ts-node: 10.9.1_wup25etrarvlqkprac7h35hj7u
-  tsc-alias: 1.8.1
-  tsconfig-paths: 4.1.1
   typescript: 4.9.3
 
 packages:
@@ -2300,11 +2296,6 @@ packages:
     resolution: {integrity: sha512-Gar0ASD4BDyKC4hl4DwHqDrmvjoxWKZigVnAbn5H1owvm4CxCPdb0HQDehwNYMJpla5+M2tPmPARzhtYuwpHow==}
     dev: true
 
-  /commander/9.4.1:
-    resolution: {integrity: sha512-5EEkTNyHNGFPD2H+c/dXXfQZYa/scCKasxWcXJaWnNJ99pnQN9Vnmqow+p+PlFPE63Q6mThaZws1T+HxfpgtPw==}
-    engines: {node: ^12.20.0 || >=14}
-    dev: true
-
   /common-tags/1.8.2:
     resolution: {integrity: sha512-gk/Z852D2Wtb//0I+kRFNKKE9dIIVirjoqPoA1wJU+XePVXZfGeBpk45+A1rKO4Q43prqWBNY/MiIeRLbPWUaA==}
     engines: {node: '>=4.0.0'}
@@ -4031,10 +4022,6 @@ packages:
       brace-expansion: 1.1.11
     dev: true
 
-  /minimist/1.2.7:
-    resolution: {integrity: sha512-bzfL1YUZsP41gmu/qjrEk0Q6i2ix/cVeAhbCbqH9u3zYutS1cLg00qhrD0M2MVdCcx4Sc0UpP2eBWo9rotpq6g==}
-    dev: true
-
   /minipass/3.3.6:
     resolution: {integrity: sha512-DxiNidxSEK+tHG6zOIklvNOwm3hvCrbUrdtzY74U6HKTJxvIDfOUL5W5P2Ghd3DTkhhKPYGqeNUIh5qcM4YBfw==}
     engines: {node: '>=8'}
@@ -4061,11 +4048,6 @@ packages:
 
   /mute-stream/0.0.8:
     resolution: {integrity: sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==}
-    dev: true
-
-  /mylas/2.1.13:
-    resolution: {integrity: sha512-+MrqnJRtxdF+xngFfUUkIMQrUUL0KsxbADUkn23Z/4ibGg192Q+z+CQyiYwvWTsYjJygmMR8+w3ZDa98Zh6ESg==}
-    engines: {node: '>=12.0.0'}
     dev: true
 
   /mz/2.7.0:
@@ -4535,12 +4517,6 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /plimit-lit/1.5.0:
-    resolution: {integrity: sha512-Eb/MqCb1Iv/ok4m1FqIXqvUKPISufcjZ605hl3KM/n8GaX8zfhtgdLwZU3vKjuHGh2O9Rjog/bHTq8ofIShdng==}
-    dependencies:
-      queue-lit: 1.5.0
-    dev: true
-
   /postgres-array/2.0.0:
     resolution: {integrity: sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA==}
     engines: {node: '>=4'}
@@ -4609,10 +4585,6 @@ packages:
     resolution: {integrity: sha512-EbZYNarm6138UKKq46tdx08Yo/q9ZhFoAXAI1meAFd2GtbRDhbZY2WQSICskT0c5q99aFzLG1D4nvTk9tqfXIw==}
     engines: {node: '>=0.6'}
     dev: false
-
-  /queue-lit/1.5.0:
-    resolution: {integrity: sha512-IslToJ4eiCEE9xwMzq3viOO5nH8sUWUCwoElrhNMozzr9IIt2qqvB4I+uHu/zJTQVqc9R5DFwok4ijNK1pU3fA==}
-    dev: true
 
   /queue-microtask/1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
@@ -5155,27 +5127,6 @@ packages:
       typescript: 4.9.3
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
-
-  /tsc-alias/1.8.1:
-    resolution: {integrity: sha512-d8Oc3y/XI9OvpdbdjzOWNYskEvFxqtobitHcTszmQr9iVt/tHL7pwV0WHKuCQ4uXHcHh+oDMx+uTlvMQBlpYcw==}
-    hasBin: true
-    dependencies:
-      chokidar: 3.5.3
-      commander: 9.4.1
-      globby: 11.1.0
-      mylas: 2.1.13
-      normalize-path: 3.0.0
-      plimit-lit: 1.5.0
-    dev: true
-
-  /tsconfig-paths/4.1.1:
-    resolution: {integrity: sha512-VgPrtLKpRgEAJsMj5Q/I/mXouC6A/7eJ/X4Nuk6o0cRPwBtznYxTCU4FodbexbzH9somBPEXYi0ZkUViUpJ21Q==}
-    engines: {node: '>=6'}
-    dependencies:
-      json5: 2.2.1
-      minimist: 1.2.7
-      strip-bom: 3.0.0
-    dev: true
 
   /tslib/1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}

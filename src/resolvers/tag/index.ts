@@ -1,12 +1,12 @@
 import { GraphQLError } from "graphql";
 
-import { TagModel, VideoModel } from "~/codegen/models.js";
-import { Resolvers, TagType } from "~/codegen/resolvers.js";
-import { dataSource } from "~/db/data-source.js";
-import { TagName } from "~/db/entities/tag_names.js";
-import { TagParent } from "~/db/entities/tag_parents.js";
-import { VideoTag } from "~/db/entities/video_tags.js";
-import { addIDPrefix, ObjectType } from "~/utils/id.js";
+import { TagModel, VideoModel } from "../../codegen/models.js";
+import { Resolvers, TagType } from "../../codegen/resolvers.js";
+import { dataSource } from "../../db/data-source.js";
+import { TagName } from "../../db/entities/tag_names.js";
+import { TagParent } from "../../db/entities/tag_parents.js";
+import { VideoTag } from "../../db/entities/video_tags.js";
+import { addIDPrefix, ObjectType } from "../../utils/id.js";
 
 export const resolveTag: Resolvers["Tag"] = {
   id: ({ id }) => addIDPrefix(ObjectType.Tag, id),

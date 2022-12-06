@@ -1,5 +1,4 @@
-import { type Resolvers } from "~/codegen/resolvers.js";
-
+import { type Resolvers } from "../codegen/resolvers.js";
 import { resolveMutation } from "./mutation/index.js";
 import { resolveQuery } from "./query/index.js";
 import { resolveTag } from "./tag/index.js";

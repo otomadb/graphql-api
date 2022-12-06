@@ -1,10 +1,10 @@
 import { ulid } from "ulid";
 
-import { TagModel } from "~/codegen/models.js";
-import { MutationResolvers } from "~/codegen/resolvers.js";
-import { dataSource } from "~/db/data-source.js";
-import { TagName } from "~/db/entities/tag_names.js";
-import { Tag } from "~/db/entities/tags.js";
+import { TagModel } from "../../codegen/models.js";
+import { MutationResolvers } from "../../codegen/resolvers.js";
+import { dataSource } from "../../db/data-source.js";
+import { TagName } from "../../db/entities/tag_names.js";
+import { Tag } from "../../db/entities/tags.js";
 
 export const registerTag: MutationResolvers["registerTag"] = async (parent, { input }) => {
   const tag = new Tag();

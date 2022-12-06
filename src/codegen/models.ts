@@ -1,6 +1,6 @@
-import { Tag } from "~/db/entities/tags.js";
-import { User } from "~/db/entities/users.js";
-import { Video } from "~/db/entities/videos.js";
+import { Tag } from "../db/entities/tags.js";
+import { User } from "../db/entities/users.js";
+import { Video } from "../db/entities/videos.js";
 
 export class VideoModel {
   public id;

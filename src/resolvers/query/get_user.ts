@@ -1,11 +1,11 @@
 import { GraphQLError } from "graphql";
 
-import { UserModel } from "~/codegen/models.js";
-import { QueryResolvers } from "~/codegen/resolvers.js";
-import { dataSource } from "~/db/data-source.js";
-import { User } from "~/db/entities/users.js";
+import { UserModel } from "../../codegen/models.js";
+import { QueryResolvers } from "../../codegen/resolvers.js";
+import { dataSource } from "../../db/data-source.js";
+import { User } from "../../db/entities/users.js";
 
-export const getUser: QueryResolvers["user"] = async (_parent, { name }, _context, _info) => {
+export const getUser: QueryResolvers["user"] = async (_parent, { name }) => {
   const user = await dataSource.getRepository(User).findOne({ where: { name } });
   if (!user) throw new GraphQLError("Not Found");
 

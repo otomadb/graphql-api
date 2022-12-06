@@ -1,5 +1,4 @@
-import { type Resolvers } from "~/codegen/resolvers.js";
-
+import { type Resolvers } from "../../codegen/resolvers.js";
 import { getTag } from "./get_tag.js";
 import { getTags } from "./get_tags.js";
 import { getUser } from "./get_user.js";

@@ -5,9 +5,9 @@ import { graphql } from "graphql";
 import { ulid } from "ulid";
 import { z, ZodType } from "zod";
 
-import { dataSource } from "~/db/data-source.js";
-import { User } from "~/db/entities/users.js";
-import { resolvers } from "~/resolvers/index.js";
+import { dataSource } from "../db/data-source.js";
+import { User } from "../db/entities/users.js";
+import { resolvers } from "../resolvers/index.js";
 
 export const typeDefs = await readFile(new URL("../../schema.gql", import.meta.url), { encoding: "utf-8" });
 

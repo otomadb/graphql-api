@@ -1,7 +1,7 @@
-import { VideoModel } from "~/codegen/models.js";
-import { QueryResolvers } from "~/codegen/resolvers.js";
-import { dataSource } from "~/db/data-source.js";
-import { Video } from "~/db/entities/videos.js";
+import { VideoModel } from "../../codegen/models.js";
+import { QueryResolvers } from "../../codegen/resolvers.js";
+import { dataSource } from "../../db/data-source.js";
+import { Video } from "../../db/entities/videos.js";
 
 export const getVideos: QueryResolvers["videos"] = async (_parent, { input }) => {
   const videos = await dataSource.getRepository(Video).find({
