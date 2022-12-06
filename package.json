@@ -23,6 +23,7 @@
   "repository": "https://github.com/otomad-database/api",
   "license": "MIT",
   "devDependencies": {
+    "@fastify/cookie": "^8.3.0",
     "@graphql-codegen/cli": "^2.14.1",
     "@graphql-codegen/typescript": "^2.8.2",
     "@graphql-codegen/typescript-resolvers": "^2.7.7",
@@ -39,11 +40,13 @@
     "typescript": "^4.9.3"
   },
   "dependencies": {
+    "@fastify/cors": "^8.2.0",
     "@graphql-tools/schema": "^9.0.10",
     "@koa/cors": "^4.0.0",
     "@koa/router": "^12.0.0",
     "@whatwg-node/server": "^0.4.17",
     "argon2": "^0.30.2",
+    "fastify": "^4.10.2",
     "graphql": "^16.6.0",
     "graphql-yoga": "^3.1.1",
     "identicon.js": "^2.3.3",
@@ -52,6 +55,7 @@
     "koa-body": "^6.0.1",
     "koa-logger": "^3.2.1",
     "pg": "^8.8.0",
+    "pino-pretty": "^9.1.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.10",
     "ulid": "^2.3.0",
