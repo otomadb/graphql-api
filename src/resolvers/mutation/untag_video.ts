@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
 
-import { TagModel, UserModel, VideoModel } from "../../codegen/models.js";
-import { MutationResolvers } from "../../codegen/resolvers.js";
+import { TagModel, UserModel, VideoModel } from "../../graphql/models.js";
+import { MutationResolvers } from "../../graphql/resolvers.js";
 import { dataSource } from "../../db/data-source.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "../../utils/id.js";

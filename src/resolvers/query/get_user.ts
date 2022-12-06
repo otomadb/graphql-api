@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
 
-import { UserModel } from "../../codegen/models.js";
-import { QueryResolvers } from "../../codegen/resolvers.js";
+import { UserModel } from "../../graphql/models.js";
+import { QueryResolvers } from "../../graphql/resolvers.js";
 import { dataSource } from "../../db/data-source.js";
 import { User } from "../../db/entities/users.js";
 

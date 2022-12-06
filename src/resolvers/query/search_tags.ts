@@ -1,7 +1,7 @@
 import { In, Like } from "typeorm";
 
-import { TagModel } from "../../codegen/models.js";
-import { QueryResolvers } from "../../codegen/resolvers.js";
+import { TagModel } from "../../graphql/models.js";
+import { QueryResolvers } from "../../graphql/resolvers.js";
 import { dataSource } from "../../db/data-source.js";
 import { TagName } from "../../db/entities/tag_names.js";
 import { Tag } from "../../db/entities/tags.js";

@@ -1,8 +1,8 @@
 import { GraphQLError } from "graphql";
 import { ulid } from "ulid";
 
-import { TagModel, UserModel, VideoModel } from "../../codegen/models.js";
-import { MutationResolvers } from "../../codegen/resolvers.js";
+import { TagModel, UserModel, VideoModel } from "../../graphql/models.js";
+import { MutationResolvers } from "../../graphql/resolvers.js";
 import { dataSource } from "../../db/data-source.js";
 import { Tag } from "../../db/entities/tags.js";
 import { VideoTag } from "../../db/entities/video_tags.js";

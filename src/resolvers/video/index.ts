@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
 
-import { TagModel } from "../../codegen/models.js";
-import { Resolvers } from "../../codegen/resolvers.js";
+import { TagModel } from "../../graphql/models.js";
+import { Resolvers } from "../../graphql/resolvers.js";
 import { dataSource } from "../../db/data-source.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { VideoThumbnail } from "../../db/entities/video_thumbnails.js";

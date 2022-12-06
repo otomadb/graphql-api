@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
 
-import { TagModel } from "../../codegen/models.js";
-import { QueryResolvers } from "../../codegen/resolvers.js";
+import { TagModel } from "../../graphql/models.js";
+import { QueryResolvers } from "../../graphql/resolvers.js";
 import { dataSource } from "../../db/data-source.js";
 import { Tag } from "../../db/entities/tags.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
