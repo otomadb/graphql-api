@@ -1,19 +1,30 @@
 version: "3.9"
 
 services:
-  mongo:
-    image: mongo:5.0
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: user
-      MONGO_INITDB_ROOT_PASSWORD: pass
-      MONGO_INITDB_DATABASE: otomadb
+  postgres:
+    image: postgres:15
+    healthcheck:
+      test: pg_isready
+      interval: 10s
+      timeout: 5s
+      retries: 5
     ports:
-      - target: 27017
-        published: 27017
+      - target: 5432
+        published: 5432
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: test
     volumes:
       - type: volume
-        source: mongo_data
-        target: /data/db
+        source: postgres_data
+        target: /var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    ports:
+      - target: 8080
+        published: 8081
 
 volumes:
-  mongo_data:
+  postgres_data:
