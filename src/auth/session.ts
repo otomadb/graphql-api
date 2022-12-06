@@ -3,18 +3,15 @@ import { dataSource } from "../db/data-source.js";
 import { Session } from "../db/entities/sessions.js";
 import { User } from "../db/entities/users.js";
 
-export async function getUserFromSession(cookieValue: string | undefined): Promise<User | null> {
-  if (cookieValue == null) return null;
-  const [sessionId, secret] = cookieValue.split("-");
+export async function getUserFromSession(token: string): Promise<User | null> {
+  const [sessionId, secret] = token.split("-");
   const session = await dataSource.getRepository(Session).findOne({
-    where: {
-      id: sessionId,
-    },
+    where: { id: sessionId },
     relations: ["user"],
   });
-  if (session == null) return null; // TODO: clear session cookie
+  if (session == null) return null;
   const hashedSecret = createHash("sha256").update(secret).digest("hex");
   if (hashedSecret === session.secret) return session.user;
-  // TODO: clear session cookie
+
   return null;
 }
