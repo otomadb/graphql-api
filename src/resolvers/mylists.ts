@@ -1,18 +1,19 @@
 import { GraphQLError } from "graphql";
+import { ulid } from "ulid";
+
 import { dataSource } from "../db/data-source.js";
+import { MylistRegistration } from "../db/entities/mylist_registrations.js";
 import { Mylist, MylistShareRange as MylistEntityShareRange } from "../db/entities/mylists.js";
+import { Video } from "../db/entities/videos.js";
 import { MutationResolvers, MylistShareRange as MylistGQLShareRange, QueryResolvers } from "../graphql/resolvers.js";
 import { MylistModel } from "../models/mylist.js";
-import { ObjectType, removeIDPrefix } from "../utils/id.js";
-import { ulid } from "ulid";
-import { MylistRegistration } from "../db/entities/mylist_registrations.js";
-import { Video } from "../db/entities/videos.js";
 import { MylistRegistrationModel } from "../models/mylist_registration.js";
+import { ObjectType, removeIDPrefix } from "../utils/id.js";
 
 const MYLIST_NOT_FOUND_OR_PRIVATE_ERROR = "Mylist Not Found or Private";
 const MYLIST_NOT_HOLDED_BY_YOU = "This mylist is not holded by you";
 
-export const mylist: QueryResolvers["mylist"] = async (_parent, { id }, { user }, _info) => {
+export const mylist: QueryResolvers["mylist"] = async (_parent, { id }, { user }) => {
   const mylist = await dataSource.getRepository(Mylist).findOne({
     where: {
       id: removeIDPrefix(ObjectType.Mylist, id),
@@ -23,7 +24,7 @@ export const mylist: QueryResolvers["mylist"] = async (_parent, { id }, { user }
     },
   });
 
-  if (mylist == null) throw new GraphQLError(MYLIST_NOT_FOUND_OR_PRIVATE_ERROR);
+  if (!mylist) throw new GraphQLError(MYLIST_NOT_FOUND_OR_PRIVATE_ERROR);
   if (mylist.holder.id !== user?.id && mylist.range === MylistEntityShareRange.PRIVATE) {
     throw new GraphQLError(MYLIST_NOT_FOUND_OR_PRIVATE_ERROR);
   }
@@ -31,8 +32,8 @@ export const mylist: QueryResolvers["mylist"] = async (_parent, { id }, { user }
   return new MylistModel(mylist);
 };
 
-export const createMylist: MutationResolvers["createMylist"] = async (_parent, { input }, { user }, _info) => {
-  if (user == null) throw new GraphQLError("need to authenticate");
+export const createMylist: MutationResolvers["createMylist"] = async (_parent, { input }, { user }) => {
+  if (!user) throw new GraphQLError("need to authenticate");
   const mylist = new Mylist();
   mylist.id = ulid();
   mylist.title = input.title;
@@ -56,14 +57,14 @@ export const createMylist: MutationResolvers["createMylist"] = async (_parent, {
 };
 
 export const addVideoToMylist: MutationResolvers["addVideoToMylist"] = async (_parent, { input }, { user }, _info) => {
-  if (user == null) throw new GraphQLError("need to authenticate");
+  if (!user) throw new GraphQLError("need to authenticate");
   const mylist = await dataSource
     .getRepository(Mylist)
     .findOne({ where: { id: removeIDPrefix(ObjectType.Mylist, input.mylistId) }, relations: { holder: true } });
-  if (mylist == null) {
+  if (!mylist) {
     throw new GraphQLError(MYLIST_NOT_FOUND_OR_PRIVATE_ERROR);
   }
-  if (mylist.holder.id != user.id) {
+  if (mylist.holder.id !== user.id) {
     if (mylist.range === MylistEntityShareRange.PRIVATE) {
       throw new GraphQLError(MYLIST_NOT_FOUND_OR_PRIVATE_ERROR);
     } else {
@@ -73,7 +74,7 @@ export const addVideoToMylist: MutationResolvers["addVideoToMylist"] = async (_p
   const video = await dataSource
     .getRepository(Video)
     .findOne({ where: { id: removeIDPrefix(ObjectType.Video, input.videoId) } });
-  if (video == null) {
+  if (video === null) {
     throw new GraphQLError("Video not found");
   }
   const registration = new MylistRegistration();

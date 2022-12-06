@@ -1,4 +1,5 @@
 import { type Resolvers } from "../../graphql/resolvers.js";
+import { addVideoToMylist, createMylist } from "../mylists.js";
 import { registerTag } from "./register_tag.js";
 import { registerVideo } from "./register_videos.js";
 import { tagVideo } from "./tag_video.js";
@@ -9,4 +10,6 @@ export const resolveMutation: Resolvers["Mutation"] = {
   registerVideo,
   tagVideo,
   untagVideo,
+  createMylist,
+  addVideoToMylist,
 };
