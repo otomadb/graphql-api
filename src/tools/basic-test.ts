@@ -1,8 +1,10 @@
+import { readFile } from "node:fs/promises";
+
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { graphql } from "graphql";
-import { readFile } from "node:fs/promises";
 import { ulid } from "ulid";
 import { z, ZodType } from "zod";
+
 import { Context } from "../context.js";
 import { dataSource } from "../db/data-source.js";
 import { User } from "../db/entities/users.js";
@@ -53,7 +55,7 @@ const zCreateTagRes = z.object({
   }),
 });
 
-const queryForRegisterTag = `mutation ($input: RegisterTagInput!) { 
+const queryForRegisterTag = `mutation ($input: RegisterTagInput!) {
     registerTag(input: $input) {
         tag {
             id

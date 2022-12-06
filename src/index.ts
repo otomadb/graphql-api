@@ -1,14 +1,16 @@
 import "reflect-metadata";
 
+import { readFile } from "node:fs/promises";
+
 import { makeExecutableSchema } from "@graphql-tools/schema";
+import koaCors from "@koa/cors";
 import Router from "@koa/router";
 import { graphql } from "graphql";
 import Koa from "koa";
-import koaCors from "@koa/cors";
 import { koaBody } from "koa-body";
 import logger from "koa-logger";
-import { readFile } from "node:fs/promises";
 import { z } from "zod";
+
 import { router as authRouter } from "./auth/index.js";
 import { getUserFromSession } from "./auth/session.js";
 import { Context } from "./context.js";
@@ -21,7 +23,7 @@ const app = new Koa();
 
 app.use(logger());
 app.use(koaBody());
-app.use(koaCors({ credentials: true }))
+app.use(koaCors({ credentials: true }));
 
 const router = new Router();
 
