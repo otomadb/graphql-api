@@ -1,30 +1,31 @@
 import { GraphQLError } from "graphql";
 import { In } from "typeorm";
 import { ulid } from "ulid";
-import { dataSource } from "../db/data-source.js";
-import { Tag } from "../db/entities/tags.js";
-import { Video } from "../db/entities/videos.js";
-import { VideoSource } from "../db/entities/video_sources.js";
-import { VideoTag } from "../db/entities/video_tags.js";
-import { VideoThumbnail } from "../db/entities/video_thumbnails.js";
-import { VideoTitle } from "../db/entities/video_titles.js";
-import { MutationResolvers } from "../graphql/resolvers.js";
-import { VideoModel } from "../models/video.js";
-import { ObjectType, removeIDPrefix } from "../utils/id.js";
 
-export const registerVideo: MutationResolvers["registerVideo"] = async (_parent, { input }, _context, _info) => {
+import { dataSource } from "../../db/data-source.js";
+import { Tag } from "../../db/entities/tags.js";
+import { VideoSource } from "../../db/entities/video_sources.js";
+import { VideoTag } from "../../db/entities/video_tags.js";
+import { VideoThumbnail } from "../../db/entities/video_thumbnails.js";
+import { VideoTitle } from "../../db/entities/video_titles.js";
+import { Video } from "../../db/entities/videos.js";
+import { VideoModel } from "../../graphql/models.js";
+import { MutationResolvers } from "../../graphql/resolvers.js";
+import { ObjectType, removeIDPrefix } from "../../utils/id.js";
+
+export const registerVideo: MutationResolvers["registerVideo"] = async (_parent, { input }) => {
   const video = new Video();
   video.id = ulid();
-  let titles: VideoTitle[] = [];
+  const titles: VideoTitle[] = [];
   const primaryTitle = new VideoTitle();
   primaryTitle.id = ulid();
   primaryTitle.title = input.primaryTitle;
   primaryTitle.video = video;
   primaryTitle.isPrimary = true;
   titles.push(primaryTitle);
-  if (input.extraTitles != null) {
+  if (input.extraTitles) {
     for (const extraTitle of input.extraTitles) {
-      let title = new VideoTitle();
+      const title = new VideoTitle();
       title.id = ulid();
       title.title = extraTitle;
       title.video = video;

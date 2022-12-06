@@ -1,0 +1,7 @@
+.direnv
+
+pnpm-lock.yaml
+
+dist/
+src/graphql/resolvers.ts
+src/db/migrations/

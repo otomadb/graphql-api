@@ -1,9 +1,9 @@
-import { dataSource } from "../db/data-source.js";
-import { Tag } from "../db/entities/tags.js";
-import { QueryResolvers } from "../graphql/resolvers.js";
-import { TagModel } from "../models/tag.js";
+import { dataSource } from "../../db/data-source.js";
+import { Tag } from "../../db/entities/tags.js";
+import { TagModel } from "../../graphql/models.js";
+import { QueryResolvers } from "../../graphql/resolvers.js";
 
-export const getTags: QueryResolvers["tags"] = async (_parent, { input }, _context, _info) => {
+export const getTags: QueryResolvers["tags"] = async (_parent, { input }) => {
   const tags = await dataSource.getRepository(Tag).find({
     take: input?.limit || 0,
     skip: input?.skip || 0,

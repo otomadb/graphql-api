@@ -1,11 +1,12 @@
 import { In, Like } from "typeorm";
-import { dataSource } from "../db/data-source.js";
-import { Tag } from "../db/entities/tags.js";
-import { TagName } from "../db/entities/tag_names.js";
-import { QueryResolvers } from "../graphql/resolvers.js";
-import { TagModel } from "../models/tag.js";
 
-export const searchTags: QueryResolvers["searchTags"] = async (_parent, { limit, query, skip }, _context, _info) => {
+import { dataSource } from "../../db/data-source.js";
+import { TagName } from "../../db/entities/tag_names.js";
+import { Tag } from "../../db/entities/tags.js";
+import { TagModel } from "../../graphql/models.js";
+import { QueryResolvers } from "../../graphql/resolvers.js";
+
+export const searchTags: QueryResolvers["searchTags"] = async (_parent, { limit, query, skip }) => {
   const tagNames = await dataSource
     .getRepository(TagName)
     .createQueryBuilder("tagName")

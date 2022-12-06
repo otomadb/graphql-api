@@ -2,17 +2,7 @@
 command = "alejandra"
 includes = ["*.nix"]
 
-[formatter.dprint]
-command = "dprint"
-options = ["fmt"]
-includes = [
-  "*.json",
-  "*.toml",
-  "*.md",
-  "*.js",
-  "*.jsx",
-  "*.ts",
-  "*.tsx",
-  "*.cjs",
-  "*.mjs",
-]
+[formatter.prettier]
+command = "prettier"
+options = ["--write"]
+includes = ["*.js", "*.jsx", "*.ts", "*.tsx", "*.css", "*.json", "*.md"]

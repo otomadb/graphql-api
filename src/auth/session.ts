@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+
 import { dataSource } from "../db/data-source.js";
 import { Session } from "../db/entities/sessions.js";
 import { User } from "../db/entities/users.js";
@@ -9,7 +10,7 @@ export async function getUserFromSession(token: string): Promise<User | null> {
     where: { id: sessionId },
     relations: ["user"],
   });
-  if (session == null) return null;
+  if (!session ) return null;
   const hashedSecret = createHash("sha256").update(secret).digest("hex");
   if (hashedSecret === session.secret) return session.user;
 

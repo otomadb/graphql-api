@@ -1,10 +1,12 @@
 import "reflect-metadata";
 
+import { readFile } from "node:fs/promises";
+
 import cookie, { FastifyCookieOptions } from "@fastify/cookie";
 import cors, { FastifyCorsOptions } from "@fastify/cors";
 import { fastify, FastifyReply, FastifyRequest } from "fastify";
 import { createSchema, createYoga } from "graphql-yoga";
-import { readFile } from "node:fs/promises";
+
 import { handlerSignin } from "./auth/handler_signin.js";
 import { handlerSignup } from "./auth/handler_signup.js";
 import { getUserFromSession } from "./auth/session.js";
@@ -28,7 +30,7 @@ app.post("/signup", handlerSignup);
 app.post("/signin", handlerSignin);
 
 const typeDefs = await readFile(new URL("../schema.gql", import.meta.url), { encoding: "utf-8" });
-const schema = createSchema<{ req: FastifyRequest; reply: FastifyReply }>({ typeDefs, resolvers: resolvers });
+const schema = createSchema<{ req: FastifyRequest; reply: FastifyReply }>({ typeDefs, resolvers });
 const yoga = createYoga<{ req: FastifyRequest; reply: FastifyReply }>({
   schema,
   async context({ req, reply }) {

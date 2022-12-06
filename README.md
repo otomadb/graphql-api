@@ -8,14 +8,13 @@
 docker-compose up -d
 ```
 
-8081番ポートにadminerが立ち上がる．
+8081 番ポートに adminer が立ち上がる．
 
-### migrationの実行
+### migration の実行
 
-環境変数`DATABASE_URL`にpostgresの接続先を入れておく．(`.env.example`参照．)
+環境変数`DATABASE_URL`に postgres の接続先を入れておく．(`.env.example`参照．)
 
 ```bash
 pnpm i
 pnpm run typeorm migration:run
 ```
-
