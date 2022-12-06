@@ -5,6 +5,9 @@ result
 # env
 .env
 
+# VSCode
+.vscode/settings.json
+
 node_modules
 
 # log

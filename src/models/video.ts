@@ -1,9 +1,10 @@
 import { GraphQLError } from "graphql";
+
 import { dataSource } from "../db/data-source.js";
-import { Video } from "../db/entities/videos.js";
 import { VideoTag } from "../db/entities/video_tags.js";
 import { VideoThumbnail } from "../db/entities/video_thumbnails.js";
 import { VideoTitle as VideoTitleEntity } from "../db/entities/video_titles.js";
+import { Video } from "../db/entities/videos.js";
 import { VideoResolvers } from "../graphql/resolvers.js";
 import { addIDPrefix, ObjectType } from "../utils/id.js";
 import { ResolverArgs } from "../utils/type.js";

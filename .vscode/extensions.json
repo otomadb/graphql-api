@@ -1,6 +1,8 @@
 {
   "recommendations": [
     "jnoortheen.nix-ide",
-    "arrterian.nix-env-selector"
+    "arrterian.nix-env-selector",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode"
   ]
 }

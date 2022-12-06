@@ -1,6 +1,7 @@
 import { GraphQLError } from "graphql";
 import { In } from "typeorm";
 import { ulid } from "ulid";
+
 import { dataSource } from "../db/data-source.js";
 import { Tag } from "../db/entities/tags.js";
 import { Video } from "../db/entities/videos.js";
@@ -15,16 +16,16 @@ import { ObjectType, removeIDPrefix } from "../utils/id.js";
 export const registerVideo: MutationResolvers["registerVideo"] = async (_parent, { input }, _context, _info) => {
   const video = new Video();
   video.id = ulid();
-  let titles: VideoTitle[] = [];
+  const titles: VideoTitle[] = [];
   const primaryTitle = new VideoTitle();
   primaryTitle.id = ulid();
   primaryTitle.title = input.primaryTitle;
   primaryTitle.video = video;
   primaryTitle.isPrimary = true;
   titles.push(primaryTitle);
-  if (input.extraTitles != null) {
+  if (input.extraTitles) {
     for (const extraTitle of input.extraTitles) {
-      let title = new VideoTitle();
+      const title = new VideoTitle();
       title.id = ulid();
       title.title = extraTitle;
       title.video = video;
