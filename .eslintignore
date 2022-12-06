@@ -1,4 +1,4 @@
 .direnv
 
 dist/
-src/codegen/
+src/codegen/resolvers.ts
