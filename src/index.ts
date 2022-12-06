@@ -1,37 +1,56 @@
 import "reflect-metadata";
 
-import { makeExecutableSchema } from "@graphql-tools/schema";
-import Router from "@koa/router";
-import { graphql } from "graphql";
-import Koa from "koa";
 import koaCors from "@koa/cors";
+import Router from "@koa/router";
+import { createSchema, createYoga } from "graphql-yoga";
+import Koa from "koa";
 import { koaBody } from "koa-body";
-import logger from "koa-logger";
+import KoaLogger from "koa-logger";
 import { readFile } from "node:fs/promises";
-import { z } from "zod";
 import { router as authRouter } from "./auth/index.js";
 import { getUserFromSession } from "./auth/session.js";
-import { Context } from "./context.js";
 import { dataSource } from "./db/data-source.js";
 import { resolvers } from "./resolvers/index.js";
 
 await dataSource.initialize();
 
+const typeDefs = await readFile(new URL("../schema.gql", import.meta.url), { encoding: "utf-8" });
+const schema = createSchema<Koa.ParameterizedContext>({ typeDefs, resolvers: resolvers });
+const yoga = createYoga<Koa.ParameterizedContext>({
+  schema,
+  async context(ctx) {
+    console.dir(ctx.get("authorization"));
+    // const user = await getUserFromSession(ctx.cookies.get("otmd-session") ?? ctx.get("authorization").split(" ").at(1));
+    return {};
+    // return { user };
+  },
+});
+
 const app = new Koa();
 
-app.use(logger());
-app.use(koaBody());
-app.use(koaCors({ credentials: true }))
-
 const router = new Router();
-
-export const typeDefs = await readFile(new URL("../schema.gql", import.meta.url), { encoding: "utf-8" });
-
-const schema = makeExecutableSchema({ typeDefs, resolvers });
-
+router.use(koaBody());
 router.use("/auth", authRouter.routes());
 router.use("/auth", authRouter.allowedMethods());
 
+app.use(KoaLogger());
+app.use(koaCors({ credentials: true }));
+app.use(router.routes());
+app.use(router.allowedMethods());
+app.use(async (ctx) => {
+  console.dir(ctx.get("authorization"));
+  const response = await yoga.handleNodeRequest(ctx.req, ctx);
+
+  ctx.status = response.status;
+  response.headers.forEach((value, key) => {
+    ctx.append(key, value);
+  });
+  ctx.body = response.body;
+});
+
+app.listen({ port: 4000 }, () => console.log("listening now"));
+
+/*
 router.post("/graphql", async (ctx) => {
   // まずは Cookie からセッションを取る、取れなければ Authorization ヘッダーから取る、形式は `Authorization: Bearer session_token`
   // FIXME: 危なそうなので開発環境だけ有効にしたい
@@ -56,8 +75,7 @@ router.post("/graphql", async (ctx) => {
 
   return;
 });
+*/
 
-app.use(router.routes());
-app.use(router.allowedMethods());
-
-app.listen({ port: 8080 }, () => console.log("listening now"));
+/*
+ */
