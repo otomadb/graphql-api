@@ -5,12 +5,12 @@ import { registerVideo, searchVideos, tagVideo, untagVideo, video, videos } from
 
 export const resolvers: Resolvers = {
   Query: {
-    // findNiconicoSource,　// 最悪まだ実装しなくてもいい
-    // niconicoSource,　// 最悪まだ実装しなくてもいい
+    // findNiconicoSource // 最悪まだ実装しなくてもいい
+    // niconicoSource // 最悪まだ実装しなくてもいい
     searchTags,
     searchVideos,
     tag,
-    tags: tags,
+    tags,
     user,
     video,
     videos,
