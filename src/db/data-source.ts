@@ -2,8 +2,8 @@ import { dirname } from "node:path";
 
 import { DataSource } from "typeorm";
 
-import { Mylist } from "./entities/mylists.js";
 import { MylistRegistration } from "./entities/mylist_registrations.js";
+import { Mylist } from "./entities/mylists.js";
 import { Session } from "./entities/sessions.js";
 import { TagName } from "./entities/tag_names.js";
 import { TagParent } from "./entities/tag_parents.js";
