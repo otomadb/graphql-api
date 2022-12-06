@@ -1,4 +1,5 @@
 import { type Resolvers } from "../../graphql/resolvers.js";
+import { getMylist } from "./get_mylist.js";
 import { getTag } from "./get_tag.js";
 import { getTags } from "./get_tags.js";
 import { getUser } from "./get_user.js";
@@ -15,6 +16,7 @@ export const resolveQuery: Resolvers["Query"] = {
   searchVideos,
   tag: getTag,
   tags: getTags,
+  mylist: getMylist,
   user: getUser,
   video: getVideo,
   videos: getVideos,
