@@ -10,13 +10,12 @@ import { VideoThumbnail } from "../db/entities/video_thumbnails.js";
 import { VideoTitle } from "../db/entities/video_titles.js";
 import { MutationResolvers, QueryResolvers } from "../graphql/resolvers.js";
 import { TagModel } from "../models/tag.js";
+import { UserModel } from "../models/user.js";
 import { VideoModel } from "../models/video.js";
 import { registerVideo as registerVideoInNeo4j } from "../neo4j/register_video.js";
 import { tagVideo as tagVideoInNeo4j } from "../neo4j/tag_video.js";
 import { untagVideo as untagVideoInNeo4j } from "../neo4j/untag_video.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "../utils/id.js";
-import { tag } from "./tags.js";
-import { userEntityToGraphQLType } from "./users.js";
 
 export const video: QueryResolvers["video"] = async (_parent, { id }, _context, _info) => {
   const video = await dataSource.getRepository(Video).findOne({
@@ -172,7 +171,7 @@ export const tagVideo: MutationResolvers["tagVideo"] = async (
     createdAt: new Date(),
     id: addIDPrefix(ObjectType.VideoTag, videoTag.id),
     tag: new TagModel(tag),
-    user: userEntityToGraphQLType(user),
+    user: new UserModel(user),
     video: new VideoModel(video),
   };
 };
@@ -214,7 +213,7 @@ export const untagVideo: MutationResolvers["untagVideo"] = async (
     createdAt: new Date(),
     id: addIDPrefix(ObjectType.VideoTag, videoTag.id),
     tag: new TagModel(videoTag.tag),
-    user: userEntityToGraphQLType(user),
+    user: new UserModel(user),
     video: new VideoModel(videoTag.video),
   };
 };

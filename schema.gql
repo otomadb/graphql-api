@@ -7,6 +7,8 @@ type Query {
   tag(id: ID!): Tag!
   tags(input: GetTagsInput): TagCollection!
 
+  mylist(id: ID!): Mylist!
+
   searchVideos(query: String!, limit: Int! = 10, skip: Int! = 0): SearchVideosResult!
   searchTags(query: String!, limit: Int! = 10, skip: Int! = 0): SearchTagsResult!
 
@@ -23,6 +25,14 @@ type Mutation {
 
   tagVideo(input: TagVideoInput!): VideoAddTagHistoryItem!
   untagVideo(input: UntagVideoInput!): VideoDeleteTagHistoryItem!
+
+  createMylist(input: CreateMylistInput!): CreateMylistPayload!
+
+  likeVideo(input: LikeVideoInput!): LikeVideoPayload!
+  undoLikeVideo(input: UndoLikeVideoInput!): UndoLikeVideoPayload!
+
+  addVideoToMylist(input: AddVideoToMylistInput!): AddVideoToMylistPayload!
+  removeVideoFromMylist(input: RemoveVideoFromMylistInput!): RemoveVideoFromMylistPayload!
 }
 
 type Video {
@@ -301,6 +311,25 @@ type User {
   name: String!
   displayName: String!
   icon: String!
+
+  favorites: Mylist!
+  mylists(input: UserMylistsInput!): UserMylistsConnection!
+}
+
+input UserMylistsInput {
+  limit: Int
+  skip: Int
+  order: UserMylistsInputOrder = { createdAt: ASC }
+  range: [MylistShareRange!] = [PUBLIC]
+}
+
+input UserMylistsInputOrder {
+  createdAt: SortOrder
+  updatedAt: SortOrder
+}
+
+type UserMylistsConnection {
+  nodes: [Mylist!]!
 }
 
 input RegisterTagInput {
@@ -350,4 +379,97 @@ input UntagVideoInput {
 type NiconicoSource {
   id: ID!
   video: Video
+}
+
+type Mylist {
+  id: ID!
+  title: String!
+  holder: User!
+  range: MylistShareRange!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  registrations(input: MylistRegistrationsInput!): MylistRegistrationCollection!
+
+  """
+  マイリストの中にビデオが追加されているか．
+  """
+  includes(videoId: ID!): Boolean!
+}
+
+enum MylistShareRange {
+  PUBLIC
+  KNOW_LINK
+  PRIVATE
+}
+
+type MylistRegistration {
+  id: ID!
+  video: Video!
+  mylist: Mylist!
+
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  note: String
+}
+
+type MylistRegistrationCollection {
+  nodes: [MylistRegistration!]!
+}
+
+input MylistRegistrationsInput {
+  limit: Int
+  skip: Int
+  order: MylistRegistrationsInputOrder = { registeredAt: ASC }
+}
+
+input MylistRegistrationsInputOrder {
+  createdAt: SortOrder
+  updatedAt: SortOrder
+}
+
+input CreateMylistInput {
+  title: String!
+  range: MylistShareRange!
+}
+
+type CreateMylistPayload {
+  mylist: Mylist!
+}
+
+input LikeVideoInput {
+  videoId: ID!
+}
+
+type LikeVideoPayload {
+  id: ID!
+  registration: MylistRegistration!
+}
+
+input UndoLikeVideoInput {
+  videoId: ID!
+}
+
+type UndoLikeVideoPayload {
+  id: ID!
+}
+
+input AddVideoToMylistInput {
+  videoId: ID!
+  mylistId: ID!
+  note: String
+}
+
+type AddVideoToMylistPayload {
+  id: ID!
+  registration: MylistRegistration!
+}
+
+input RemoveVideoFromMylistInput {
+  videoId: ID!
+  mylistId: ID!
+}
+
+type RemoveVideoFromMylistPayload {
+  id: ID!
 }
