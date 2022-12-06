@@ -1,4 +1,4 @@
 .direnv
 
 dist/
-src/graphql/resolvers.ts
+src/codegen/

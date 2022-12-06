@@ -14,7 +14,7 @@ node_modules
 *.log
 
 # codegen
-src/graphql/resolvers.ts
+src/codegen/resolvers.ts
 
 # tsc
 dist/

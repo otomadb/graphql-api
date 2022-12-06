@@ -2,5 +2,5 @@
 
 pnpm-lock.yaml
 
-src/graphql/resolvers.ts
+src/codegen/
 src/db/migrations/
