@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import { graphql } from "graphql";
+import { graphql, GraphQLSchema } from "graphql";
 import { DataSource } from "typeorm";
 
 import { Session } from "../db/entities/sessions.js";
@@ -15,13 +15,13 @@ import { VideoTag } from "../db/entities/video_tags.js";
 import { VideoThumbnail } from "../db/entities/video_thumbnails.js";
 import { VideoTitle } from "../db/entities/video_titles.js";
 import { Video } from "../db/entities/videos.js";
-import { resolvers } from "../resolvers/index.js";
+import { mkResolvers } from "../resolvers/index.js";
 
 const typeDefs = await readFile(new URL("../../schema.gql", import.meta.url), { encoding: "utf-8" });
-const schema = makeExecutableSchema({ typeDefs, resolvers });
 
 describe("e2e", () => {
   let ds: DataSource;
+  let schema: GraphQLSchema;
 
   const testuser = new User();
   testuser.id = "1";
@@ -39,6 +39,11 @@ describe("e2e", () => {
       migrations: [`${(resolve(dirname(new URL(import.meta.url).pathname)), "../db/migrations")}/*.ts`],
     });
     await ds.initialize();
+
+    schema = makeExecutableSchema({
+      typeDefs,
+      resolvers: mkResolvers({ ds }),
+    });
   });
 
   beforeEach(async () => {
