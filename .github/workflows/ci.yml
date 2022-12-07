@@ -62,3 +62,28 @@ jobs:
       # - run: pnpm run typeorm migration:run
       - run: pnpm run codegen
       - run: pnpm run test
+
+  test-old:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgres://postgres:pass@localhost/postgres
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_PASSWORD: pass
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm run typeorm migration:run
+      - run: pnpm run codegen
+      - run: pnpm run test:old
