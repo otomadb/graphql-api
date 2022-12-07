@@ -75,5 +75,10 @@
     "typeorm": "^0.3.10",
     "ulid": "^2.3.0",
     "zod": "^3.19.1"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@whatwg-node/server@0.4.17": "patches/@whatwg-node__server@0.4.17.patch"
+    }
   }
 }

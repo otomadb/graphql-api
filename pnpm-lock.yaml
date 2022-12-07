@@ -1,5 +1,10 @@
 lockfileVersion: 5.4
 
+patchedDependencies:
+  '@whatwg-node/server@0.4.17':
+    hash: vv7kzs6lah2brfrrdzegm7y75e
+    path: patches/@whatwg-node__server@0.4.17.patch
+
 specifiers:
   '@graphql-codegen/cli': ^2.14.1
   '@graphql-codegen/typescript': ^2.8.2
@@ -48,7 +53,7 @@ dependencies:
   '@graphql-tools/schema': 9.0.10_graphql@16.6.0
   '@koa/cors': 4.0.0
   '@koa/router': 12.0.0
-  '@whatwg-node/server': 0.4.17_@types+node@18.11.9
+  '@whatwg-node/server': 0.4.17_vv7kzs6lah2brfrrdzegm7y75e_@types+node@18.11.9
   argon2: 0.30.2
   graphql: 16.6.0
   graphql-yoga: 3.1.1_xfoe4adolgvm4tvnio5xigcr6e
@@ -2359,7 +2364,7 @@ packages:
     transitivePeerDependencies:
       - encoding
 
-  /@whatwg-node/server/0.4.17_@types+node@18.11.9:
+  /@whatwg-node/server/0.4.17_vv7kzs6lah2brfrrdzegm7y75e_@types+node@18.11.9:
     resolution: {integrity: sha512-kq1AHyi87VWfiDqiSTAOY+py83HMJg42+fI8JAe1wjmMkJ8v/E5mKq5NpLNRM9Cnf7NHsQR0AwQgvX/RFuptaA==}
     peerDependencies:
       '@types/node': ^18.0.6
@@ -2370,6 +2375,7 @@ packages:
     transitivePeerDependencies:
       - encoding
     dev: false
+    patched: true
 
   /abbrev/1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
@@ -4036,7 +4042,7 @@ packages:
       '@graphql-tools/utils': 9.1.1_graphql@16.6.0
       '@graphql-yoga/subscription': 3.0.0
       '@whatwg-node/fetch': 0.5.3
-      '@whatwg-node/server': 0.4.17_@types+node@18.11.9
+      '@whatwg-node/server': 0.4.17_vv7kzs6lah2brfrrdzegm7y75e_@types+node@18.11.9
       dset: 3.1.2
       graphql: 16.6.0
       tslib: 2.4.1
