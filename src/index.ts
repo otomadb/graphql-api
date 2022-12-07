@@ -1,6 +1,7 @@
 import "reflect-metadata";
 
 import { readFile } from "node:fs/promises";
+import { dirname } from "node:path";
 
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import koaCors from "@koa/cors";
@@ -9,13 +10,23 @@ import { graphql } from "graphql";
 import Koa from "koa";
 import { koaBody } from "koa-body";
 import logger from "koa-logger";
+import { DataSource } from "typeorm";
 import { z } from "zod";
 
-import { router as authRouter } from "./auth/index.js";
+import { handlerSignin, handlerSignup } from "./auth/index.js";
 import { getUserFromSession } from "./auth/session.js";
 import { Context } from "./context.js";
-import { dataSource } from "./db/data-source.js";
+import { entities } from "./db/entities/index.js";
 import { resolvers } from "./resolvers/index.js";
+
+const dir = dirname(new URL(import.meta.url).pathname);
+
+const dataSource = new DataSource({
+  type: "postgres",
+  url: process.env.DATABASE_URL,
+  entities,
+  migrations: [`${dir}/db/migrations/*.ts`],
+});
 
 await dataSource.initialize();
 
@@ -29,15 +40,17 @@ const router = new Router();
 
 export const typeDefs = await readFile(new URL("../schema.gql", import.meta.url), { encoding: "utf-8" });
 
-const schema = makeExecutableSchema({ typeDefs, resolvers });
+const schema = makeExecutableSchema({ typeDefs, resolvers: resolvers({ ds: dataSource }) });
 
-router.use("/auth", authRouter.routes());
-router.use("/auth", authRouter.allowedMethods());
+router.post("/auth/signup", handlerSignup({ ds: dataSource }));
+router.post("/auth/login", handlerSignin({ ds: dataSource }));
 
 router.post("/graphql", async (ctx) => {
   // まずは Cookie からセッションを取る、取れなければ Authorization ヘッダーから取る、形式は `Authorization: Bearer session_token`
   // FIXME: 危なそうなので開発環境だけ有効にしたい
-  const user = await getUserFromSession(ctx.cookies.get("otmd-session") ?? ctx.get("authorization").split(" ").at(1));
+  const user = await getUserFromSession({ ds: dataSource })(
+    ctx.cookies.get("otmd-session") ?? ctx.get("authorization").split(" ").at(1)
+  );
   const { query, variables, operationName } = z
     .object({
       query: z.string(),
@@ -63,3 +76,5 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 
 app.listen({ port: 8080 }, () => console.log("listening now"));
+
+// ds.destroy() //TODO: when?
