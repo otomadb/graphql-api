@@ -1,10 +1,10 @@
-import { expect, it, test } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { UserModel } from "../../graphql/models.js";
 import { resolveId } from "./index.js";
 
-test("User.id", () => {
-  it("add prefix", () => {
+describe("resolver User.id", () => {
+  it("prefixを付ける", () => {
     const actual = resolveId({ id: "1" } as UserModel);
     expect(actual).toBe("user:1");
   });
