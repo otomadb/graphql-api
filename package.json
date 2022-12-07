@@ -58,6 +58,7 @@
     "@whatwg-node/server": "^0.4.17",
     "argon2": "^0.30.2",
     "graphql": "^16.6.0",
+    "graphql-yoga": "^3.1.1",
     "identicon.js": "^2.3.3",
     "jose": "^4.11.1",
     "koa": "^2.13.4",
@@ -68,5 +69,10 @@
     "typeorm": "^0.3.10",
     "ulid": "^2.3.0",
     "zod": "^3.19.1"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@whatwg-node/server@0.4.17": "patches/@whatwg-node__server@0.4.17.patch"
+    }
   }
 }
