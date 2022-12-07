@@ -7,13 +7,13 @@ import { MutationResolvers } from "../../graphql/resolvers.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "../../utils/id.js";
 
 export const untagVideo =
-  ({ ds }: { ds: DataSource }): MutationResolvers["untagVideo"] =>
+  ({ dataSource }: { dataSource: DataSource }): MutationResolvers["untagVideo"] =>
   async (_parent, { input: { tagId, videoId } }, { user }) => {
     if (!user) {
       throw new GraphQLError("required to sign in");
     }
 
-    const repository = ds.getRepository(VideoTag);
+    const repository = dataSource.getRepository(VideoTag);
 
     const videoTag = await repository.findOne({
       relations: {

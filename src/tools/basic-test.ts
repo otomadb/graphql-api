@@ -21,7 +21,7 @@ const dataSource = new DataSource({
   migrations: [`${dir}/db/migrations/*.ts`],
 });
 await dataSource.initialize();
-const schema = makeExecutableSchema({ typeDefs, resolvers: resolvers({ ds: dataSource }) });
+const schema = makeExecutableSchema({ typeDefs, resolvers: resolvers({ dataSource }) });
 
 const user = new User();
 user.id = ulid();

@@ -7,7 +7,7 @@ import { TagModel } from "../../graphql/models.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
 
 export const registerTag =
-  ({ ds }: { ds: DataSource }): MutationResolvers["registerTag"] =>
+  ({ dataSource }: { dataSource: DataSource }): MutationResolvers["registerTag"] =>
   async (parent, { input }) => {
     const tag = new Tag();
     tag.id = ulid();
@@ -38,7 +38,7 @@ export const registerTag =
       );
     }
 
-    await ds.transaction(async (manager) => {
+    await dataSource.transaction(async (manager) => {
       await manager.getRepository(Tag).insert(tag);
       await manager.getRepository(TagName).insert(tagNames);
     });

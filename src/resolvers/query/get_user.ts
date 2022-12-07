@@ -6,9 +6,9 @@ import { UserModel } from "../../graphql/models.js";
 import { QueryResolvers } from "../../graphql/resolvers.js";
 
 export const getUser =
-  ({ ds }: { ds: DataSource }): QueryResolvers["user"] =>
+  ({ dataSource }: { dataSource: DataSource }): QueryResolvers["user"] =>
   async (_parent, { name }) => {
-    const user = await ds.getRepository(User).findOne({ where: { name } });
+    const user = await dataSource.getRepository(User).findOne({ where: { name } });
     if (!user) throw new GraphQLError("Not Found");
 
     return new UserModel(user);

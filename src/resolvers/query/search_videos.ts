@@ -6,9 +6,9 @@ import { VideoModel } from "../../graphql/models.js";
 import { QueryResolvers } from "../../graphql/resolvers.js";
 
 export const searchVideos =
-  ({ ds }: { ds: DataSource }): QueryResolvers["searchVideos"] =>
+  ({ dataSource }: { dataSource: DataSource }): QueryResolvers["searchVideos"] =>
   async (_parent, { limit, query, skip }) => {
-    const videoTitles = await ds
+    const videoTitles = await dataSource
       .getRepository(VideoTitle)
       .createQueryBuilder("videoTitle")
       .where({ name: Like(`%${query}%`) })
@@ -16,7 +16,7 @@ export const searchVideos =
       .distinctOn(["videoTitle.video.id"])
       .getMany();
 
-    const videos = await ds.getRepository(Video).find({
+    const videos = await dataSource.getRepository(Video).find({
       where: { id: In(videoTitles.map((t) => t.video.id)) },
     });
 

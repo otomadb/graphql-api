@@ -6,7 +6,7 @@ import { Session } from "../db/entities/sessions.js";
 import { User } from "../db/entities/users.js";
 
 export const getUserFromSession =
-  ({ ds: dataSource }: { ds: DataSource }) =>
+  ({ dataSource }: { dataSource: DataSource }) =>
   async (cookieValue: string | undefined): Promise<User | null> => {
     if (!cookieValue) return null;
     const [sessionId, secret] = cookieValue.split("-");

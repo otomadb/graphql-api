@@ -5,9 +5,9 @@ import { TagModel } from "../../graphql/models.js";
 import { QueryResolvers } from "../../graphql/resolvers.js";
 
 export const getTags =
-  ({ ds }: { ds: DataSource }): QueryResolvers["tags"] =>
+  ({ dataSource }: { dataSource: DataSource }): QueryResolvers["tags"] =>
   async (_parent, { input }) => {
-    const tags = await ds.getRepository(Tag).find({
+    const tags = await dataSource.getRepository(Tag).find({
       take: input?.limit || 0,
       skip: input?.skip || 0,
       order: {

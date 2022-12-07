@@ -9,7 +9,7 @@ import { Session } from "../db/entities/sessions.js";
 import { User } from "../db/entities/users.js";
 
 export const handlerSignup =
-  ({ ds }: { ds: DataSource }): Middleware =>
+  ({ dataSource }: { dataSource: DataSource }): Middleware =>
   async (ctx) => {
     const { name, displayName, email, password } = z
       .object({
@@ -36,14 +36,14 @@ export const handlerSignup =
     user.emailConfirmed = true; // FIXME: あとでなおす
     user.password = passwordHash;
 
-    const userRepository = ds.getRepository(User);
+    const userRepository = dataSource.getRepository(User);
     await userRepository.insert(user);
 
     ctx.body = { id: user.id };
   };
 
 export const handlerSignin =
-  ({ ds }: { ds: DataSource }): Middleware =>
+  ({ dataSource }: { dataSource: DataSource }): Middleware =>
   async (ctx) => {
     const { name, password } = z
       .object({
@@ -52,7 +52,7 @@ export const handlerSignin =
       })
       .parse(ctx.request.body);
 
-    const userRepository = ds.getRepository(User);
+    const userRepository = dataSource.getRepository(User);
 
     const user = await userRepository.findOne({ where: { name } });
     if (!user) {
@@ -75,7 +75,7 @@ export const handlerSignin =
     session.secret = createHash("sha256").update(secret).digest("hex");
     session.expiredAt = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000 /* 10 days */);
 
-    await ds.getRepository(Session).insert(session);
+    await dataSource.getRepository(Session).insert(session);
 
     ctx.cookies.set("otmd-session", `${session.id}-${secret}`, {
       httpOnly: true,

@@ -10,7 +10,7 @@ import { searchTags } from "./search_tags.js";
 import { searchVideos } from "./search_videos.js";
 import { whoami } from "./whoami.js";
 
-export const resolveQuery = (deps: { ds: DataSource }): Resolvers["Query"] => ({
+export const resolveQuery = (deps: { dataSource: DataSource }): Resolvers["Query"] => ({
   // findNiconicoSource, // 最悪まだ実装しなくてもいい
   // niconicoSource, // 最悪まだ実装しなくてもいい
   searchTags: searchTags(deps),

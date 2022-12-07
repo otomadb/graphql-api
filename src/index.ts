@@ -40,15 +40,15 @@ const router = new Router();
 
 export const typeDefs = await readFile(new URL("../schema.gql", import.meta.url), { encoding: "utf-8" });
 
-const schema = makeExecutableSchema({ typeDefs, resolvers: resolvers({ ds: dataSource }) });
+const schema = makeExecutableSchema({ typeDefs, resolvers: resolvers({ dataSource }) });
 
-router.post("/auth/signup", handlerSignup({ ds: dataSource }));
-router.post("/auth/login", handlerSignin({ ds: dataSource }));
+router.post("/auth/signup", handlerSignup({ dataSource }));
+router.post("/auth/login", handlerSignin({ dataSource }));
 
 router.post("/graphql", async (ctx) => {
   // まずは Cookie からセッションを取る、取れなければ Authorization ヘッダーから取る、形式は `Authorization: Bearer session_token`
   // FIXME: 危なそうなので開発環境だけ有効にしたい
-  const user = await getUserFromSession({ ds: dataSource })(
+  const user = await getUserFromSession({ dataSource })(
     ctx.cookies.get("otmd-session") ?? ctx.get("authorization").split(" ").at(1)
   );
   const { query, variables, operationName } = z

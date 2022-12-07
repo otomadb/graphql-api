@@ -13,7 +13,7 @@ import { MutationResolvers } from "../../graphql/resolvers.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 
 export const registerVideo =
-  ({ ds }: { ds: DataSource }): MutationResolvers["registerVideo"] =>
+  ({ dataSource }: { dataSource: DataSource }): MutationResolvers["registerVideo"] =>
   async (_parent, { input }) => {
     const video = new Video();
     video.id = ulid();
@@ -51,7 +51,7 @@ export const registerVideo =
       return s;
     });
 
-    const tags = await ds
+    const tags = await dataSource
       .getRepository(Tag)
       .findBy({ id: In(input.tags.map((t) => removeIDPrefix(ObjectType.Tag, t))) });
     if (tags.length !== input.tags.length) {
@@ -65,7 +65,7 @@ export const registerVideo =
       return videoTag;
     });
 
-    await ds.transaction(async (manager) => {
+    await dataSource.transaction(async (manager) => {
       await manager.getRepository(Video).insert(video);
       await manager.getRepository(VideoTitle).insert(titles);
       await manager.getRepository(VideoThumbnail).insert(primaryThumbnail);
