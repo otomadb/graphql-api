@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
+import { DataSource } from "typeorm";
 
-import { dataSource } from "../../db/data-source.js";
 import { TagName } from "../../db/entities/tag_names.js";
 import { TagParent } from "../../db/entities/tag_parents.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
@@ -8,12 +8,12 @@ import { TagModel, VideoModel } from "../../graphql/models.js";
 import { Resolvers, TagType } from "../../graphql/resolvers.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
 
-export const resolveTag: Resolvers["Tag"] = {
+export const resolveTag = ({ ds }: { ds: DataSource }): Resolvers["Tag"] => ({
   id: ({ id }) => addIDPrefix(ObjectType.Tag, id),
   type: () => TagType.Material,
 
   names: async ({ id: tagId }) => {
-    const names = await dataSource.getRepository(TagName).find({
+    const names = await ds.getRepository(TagName).find({
       where: { tag: { id: tagId } },
     });
     return names.map((n) => ({
@@ -22,7 +22,7 @@ export const resolveTag: Resolvers["Tag"] = {
     }));
   },
   name: async ({ id: tagId }) => {
-    const name = await dataSource.getRepository(TagName).findOne({
+    const name = await ds.getRepository(TagName).findOne({
       where: { tag: { id: tagId }, primary: true },
     });
     if (!name) throw new GraphQLError(`primary name for tag ${tagId} is not found`);
@@ -30,7 +30,7 @@ export const resolveTag: Resolvers["Tag"] = {
   },
 
   parents: async ({ id: tagId }) => {
-    const rel = await dataSource.getRepository(TagParent).find({
+    const rel = await ds.getRepository(TagParent).find({
       where: { child: { id: tagId } },
       relations: { parent: true },
     });
@@ -41,7 +41,7 @@ export const resolveTag: Resolvers["Tag"] = {
   },
 
   explicitParent: async ({ id: tagId }) => {
-    const rel = await dataSource.getRepository(TagParent).findOne({
+    const rel = await ds.getRepository(TagParent).findOne({
       where: { child: { id: tagId }, explicit: true },
       relations: { parent: true },
     });
@@ -52,7 +52,7 @@ export const resolveTag: Resolvers["Tag"] = {
   },
 
   taggedVideos: async ({ id: tagId }) => {
-    const videoTags = await dataSource
+    const videoTags = await ds
       .getRepository(VideoTag)
       .find({ where: { tag: { id: tagId } }, relations: { video: true } });
 
@@ -62,4 +62,4 @@ export const resolveTag: Resolvers["Tag"] = {
   history() {
     return [];
   },
-};
+});

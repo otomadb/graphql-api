@@ -8,7 +8,7 @@ import { untagVideo } from "./untag_video.js";
 
 export const resolveMutation = (deps: { ds: DataSource }): Resolvers["Mutation"] => ({
   registerTag: registerTag(deps),
-  registerVideo,
-  tagVideo,
-  untagVideo,
+  registerVideo: registerVideo(deps),
+  tagVideo: tagVideo(deps),
+  untagVideo: untagVideo(deps),
 });

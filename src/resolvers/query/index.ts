@@ -10,15 +10,15 @@ import { searchTags } from "./search_tags.js";
 import { searchVideos } from "./search_videos.js";
 import { whoami } from "./whoami.js";
 
-export const resolveQuery: ({ ds }: { ds: DataSource }) => Resolvers["Query"] = ({ ds }) => ({
+export const resolveQuery = (deps: { ds: DataSource }): Resolvers["Query"] => ({
   // findNiconicoSource, // 最悪まだ実装しなくてもいい
   // niconicoSource, // 最悪まだ実装しなくてもいい
-  searchTags,
-  searchVideos,
-  tag: getTag,
-  tags: getTags,
-  user: getUser,
-  video: getVideo,
-  videos: getVideos,
-  whoami,
+  searchTags: searchTags(deps),
+  searchVideos: searchVideos(deps),
+  tag: getTag(deps),
+  tags: getTags(deps),
+  user: getUser(deps),
+  video: getVideo(deps),
+  videos: getVideos(deps),
+  whoami: whoami(),
 });
