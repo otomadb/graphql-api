@@ -1,5 +1,4 @@
 import { GraphQLResolveInfo } from "graphql";
-import { describe, expect, it } from "vitest";
 
 import { Context } from "../../context.js";
 import { VideoModel } from "../../graphql/models.js";
@@ -35,6 +34,6 @@ describe("resolver Video.history", () => {
       {} as Context,
       {} as GraphQLResolveInfo
     );
-    expect(actual).eqls([]);
+    expect(actual).toStrictEqual([]);
   });
 });

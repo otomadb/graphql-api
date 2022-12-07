@@ -1,5 +1,4 @@
 import { GraphQLResolveInfo } from "graphql";
-import { describe, expect, it } from "vitest";
 
 import { Context } from "../../context.js";
 import { TagModel } from "../../graphql/models.js";
@@ -15,7 +14,7 @@ describe("resolver Tag.id", () => {
 
   it("prefixを付ける", () => {
     const actual = resolveId({ id: "1" } as TagModel, {}, {} as Context, {} as GraphQLResolveInfo);
-    expect(actual).eq("tag:1");
+    expect(actual).toBe("tag:1");
   });
 });
 
@@ -29,6 +28,6 @@ describe("resolver Tag.history", () => {
 
   it("現状は空配列を返す", () => {
     const actual = resolveHistory({} as TagModel, {}, {} as Context, {} as GraphQLResolveInfo);
-    expect(actual).eqls([]);
+    expect(actual).toStrictEqual([]);
   });
 });

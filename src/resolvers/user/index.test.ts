@@ -1,5 +1,4 @@
 import { GraphQLResolveInfo } from "graphql";
-import { describe, expect, it } from "vitest";
 
 import { Context } from "../../context.js";
 import { UserModel } from "../../graphql/models.js";
