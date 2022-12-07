@@ -10,7 +10,7 @@ export async function getUserFromSession(token: string): Promise<User | null> {
     where: { id: sessionId },
     relations: ["user"],
   });
-  if (!session ) return null;
+  if (!session) return null;
   const hashedSecret = createHash("sha256").update(secret).digest("hex");
   if (hashedSecret === session.secret) return session.user;
 
