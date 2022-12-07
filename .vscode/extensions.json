@@ -3,6 +3,7 @@
     "jnoortheen.nix-ide",
     "arrterian.nix-env-selector",
     "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "ZixuanChen.vitest-explorer"
   ]
 }
