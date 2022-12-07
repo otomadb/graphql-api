@@ -1,11 +1,12 @@
 import * as argon2 from "argon2";
-import { FastifyReply, FastifyRequest } from "fastify";
+import { Middleware } from "koa";
 import { ulid } from "ulid";
 import { z } from "zod";
+
 import { dataSource } from "../db/data-source.js";
 import { User } from "../db/entities/users.js";
 
-export const handlerSignup = async (req: FastifyRequest, reply: FastifyReply) => {
+export const handlerSignup: Middleware = async ({ request, response }) => {
   const parseResult = z
     .object({
       name: z.string(),
@@ -13,10 +14,10 @@ export const handlerSignup = async (req: FastifyRequest, reply: FastifyReply) =>
       email: z.string(),
       password: z.string(),
     })
-    .safeParse(req.body);
+    .safeParse(request.body);
   if (!parseResult.success) {
-    reply.status(400);
-    reply.send(parseResult.error);
+    response.status = 400;
+    response.body = parseResult.error;
     return;
   }
 
@@ -39,6 +40,6 @@ export const handlerSignup = async (req: FastifyRequest, reply: FastifyReply) =>
   const userRepository = dataSource.getRepository(User);
   await userRepository.insert(user);
 
-  reply.send({ id: user.id });
+  response.body({ id: user.id });
   return;
 };

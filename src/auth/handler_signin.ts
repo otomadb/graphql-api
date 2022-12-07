@@ -1,22 +1,23 @@
+import { Middleware } from "@koa/router";
 import * as argon2 from "argon2";
 import { createHash, randomBytes } from "crypto";
-import { FastifyReply, FastifyRequest } from "fastify";
 import { ulid } from "ulid";
 import { z } from "zod";
+
 import { dataSource } from "../db/data-source.js";
 import { Session } from "../db/entities/sessions.js";
 import { User } from "../db/entities/users.js";
 
-export const handlerSignin = async (req: FastifyRequest, reply: FastifyReply) => {
+export const handlerSignin: Middleware = async ({ request, response, cookies, secure }) => {
   const parseResult = z
     .object({
       name: z.string(),
       password: z.string(),
     })
-    .safeParse(req.body);
+    .safeParse(request.body);
   if (!parseResult.success) {
-    reply.status(400);
-    reply.send(parseResult.error);
+    response.status = 400;
+    response.body = parseResult.error;
     return;
   }
 
@@ -26,13 +27,13 @@ export const handlerSignin = async (req: FastifyRequest, reply: FastifyReply) =>
 
   const user = await userRepository.findOne({ where: { name } });
   if (!user) {
-    reply.status(400);
-    reply.send({ error: "user not found" });
+    response.status = 400;
+    response.body = { error: "user not found" };
     return;
   }
   if (!(await argon2.verify(user.password, password))) {
-    reply.status(400);
-    reply.send({ error: "password wrong" });
+    response.status = 400;
+    response.body = { error: "password wrong" };
     return;
   }
 
@@ -46,14 +47,12 @@ export const handlerSignin = async (req: FastifyRequest, reply: FastifyReply) =>
 
   await dataSource.getRepository(Session).insert(session);
 
-  req.cookies["otmd-session"];
-
-  reply.setCookie("otmd-session", `${session.id}-${secret}`, {
+  cookies.set("otmd-session", `${session.id}-${secret}`, {
     httpOnly: true,
     sameSite: "strict",
-    secure: "auto",
+    secure,
     path: "/",
   });
-  reply.send({ id: user.id });
+  response.body = { id: user.id };
   return;
 };
