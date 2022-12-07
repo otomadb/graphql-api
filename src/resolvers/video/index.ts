@@ -8,11 +8,11 @@ import { TagModel } from "../../graphql/models.js";
 import { Resolvers } from "../../graphql/resolvers.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
 
-export const resolveVideo: Resolvers["Video"] = {
+export const resolveVideo = ({ ds }: { ds: DataSource }): Resolvers["Video"] => ({
   id: ({ id }) => addIDPrefix(ObjectType.Video, id),
 
   title: async ({ id: videoId }) => {
-    const title = await dataSource
+    const title = await ds
       .getRepository(VideoTitleEntity)
       .findOne({ where: { video: { id: videoId }, isPrimary: true } });
     if (!title) throw new GraphQLError(`primary title for video ${videoId} is not found`);
@@ -20,7 +20,7 @@ export const resolveVideo: Resolvers["Video"] = {
     return title.title;
   },
   titles: async ({ id: videoId }) => {
-    const titles = await dataSource.getRepository(VideoTitleEntity).find({ where: { video: { id: videoId } } });
+    const titles = await ds.getRepository(VideoTitleEntity).find({ where: { video: { id: videoId } } });
     return titles.map((t) => ({
       title: t.title,
       primary: t.isPrimary,
@@ -28,11 +28,11 @@ export const resolveVideo: Resolvers["Video"] = {
   },
 
   thumbnails: async ({ id: videoId }) => {
-    const thumbnails = await dataSource.getRepository(VideoThumbnail).find({ where: { video: { id: videoId } } });
+    const thumbnails = await ds.getRepository(VideoThumbnail).find({ where: { video: { id: videoId } } });
     return thumbnails.map((t) => ({ imageUrl: t.imageUrl, primary: t.primary }));
   },
   thumbnailUrl: async ({ id: videoId }) => {
-    const thumbnail = await dataSource
+    const thumbnail = await ds
       .getRepository(VideoThumbnail)
       .findOne({ where: { video: { id: videoId }, primary: true } });
 
@@ -41,7 +41,7 @@ export const resolveVideo: Resolvers["Video"] = {
   },
 
   tags: async ({ id: videoId }) => {
-    const tags = await dataSource.getRepository(VideoTag).find({
+    const tags = await ds.getRepository(VideoTag).find({
       where: { video: { id: videoId } },
       relations: {
         tag: true,
@@ -50,11 +50,11 @@ export const resolveVideo: Resolvers["Video"] = {
     return tags.map(({ tag }) => new TagModel(tag));
   },
   hasTag: async ({ id: videoId }, { id: tagId }) => {
-    return await dataSource
+    return await ds
       .getRepository(VideoTag)
       .findOne({ where: { video: { id: videoId }, tag: { id: tagId } } })
       .then((v) => !!v);
   },
 
   history: () => [],
-};
+});
