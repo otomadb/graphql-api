@@ -1,4 +1,5 @@
-import { CreateDateColumn, Entity, ManyToOne, PrimaryColumn, Relation, Unique, UpdateDateColumn } from "typeorm";
+import { CreateDateColumn, Entity, ManyToOne, PrimaryColumn, Unique, UpdateDateColumn } from "typeorm";
+import { type Relation } from "typeorm";
 
 import { Tag } from "./tags.js";
 import { Video } from "./videos.js";
