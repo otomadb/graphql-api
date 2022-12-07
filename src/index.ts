@@ -28,7 +28,7 @@ const router = new Router();
 export const typeDefs = await readFile(new URL("../schema.gql", import.meta.url), { encoding: "utf-8" });
 
 const schema = createSchema<Context>({ typeDefs, resolvers });
-const yoga = createYoga<Context>({ schema })
+const yoga = createYoga<Context>({ schema });
 
 router.use("/auth", koaBodyMiddleware, authRouter.routes(), authRouter.allowedMethods());
 
@@ -40,11 +40,11 @@ router.post("/graphql", async (ctx) => {
 
   const response = await yoga.handleNodeRequest(ctx.req, contextValue);
 
-  ctx.status = response.status
+  ctx.status = response.status;
   for (const [key, val] of response.headers) {
-    ctx.set(key, val)
+    ctx.set(key, val);
   }
-  ctx.body = response.body
+  ctx.body = response.body;
 
   return;
 });
