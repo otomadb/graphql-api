@@ -11,7 +11,7 @@
     "dev:tsc": "tsc -w --preserveWatchOutput",
     "dev:gql": "graphql-codegen-esm -w",
     "build": "tsc",
-    "fmt": "prettier --write ./**/*.{js,ts,json,yml,md}",
+    "fmt": "prettier --write \"./**/*.{js,ts,json,yml,md}\"",
     "typecheck": "tsc --noEmit",
     "lint:eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:prettier": "prettier --check ./**/*.{js,ts,json,yml,md}",
