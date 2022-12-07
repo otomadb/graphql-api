@@ -1,3 +1,5 @@
+import { DataSource } from "typeorm";
+
 import { type Resolvers } from "../../graphql/resolvers.js";
 import { getTag } from "./get_tag.js";
 import { getTags } from "./get_tags.js";
@@ -8,7 +10,7 @@ import { searchTags } from "./search_tags.js";
 import { searchVideos } from "./search_videos.js";
 import { whoami } from "./whoami.js";
 
-export const resolveQuery: Resolvers["Query"] = {
+export const resolveQuery: ({ ds }: { ds: DataSource }) => Resolvers["Query"] = ({ ds }) => ({
   // findNiconicoSource, // 最悪まだ実装しなくてもいい
   // niconicoSource, // 最悪まだ実装しなくてもいい
   searchTags,
@@ -19,4 +21,4 @@ export const resolveQuery: Resolvers["Query"] = {
   video: getVideo,
   videos: getVideos,
   whoami,
-};
+});
