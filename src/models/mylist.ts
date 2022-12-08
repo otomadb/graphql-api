@@ -1,6 +1,6 @@
 import { dataSource } from "../db/data-source.js";
-import { Mylist, MylistShareRange as MylistEntityShareRange } from "../db/entities/mylists.js";
 import { MylistRegistration } from "../db/entities/mylist_registrations.js";
+import { Mylist, MylistShareRange as MylistEntityShareRange } from "../db/entities/mylists.js";
 import { MylistResolvers, MylistShareRange as MylistGQLShareRange } from "../graphql/resolvers.js";
 import { addIDPrefix, ObjectType } from "../utils/id.js";
 import { MylistRegistrationModel } from "./mylist_registration.js";
