@@ -94,5 +94,9 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
   // TODO
-  "exclude": ["src/niconico/*.ts", "dist"]
+  "exclude": [
+    "jest.config.ts",
+    "src/niconico/*.ts",
+    "dist"
+  ]
 }
