@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
+import { DataSource } from "typeorm";
 
-import { dataSource } from "../../db/data-source.js";
 import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
 import { Mylist, MylistShareRange } from "../../db/entities/mylists.js";
 import { MylistRegistrationModel, UserModel } from "../../graphql/models.js";
@@ -8,7 +8,7 @@ import { MylistShareRange as MylistGQLShareRange } from "../../graphql/resolvers
 import { Resolvers } from "../../graphql/resolvers.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
 
-export const resolveMylist: Resolvers["Mylist"] = {
+export const resolveMylist = ({ dataSource }: { dataSource: DataSource }): Resolvers["Mylist"] => ({
   id: ({ id }) => addIDPrefix(ObjectType.Mylist, id),
   range: ({ range }) => {
     switch (range) {
@@ -48,4 +48,4 @@ export const resolveMylist: Resolvers["Mylist"] = {
       .findOne({ where: { mylist: { id: mylistId }, video: { id: videoId } } })
       .then((r) => !!r);
   },
-};
+});

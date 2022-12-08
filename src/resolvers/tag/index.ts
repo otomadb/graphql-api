@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
+import { DataSource } from "typeorm";
 
-import { dataSource } from "../../db/data-source.js";
 import { TagName } from "../../db/entities/tag_names.js";
 import { TagParent } from "../../db/entities/tag_parents.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
@@ -8,8 +8,11 @@ import { TagModel, VideoModel } from "../../graphql/models.js";
 import { Resolvers, TagType } from "../../graphql/resolvers.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
 
-export const resolveTag: Resolvers["Tag"] = {
-  id: ({ id }) => addIDPrefix(ObjectType.Tag, id),
+export const resolveId = ({ id }: TagModel): string => addIDPrefix(ObjectType.Tag, id);
+export const resolveHistory = () => [];
+
+export const resolveTag = ({ dataSource }: { dataSource: DataSource }): Resolvers["Tag"] => ({
+  id: resolveId,
   type: () => TagType.Material,
 
   names: async ({ id: tagId }) => {
@@ -59,7 +62,5 @@ export const resolveTag: Resolvers["Tag"] = {
     return videoTags.map(({ video }) => new VideoModel(video));
   },
 
-  history() {
-    return [];
-  },
-};
+  history: resolveHistory,
+});
