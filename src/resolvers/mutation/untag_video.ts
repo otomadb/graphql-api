@@ -1,4 +1,5 @@
 import { GraphQLError } from "graphql";
+import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 
 import { VideoTag } from "../../db/entities/video_tags.js";
@@ -8,7 +9,13 @@ import { untagVideo as untagVideoInNeo4j } from "../../neo4j/untag_video.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "../../utils/id.js";
 
 export const untagVideo =
-  ({ dataSource }: { dataSource: DataSource }): MutationResolvers["untagVideo"] =>
+  ({
+    dataSource,
+    neo4jDriver,
+  }: {
+    dataSource: DataSource;
+    neo4jDriver: Neo4jDriver;
+  }): MutationResolvers["untagVideo"] =>
   async (_parent, { input: { tagId, videoId } }, { user }) => {
     if (!user) {
       throw new GraphQLError("required to sign in");
@@ -31,7 +38,7 @@ export const untagVideo =
     }
 
     await repository.remove(videoTag);
-    await untagVideoInNeo4j({
+    await untagVideoInNeo4j(neo4jDriver)({
       tagId: removeIDPrefix(ObjectType.Tag, tagId),
       videoId: removeIDPrefix(ObjectType.Video, videoId),
     });

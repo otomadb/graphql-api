@@ -1,3 +1,4 @@
+import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 
 import { type Resolvers } from "../graphql/resolvers.js";
@@ -9,7 +10,7 @@ import { resolveTag } from "./tag/index.js";
 import { resolveUser } from "./user/index.js";
 import { resolveVideo } from "./video/index.js";
 
-export const resolvers = (deps: { dataSource: DataSource }): Resolvers => ({
+export const resolvers = (deps: { dataSource: DataSource; neo4jDriver: Neo4jDriver }): Resolvers => ({
   Query: resolveQuery(deps),
   Mutation: resolveMutation(deps),
   Tag: resolveTag(deps),

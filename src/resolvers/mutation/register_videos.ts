@@ -1,4 +1,5 @@
 import { GraphQLError } from "graphql";
+import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource, In } from "typeorm";
 import { ulid } from "ulid";
 
@@ -14,7 +15,13 @@ import { registerVideo as registerVideoInNeo4j } from "../../neo4j/register_vide
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 
 export const registerVideo =
-  ({ dataSource }: { dataSource: DataSource }): MutationResolvers["registerVideo"] =>
+  ({
+    dataSource,
+    neo4jDriver,
+  }: {
+    dataSource: DataSource;
+    neo4jDriver: Neo4jDriver;
+  }): MutationResolvers["registerVideo"] =>
   async (_parent, { input }) => {
     const video = new Video();
     video.id = ulid();
@@ -78,9 +85,7 @@ export const registerVideo =
     video.thumbnails = [primaryThumbnail];
     video.sources = sources;
 
-    await registerVideoInNeo4j(video.id, {
-      tagIds: tags.map(({ id }) => id),
-    });
+    await registerVideoInNeo4j(neo4jDriver)(video.id, { tagIds: tags.map(({ id }) => id) });
 
     return {
       video: new VideoModel(video),

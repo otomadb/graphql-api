@@ -1,3 +1,4 @@
+import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
@@ -8,7 +9,13 @@ import { MutationResolvers } from "../../graphql/resolvers.js";
 import { registerTag as registerTagInNeo4j } from "../../neo4j/register_tag.js";
 
 export const registerTag =
-  ({ dataSource }: { dataSource: DataSource }): MutationResolvers["registerTag"] =>
+  ({
+    dataSource,
+    neo4jDriver,
+  }: {
+    dataSource: DataSource;
+    neo4jDriver: Neo4jDriver;
+  }): MutationResolvers["registerTag"] =>
   async (parent, { input }) => {
     const tag = new Tag();
     tag.id = ulid();
@@ -46,7 +53,7 @@ export const registerTag =
 
     tag.tagNames = tagNames;
 
-    await registerTagInNeo4j(tag.id);
+    await registerTagInNeo4j(neo4jDriver)(tag.id);
 
     return { tag: new TagModel(tag) };
   };

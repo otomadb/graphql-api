@@ -1,4 +1,5 @@
 import { GraphQLError } from "graphql";
+import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
@@ -11,7 +12,7 @@ import { tagVideo as tagVideoInNeo4j } from "../../neo4j/tag_video.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "../../utils/id.js";
 
 export const tagVideo =
-  ({ dataSource }: { dataSource: DataSource }): MutationResolvers["tagVideo"] =>
+  ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }): MutationResolvers["tagVideo"] =>
   async (_parent, { input: { tagId, videoId } }, { user }) => {
     if (!user) {
       throw new GraphQLError("required to sign in");
@@ -31,7 +32,7 @@ export const tagVideo =
     videoTag.tag = tag;
     await dataSource.getRepository(VideoTag).insert(videoTag);
 
-    await tagVideoInNeo4j({ tagId: tag.id, videoId: video.id });
+    await tagVideoInNeo4j(neo4jDriver)({ tagId: tag.id, videoId: video.id });
 
     return {
       createdAt: new Date(),

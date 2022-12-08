@@ -10,6 +10,7 @@ import { graphql } from "graphql";
 import Koa from "koa";
 import { koaBody } from "koa-body";
 import logger from "koa-logger";
+import neo4j from "neo4j-driver";
 import { DataSource } from "typeorm";
 import { z } from "zod";
 
@@ -27,8 +28,14 @@ const dataSource = new DataSource({
   entities,
   migrations: [`${dir}/db/migrations/*.ts`],
 });
-
 await dataSource.initialize();
+
+const neo4jDriver = neo4j.driver(
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  process.env.NEO4J_URL!,
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  neo4j.auth.basic(process.env.NEO4J_USERNAME!, process.env.NEO4J_PASSWORD!)
+);
 
 const app = new Koa();
 
@@ -40,7 +47,10 @@ const router = new Router();
 
 export const typeDefs = await readFile(new URL("../schema.gql", import.meta.url), { encoding: "utf-8" });
 
-const schema = makeExecutableSchema({ typeDefs, resolvers: resolvers({ dataSource }) });
+const schema = makeExecutableSchema({
+  typeDefs,
+  resolvers: resolvers({ dataSource, neo4jDriver }),
+});
 
 router.post("/auth/signup", handlerSignup({ dataSource }));
 router.post("/auth/login", handlerSignin({ dataSource }));
