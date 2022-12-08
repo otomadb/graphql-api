@@ -16,12 +16,14 @@
     "lint:eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:prettier": "prettier --check ./**/*.{js,ts,json,yml,md}",
     "lint:schema": "graphql-schema-linter ./schema.gql",
+    "lintfix": "run-s 'lintfix:*' 'fmt'",
     "lintfix:eslint": "pnpm run lint:eslint --fix",
     "migration:generate": "run(){ pnpm run typeorm migration:generate -p \"src/db/migrations/$1\"; }; run",
     "start": "node --loader ts-node/esm src/index.ts",
     "type-check": "tsc --noEmit",
     "typeorm": "typeorm-ts-node-esm -d ./src/db/data-source.ts",
-    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand"
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
+    "test:watch": "pnpm run test --watch"
   },
   "nodemonConfig": {
     "delay": 100

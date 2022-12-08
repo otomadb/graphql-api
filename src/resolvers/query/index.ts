@@ -1,6 +1,7 @@
 import { DataSource } from "typeorm";
 
 import { type Resolvers } from "../../graphql/resolvers.js";
+import { getMylist } from "./get_mylist.js";
 import { getTag } from "./get_tag.js";
 import { getTags } from "./get_tags.js";
 import { getUser } from "./get_user.js";
@@ -20,5 +21,6 @@ export const resolveQuery = (deps: { dataSource: DataSource }): Resolvers["Query
   user: getUser(deps),
   video: getVideo(deps),
   videos: getVideos(deps),
+  mylist: getMylist(deps),
   whoami: whoami(),
 });

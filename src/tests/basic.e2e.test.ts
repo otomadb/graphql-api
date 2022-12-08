@@ -5,16 +5,8 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import { graphql, GraphQLSchema } from "graphql";
 import { DataSource } from "typeorm";
 
-import { Session } from "../db/entities/sessions.js";
-import { TagName } from "../db/entities/tag_names.js";
-import { TagParent } from "../db/entities/tag_parents.js";
-import { Tag } from "../db/entities/tags.js";
+import { entities } from "../db/entities/index.js";
 import { User } from "../db/entities/users.js";
-import { VideoSource } from "../db/entities/video_sources.js";
-import { VideoTag } from "../db/entities/video_tags.js";
-import { VideoThumbnail } from "../db/entities/video_thumbnails.js";
-import { VideoTitle } from "../db/entities/video_titles.js";
-import { Video } from "../db/entities/videos.js";
 import { resolvers } from "../resolvers/index.js";
 
 const typeDefs = await readFile(new URL("../../schema.gql", import.meta.url), { encoding: "utf-8" });
@@ -35,7 +27,7 @@ describe("basic e2e", () => {
     ds = new DataSource({
       type: "postgres",
       url: process.env.DATABASE_URL,
-      entities: [Tag, TagName, TagParent, VideoTitle, VideoThumbnail, VideoTag, VideoSource, Session, User, Video],
+      entities,
       migrations: [`${(resolve(dirname(new URL(import.meta.url).pathname)), "../db/migrations")}/*.ts`],
     });
     await ds.initialize();
@@ -110,7 +102,8 @@ describe("basic e2e", () => {
         },
       },
     });
-    const tagId = (registerTagResult.data as any).registerTag.tag.id as string; // TODO: ID生成部分モックするとかしてなんとかする
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const tagId = (registerTagResult.data as any).registerTag.tag.id as string;
 
     const queryForRegisterVideo = `
     mutation ($input: RegisterVideoInput!) {

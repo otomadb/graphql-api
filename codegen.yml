@@ -10,6 +10,8 @@ generates:
         Tag: ./models.js#TagModel
         User: ./models.js#UserModel
         Video: ./models.js#VideoModel
+        Mylist: ./models.js#MylistModel
+        MylistRegistration: ./models.js#MylistRegistrationModel
       makeResolverTypeCallable: true
     plugins:
       - typescript
