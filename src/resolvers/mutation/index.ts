@@ -6,7 +6,9 @@ import { createMylist } from "./create_mylist.js";
 import { likeVideo } from "./like_video.js";
 import { registerTag } from "./register_tag.js";
 import { registerVideo } from "./register_videos.js";
+import { removeVideoFromMylist } from "./remove_video_from_mylist.js";
 import { tagVideo } from "./tag_video.js";
+import { undoLikeVideo } from "./undo_like_video.js";
 import { untagVideo } from "./untag_video.js";
 
 export const resolveMutation = (deps: { dataSource: DataSource }): Resolvers["Mutation"] => ({
@@ -17,4 +19,6 @@ export const resolveMutation = (deps: { dataSource: DataSource }): Resolvers["Mu
   addVideoToMylist: addVideoToMylist(deps),
   createMylist: createMylist(deps),
   likeVideo: likeVideo(deps),
+  removeVideoFromMylist: removeVideoFromMylist(deps),
+  undoLikeVideo: undoLikeVideo(deps),
 });
