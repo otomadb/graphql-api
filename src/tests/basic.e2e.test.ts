@@ -102,7 +102,8 @@ describe("basic e2e", () => {
         },
       },
     });
-    const tagId = (registerTagResult.data as any).registerTag.tag.id as string; // TODO: ID生成部分モックするとかしてなんとかする
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const tagId = (registerTagResult.data as any).registerTag.tag.id as string;
 
     const queryForRegisterVideo = `
     mutation ($input: RegisterVideoInput!) {

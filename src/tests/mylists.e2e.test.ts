@@ -99,7 +99,8 @@ describe("マイリスト関連のE2Eテスト", () => {
         contextValue: { user: testuser },
         variableValues: { input: { title: "Public Mylist", range: "PUBLIC" } },
       });
-      const mylistId = (createMylistResult.data as any).createMylist.mylist.id as string; // TODO: ID生成部分モックするとかしてなんとかする
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mylistId = (createMylistResult.data as any).createMylist.mylist.id as string;
 
       const queryGetMylist = `
       query($id: ID!) {
@@ -169,7 +170,8 @@ describe("マイリスト関連のE2Eテスト", () => {
         contextValue: { user: testuser },
         variableValues: { input: { title: "KnowLink Mylist", range: "KNOW_LINK" } },
       });
-      const mylistId = (createMylistResult.data as any).createMylist.mylist.id as string; // TODO: ID生成部分モックするとかしてなんとかする
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mylistId = (createMylistResult.data as any).createMylist.mylist.id as string;
 
       const queryGetMylist = `
       query($id: ID!) {
@@ -239,7 +241,8 @@ describe("マイリスト関連のE2Eテスト", () => {
         contextValue: { user: testuser },
         variableValues: { input: { title: "Private Mylist", range: "PRIVATE" } },
       });
-      const mylistId = (createMylistResult.data as any).createMylist.mylist.id as string; // TODO: ID生成部分モックするとかしてなんとかする
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mylistId = (createMylistResult.data as any).createMylist.mylist.id as string;
 
       const queryGetMylist = `
       query($id: ID!) {
@@ -275,7 +278,8 @@ describe("マイリスト関連のE2Eテスト", () => {
         contextValue: { user: testuser },
         variableValues: { input: { title: "Private Mylist", range: "PRIVATE" } },
       });
-      const mylistId = (createMylistResult.data as any).createMylist.mylist.id as string; // TODO: ID生成部分モックするとかしてなんとかする
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mylistId = (createMylistResult.data as any).createMylist.mylist.id as string;
 
       const queryGetMylist = `
       query($id: ID!) {
@@ -318,6 +322,7 @@ describe("マイリスト関連のE2Eテスト", () => {
         contextValue: { user: testuser },
         variableValues: { input: { title: "Public Mylist", range: "PUBLIC" } },
       });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       mylistId = (createMylistResult.data as any).createMylist.mylist.id as string;
 
       const registerVideoResult = await graphql({
@@ -343,6 +348,7 @@ describe("マイリスト関連のE2Eテスト", () => {
           },
         },
       });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       videoId = (registerVideoResult.data as any).registerVideo.video.id as string;
 
       otheruser = new User();
@@ -504,6 +510,7 @@ describe("マイリスト関連のE2Eテスト", () => {
         contextValue: { user: testuser },
         variableValues: { input: { title: "Public Mylist", range: "PUBLIC" } },
       });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       mylistId = (createMylistResult.data as any).createMylist.mylist.id as string;
 
       const createOtherMylistResult = await graphql({
@@ -519,6 +526,7 @@ describe("マイリスト関連のE2Eテスト", () => {
         contextValue: { user: testuser },
         variableValues: { input: { title: "Public Mylist 2", range: "PUBLIC" } },
       });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       otherMylistId = (createOtherMylistResult.data as any).createMylist.mylist.id as string;
 
       const mutationRegisterVideo = `
@@ -543,6 +551,7 @@ describe("マイリスト関連のE2Eテスト", () => {
           },
         },
       });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       videoId = (resultRegisterVideo.data as any).registerVideo.video.id as string;
 
       const resultRegisterVideo2 = await graphql({
@@ -558,6 +567,7 @@ describe("マイリスト関連のE2Eテスト", () => {
           },
         },
       });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       otherVideoId = (resultRegisterVideo2.data as any).registerVideo.video.id as string;
 
       // const resultAddVideoToMylist =
@@ -688,6 +698,7 @@ describe("マイリスト関連のE2Eテスト", () => {
         contextValue: { user: testuser },
         variableValues: { input: { title: "Public Mylist", range: "PUBLIC" } },
       });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       mylistId = (createMylistResult.data as any).createMylist.mylist.id as string;
 
       await ds.getRepository(Mylist).update({ id: removeIDPrefix(ObjectType.Mylist, mylistId) }, { isLikeList: true });
@@ -714,6 +725,7 @@ describe("マイリスト関連のE2Eテスト", () => {
           },
         },
       });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       videoId = (resultRegisterVideo.data as any).registerVideo.video.id as string;
 
       const resultRegisterVideo2 = await graphql({
@@ -729,6 +741,7 @@ describe("マイリスト関連のE2Eテスト", () => {
           },
         },
       });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       otherVideoId = (resultRegisterVideo2.data as any).registerVideo.video.id as string;
 
       // const resultAddVideoToMylist =
