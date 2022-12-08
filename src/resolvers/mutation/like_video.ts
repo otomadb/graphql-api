@@ -7,6 +7,7 @@ import { Mylist } from "../../db/entities/mylists.js";
 import { Video } from "../../db/entities/videos.js";
 import { MylistRegistrationModel } from "../../graphql/models.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
+import { addVideoToMylist as addVideoToMylistInNeo4j } from "../../neo4j/add_video_to_mylist.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 
 export const likeVideo =
@@ -30,6 +31,11 @@ export const likeVideo =
     registration.video = video;
     registration.note = null;
     await dataSource.getRepository(MylistRegistration).insert(registration);
+
+    await addVideoToMylistInNeo4j({
+      mylistId: mylist.id,
+      videoId: video.id,
+    });
 
     return {
       registration: new MylistRegistrationModel({

@@ -4,6 +4,7 @@ import { DataSource } from "typeorm";
 import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
 import { MylistModel, VideoModel } from "../../graphql/models.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
+import { removeVideoFromMylist as removeVideoFromMylistInNeo4j } from "../../neo4j/remove_video_from_mylist.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 
 export const removeVideoFromMylist =
@@ -27,6 +28,11 @@ export const removeVideoFromMylist =
     if (!registration) throw new GraphQLError("Not Found");
 
     await repository.remove(registration);
+
+    await removeVideoFromMylistInNeo4j({
+      mylistId: registration.mylist.id,
+      videoId: registration.video.id,
+    });
 
     return {
       video: new VideoModel(registration.video),

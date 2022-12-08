@@ -11,7 +11,6 @@ import { addVideoToMylist as addVideoToMylistInNeo4j } from "../../neo4j/add_vid
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 import { MYLIST_NOT_FOUND_OR_PRIVATE_ERROR, MYLIST_NOT_HOLDED_BY_YOU } from "../query/get_mylist.js";
 
-
 export const addVideoToMylist =
   ({ dataSource }: { dataSource: DataSource }): MutationResolvers["addVideoToMylist"] =>
   async (_parent, { input }, { user }) => {
