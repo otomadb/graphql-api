@@ -1,3 +1,4 @@
+import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 
 import { type Resolvers } from "../../graphql/resolvers.js";
@@ -11,7 +12,7 @@ import { tagVideo } from "./tag_video.js";
 import { undoLikeVideo } from "./undo_like_video.js";
 import { untagVideo } from "./untag_video.js";
 
-export const resolveMutation = (deps: { dataSource: DataSource }): Resolvers["Mutation"] => ({
+export const resolveMutation = (deps: { dataSource: DataSource; neo4jDriver: Neo4jDriver }): Resolvers["Mutation"] => ({
   registerTag: registerTag(deps),
   registerVideo: registerVideo(deps),
   tagVideo: tagVideo(deps),

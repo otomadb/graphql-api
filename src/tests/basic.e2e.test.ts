@@ -3,6 +3,7 @@ import { dirname, resolve } from "node:path";
 
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { graphql, GraphQLSchema } from "graphql";
+import neo4j, { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 
 import { entities } from "../db/entities/index.js";
@@ -13,6 +14,7 @@ const typeDefs = await readFile(new URL("../../schema.gql", import.meta.url), { 
 
 describe("basic e2e", () => {
   let ds: DataSource;
+  let neo4jDriver: Neo4jDriver;
   let schema: GraphQLSchema;
 
   const testuser = new User();
@@ -32,9 +34,16 @@ describe("basic e2e", () => {
     });
     await ds.initialize();
 
+    neo4jDriver = neo4j.driver(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      process.env.NEO4J_URL!,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      neo4j.auth.basic(process.env.NEO4J_USERNAME!, process.env.NEO4J_PASSWORD!)
+    );
+
     schema = makeExecutableSchema({
       typeDefs,
-      resolvers: resolvers({ dataSource: ds }),
+      resolvers: resolvers({ dataSource: ds, neo4jDriver }),
     });
   });
 
@@ -46,6 +55,7 @@ describe("basic e2e", () => {
 
   afterAll(async () => {
     await ds.destroy();
+    await neo4jDriver.close();
   });
 
   test("タグを登録", async () => {
