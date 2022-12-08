@@ -5,16 +5,8 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import { graphql, GraphQLSchema } from "graphql";
 import { DataSource } from "typeorm";
 
-import { Session } from "../db/entities/sessions.js";
-import { TagName } from "../db/entities/tag_names.js";
-import { TagParent } from "../db/entities/tag_parents.js";
-import { Tag } from "../db/entities/tags.js";
+import { entities } from "../db/entities/index.js";
 import { User } from "../db/entities/users.js";
-import { VideoSource } from "../db/entities/video_sources.js";
-import { VideoTag } from "../db/entities/video_tags.js";
-import { VideoThumbnail } from "../db/entities/video_thumbnails.js";
-import { VideoTitle } from "../db/entities/video_titles.js";
-import { Video } from "../db/entities/videos.js";
 import { resolvers } from "../resolvers/index.js";
 
 const typeDefs = await readFile(new URL("../../schema.gql", import.meta.url), { encoding: "utf-8" });
@@ -35,7 +27,7 @@ describe("basic e2e", () => {
     ds = new DataSource({
       type: "postgres",
       url: process.env.DATABASE_URL,
-      entities: [Tag, TagName, TagParent, VideoTitle, VideoThumbnail, VideoTag, VideoSource, Session, User, Video],
+      entities,
       migrations: [`${(resolve(dirname(new URL(import.meta.url).pathname)), "../db/migrations")}/*.ts`],
     });
     await ds.initialize();
@@ -145,6 +137,35 @@ describe("basic e2e", () => {
           title: "M.C.ドナルドはダンスに夢中なのか？最終鬼畜道化師ドナルド・Ｍ",
           thumbnailUrl:
             "https://img.cdn.nimg.jp/s/nicovideo/thumbnails/2057168/2057168.original/r1280x720l?key=64c3379f18890e6747830c596be0a7276dab4e0fe574a98671b3b0c58c1f54c8",
+        },
+      },
+    });
+  });
+
+  test("公開マイリスト", async () => {
+    const mutationCreateMylist = `
+    mutation ($input: CreateMylistInput!) {
+      createMylist(input: $input) {
+        mylist {
+          id
+          # title
+          range
+        }
+      }
+    }`;
+    const createMylistResult = await graphql({
+      source: mutationCreateMylist,
+      schema,
+      contextValue: { user: testuser },
+      variableValues: { input: { title: "Public Mylist", range: "PUBLIC" } },
+    });
+
+    expect(createMylistResult.data).toEqual({
+      createMylist: {
+        mylist: {
+          id: expect.any(String),
+          // title: "Public Mylist",
+          range: "PUBLIC",
         },
       },
     });

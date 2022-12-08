@@ -1,13 +1,17 @@
 import { GraphQLError } from "graphql";
+import { DataSource } from "typeorm";
 
-import { dataSource } from "../../db/data-source.js";
 import { Mylist } from "../../db/entities/mylists.js";
 import { Video } from "../../db/entities/videos.js";
 import { MylistModel, VideoModel } from "../../graphql/models.js";
 import { Resolvers } from "../../graphql/resolvers.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "../../utils/id.js";
 
-export const resolveMylistRegistration: Resolvers["MylistRegistration"] = {
+export const resolveMylistRegistration = ({
+  dataSource,
+}: {
+  dataSource: DataSource;
+}): Resolvers["MylistRegistration"] => ({
   id: ({ id }) => addIDPrefix(ObjectType.MylistRegistration, id),
 
   video: async ({ videoId }) => {
@@ -26,4 +30,4 @@ export const resolveMylistRegistration: Resolvers["MylistRegistration"] = {
 
     return new MylistModel(mylist);
   },
-};
+});

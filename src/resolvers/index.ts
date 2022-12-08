@@ -2,6 +2,8 @@ import { DataSource } from "typeorm";
 
 import { type Resolvers } from "../graphql/resolvers.js";
 import { resolveMutation } from "./mutation/index.js";
+import { resolveMylist } from "./mylist/index.js";
+import { resolveMylistRegistration } from "./mylist_registration/index.js";
 import { resolveQuery } from "./query/index.js";
 import { resolveTag } from "./tag/index.js";
 import { resolveUser } from "./user/index.js";
@@ -13,4 +15,6 @@ export const resolvers = (deps: { dataSource: DataSource }): Resolvers => ({
   Tag: resolveTag(deps),
   Video: resolveVideo(deps),
   User: resolveUser(),
+  Mylist: resolveMylist(deps),
+  MylistRegistration: resolveMylistRegistration(deps),
 });
