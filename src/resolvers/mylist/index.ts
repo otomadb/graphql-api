@@ -6,7 +6,7 @@ import { Mylist, MylistShareRange } from "../../db/entities/mylists.js";
 import { MylistRegistrationModel, UserModel } from "../../graphql/models.js";
 import { MylistShareRange as MylistGQLShareRange } from "../../graphql/resolvers.js";
 import { Resolvers } from "../../graphql/resolvers.js";
-import { addIDPrefix, ObjectType } from "../../utils/id.js";
+import { addIDPrefix, ObjectType, removeIDPrefix } from "../../utils/id.js";
 
 export const resolveMylist = ({ dataSource }: { dataSource: DataSource }): Resolvers["Mylist"] => ({
   id: ({ id }) => addIDPrefix(ObjectType.Mylist, id),
@@ -42,10 +42,14 @@ export const resolveMylist = ({ dataSource }: { dataSource: DataSource }): Resol
       ),
     };
   },
-  includes: async ({ id: mylistId }, { videoId }) => {
-    return dataSource
+  includes: async ({ id: mylistId }, { videoId }) =>
+    dataSource
       .getRepository(MylistRegistration)
-      .findOne({ where: { mylist: { id: mylistId }, video: { id: videoId } } })
-      .then((r) => !!r);
-  },
+      .findOne({
+        where: {
+          mylist: { id: mylistId },
+          video: { id: removeIDPrefix(ObjectType.Video, videoId) },
+        },
+      })
+      .then((r) => !!r),
 });
