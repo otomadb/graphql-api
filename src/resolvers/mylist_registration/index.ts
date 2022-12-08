@@ -5,7 +5,7 @@ import { Mylist } from "../../db/entities/mylists.js";
 import { Video } from "../../db/entities/videos.js";
 import { MylistModel, VideoModel } from "../../graphql/models.js";
 import { Resolvers } from "../../graphql/resolvers.js";
-import { addIDPrefix, ObjectType, removeIDPrefix } from "../../utils/id.js";
+import { addIDPrefix, ObjectType } from "../../utils/id.js";
 
 export const resolveMylistRegistration = ({
   dataSource,
@@ -16,7 +16,7 @@ export const resolveMylistRegistration = ({
 
   video: async ({ videoId }) => {
     const video = await dataSource.getRepository(Video).findOne({
-      where: { id: removeIDPrefix(ObjectType.Video, videoId) },
+      where: { id: (ObjectType.Video, videoId) },
     });
     if (!video) throw new GraphQLError("Not Found");
 
@@ -24,7 +24,7 @@ export const resolveMylistRegistration = ({
   },
   mylist: async ({ mylistId }) => {
     const mylist = await dataSource.getRepository(Mylist).findOne({
-      where: { id: removeIDPrefix(ObjectType.Mylist, mylistId) },
+      where: { id: (ObjectType.Mylist, mylistId) },
     });
     if (!mylist) throw new GraphQLError("Not Found");
 
