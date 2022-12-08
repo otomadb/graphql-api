@@ -13,14 +13,16 @@ import { resolvers } from "../resolvers/index.js";
 
 export const typeDefs = await readFile(new URL("../../schema.gql", import.meta.url), { encoding: "utf-8" });
 
-const dir = dirname(new URL(import.meta.url).pathname);
 const dataSource = new DataSource({
   type: "postgres",
   url: process.env.DATABASE_URL,
   entities,
-  migrations: [`${dir}/db/migrations/*.ts`],
+  migrations: [`${dirname(new URL(import.meta.url).pathname)}/db/migrations/*.ts`],
 });
 await dataSource.initialize();
+await dataSource.dropDatabase();
+await dataSource.synchronize();
+
 const schema = makeExecutableSchema({ typeDefs, resolvers: resolvers({ dataSource }) });
 
 const user = new User();
