@@ -20,6 +20,9 @@ const dataSource = new DataSource({
   migrations: [`${dirname(new URL(import.meta.url).pathname)}/db/migrations/*.ts`],
 });
 await dataSource.initialize();
+await dataSource.dropDatabase();
+await dataSource.synchronize();
+
 const schema = makeExecutableSchema({ typeDefs, resolvers: resolvers({ dataSource }) });
 
 const schema = makeExecutableSchema({ typeDefs, resolvers: resolvers({ dataSource }) });
