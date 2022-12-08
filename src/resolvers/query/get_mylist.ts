@@ -13,10 +13,7 @@ export const getMylist =
   ({ dataSource }: { dataSource: DataSource }): QueryResolvers["mylist"] =>
   async (_parent, { id }, { user }) => {
     const mylist = await dataSource.getRepository(Mylist).findOne({
-      where: {
-        id: removeIDPrefix(ObjectType.Mylist, id),
-        isLikeList: false,
-      },
+      where: { id: removeIDPrefix(ObjectType.Mylist, id) },
       relations: {
         holder: true,
       },
