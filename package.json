@@ -21,8 +21,7 @@
     "start": "node --loader ts-node/esm src/index.ts",
     "type-check": "tsc --noEmit",
     "typeorm": "typeorm-ts-node-esm -d ./src/db/data-source.ts",
-    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
-    "test:old": "node --loader ts-node/esm src/tools/basic-test.ts"
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand"
   },
   "nodemonConfig": {
     "delay": 100
