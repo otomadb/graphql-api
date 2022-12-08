@@ -1,18 +1,29 @@
 import { readFile } from "node:fs/promises";
+import { dirname } from "node:path";
 
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { graphql } from "graphql";
+import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 import { z, ZodType } from "zod";
 
-import { dataSource } from "../db/data-source.js";
+import { entities } from "../db/entities/index.js";
 import { User } from "../db/entities/users.js";
 import { resolvers } from "../resolvers/index.js";
 
 export const typeDefs = await readFile(new URL("../../schema.gql", import.meta.url), { encoding: "utf-8" });
 
+const dataSource = new DataSource({
+  type: "postgres",
+  url: process.env.DATABASE_URL,
+  entities,
+  migrations: [`${dirname(new URL(import.meta.url).pathname)}/db/migrations/*.ts`],
+});
 await dataSource.initialize();
-const schema = makeExecutableSchema({ typeDefs, resolvers });
+await dataSource.dropDatabase();
+await dataSource.synchronize();
+
+const schema = makeExecutableSchema({ typeDefs, resolvers: resolvers({ dataSource }) });
 
 const user = new User();
 user.id = ulid();
