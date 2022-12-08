@@ -6,8 +6,10 @@ import { graphql, GraphQLSchema } from "graphql";
 import { DataSource } from "typeorm";
 
 import { entities } from "../db/entities/index.js";
+import { Mylist } from "../db/entities/mylists.js";
 import { User } from "../db/entities/users.js";
 import { resolvers } from "../resolvers/index.js";
+import { ObjectType, removeIDPrefix } from "../utils/id.js";
 
 const typeDefs = await readFile(new URL("../../schema.gql", import.meta.url), { encoding: "utf-8" });
 
@@ -15,13 +17,7 @@ describe("マイリスト関連のE2Eテスト", () => {
   let ds: DataSource;
   let schema: GraphQLSchema;
 
-  const testuser = new User();
-  testuser.id = "1";
-  testuser.name = `testuser1`;
-  testuser.displayName = "Test User 1";
-  testuser.email = `testuser1@example.com`;
-  testuser.password = "password";
-  testuser.icon = "";
+  let testuser: User;
 
   beforeAll(async () => {
     ds = new DataSource({
@@ -41,6 +37,14 @@ describe("マイリスト関連のE2Eテスト", () => {
   beforeEach(async () => {
     await ds.dropDatabase();
     await ds.synchronize();
+
+    testuser = new User();
+    testuser.id = "1";
+    testuser.name = `testuser1`;
+    testuser.displayName = "Test User 1";
+    testuser.email = `testuser1@example.com`;
+    testuser.password = "password";
+    testuser.icon = "";
     await ds.getRepository(User).insert(testuser);
   });
 
@@ -356,7 +360,6 @@ describe("マイリスト関連のE2Eテスト", () => {
         source: `
         mutation($input: AddVideoToMylistInput!) {
           addVideoToMylist(input: $input) {
-            id
             registration {
               id
               note
@@ -382,7 +385,6 @@ describe("マイリスト関連のE2Eテスト", () => {
 
       expect(resultAddVideoToMylist.data).toEqual({
         addVideoToMylist: {
-          id: expect.any(String),
           registration: {
             id: expect.any(String),
             note: "note",
@@ -402,7 +404,6 @@ describe("マイリスト関連のE2Eテスト", () => {
         source: `
         mutation($input: AddVideoToMylistInput!) {
           addVideoToMylist(input: $input) {
-            id
             registration {
               id
               note
@@ -435,7 +436,6 @@ describe("マイリスト関連のE2Eテスト", () => {
         source: `
         mutation($input: AddVideoToMylistInput!) {
           addVideoToMylist(input: $input) {
-            id
             registration {
               id
               note
@@ -482,6 +482,337 @@ describe("マイリスト関連のE2Eテスト", () => {
           },
         },
       });
+    });
+  });
+
+  describe("マイリストからの動画削除", () => {
+    let otheruser: User;
+    let mylistId: string, otherMylistId: string;
+    let videoId: string, otherVideoId: string;
+
+    beforeEach(async () => {
+      const createMylistResult = await graphql({
+        source: `
+        mutation ($input: CreateMylistInput!) {
+          createMylist(input: $input) {
+            mylist {
+              id
+            }
+          }
+        }`,
+        schema,
+        contextValue: { user: testuser },
+        variableValues: { input: { title: "Public Mylist", range: "PUBLIC" } },
+      });
+      mylistId = (createMylistResult.data as any).createMylist.mylist.id as string;
+
+      const createOtherMylistResult = await graphql({
+        source: `
+        mutation ($input: CreateMylistInput!) {
+          createMylist(input: $input) {
+            mylist {
+              id
+            }
+          }
+        }`,
+        schema,
+        contextValue: { user: testuser },
+        variableValues: { input: { title: "Public Mylist 2", range: "PUBLIC" } },
+      });
+      otherMylistId = (createOtherMylistResult.data as any).createMylist.mylist.id as string;
+
+      const mutationRegisterVideo = `
+      mutation ($input: RegisterVideoInput!) {
+        registerVideo(input: $input) {
+          video {
+            id
+          }
+        }
+      }`;
+      const resultRegisterVideo = await graphql({
+        source: mutationRegisterVideo,
+        schema,
+        contextValue: { user: testuser },
+        variableValues: {
+          input: {
+            primaryTitle: "M.C.ドナルドはダンスに夢中なのか？最終鬼畜道化師ドナルド・Ｍ",
+            primaryThumbnail:
+              "https://img.cdn.nimg.jp/s/nicovideo/thumbnails/2057168/2057168.original/r1280x720l?key=64c3379f18890e6747830c596be0a7276dab4e0fe574a98671b3b0c58c1f54c8",
+            tags: [],
+            sources: [],
+          },
+        },
+      });
+      videoId = (resultRegisterVideo.data as any).registerVideo.video.id as string;
+
+      const resultRegisterVideo2 = await graphql({
+        source: mutationRegisterVideo,
+        schema,
+        contextValue: { user: testuser },
+        variableValues: {
+          input: {
+            primaryTitle: "カゲロウジジイズ",
+            primaryThumbnail: "http://nicovideo.cdn.nimg.jp/thumbnails/40926580/40926580.84316399.L",
+            tags: [],
+            sources: [],
+          },
+        },
+      });
+      otherVideoId = (resultRegisterVideo2.data as any).registerVideo.video.id as string;
+
+      // const resultAddVideoToMylist =
+      await graphql({
+        source: `
+        mutation($input: AddVideoToMylistInput!) {
+          addVideoToMylist(input: $input) {
+            registration {
+              id
+            }
+          }
+        }`,
+        schema,
+        contextValue: { user: testuser },
+        variableValues: {
+          input: { videoId, mylistId, note: "note" },
+        },
+      });
+      // registrationId = (resultAddVideoToMylist.data as any).addVideoToMylist.registration.id as string;
+
+      otheruser = new User();
+      otheruser.id = "2";
+      otheruser.name = `otheruser`;
+      otheruser.displayName = "Other User";
+      otheruser.email = `otheruser@example.com`;
+      otheruser.password = "password";
+      otheruser.icon = "";
+      await ds.getRepository(User).insert(otheruser);
+    });
+
+    test("removeVideoFromMylist()", async () => {
+      const resultRemove = await graphql({
+        source: `
+        mutation($input: RemoveVideoFromMylistInput!) {
+          removeVideoFromMylist(input: $input) {
+            video {
+              id
+            }
+            mylist {
+              id
+            }
+          }
+        }`,
+        schema,
+        contextValue: { user: testuser },
+        variableValues: {
+          input: { videoId, mylistId },
+        },
+      });
+
+      expect(resultRemove.data).toEqual({
+        removeVideoFromMylist: {
+          video: {
+            id: videoId,
+          },
+          mylist: {
+            id: mylistId,
+          },
+        },
+      });
+    });
+
+    test("ないマイリストからremoveVideoFromMylist()するとエラー", async () => {
+      const result = await graphql({
+        source: `
+        mutation($input: RemoveVideoFromMylistInput!) {
+          removeVideoFromMylist(input: $input) {
+            video {
+              id
+            }
+            mylist {
+              id
+            }
+          }
+        }`,
+        schema,
+        contextValue: { user: testuser },
+        variableValues: {
+          input: { videoId, mylistId: otherMylistId },
+        },
+      });
+
+      expect(result.data).toBeNull();
+      expect(result.errors).toBeDefined();
+    });
+
+    test("ない動画をremoveVideoFromMylist()するとエラー", async () => {
+      const result = await graphql({
+        source: `
+        mutation($input: RemoveVideoFromMylistInput!) {
+          removeVideoFromMylist(input: $input) {
+            video {
+              id
+            }
+            mylist {
+              id
+            }
+          }
+        }`,
+        schema,
+        contextValue: { user: testuser },
+        variableValues: {
+          input: { videoId: otherVideoId, mylistId },
+        },
+      });
+
+      expect(result.data).toBeNull();
+      expect(result.errors).toBeDefined();
+    });
+  });
+
+  describe("いいねマイリストからの動画削除", () => {
+    let otheruser: User;
+    let mylistId: string;
+    let videoId: string, otherVideoId: string;
+
+    beforeEach(async () => {
+      const createMylistResult = await graphql({
+        source: `
+        mutation ($input: CreateMylistInput!) {
+          createMylist(input: $input) {
+            mylist {
+              id
+            }
+          }
+        }`,
+        schema,
+        contextValue: { user: testuser },
+        variableValues: { input: { title: "Public Mylist", range: "PUBLIC" } },
+      });
+      mylistId = (createMylistResult.data as any).createMylist.mylist.id as string;
+
+      await ds.getRepository(Mylist).update({ id: removeIDPrefix(ObjectType.Mylist, mylistId) }, { isLikeList: true });
+
+      const mutationRegisterVideo = `
+      mutation ($input: RegisterVideoInput!) {
+        registerVideo(input: $input) {
+          video {
+            id
+          }
+        }
+      }`;
+      const resultRegisterVideo = await graphql({
+        source: mutationRegisterVideo,
+        schema,
+        contextValue: { user: testuser },
+        variableValues: {
+          input: {
+            primaryTitle: "M.C.ドナルドはダンスに夢中なのか？最終鬼畜道化師ドナルド・Ｍ",
+            primaryThumbnail:
+              "https://img.cdn.nimg.jp/s/nicovideo/thumbnails/2057168/2057168.original/r1280x720l?key=64c3379f18890e6747830c596be0a7276dab4e0fe574a98671b3b0c58c1f54c8",
+            tags: [],
+            sources: [],
+          },
+        },
+      });
+      videoId = (resultRegisterVideo.data as any).registerVideo.video.id as string;
+
+      const resultRegisterVideo2 = await graphql({
+        source: mutationRegisterVideo,
+        schema,
+        contextValue: { user: testuser },
+        variableValues: {
+          input: {
+            primaryTitle: "カゲロウジジイズ",
+            primaryThumbnail: "http://nicovideo.cdn.nimg.jp/thumbnails/40926580/40926580.84316399.L",
+            tags: [],
+            sources: [],
+          },
+        },
+      });
+      otherVideoId = (resultRegisterVideo2.data as any).registerVideo.video.id as string;
+
+      // const resultAddVideoToMylist =
+      await graphql({
+        source: `
+        mutation($input: AddVideoToMylistInput!) {
+          addVideoToMylist(input: $input) {
+            registration {
+              id
+            }
+          }
+        }`,
+        schema,
+        contextValue: { user: testuser },
+        variableValues: {
+          input: { videoId, mylistId, note: "note" },
+        },
+      });
+      // registrationId = (resultAddVideoToMylist.data as any).addVideoToMylist.registration.id as string;
+
+      otheruser = new User();
+      otheruser.id = "2";
+      otheruser.name = `otheruser`;
+      otheruser.displayName = "Other User";
+      otheruser.email = `otheruser@example.com`;
+      otheruser.password = "password";
+      otheruser.icon = "";
+      await ds.getRepository(User).insert(otheruser);
+    });
+
+    test("undoLikeVideo()", async () => {
+      const result = await graphql({
+        source: `
+        mutation($input: UndoLikeVideoInput!) {
+          undoLikeVideo(input: $input) {
+            video {
+              id
+            }
+            mylist {
+              id
+            }
+          }
+        }`,
+        schema,
+        contextValue: { user: testuser },
+        variableValues: {
+          input: { videoId },
+        },
+      });
+
+      expect(result.data).toEqual({
+        undoLikeVideo: {
+          video: {
+            id: videoId,
+          },
+          mylist: {
+            id: mylistId,
+          },
+        },
+      });
+    });
+
+    test("ない動画をundoLikeVideo()するとエラー", async () => {
+      const result = await graphql({
+        source: `
+        mutation($input: UndoLikeVideoInput!) {
+          undoLikeVideo(input: $input) {
+            video {
+              id
+            }
+            mylist {
+              id
+            }
+          }
+        }`,
+        schema,
+        contextValue: { user: testuser },
+        variableValues: {
+          input: { videoId: otherVideoId },
+        },
+      });
+
+      expect(result.data).toBeNull();
+      expect(result.errors).toBeDefined();
     });
   });
 });
