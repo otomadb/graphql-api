@@ -1,3 +1,4 @@
+import { MylistRegistration } from "./mylist_registrations.js";
 import { Mylist } from "./mylists.js";
 import { Session } from "./sessions.js";
 import { TagName } from "./tag_names.js";
@@ -22,4 +23,5 @@ export const entities = [
   User,
   Video,
   Mylist,
+  MylistRegistration,
 ];
