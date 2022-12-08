@@ -428,7 +428,6 @@ input LikeVideoInput {
 }
 
 type LikeVideoPayload {
-  id: ID!
   registration: MylistRegistration!
 }
 
@@ -437,7 +436,7 @@ input UndoLikeVideoInput {
 }
 
 type UndoLikeVideoPayload {
-  id: ID!
+  success: Boolean!
 }
 
 input AddVideoToMylistInput {
@@ -447,7 +446,6 @@ input AddVideoToMylistInput {
 }
 
 type AddVideoToMylistPayload {
-  id: ID!
   registration: MylistRegistration!
 }
 
@@ -457,5 +455,5 @@ input RemoveVideoFromMylistInput {
 }
 
 type RemoveVideoFromMylistPayload {
-  id: ID!
+  success: Boolean!
 }
