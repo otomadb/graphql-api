@@ -141,33 +141,4 @@ describe("basic e2e", () => {
       },
     });
   });
-
-  test("公開マイリスト", async () => {
-    const mutationCreateMylist = `
-    mutation ($input: CreateMylistInput!) {
-      createMylist(input: $input) {
-        mylist {
-          id
-          # title
-          range
-        }
-      }
-    }`;
-    const createMylistResult = await graphql({
-      source: mutationCreateMylist,
-      schema,
-      contextValue: { user: testuser },
-      variableValues: { input: { title: "Public Mylist", range: "PUBLIC" } },
-    });
-
-    expect(createMylistResult.data).toEqual({
-      createMylist: {
-        mylist: {
-          id: expect.any(String),
-          // title: "Public Mylist",
-          range: "PUBLIC",
-        },
-      },
-    });
-  });
 });
