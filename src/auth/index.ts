@@ -5,6 +5,7 @@ import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 import { z } from "zod";
 
+import { Mylist, MylistShareRange } from "../db/entities/mylists.js";
 import { Session } from "../db/entities/sessions.js";
 import { User } from "../db/entities/users.js";
 
@@ -38,6 +39,14 @@ export const handlerSignup =
 
     const userRepository = dataSource.getRepository(User);
     await userRepository.insert(user);
+
+    await dataSource.getRepository(Mylist).insert({
+      id: ulid(),
+      title: `favorites for ${user.displayName}`,
+      range: MylistShareRange.PRIVATE,
+      holder: { id: user.id },
+      isLikeList: true,
+    });
 
     ctx.body = { id: user.id };
   };
