@@ -14,7 +14,7 @@ export const resolvers = (deps: { dataSource: DataSource }): Resolvers => ({
   Mutation: resolveMutation(deps),
   Tag: resolveTag(deps),
   Video: resolveVideo(deps),
-  User: resolveUser(),
+  User: resolveUser(deps),
   Mylist: resolveMylist(deps),
   MylistRegistration: resolveMylistRegistration(deps),
 });
