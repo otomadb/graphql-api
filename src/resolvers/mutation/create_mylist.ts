@@ -5,6 +5,7 @@ import { ulid } from "ulid";
 import { Mylist, MylistShareRange as MylistEntityShareRange } from "../../db/entities/mylists.js";
 import { MylistModel } from "../../graphql/models.js";
 import { MutationResolvers, MylistShareRange as MylistGQLShareRange } from "../../graphql/resolvers.js";
+import { createMylist as createMylistInNeo4j } from "../../neo4j/create_mylist.js";
 
 export const createMylist =
   ({ dataSource }: { dataSource: DataSource }): MutationResolvers["createMylist"] =>
@@ -26,6 +27,10 @@ export const createMylist =
     mylist.isLikeList = false;
 
     await dataSource.getRepository(Mylist).insert(mylist);
+    await createMylistInNeo4j({
+      userId: user.id,
+      mylistId: mylist.id,
+    });
 
     return {
       mylist: new MylistModel(mylist),

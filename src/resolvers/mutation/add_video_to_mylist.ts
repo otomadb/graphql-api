@@ -7,8 +7,10 @@ import { Mylist, MylistShareRange as MylistEntityShareRange } from "../../db/ent
 import { Video } from "../../db/entities/videos.js";
 import { MylistRegistrationModel } from "../../graphql/models.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
+import { addVideoToMylist as addVideoToMylistInNeo4j } from "../../neo4j/add_video_to_mylist.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 import { MYLIST_NOT_FOUND_OR_PRIVATE_ERROR, MYLIST_NOT_HOLDED_BY_YOU } from "../query/get_mylist.js";
+
 
 export const addVideoToMylist =
   ({ dataSource }: { dataSource: DataSource }): MutationResolvers["addVideoToMylist"] =>
@@ -39,6 +41,11 @@ export const addVideoToMylist =
     registration.video = video;
     registration.note = input.note ?? null;
     await dataSource.getRepository(MylistRegistration).insert(registration);
+
+    await addVideoToMylistInNeo4j({
+      mylistId: mylist.id,
+      videoId: video.id,
+    });
 
     return {
       registration: new MylistRegistrationModel({
