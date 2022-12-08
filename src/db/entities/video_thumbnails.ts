@@ -1,4 +1,6 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn, Relation, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from "typeorm";
+import { type Relation } from "typeorm";
+
 import { Video } from "./videos.js";
 
 @Entity("video_thumbnails")

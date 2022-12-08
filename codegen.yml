@@ -7,15 +7,12 @@ generates:
       scalars:
         DateTime: Date
       mappers:
-        TagName: ../models/tag_name.js#TagNameModel
-        TagParent: ../models/tag_parent.js#TagParentModel
-        Tag: ../models/tag.js#TagModel
-        VideoThumbnail: ../models/video_thumbnail.js#VideoThumbnailModel
-        VideoTitle: ../models/video_title.js#VideoTitleModel
-        Video: ../models/video.js#VideoModel
-        Mylist: ../models/mylist.js#MylistModel
-        MylistRegistration: ../models/mylist_registration.js#MylistRegistrationModel
-        User: ../models/user.js#UserModel
+        Tag: ./models.js#TagModel
+        User: ./models.js#UserModel
+        Video: ./models.js#VideoModel
+        Mylist: ./models.js#MylistModel
+        MylistRegistration: ./models.js#MylistRegistrationModel
+      makeResolverTypeCallable: true
     plugins:
       - typescript
       - typescript-resolvers

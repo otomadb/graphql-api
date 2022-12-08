@@ -1,4 +1,6 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, Relation, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from "typeorm";
+import { type Relation } from "typeorm";
+
 import { TagName } from "./tag_names.js";
 import { TagParent } from "./tag_parents.js";
 import { VideoTag } from "./video_tags.js";

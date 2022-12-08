@@ -20,6 +20,24 @@ jobs:
           cache: pnpm
       - run: pnpm install
       - run: pnpm run lint:schema
+      - run: pnpm run lint:eslint
+      - run: pnpm run lint:prettier
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm run codegen
+      - run: pnpm run typecheck
+
   test:
     runs-on: ubuntu-latest
     env:
@@ -31,7 +49,7 @@ jobs:
       postgres:
         image: postgres:15
         ports:
-        - 5432:5432
+          - 5432:5432
         env:
           POSTGRES_PASSWORD: pass
       neo4j:
@@ -50,6 +68,5 @@ jobs:
           node-version: 16
           cache: pnpm
       - run: pnpm install
-      - run: pnpm run typeorm migration:run
       - run: pnpm run codegen
       - run: pnpm run test

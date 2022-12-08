@@ -1,29 +1,21 @@
-import { type Resolvers } from "../graphql/resolvers.js";
-import { registerTag, searchTags, tag, tags } from "./tags.js";
-import { user, whoami } from "./users.js";
-import { registerVideo, searchVideos, tagVideo, untagVideo, video, videos } from "./videos.js";
-import { mylist, createMylist, addVideoToMylist } from "./mylists.js";
+import { Driver as Neo4jDriver } from "neo4j-driver";
+import { DataSource } from "typeorm";
 
-export const resolvers: Resolvers = {
-  Query: {
-    // findNiconicoSource,　// 最悪まだ実装しなくてもいい
-    // niconicoSource,　// 最悪まだ実装しなくてもいい
-    searchTags,
-    searchVideos,
-    tag,
-    tags: tags,
-    user,
-    video,
-    videos,
-    whoami,
-    mylist,
-  },
-  Mutation: {
-    registerTag,
-    registerVideo,
-    tagVideo,
-    untagVideo,
-    createMylist,
-    addVideoToMylist,
-  },
-};
+import { type Resolvers } from "../graphql/resolvers.js";
+import { resolveMutation } from "./mutation/index.js";
+import { resolveMylist } from "./mylist/index.js";
+import { resolveMylistRegistration } from "./mylist_registration/index.js";
+import { resolveQuery } from "./query/index.js";
+import { resolveTag } from "./tag/index.js";
+import { resolveUser } from "./user/index.js";
+import { resolveVideo } from "./video/index.js";
+
+export const resolvers = (deps: { dataSource: DataSource; neo4jDriver: Neo4jDriver }): Resolvers => ({
+  Query: resolveQuery(deps),
+  Mutation: resolveMutation(deps),
+  Tag: resolveTag(deps),
+  Video: resolveVideo(deps),
+  User: resolveUser(deps),
+  Mylist: resolveMylist(deps),
+  MylistRegistration: resolveMylistRegistration(deps),
+});

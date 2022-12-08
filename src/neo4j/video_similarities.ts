@@ -1,15 +1,13 @@
-import { Integer } from "neo4j-driver";
-import { neo4jDriver } from "./driver.js";
+import { Driver, Integer } from "neo4j-driver";
 
-export const calcVideoSimilarities = async (
-  videoId: string,
-  { limit }: { limit: number }
-): Promise<{ videoId: string; score: number }[]> => {
-  const session = neo4jDriver.session();
+export const calcVideoSimilarities =
+  (driver: Driver) =>
+  async (videoId: string, { limit }: { limit: number }): Promise<{ videoId: string; score: number }[]> => {
+    const session = driver.session();
 
-  try {
-    const result = await session.run(
-      `
+    try {
+      const result = await session.run(
+        `
       MATCH (bv:Video {id: $id})-[:TAGGED_BY]->(t:Tag)<-[:TAGGED_BY]-(ov:Video)
 
       WITH bv, ov, COUNT(t) AS i
@@ -24,13 +22,13 @@ export const calcVideoSimilarities = async (
       ORDER BY jaccard DESC, id
       LIMIT $limit
       `,
-      { id: videoId, limit: Integer.fromNumber(limit) }
-    );
-    return result.records.map((rec) => ({
-      videoId: rec.get("id"),
-      score: rec.get("jaccard"),
-    }));
-  } finally {
-    await session.close();
-  }
-};
+        { id: videoId, limit: Integer.fromNumber(limit) }
+      );
+      return result.records.map((rec) => ({
+        videoId: rec.get("id"),
+        score: rec.get("jaccard"),
+      }));
+    } finally {
+      await session.close();
+    }
+  };
