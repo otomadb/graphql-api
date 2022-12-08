@@ -59,6 +59,5 @@ jobs:
           node-version: 16
           cache: pnpm
       - run: pnpm install
-      - run: pnpm run typeorm migration:run
       - run: pnpm run codegen
       - run: pnpm run test

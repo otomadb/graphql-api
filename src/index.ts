@@ -1,6 +1,7 @@
 import "reflect-metadata";
 
 import { readFile } from "node:fs/promises";
+import { dirname } from "node:path";
 
 import koaCors from "@koa/cors";
 import Router from "@koa/router";
@@ -8,13 +9,23 @@ import { createSchema, createYoga } from "graphql-yoga";
 import Koa from "koa";
 import { koaBody } from "koa-body";
 import logger from "koa-logger";
+import { DataSource } from "typeorm";
 
 import { handlerSignin } from "./auth/handler_signin.js";
 import { handlerSignup } from "./auth/handler_signup.js";
 import { getUserFromSession } from "./auth/session.js";
 import { Context } from "./context.js";
-import { dataSource } from "./db/data-source.js";
+import { entities } from "./db/entities/index.js";
 import { resolvers } from "./resolvers/index.js";
+
+const dir = dirname(new URL(import.meta.url).pathname);
+
+const dataSource = new DataSource({
+  type: "postgres",
+  url: process.env.DATABASE_URL,
+  entities,
+  migrations: [`${dir}/db/migrations/*.ts`],
+});
 
 await dataSource.initialize();
 
@@ -35,7 +46,7 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 
 const typeDefs = await readFile(new URL("../schema.gql", import.meta.url), { encoding: "utf-8" });
-const schema = createSchema<Context>({ typeDefs, resolvers });
+const schema = createSchema<Context>({ typeDefs, resolvers: resolvers({ dataSource }) });
 const yoga = createYoga<Context>({
   schema,
   /*
@@ -50,7 +61,7 @@ const yoga = createYoga<Context>({
 
 app.use(async (ctx) => {
   const sessionToken = ctx.cookies.get("otmd-session") ?? ctx.headers["authorization"]?.split(" ").at(1);
-  const user = sessionToken ? await getUserFromSession(sessionToken) : null;
+  const user = sessionToken ? await getUserFromSession({ dataSource })(sessionToken) : null;
 
   const response = await yoga.handleNodeRequest(ctx.req, { user });
 
