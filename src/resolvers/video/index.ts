@@ -4,12 +4,15 @@ import { DataSource } from "typeorm";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { VideoThumbnail } from "../../db/entities/video_thumbnails.js";
 import { VideoTitle as VideoTitleEntity } from "../../db/entities/video_titles.js";
-import { TagModel } from "../../graphql/models.js";
+import { TagModel, VideoModel } from "../../graphql/models.js";
 import { Resolvers } from "../../graphql/resolvers.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
 
+export const resolveId = ({ id }: VideoModel) => addIDPrefix(ObjectType.Video, id);
+export const resolveHistory = () => [];
+
 export const resolveVideo = ({ dataSource }: { dataSource: DataSource }): Resolvers["Video"] => ({
-  id: ({ id }) => addIDPrefix(ObjectType.Video, id),
+  id: resolveId,
 
   title: async ({ id: videoId }) => {
     const title = await dataSource
@@ -56,5 +59,5 @@ export const resolveVideo = ({ dataSource }: { dataSource: DataSource }): Resolv
       .then((v) => !!v);
   },
 
-  history: () => [],
+  history: resolveHistory,
 });

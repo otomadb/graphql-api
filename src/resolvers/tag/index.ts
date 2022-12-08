@@ -8,8 +8,11 @@ import { TagModel, VideoModel } from "../../graphql/models.js";
 import { Resolvers, TagType } from "../../graphql/resolvers.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
 
+export const resolveId = ({ id }: TagModel): string => addIDPrefix(ObjectType.Tag, id);
+export const resolveHistory = () => [];
+
 export const resolveTag = ({ dataSource }: { dataSource: DataSource }): Resolvers["Tag"] => ({
-  id: ({ id }) => addIDPrefix(ObjectType.Tag, id),
+  id: resolveId,
   type: () => TagType.Material,
 
   names: async ({ id: tagId }) => {
@@ -59,7 +62,5 @@ export const resolveTag = ({ dataSource }: { dataSource: DataSource }): Resolver
     return videoTags.map(({ video }) => new VideoModel(video));
   },
 
-  history() {
-    return [];
-  },
+  history: resolveHistory,
 });
