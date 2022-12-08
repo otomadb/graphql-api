@@ -10,13 +10,14 @@ import { MutationResolvers } from "../../graphql/resolvers.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 import { MYLIST_NOT_FOUND_OR_PRIVATE_ERROR, MYLIST_NOT_HOLDED_BY_YOU } from "../query/get_mylist.js";
 
-export const addVideoToMylist =
-  ({ dataSource }: { dataSource: DataSource }): MutationResolvers["addVideoToMylist"] =>
-  async (_parent, { input }, { user }) => {
+export const likeVideo =
+  ({ dataSource }: { dataSource: DataSource }): MutationResolvers["likeVideo"] =>
+  async (parent, { input }, { user }) => {
     if (!user) throw new GraphQLError("need to authenticate");
+
     const mylist = await dataSource
       .getRepository(Mylist)
-      .findOne({ where: { id: removeIDPrefix(ObjectType.Mylist, input.mylistId) }, relations: { holder: true } });
+      .findOne({ where: { holder: { id: user.id }, isLikeList: true } });
     if (!mylist) {
       throw new GraphQLError(MYLIST_NOT_FOUND_OR_PRIVATE_ERROR);
     }
@@ -37,7 +38,7 @@ export const addVideoToMylist =
     registration.id = ulid();
     registration.mylist = mylist;
     registration.video = video;
-    registration.note = input.note ?? null;
+    registration.note = null;
     await dataSource.getRepository(MylistRegistration).insert(registration);
 
     return {
