@@ -15,7 +15,7 @@ export const resolvers = (deps: { dataSource: DataSource; neo4jDriver: Neo4jDriv
   Mutation: resolveMutation(deps),
   Tag: resolveTag(deps),
   Video: resolveVideo(deps),
-  User: resolveUser(),
+  User: resolveUser(deps),
   Mylist: resolveMylist(deps),
   MylistRegistration: resolveMylistRegistration(deps),
 });
