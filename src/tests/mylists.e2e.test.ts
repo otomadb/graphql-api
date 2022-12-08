@@ -59,7 +59,7 @@ describe("マイリスト関連のE2Eテスト", () => {
         createMylist(input: $input) {
           mylist {
             id
-            # title
+            title
             range
           }
         }
@@ -75,7 +75,7 @@ describe("マイリスト関連のE2Eテスト", () => {
         createMylist: {
           mylist: {
             id: expect.any(String),
-            // title: "Public Mylist",
+            title: "Public Mylist",
             range: "PUBLIC",
           },
         },
@@ -88,7 +88,7 @@ describe("マイリスト関連のE2Eテスト", () => {
         createMylist(input: $input) {
           mylist {
             id
-            # title
+            title
             range
           }
         }
@@ -130,7 +130,7 @@ describe("マイリスト関連のE2Eテスト", () => {
         createMylist(input: $input) {
           mylist {
             id
-            # title
+            title
             range
           }
         }
@@ -146,7 +146,7 @@ describe("マイリスト関連のE2Eテスト", () => {
         createMylist: {
           mylist: {
             id: expect.any(String),
-            // title: "Public Mylist",
+            title: "KnowLink Mylist",
             range: "KNOW_LINK",
           },
         },
@@ -159,7 +159,7 @@ describe("マイリスト関連のE2Eテスト", () => {
         createMylist(input: $input) {
           mylist {
             id
-            # title
+            title
             range
           }
         }
@@ -201,7 +201,7 @@ describe("マイリスト関連のE2Eテスト", () => {
         createMylist(input: $input) {
           mylist {
             id
-            # title
+            title
             range
           }
         }
@@ -217,7 +217,7 @@ describe("マイリスト関連のE2Eテスト", () => {
         createMylist: {
           mylist: {
             id: expect.any(String),
-            // title: "Public Mylist",
+            title: "Private Mylist",
             range: "PRIVATE",
           },
         },
@@ -230,7 +230,7 @@ describe("マイリスト関連のE2Eテスト", () => {
         createMylist(input: $input) {
           mylist {
             id
-            # title
+            title
             range
           }
         }
@@ -267,7 +267,7 @@ describe("マイリスト関連のE2Eテスト", () => {
         createMylist(input: $input) {
           mylist {
             id
-            # title
+            title
             range
           }
         }
@@ -313,7 +313,7 @@ describe("マイリスト関連のE2Eテスト", () => {
           createMylist(input: $input) {
             mylist {
               id
-              # title
+              title
               range
             }
           }

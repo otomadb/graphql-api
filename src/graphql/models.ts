@@ -40,10 +40,12 @@ export class UserModel {
 export class MylistModel {
   public id;
   public range;
+  public title;
 
   constructor(private readonly mylist: Mylist) {
     this.id = mylist.id;
     this.range = mylist.range;
+    this.title = mylist.title;
   }
 }
 
