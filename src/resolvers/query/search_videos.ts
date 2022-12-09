@@ -11,7 +11,7 @@ export const searchVideos =
     const videoTitles = await dataSource
       .getRepository(VideoTitle)
       .createQueryBuilder("videoTitle")
-      .where({ name: Like(`%${query}%`) })
+      .where({ title: Like(`%${query}%`) })
       .leftJoinAndSelect("videoTitle.video", "videos")
       .distinctOn(["videoTitle.video.id"])
       .getMany();
