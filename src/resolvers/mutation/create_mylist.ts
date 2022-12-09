@@ -1,4 +1,5 @@
 import { GraphQLError } from "graphql";
+import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
@@ -8,7 +9,13 @@ import { MutationResolvers, MylistShareRange as MylistGQLShareRange } from "../.
 import { createMylist as createMylistInNeo4j } from "../../neo4j/create_mylist.js";
 
 export const createMylist =
-  ({ dataSource }: { dataSource: DataSource }): MutationResolvers["createMylist"] =>
+  ({
+    dataSource,
+    neo4jDriver,
+  }: {
+    dataSource: DataSource;
+    neo4jDriver: Neo4jDriver;
+  }): MutationResolvers["createMylist"] =>
   async (_parent, { input }, { user }) => {
     if (!user) throw new GraphQLError("need to authenticate");
     const mylist = new Mylist();
@@ -27,7 +34,7 @@ export const createMylist =
     mylist.isLikeList = false;
 
     await dataSource.getRepository(Mylist).insert(mylist);
-    await createMylistInNeo4j({
+    await createMylistInNeo4j(neo4jDriver)({
       userId: user.id,
       mylistId: mylist.id,
     });

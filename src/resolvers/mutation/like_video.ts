@@ -1,4 +1,5 @@
 import { GraphQLError } from "graphql";
+import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
@@ -11,7 +12,7 @@ import { addVideoToMylist as addVideoToMylistInNeo4j } from "../../neo4j/add_vid
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 
 export const likeVideo =
-  ({ dataSource }: { dataSource: DataSource }): MutationResolvers["likeVideo"] =>
+  ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }): MutationResolvers["likeVideo"] =>
   async (_, { input: { videoId } }, { user }) => {
     if (!user) throw new GraphQLError("need to authenticate");
 
@@ -32,7 +33,7 @@ export const likeVideo =
     registration.note = null;
     await dataSource.getRepository(MylistRegistration).insert(registration);
 
-    await addVideoToMylistInNeo4j({
+    await addVideoToMylistInNeo4j(neo4jDriver)({
       mylistId: mylist.id,
       videoId: video.id,
     });
