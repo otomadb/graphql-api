@@ -913,3 +913,4 @@ for (let i = 1; i <= 10; i++) {
 
 await dataSource.destroy();
 await neo4jDriver.close();
+process.exit(0);
