@@ -8,21 +8,22 @@ export const calcVideoSimilarities =
     try {
       const result = await session.run(
         `
-      MATCH (bv:Video {id: $id})-[:TAGGED_BY]->(t:Tag)<-[:TAGGED_BY]-(ov:Video)
+        MATCH (v:Video {id: $video_id})-[:TAGGED_BY]->(t_vV:Tag)<-[:TAGGED_BY]-(V)
+        WITH v,V,collect(t_vV) AS coll_t_vV
 
-      WITH bv, ov, COUNT(t) AS i
+        MATCH (v)-[:TAGGED_BY]->(t_v:Tag)
+        WITH v,V,coll_t_vV, collect(t_v) AS coll_t_v
 
-      MATCH (bv)-[:TAGGED_BY]->(bvt)
-      WITH bv, ov, i, COLLECT(bvt) AS s1c
+        MATCH (V)-[:TAGGED_BY]->(t_V:Tag)
+        WITH v,V,coll_t_vV, coll_t_v, collect(t_V) AS coll_t_V
 
-      MATCH (ov)-[:TAGGED_BY]->(ovt) WHERE NOT ovt in s1c
-      WITH bv, ov, i, s1c, COLLECT(ovt) AS s2c
+        WITH v,V, size(coll_t_vV) * 1.0 / (size(coll_t_v) + size(coll_t_V) - size(coll_t_vV)) AS jaccard
 
-      RETURN ov.id AS id, ((i * 1.0) / (size(s1c) + size(s2c))) AS jaccard
-      ORDER BY jaccard DESC, id
-      LIMIT $limit
+        RETURN V.id AS id, jaccard
+        ORDER BY jaccard DESC
+        LIMIT $limit
       `,
-        { id: videoId, limit: Integer.fromNumber(limit) }
+        { video_id: videoId, limit: Integer.fromNumber(limit) }
       );
       return result.records.map((rec) => ({
         videoId: rec.get("id"),
