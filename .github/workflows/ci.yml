@@ -43,7 +43,7 @@ jobs:
     timeout-minutes: 10
     env:
       TEST_DATABASE_URL: postgres://postgres:pass@localhost/postgres
-      TEST_NEO4J_URL: bolt://neo4j:password@localhost:7687
+      TEST_NEO4J_URL: bolt://localhost:7687
       TEST_NEO4J_USERNAME: neo4j
       TEST_NEO4J_PASSWORD: password
     services:

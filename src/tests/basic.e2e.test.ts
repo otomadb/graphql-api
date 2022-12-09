@@ -51,6 +51,13 @@ describe("basic e2e", () => {
     await ds.dropDatabase();
     await ds.synchronize();
     await ds.getRepository(User).insert(testuser);
+
+    const neo4jSession = neo4jDriver.session();
+    try {
+      await neo4jSession.run("MATCH (n) DETACH DELETE n");
+    } finally {
+      await neo4jSession.close();
+    }
   });
 
   afterAll(async () => {

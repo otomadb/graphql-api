@@ -395,6 +395,8 @@ type Mylist {
   マイリストの中にビデオが追加されているか．
   """
   includes(videoId: ID!): Boolean!
+
+  recommendedVideos(input: MylistRecommendedVideosInput): MylistRecommendedVideosPayload!
 }
 
 enum MylistShareRange {
@@ -426,6 +428,19 @@ input MylistRegistrationsInput {
 input MylistRegistrationsInputOrder {
   createdAt: SortOrder
   updatedAt: SortOrder
+}
+
+input MylistRecommendedVideosInput {
+  limit: Int = 10
+}
+
+type MylistRecommendedVideosPayload {
+  items: [MylistRecommendedVideosItem!]!
+}
+
+type MylistRecommendedVideosItem {
+  video: Video!
+  score: Float!
 }
 
 input CreateMylistInput {
