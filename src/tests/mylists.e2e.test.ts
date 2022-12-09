@@ -24,7 +24,7 @@ describe("マイリスト関連のE2Eテスト", () => {
   beforeAll(async () => {
     ds = new DataSource({
       type: "postgres",
-      url: process.env.DATABASE_URL,
+      url: process.env.TEST_DATABASE_URL,
       entities,
       migrations: [`${(resolve(dirname(new URL(import.meta.url).pathname)), "../db/migrations")}/*.ts`],
     });
@@ -32,9 +32,9 @@ describe("マイリスト関連のE2Eテスト", () => {
 
     neo4jDriver = neo4j.driver(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      process.env.NEO4J_URL!,
+      process.env.TEST_NEO4J_URL!,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      neo4j.auth.basic(process.env.NEO4J_USERNAME!, process.env.NEO4J_PASSWORD!)
+      neo4j.auth.basic(process.env.TEST_NEO4J_USERNAME!, process.env.TEST_NEO4J_PASSWORD!)
     );
 
     schema = makeExecutableSchema({
