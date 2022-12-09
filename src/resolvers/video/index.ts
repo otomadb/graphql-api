@@ -77,12 +77,9 @@ export const resolveVideo = ({
       .getRepository(Video)
       .find({ where: { id: In(similarities.map(({ videoId }) => videoId)) } })
       .then((vs) =>
-        vs.map((v) => {
-          const { score } = similarities.find(({ videoId }) => videoId === v.id)!; // TODO: 危険
-          return {
-            video: new VideoModel(v),
-            score,
-          };
+        similarities.map(({ videoId, score }) => {
+          const video = vs.find((v) => v.id === videoId)!; // TODO: 危険
+          return { video: new VideoModel(video), score };
         })
       );
 
