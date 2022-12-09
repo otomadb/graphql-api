@@ -40,6 +40,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       DATABASE_URL: postgres://postgres:pass@localhost/postgres
       NEO4J_URL: bolt://neo4j:password@localhost:7687
