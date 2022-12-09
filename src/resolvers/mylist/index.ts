@@ -1,14 +1,23 @@
 import { GraphQLError } from "graphql";
-import { DataSource } from "typeorm";
+import { Driver as Neo4jDriver } from "neo4j-driver";
+import { DataSource, In } from "typeorm";
 
 import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
 import { Mylist, MylistShareRange } from "../../db/entities/mylists.js";
-import { MylistRegistrationModel, UserModel } from "../../graphql/models.js";
+import { Video } from "../../db/entities/videos.js";
+import { MylistRegistrationModel, UserModel, VideoModel } from "../../graphql/models.js";
 import { MylistShareRange as MylistGQLShareRange } from "../../graphql/resolvers.js";
 import { Resolvers } from "../../graphql/resolvers.js";
+import { calcRecommendedVideosByMylist } from "../../neo4j/mylist_recommend_videos.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "../../utils/id.js";
 
-export const resolveMylist = ({ dataSource }: { dataSource: DataSource }): Resolvers["Mylist"] => ({
+export const resolveMylist = ({
+  dataSource,
+  neo4jDriver,
+}: {
+  dataSource: DataSource;
+  neo4jDriver: Neo4jDriver;
+}): Resolvers["Mylist"] => ({
   id: ({ id }) => addIDPrefix(ObjectType.Mylist, id),
   range: ({ range }) => {
     switch (range) {
@@ -52,4 +61,19 @@ export const resolveMylist = ({ dataSource }: { dataSource: DataSource }): Resol
         },
       })
       .then((r) => !!r),
+  recommendedVideos: async ({ id: videoId }, { input }) => {
+    const recommends = await calcRecommendedVideosByMylist(neo4jDriver)(videoId, { limit: input?.limit || 0 });
+
+    const items = await dataSource
+      .getRepository(Video)
+      .find({ where: { id: In(recommends.map(({ videoId }) => videoId)) } })
+      .then((vs) =>
+        recommends.map(({ videoId, score }) => {
+          const video = vs.find((v) => v.id === videoId)!; // TODO: 危険
+          return { video: new VideoModel(video), score };
+        })
+      );
+
+    return { items };
+  },
 });
