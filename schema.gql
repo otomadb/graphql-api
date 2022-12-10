@@ -394,7 +394,7 @@ type Mylist {
   """
   マイリストの中にビデオが追加されているか．
   """
-  includes(videoId: ID!): Boolean!
+  isIncludesVideo(id: ID!): Boolean!
 
   recommendedVideos(input: MylistRecommendedVideosInput): MylistRecommendedVideosPayload!
 }
