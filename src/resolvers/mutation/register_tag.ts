@@ -8,6 +8,7 @@ import { Tag } from "../../db/entities/tags.js";
 import { TagModel } from "../../graphql/models.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
 import { registerTag as registerTagInNeo4j } from "../../neo4j/register_tag.js";
+import { parseGqlID } from "../../utils/id.js";
 
 export const calcNameParentPair = ({
   primaryName,
@@ -37,6 +38,23 @@ export const registerTag =
     neo4jDriver: Neo4jDriver;
   }): MutationResolvers["registerTag"] =>
   async (_, { input }) => {
+    /* parent check */
+    for (const parentRawId of [
+      ...(input.explicitParent ? [input.explicitParent] : []),
+      ...(input.implicitParents || []),
+    ]) {
+      const parentId = parseGqlID("tag", parentRawId);
+      if (!parentId) throw new GraphQLError("Invalid ID");
+
+      const exists = await dataSource
+        .getRepository(Tag)
+        .findOne({ where: { id: parentId } })
+        .then((t) => !!t);
+      if (exists) continue;
+      throw new GraphQLError(`"tag:${parentId}" is specified as parent but not exists`);
+    }
+
+    /* name check */
     const pairs = calcNameParentPair({
       primaryName: input.primaryName,
       extraNames: input.extraNames || [],

@@ -20,3 +20,13 @@ export function removeIDPrefix(type: ObjectType, id: string): string {
   if (splitted[0] !== type) throw new GraphQLError(`Passing Wrong Type ID (expected ${type})`);
   return splitted[1];
 }
+
+export function parseGqlID(type: "tag", rawId: string): string | null {
+  const separated = rawId.split(":");
+  if (separated.length !== 2) return null;
+
+  const [t, i] = separated;
+  if (t !== type) return null;
+
+  return i;
+}
