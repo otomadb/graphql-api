@@ -1,5 +1,10 @@
 scalar DateTime
 
+enum SortOrder {
+  ASC
+  DESC
+}
+
 type Query {
   video(id: ID!): Video!
   videos(input: GetVideosInput!): VideoCollection!
@@ -43,18 +48,9 @@ type Video {
   thumbnails: [VideoThumbnail!]!
   tags: [Tag!]!
   hasTag(id: ID!): Boolean!
-  history(skip: Int! = 0, limit: Int! = 10, order: VideoHistoryOrder! = { createdAt: DESC }): [VideoHistoryItem!]!
+  history(input: VideoHistoryInput!): VideoHistoryCollection!
   registeredAt: DateTime!
-  similarVideos(input: VideoSimilarVideosInput): VideoSimilarVideosPayload!
-}
-
-input VideoHistoryOrder {
-  createdAt: SortOrder
-}
-
-enum SortOrder {
-  ASC
-  DESC
+  similarVideos(input: VideoSimilarVideosInput!): VideoSimilarVideosPayload!
 }
 
 type VideoTitle {
@@ -80,6 +76,20 @@ type NiconicoVideoSource implements VideoSource {
 type YoutubeVideoSource implements VideoSource {
   videoId: String!
   url: String!
+}
+
+input VideoHistoryInput {
+  skip: Int = 0
+  limit: Int = 10
+  order: VideoHistoryOrder = { createdAt: DESC }
+}
+
+input VideoHistoryOrder {
+  createdAt: SortOrder
+}
+
+type VideoHistoryCollection {
+  nodes: [VideoHistoryItem!]!
 }
 
 interface VideoHistoryItem {
@@ -205,11 +215,25 @@ type Tag {
   names: [TagName!]!
 
   taggedVideos: [Video!]!
-  history: [TagHistoryItem!]!
+  history(input: TagHistoryInput!): TagHistoryCollection!
 
   explicitParent: Tag
   parents: [TagParent!]!
   meaningless: Boolean!
+}
+
+input TagHistoryInput {
+  skip: Int = 0
+  limit: Int = 10
+  order: TagHistoryOrder = { createdAt: DESC }
+}
+
+input TagHistoryOrder {
+  createdAt: SortOrder
+}
+
+type TagHistoryCollection {
+  nodes: [VideoHistoryItem!]!
 }
 
 type TagCollection {

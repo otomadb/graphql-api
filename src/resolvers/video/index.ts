@@ -12,7 +12,7 @@ import { calcVideoSimilarities } from "../../neo4j/video_similarities.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
 
 export const resolveId = ({ id }: VideoModel) => addIDPrefix(ObjectType.Video, id);
-export const resolveHistory = () => [];
+export const resolveHistory = () => ({ nodes: [] });
 
 export const resolveVideo = ({
   dataSource,

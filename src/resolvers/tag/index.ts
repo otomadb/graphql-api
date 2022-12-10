@@ -9,7 +9,7 @@ import { Resolvers, TagType } from "../../graphql/resolvers.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
 
 export const resolveId = ({ id }: TagModel): string => addIDPrefix(ObjectType.Tag, id);
-export const resolveHistory = () => [];
+export const resolveHistory = () => ({ nodes: [] });
 
 export const resolveTag = ({ dataSource }: { dataSource: DataSource }): Resolvers["Tag"] => ({
   id: resolveId,
