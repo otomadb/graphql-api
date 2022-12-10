@@ -4,6 +4,7 @@ import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
 import { TagName } from "../../db/entities/tag_names.js";
+import { TagParent } from "../../db/entities/tag_parents.js";
 import { Tag } from "../../db/entities/tags.js";
 import { TagModel } from "../../graphql/models.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
@@ -29,6 +30,18 @@ export const calcNameParentPair = ({
     .reduce((p, c) => [...p, ...c], [] as { name: string; parent: string | null }[]);
 };
 
+export const mkExplicitTag = (childId: string, parentId: string | null) => {
+  if (!parentId) return null;
+
+  const parent = new TagParent();
+  parent.id = ulid();
+  parent.parent = { id: parentId } as Tag;
+  parent.child = { id: childId } as Tag;
+  parent.explicit = true;
+
+  return parent;
+};
+
 export const registerTag =
   ({
     dataSource,
@@ -37,15 +50,23 @@ export const registerTag =
     dataSource: DataSource;
     neo4jDriver: Neo4jDriver;
   }): MutationResolvers["registerTag"] =>
-  async (_, { input }) => {
-    /* parent check */
-    for (const parentRawId of [
-      ...(input.explicitParent ? [input.explicitParent] : []),
-      ...(input.implicitParents || []),
-    ]) {
-      const parentId = parseGqlID("tag", parentRawId);
-      if (!parentId) throw new GraphQLError("Invalid ID");
+  async (
+    _,
+    { input: { primaryName, extraNames, explicitParent: explicitParentRawId, implicitParents: implicitParentsRawIds } }
+  ) => {
+    const explicitParentId = explicitParentRawId ? parseGqlID("tag", explicitParentRawId) : null;
+    if (explicitParentRawId && !explicitParentId)
+      throw new GraphQLError(`"${explicitParentRawId}" is invalid for tag id`);
 
+    const implicitParentIds: string[] = [];
+    for (const implicitParentsRawId of implicitParentsRawIds || []) {
+      const parsed = parseGqlID("tag", implicitParentsRawId);
+      if (!parsed) throw new GraphQLError(`"${explicitParentRawId}" is invalid for tag id`);
+      implicitParentIds.push(parsed);
+    }
+
+    /* parent check */
+    for (const parentId of [...(explicitParentId ? [explicitParentId] : []), ...implicitParentIds]) {
       const exists = await dataSource
         .getRepository(Tag)
         .findOne({ where: { id: parentId } })
@@ -56,10 +77,10 @@ export const registerTag =
 
     /* name check */
     const pairs = calcNameParentPair({
-      primaryName: input.primaryName,
-      extraNames: input.extraNames || [],
-      explicitParent: input.explicitParent || null,
-      implicitParents: input.implicitParents || [],
+      primaryName,
+      extraNames: extraNames || [],
+      explicitParent: explicitParentId,
+      implicitParents: implicitParentIds,
     });
     for (const pair of pairs) {
       const already = await dataSource.getRepository(Tag).findOne({
@@ -79,22 +100,20 @@ export const registerTag =
     const tag = new Tag();
     tag.id = ulid();
     tag.videoTags = [];
-    tag.tagNames = [];
-    tag.tagParents = [];
 
     const tagNames: TagName[] = [];
 
     const primaryTagName = new TagName();
     primaryTagName.id = ulid();
-    primaryTagName.name = input.primaryName;
+    primaryTagName.name = primaryName;
     primaryTagName.primary = true;
     primaryTagName.tag = tag;
 
     tagNames.push(primaryTagName);
 
-    if (input.extraNames) {
+    if (extraNames) {
       tagNames.push(
-        ...input.extraNames.map((n) => {
+        ...extraNames.map((n) => {
           const tagName = new TagName();
           tagName.id = ulid();
           tagName.name = n;
@@ -105,12 +124,13 @@ export const registerTag =
       );
     }
 
+    const explicitTagParent = mkExplicitTag(tag.id, explicitParentId);
+
     await dataSource.transaction(async (manager) => {
       await manager.getRepository(Tag).insert(tag);
       await manager.getRepository(TagName).insert(tagNames);
+      await manager.getRepository(TagParent).insert([...(explicitTagParent ? [explicitTagParent] : [])]);
     });
-
-    tag.tagNames = tagNames;
 
     await registerTagInNeo4j(neo4jDriver)(tag.id);
 
