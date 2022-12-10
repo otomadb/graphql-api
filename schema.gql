@@ -397,6 +397,8 @@ type Mylist {
   isIncludesVideo(id: ID!): Boolean!
 
   recommendedVideos(input: MylistRecommendedVideosInput): MylistRecommendedVideosPayload!
+
+  includeTags(input: MylistIncludeTagsInput!): MylistIncludeTagsPayload!
 }
 
 enum MylistShareRange {
@@ -441,6 +443,19 @@ type MylistRecommendedVideosPayload {
 type MylistRecommendedVideosItem {
   video: Video!
   score: Float!
+}
+
+input MylistIncludeTagsInput {
+  limit: Int = 10
+}
+
+type MylistIncludeTagsPayload {
+  items: [MylistIncludeTagsItem!]!
+}
+
+type MylistIncludeTagsItem {
+  tag: Tag!
+  count: Int!
 }
 
 input CreateMylistInput {
