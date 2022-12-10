@@ -1,13 +1,15 @@
 import { GraphQLError } from "graphql";
-import { Driver as Neo4jDriver } from "neo4j-driver";
+import { Driver as Neo4jDriver, Neo4jError } from "neo4j-driver";
 import { DataSource, In } from "typeorm";
 
 import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
 import { Mylist, MylistShareRange } from "../../db/entities/mylists.js";
+import { Tag } from "../../db/entities/tags.js";
 import { Video } from "../../db/entities/videos.js";
-import { MylistRegistrationModel, UserModel, VideoModel } from "../../graphql/models.js";
+import { MylistRegistrationModel, TagModel, UserModel, VideoModel } from "../../graphql/models.js";
 import { MylistShareRange as MylistGQLShareRange } from "../../graphql/resolvers.js";
 import { Resolvers } from "../../graphql/resolvers.js";
+import { calcMylistIncludeTags } from "../../neo4j/mylist_include_tags.js";
 import { calcRecommendedVideosByMylist } from "../../neo4j/mylist_recommend_videos.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "../../utils/id.js";
 
@@ -75,5 +77,26 @@ export const resolveMylist = ({
       );
 
     return { items };
+  },
+  includeTags: async ({ id: mylistId }, { input: { limit } }) => {
+    try {
+      const neo4jResults = await calcMylistIncludeTags(neo4jDriver)(mylistId, { limit: limit || 0 });
+
+      const items = await dataSource
+        .getRepository(Tag)
+        .find({ where: { id: In(neo4jResults.map(({ tagId }) => tagId)) } })
+        .then((ts) =>
+          neo4jResults.map(({ tagId, count }) => {
+            const tag = ts.find((t) => t.id === tagId);
+            if (!tag) throw new GraphQLError(`Data inconcistency is occuring for "tag:${tagId}"`);
+            return { tag: new TagModel(tag), count };
+          })
+        );
+
+      return { items };
+    } catch (e) {
+      if (e instanceof Neo4jError) throw new GraphQLError("Something wrong about Neo4j");
+      throw new GraphQLError("Something wrong");
+    }
   },
 });
