@@ -8,11 +8,11 @@ export const getTags =
   ({ dataSource }: { dataSource: DataSource }): QueryResolvers["tags"] =>
   async (_parent, { input }) => {
     const tags = await dataSource.getRepository(Tag).find({
-      take: input?.limit || 0,
-      skip: input?.skip || 0,
+      take: input.limit || 0,
+      skip: input.skip || 0,
       order: {
-        createdAt: input?.order?.createdAt || undefined,
-        updatedAt: input?.order?.updatedAt || undefined,
+        createdAt: input.order?.createdAt || undefined,
+        updatedAt: input.order?.updatedAt || undefined,
       },
     });
 

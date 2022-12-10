@@ -7,11 +7,11 @@ import { QueryResolvers } from "../../graphql/resolvers.js";
 
 export const searchTags =
   ({ dataSource }: { dataSource: DataSource }): QueryResolvers["searchTags"] =>
-  async (_parent, { limit, query, skip }) => {
+  async (_, { input }) => {
     const tagNames = await dataSource
       .getRepository(TagName)
       .createQueryBuilder("tagName")
-      .where({ name: Like(`%${query}%`) })
+      .where({ name: Like(`%${input.query}%`) })
       .leftJoinAndSelect("tagName.tag", "tags")
       .distinctOn(["tagName.tag.id"])
       .getMany();

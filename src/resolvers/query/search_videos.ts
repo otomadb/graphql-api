@@ -7,11 +7,11 @@ import { QueryResolvers } from "../../graphql/resolvers.js";
 
 export const searchVideos =
   ({ dataSource }: { dataSource: DataSource }): QueryResolvers["searchVideos"] =>
-  async (_parent, { limit, query, skip }) => {
+  async (_, { input }) => {
     const videoTitles = await dataSource
       .getRepository(VideoTitle)
       .createQueryBuilder("videoTitle")
-      .where({ title: Like(`%${query}%`) })
+      .where({ title: Like(`%${input.query}%`) })
       .leftJoinAndSelect("videoTitle.video", "videos")
       .distinctOn(["videoTitle.video.id"])
       .getMany();
