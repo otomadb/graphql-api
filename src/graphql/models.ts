@@ -1,5 +1,4 @@
 import { Mylist } from "../db/entities/mylists.js";
-import { Tag } from "../db/entities/tags.js";
 import { User } from "../db/entities/users.js";
 import { Video } from "../db/entities/videos.js";
 
@@ -17,7 +16,7 @@ export class TagModel {
   public id;
   public meaningless;
 
-  constructor(tag: Tag) {
+  constructor(tag: { id: string; meaningless: boolean }) {
     this.id = tag.id;
     this.meaningless = tag.meaningless;
   }
