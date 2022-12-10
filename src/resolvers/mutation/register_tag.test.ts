@@ -126,15 +126,15 @@ describe("Mutation.registerTag", () => {
     });
 
     test("primaryNameだけでタグを登録する", async () => {
-      const actual = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
         { input: { primaryName: "a" } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
-      expect(actual).toBeDefined();
+      expect(registerResult).toBeDefined();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const { tag } = actual!;
+      const { tag } = registerResult!;
       expect(tag).toStrictEqual(
         new TagModel({
           id: expect.any(String),
@@ -163,23 +163,98 @@ describe("Mutation.registerTag", () => {
       );
     });
 
+    test("primaryNameとextraNamesで登録", async () => {
+      const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "a", extraNames: ["b"] } },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      expect(registerResult).toBeDefined();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const { tag: registeredTag } = registerResult as { tag: Tag };
+
+      const actualNamesA = await ds.getRepository(TagName).find({
+        where: { name: "a" },
+        relations: { tag: true },
+      });
+      expect(actualNamesA).toHaveLength(1);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const actualTagNameA = actualNamesA.at(0)!;
+      expect(actualTagNameA).toStrictEqual(
+        expect.objectContaining({
+          id: expect.any(String),
+          name: "a",
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          primary: true,
+          tag: expect.objectContaining({
+            id: (registeredTag as Tag).id,
+          }),
+        })
+      );
+
+      const actualNamesB = await ds.getRepository(TagName).find({
+        where: { name: "b" },
+        relations: { tag: true },
+      });
+      expect(actualNamesA).toHaveLength(1);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const actualTagNameB = actualNamesB.at(0)!;
+      expect(actualTagNameB).toStrictEqual(
+        expect.objectContaining({
+          id: expect.any(String),
+          name: "b",
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          primary: false,
+          tag: expect.objectContaining({
+            id: (registeredTag as Tag).id,
+          }),
+        })
+      );
+    });
+
     test("primaryNameが既に重複しているとエラー", async () => {
       /* already */
-      await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
         { input: { primaryName: "a" } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { tag: alreadyTag } = already as { tag: Tag };
 
-      expect(
+      await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
           { input: { primaryName: "a" } },
           {} as Context,
           {} as GraphQLResolveInfo
         )
-      ).rejects.toThrowError('"a" is already registered');
+      ).rejects.toThrowError(`name "a" is already registered in "tag:${alreadyTag.id}"`);
+    });
+
+    test("extraNamesが既に重複しているとエラー", async () => {
+      /* already */
+      const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "a" } },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { tag: alreadyTag } = already as { tag: Tag };
+
+      await expect(
+        registerTag({ dataSource: ds, neo4jDriver })?.(
+          {},
+          { input: { primaryName: "b", extraNames: ["a"] } },
+          {} as Context,
+          {} as GraphQLResolveInfo
+        )
+      ).rejects.toThrowError(`name "a" is already registered in "tag:${alreadyTag.id}"`);
     });
 
     test("存在しないタグをexplicitParentとして指定するとエラー", async () => {
@@ -193,7 +268,7 @@ describe("Mutation.registerTag", () => {
       ).rejects.toThrowError('"tag:p" is specified as parent but not exists');
     });
 
-    test("explicitParentを入れて登録する", async () => {
+    test("explicitParentだけを入れて登録する", async () => {
       const parentResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
         { input: { primaryName: "p" } },
@@ -203,24 +278,24 @@ describe("Mutation.registerTag", () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const { tag: parentTag } = parentResult! as { tag: Tag };
 
-      const actual = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
         { input: { primaryName: "a", explicitParent: `tag:${parentTag.id}` } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
-      expect(actual).toBeDefined();
+      expect(registerResult).toBeDefined();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const { tag } = actual! as { tag: Tag };
+      const { tag: registeredTag } = registerResult! as { tag: Tag };
 
-      const actualParentRels = await ds.getRepository(TagParent).find({
-        where: { parent: { id: parentTag.id }, child: { id: tag.id } },
+      const parentRels = await ds.getRepository(TagParent).find({
+        where: { parent: { id: parentTag.id }, child: { id: registeredTag.id } },
         relations: { parent: true, child: true },
       });
-      expect(actualParentRels).toHaveLength(1);
+      expect(parentRels).toHaveLength(1);
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const actualParentRel = actualParentRels.at(0)!;
-      expect(actualParentRel).toStrictEqual(
+      const parentRel = parentRels.at(0)!;
+      expect(parentRel).toStrictEqual(
         expect.objectContaining({
           id: expect.any(String),
           explicit: true,
@@ -228,10 +303,305 @@ describe("Mutation.registerTag", () => {
             id: parentTag.id,
           }),
           child: expect.objectContaining({
-            id: tag.id,
+            id: registeredTag.id,
           }),
         })
       );
+
+      const findResult = await ds.getRepository(Tag).findOne({
+        where: { id: registeredTag.id },
+        relations: ["tagNames", "tagParents", "tagParents.parent", "tagParents.child"],
+      });
+      expect(findResult).toStrictEqual(
+        expect.objectContaining({
+          id: registeredTag.id,
+          tagNames: expect.arrayContaining([
+            expect.objectContaining({
+              id: expect.any(String),
+              name: "a",
+              primary: true,
+            }),
+          ]),
+          tagParents: expect.arrayContaining([
+            expect.objectContaining({
+              parent: expect.objectContaining({ id: parentTag.id }),
+              child: expect.objectContaining({ id: registeredTag.id }),
+              explicit: true,
+            }),
+          ]),
+        })
+      );
+    });
+
+    test("存在しないタグをimplicitParentsとして指定するとエラー", async () => {
+      await expect(
+        registerTag({ dataSource: ds, neo4jDriver })?.(
+          {},
+          { input: { primaryName: "a", implicitParents: ["tag:p"] } },
+          {} as Context,
+          {} as GraphQLResolveInfo
+        )
+      ).rejects.toThrowError('"tag:p" is specified as parent but not exists');
+    });
+
+    test("implicitParentsだけを入れて登録する", async () => {
+      const parentResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "p" } },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const { tag: parentTag } = parentResult! as { tag: Tag };
+
+      const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "a", implicitParents: [`tag:${parentTag.id}`] } },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      expect(registerResult).toBeDefined();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const { tag: registeredTag } = registerResult! as { tag: Tag };
+
+      const parentRels = await ds.getRepository(TagParent).find({
+        where: { parent: { id: parentTag.id }, child: { id: registeredTag.id } },
+        relations: { parent: true, child: true },
+      });
+      expect(parentRels).toHaveLength(1);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const parentRel = parentRels.at(0)!;
+      expect(parentRel).toStrictEqual(
+        expect.objectContaining({
+          id: expect.any(String),
+          explicit: false,
+          parent: expect.objectContaining({
+            id: parentTag.id,
+          }),
+          child: expect.objectContaining({
+            id: registeredTag.id,
+          }),
+        })
+      );
+
+      const findResult = await ds.getRepository(Tag).findOne({
+        where: { id: registeredTag.id },
+        relations: ["tagNames", "tagParents", "tagParents.parent", "tagParents.child"],
+      });
+      expect(findResult).toStrictEqual(
+        expect.objectContaining({
+          id: registeredTag.id,
+          tagNames: expect.arrayContaining([
+            expect.objectContaining({
+              id: expect.any(String),
+              name: "a",
+              primary: true,
+            }),
+          ]),
+          tagParents: expect.arrayContaining([
+            expect.objectContaining({
+              parent: expect.objectContaining({ id: parentTag.id }),
+              child: expect.objectContaining({ id: registeredTag.id }),
+              explicit: false,
+            }),
+          ]),
+        })
+      );
+    });
+
+    test("explicitParentとimplicitParentsに同じIDを入れるとエラー", async () => {
+      await expect(
+        registerTag({ dataSource: ds, neo4jDriver })?.(
+          {},
+          { input: { primaryName: "a", explicitParent: "tag:p", implicitParents: ["tag:p"] } },
+          {} as Context,
+          {} as GraphQLResolveInfo
+        )
+      ).rejects.toThrowError('"tag:p" is specified as explicitParent and also included in implicitParents');
+    });
+
+    test("implicitParentsに同じタグを複数回入れるとエラー", async () => {
+      await expect(
+        registerTag({ dataSource: ds, neo4jDriver })?.(
+          {},
+          { input: { primaryName: "a", implicitParents: ["tag:p", "tag:p"] } },
+          {} as Context,
+          {} as GraphQLResolveInfo
+        )
+      ).rejects.toThrowError('"tag:p" is included in implicitParents multiple times');
+    });
+
+    test("explicitParentとimplicitParentsを入れて登録する", async () => {
+      const parentRegisterResult1 = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "p1" } },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const { tag: parentTag1 } = parentRegisterResult1! as { tag: Tag };
+
+      const parentRegisterResult2 = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "p2" } },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const { tag: parentTag2 } = parentRegisterResult2! as { tag: Tag };
+
+      const actualRegisterResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        {
+          input: {
+            primaryName: "a",
+            explicitParent: `tag:${parentTag1.id}`,
+            implicitParents: [`tag:${parentTag2.id}`],
+          },
+        },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      expect(actualRegisterResult).toBeDefined();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const { tag: actualTag } = actualRegisterResult! as { tag: Tag };
+
+      const actualParentRels1 = await ds.getRepository(TagParent).find({
+        where: { parent: { id: parentTag1.id }, child: { id: actualTag.id } },
+        relations: { parent: true, child: true },
+      });
+      expect(actualParentRels1).toHaveLength(1);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const actualParentRel1 = actualParentRels1.at(0)!;
+      expect(actualParentRel1).toStrictEqual(
+        expect.objectContaining({
+          id: expect.any(String),
+          explicit: true,
+          parent: expect.objectContaining({
+            id: parentTag1.id,
+          }),
+          child: expect.objectContaining({
+            id: actualTag.id,
+          }),
+        })
+      );
+
+      const actualParentRels2 = await ds.getRepository(TagParent).find({
+        where: { parent: { id: parentTag2.id }, child: { id: actualTag.id } },
+        relations: { parent: true, child: true },
+      });
+      expect(actualParentRels2).toHaveLength(1);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const actualParentRel2 = actualParentRels2.at(0)!;
+
+      expect(actualParentRel2).toStrictEqual(
+        expect.objectContaining({
+          id: expect.any(String),
+          explicit: false,
+          parent: expect.objectContaining({
+            id: parentTag2.id,
+          }),
+          child: expect.objectContaining({
+            id: actualTag.id,
+          }),
+        })
+      );
+
+      const actualFindResult = await ds.getRepository(Tag).findOne({
+        where: { id: actualTag.id },
+        relations: {
+          tagNames: true,
+          tagParents: true,
+        },
+      });
+      expect(actualFindResult).toStrictEqual(
+        expect.objectContaining({
+          id: actualTag.id,
+        })
+      );
+    });
+
+    test("bが既に存在してb(a)を登録することは出来る", async () => {
+      /* a */
+      const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "a" } },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { tag: tagA } = resultTagA as { tag: Tag };
+
+      /* b */
+      const resultTagB = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "b" } },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { tag: tagB } = resultTagB as { tag: Tag };
+
+      /* b(a) */
+      const resultTagB_A = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "b", explicitParent: `tag:${tagA.id}` } },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      expect(resultTagB_A).toBeDefined();
+      const { tag: tagB_A } = resultTagB_A as { tag: Tag };
+
+      const findResultNameByB = await ds.getRepository(Tag).find({
+        where: { tagNames: { name: "b" } },
+      });
+      expect(findResultNameByB).toHaveLength(2);
+
+      const findResultB_A = await ds.getRepository(Tag).findOne({
+        where: { id: tagB_A.id },
+        relations: ["tagNames", "tagParents", "tagParents.parent", "tagParents.child"],
+      });
+      expect(findResultB_A).toStrictEqual(
+        expect.objectContaining({
+          id: tagB_A.id,
+          tagNames: expect.arrayContaining([
+            expect.objectContaining({
+              id: expect.any(String),
+              name: "b",
+              primary: true,
+            }),
+          ]),
+          tagParents: expect.arrayContaining([
+            expect.objectContaining({
+              id: expect.any(String),
+              explicit: true,
+              parent: expect.objectContaining({
+                id: tagA.id,
+              }),
+              child: expect.objectContaining({
+                id: tagB_A.id,
+              }),
+            }),
+          ]),
+        })
+      );
+
+      /*
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const actualTagNameA = findResultByB.at(0)!;
+      expect(actualTagNameA).toStrictEqual(
+        expect.objectContaining({
+          id: expect.any(String),
+          name: "a",
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          primary: true,
+          tag: expect.objectContaining({
+            id: (tagB as Tag).id,
+          }),
+        })
+      );
+      */
     });
   });
 });
