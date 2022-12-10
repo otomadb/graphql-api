@@ -51,7 +51,8 @@ export const resolveMylist = ({
       ),
     };
   },
-  includes: async ({ id: mylistId }, { videoId }) =>
+
+  isIncludesVideo: async ({ id: mylistId }, { id: videoId }) =>
     dataSource
       .getRepository(MylistRegistration)
       .findOne({
@@ -61,6 +62,7 @@ export const resolveMylist = ({
         },
       })
       .then((r) => !!r),
+
   recommendedVideos: async ({ id: videoId }, { input }) => {
     const recommends = await calcRecommendedVideosByMylist(neo4jDriver)(videoId, { limit: input?.limit || 0 });
 
