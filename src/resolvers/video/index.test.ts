@@ -19,6 +19,6 @@ describe("resolver Video.history", () => {
 
   it("現状は空配列を返す", () => {
     const actual = resolveHistory();
-    expect(actual).toStrictEqual([]);
+    expect(actual).toStrictEqual({ nodes: [] });
   });
 });
