@@ -30,18 +30,6 @@ export const calcNameParentPair = ({
     .reduce((p, c) => [...p, ...c], [] as { name: string; parent: string | null }[]);
 };
 
-export const mkExplicitTag = (childId: string, parentId: string | null) => {
-  if (!parentId) return null;
-
-  const parent = new TagParent();
-  parent.id = ulid();
-  parent.parent = { id: parentId } as Tag;
-  parent.child = { id: childId } as Tag;
-  parent.explicit = true;
-
-  return parent;
-};
-
 export const registerTag =
   ({
     dataSource,
@@ -52,8 +40,17 @@ export const registerTag =
   }): MutationResolvers["registerTag"] =>
   async (
     _,
-    { input: { primaryName, extraNames, explicitParent: explicitParentRawId, implicitParents: implicitParentsRawIds } }
+    {
+      input: {
+        primaryName,
+        extraNames: extraNamesRaw,
+        explicitParent: explicitParentRawId,
+        implicitParents: implicitParentsRawIds,
+      },
+    }
   ) => {
+    const extraNames = extraNamesRaw || [];
+
     const explicitParentId = explicitParentRawId ? parseGqlID("tag", explicitParentRawId) : null;
     if (explicitParentRawId && !explicitParentId)
       throw new GraphQLError(`"${explicitParentRawId}" is invalid for tag id`);
@@ -62,37 +59,30 @@ export const registerTag =
     for (const implicitParentsRawId of implicitParentsRawIds || []) {
       const parsed = parseGqlID("tag", implicitParentsRawId);
       if (!parsed) throw new GraphQLError(`"${explicitParentRawId}" is invalid for tag id`);
+      if (explicitParentId === parsed)
+        throw new GraphQLError(`"tag:${parsed}" is specified as explicitParent and also included in implicitParents`);
+      if (implicitParentIds.includes(parsed))
+        throw new GraphQLError(`"tag:${parsed}" is included in implicitParents multiple times`);
       implicitParentIds.push(parsed);
-    }
-
-    /* parent check */
-    for (const parentId of [...(explicitParentId ? [explicitParentId] : []), ...implicitParentIds]) {
-      const exists = await dataSource
-        .getRepository(Tag)
-        .findOne({ where: { id: parentId } })
-        .then((t) => !!t);
-      if (exists) continue;
-      throw new GraphQLError(`"tag:${parentId}" is specified as parent but not exists`);
     }
 
     /* name check */
     const pairs = calcNameParentPair({
       primaryName,
-      extraNames: extraNames || [],
+      extraNames,
       explicitParent: explicitParentId,
       implicitParents: implicitParentIds,
     });
     for (const pair of pairs) {
-      const already = await dataSource.getRepository(Tag).findOne({
-        where: pair.parent
-          ? { tagNames: { name: pair.name }, tagParents: { id: pair.parent } }
-          : { tagNames: { name: pair.name } },
+      const already = await dataSource.getRepository(TagName).findOne({
+        where: pair.parent ? { name: pair.name, tag: { id: pair.parent } } : { name: pair.name },
+        relations: { tag: true },
       });
       if (!already) continue;
       throw new GraphQLError(
         [
-          `"${pair.name}"${pair.parent ? ` with parent "tag:${pair.parent}"` : ""}`,
-          `is already registered in "tag:${already.id}"`,
+          `name "${pair.name}"${pair.parent ? ` with parent "tag:${pair.parent}"` : ""}`,
+          `is already registered in "tag:${already.tag.id}"`,
         ].join(" ")
       );
     }
@@ -100,36 +90,56 @@ export const registerTag =
     const tag = new Tag();
     tag.id = ulid();
     tag.videoTags = [];
-
-    const tagNames: TagName[] = [];
-
-    const primaryTagName = new TagName();
-    primaryTagName.id = ulid();
-    primaryTagName.name = primaryName;
-    primaryTagName.primary = true;
-    primaryTagName.tag = tag;
-
-    tagNames.push(primaryTagName);
-
-    if (extraNames) {
-      tagNames.push(
-        ...extraNames.map((n) => {
-          const tagName = new TagName();
-          tagName.id = ulid();
-          tagName.name = n;
-          tagName.tag = tag;
-
-          return tagName;
-        })
-      );
-    }
-
-    const explicitTagParent = mkExplicitTag(tag.id, explicitParentId);
-
     await dataSource.transaction(async (manager) => {
       await manager.getRepository(Tag).insert(tag);
-      await manager.getRepository(TagName).insert(tagNames);
-      await manager.getRepository(TagParent).insert([...(explicitTagParent ? [explicitTagParent] : [])]);
+
+      {
+        const nameRel = new TagName();
+        nameRel.id = ulid();
+        nameRel.name = primaryName;
+        nameRel.primary = true;
+        nameRel.tag = tag;
+        await manager.getRepository(TagName).insert(nameRel);
+      }
+
+      for (const extraName of extraNames) {
+        const nameRel = new TagName();
+        nameRel.id = ulid();
+        nameRel.name = extraName;
+        nameRel.primary = false;
+        nameRel.tag = tag;
+        await manager.getRepository(TagName).insert(nameRel);
+      }
+
+      if (explicitParentId) {
+        const parentRel = new TagParent();
+        parentRel.id = ulid();
+
+        parentRel.child = tag;
+
+        const parentTag = await dataSource.getRepository(Tag).findOne({ where: { id: explicitParentId } });
+        if (!parentTag) throw new GraphQLError(`"tag:${explicitParentId}" is specified as parent but not exists`);
+        parentRel.parent = parentTag;
+
+        parentRel.explicit = true;
+
+        await manager.getRepository(TagParent).insert(parentRel);
+      }
+
+      for (const implicitParentId of implicitParentIds) {
+        const parentRel = new TagParent();
+        parentRel.id = ulid();
+
+        parentRel.child = tag;
+
+        const parentTag = await dataSource.getRepository(Tag).findOne({ where: { id: implicitParentId } });
+        if (!parentTag) throw new GraphQLError(`"tag:${implicitParentId}" is specified as parent but not exists`);
+        parentRel.parent = parentTag;
+
+        parentRel.explicit = false;
+
+        await manager.getRepository(TagParent).insert(parentRel);
+      }
     });
 
     await registerTagInNeo4j(neo4jDriver)(tag.id);
