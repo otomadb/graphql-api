@@ -25,9 +25,9 @@ export class Tag {
   @OneToMany(() => TagName, (tagName) => tagName.tag)
   tagNames!: Relation<TagName[]>;
 
-  @OneToMany(() => TagParent, (tagParent) => tagParent.parent)
+  @OneToMany(() => TagParent, (tagParent) => tagParent.child)
   tagParents!: Relation<TagParent[]>;
 
-  @OneToMany(() => TagParent, (tagParent) => tagParent.child)
+  @OneToMany(() => TagParent, (tagParent) => tagParent.parent)
   tagChildrens!: Relation<TagParent[]>;
 }
