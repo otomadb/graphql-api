@@ -1,3 +1,4 @@
+import { GraphQLError } from "graphql";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 import { ulid } from "ulid";
@@ -8,6 +9,25 @@ import { TagModel } from "../../graphql/models.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
 import { registerTag as registerTagInNeo4j } from "../../neo4j/register_tag.js";
 
+export const calcNameParentPair = ({
+  primaryName,
+  extraNames,
+  explicitParent,
+  implicitParents,
+}: {
+  primaryName: string;
+  extraNames: string[];
+  explicitParent: string | null;
+  implicitParents: string[];
+}) => {
+  const names = [primaryName, ...extraNames];
+  const parents = [explicitParent, ...implicitParents];
+
+  return names
+    .map((n) => parents.map((p) => ({ name: n, parent: p })))
+    .reduce((p, c) => [...p, ...c], [] as { name: string; parent: string | null }[]);
+};
+
 export const registerTag =
   ({
     dataSource,
@@ -16,7 +36,28 @@ export const registerTag =
     dataSource: DataSource;
     neo4jDriver: Neo4jDriver;
   }): MutationResolvers["registerTag"] =>
-  async (parent, { input }) => {
+  async (_, { input }) => {
+    const pairs = calcNameParentPair({
+      primaryName: input.primaryName,
+      extraNames: input.extraNames || [],
+      explicitParent: input.explicitParent || null,
+      implicitParents: input.implicitParents || [],
+    });
+    for (const pair of pairs) {
+      const already = await dataSource.getRepository(Tag).findOne({
+        where: pair.parent
+          ? { tagNames: { name: pair.name }, tagParents: { id: pair.parent } }
+          : { tagNames: { name: pair.name } },
+      });
+      if (!already) continue;
+      throw new GraphQLError(
+        [
+          `"${pair.name}"${pair.parent ? ` with parent "tag:${pair.parent}"` : ""}`,
+          `is already registered in "tag:${already.id}"`,
+        ].join(" ")
+      );
+    }
+
     const tag = new Tag();
     tag.id = ulid();
     tag.videoTags = [];
