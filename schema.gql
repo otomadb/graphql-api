@@ -2,15 +2,15 @@ scalar DateTime
 
 type Query {
   video(id: ID!): Video!
-  videos(input: GetVideosInput): VideoCollection!
+  videos(input: GetVideosInput!): VideoCollection!
 
   tag(id: ID!): Tag!
-  tags(input: GetTagsInput): TagCollection!
+  tags(input: GetTagsInput!): TagCollection!
 
   mylist(id: ID!): Mylist!
 
-  searchVideos(query: String!, limit: Int! = 10, skip: Int! = 0): SearchVideosResult!
-  searchTags(query: String!, limit: Int! = 10, skip: Int! = 0): SearchTagsResult!
+  searchVideos(input: SearchVideoInput!): SearchVideosPayload!
+  searchTags(input: SearchTagInput!): SearchTagsPayload!
 
   user(name: String!): User!
   whoami: User!
@@ -286,7 +286,13 @@ type TagChangePrimaryNameHistoryItem implements TagHistoryItem {
   to: String!
 }
 
-type SearchVideosResult {
+input SearchVideoInput {
+  query: String!
+  limit: Int = 10
+  skip: Int = 0
+}
+
+type SearchVideosPayload {
   # count: Int!
   result: [SearchVideosResultItem!]!
 }
@@ -296,7 +302,13 @@ type SearchVideosResultItem {
   video: Video!
 }
 
-type SearchTagsResult {
+input SearchTagInput {
+  query: String!
+  limit: Int = 10
+  skip: Int = 0
+}
+
+type SearchTagsPayload {
   # count: Int!
   result: [SearchTagsResultItem!]!
 }
