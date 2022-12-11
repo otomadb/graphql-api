@@ -21,9 +21,14 @@ export const calcNameParentPair = ({
   extraNames: string[];
   explicitParent: string | null;
   implicitParents: string[];
-}) => {
+}): ({ name: string; parent: string } | { name: string; parent: null })[] => {
   const names = [primaryName, ...extraNames];
-  const parents = [explicitParent, ...implicitParents];
+  const parents =
+    explicitParent === null
+      ? implicitParents.length === 0
+        ? [null]
+        : implicitParents
+      : [explicitParent, ...implicitParents];
 
   return names
     .map((n) => parents.map((p) => ({ name: n, parent: p })))
@@ -74,17 +79,17 @@ export const registerTag =
       implicitParents: implicitParentIds,
     });
     for (const pair of pairs) {
-      const already = await dataSource.getRepository(TagName).findOne({
-        where: pair.parent ? { name: pair.name, tag: { id: pair.parent } } : { name: pair.name },
-        relations: { tag: true },
+      const already = await dataSource.getRepository(Tag).findOne({
+        where: pair.parent
+          ? { tagNames: { name: pair.name }, tagParents: { parent: { id: pair.parent } } }
+          : { tagNames: { name: pair.name } },
       });
       if (!already) continue;
-      throw new GraphQLError(
-        [
-          `name "${pair.name}"${pair.parent ? ` with parent "tag:${pair.parent}"` : ""}`,
-          `is already registered in "tag:${already.tag.id}"`,
-        ].join(" ")
-      );
+      if (pair.parent)
+        throw new GraphQLError(
+          `name "${pair.name}" with parent "tag:${pair.parent}" is already registered in "tag:${already.id}"`
+        );
+      else throw new GraphQLError(`name "${pair.name}" is reserved in "tag:${already.id}"`);
     }
 
     const tag = new Tag();

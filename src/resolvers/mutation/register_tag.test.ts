@@ -54,27 +54,27 @@ describe("Mutation.registerTag", () => {
       ],
     ],
     ["a", [], null, [], [{ name: "a", parent: null }]],
-    [
-      "a",
-      [],
-      null,
-      ["2"],
-      [
-        { name: "a", parent: null },
-        { name: "a", parent: "2" },
-      ],
-    ],
-  ])("calcNameParentPair() %#", (primaryName, extraNames, explicitParent, implicitParents, expected) => {
-    const actual = calcNameParentPair({
+    ["a", [], null, ["2"], [{ name: "a", parent: "2" }]],
+  ])(
+    "calcNameParentPair() %#",
+    (
       primaryName,
       extraNames,
       explicitParent,
       implicitParents,
-    });
+      expected: ({ name: string; parent: string } | { name: string; parent: null })[]
+    ) => {
+      const actual = calcNameParentPair({
+        primaryName,
+        extraNames,
+        explicitParent,
+        implicitParents,
+      });
 
-    expect(actual.length).toBe(expected.length);
-    expect(actual).toEqual(expect.arrayContaining(expected));
-  });
+      expect(actual.length).toBe(expected.length);
+      expect(actual).toStrictEqual(expect.arrayContaining(expected));
+    }
+  );
 
   describe("with DB", () => {
     let ds: DataSource;
@@ -215,7 +215,7 @@ describe("Mutation.registerTag", () => {
       );
     });
 
-    test("primaryNameが既に重複しているとエラー", async () => {
+    test("primaryNameが既存のprimaryNameと重複してエラー", async () => {
       /* already */
       const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
@@ -233,10 +233,31 @@ describe("Mutation.registerTag", () => {
           {} as Context,
           {} as GraphQLResolveInfo
         )
-      ).rejects.toThrowError(`name "a" is already registered in "tag:${alreadyTag.id}"`);
+      ).rejects.toThrowError(`name "a" is reserved in "tag:${alreadyTag.id}"`);
     });
 
-    test("extraNamesが既に重複しているとエラー", async () => {
+    test("primaryNameが既存のextraNamesと重複してエラー", async () => {
+      /* already */
+      const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "a", extraNames: ["A"] } },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { tag: alreadyTag } = already as { tag: Tag };
+
+      await expect(
+        registerTag({ dataSource: ds, neo4jDriver })?.(
+          {},
+          { input: { primaryName: "A" } },
+          {} as Context,
+          {} as GraphQLResolveInfo
+        )
+      ).rejects.toThrowError(`name "A" is reserved in "tag:${alreadyTag.id}"`);
+    });
+
+    test("extraNamesが既存のprimaryNameと重複してエラー", async () => {
       /* already */
       const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
@@ -254,7 +275,28 @@ describe("Mutation.registerTag", () => {
           {} as Context,
           {} as GraphQLResolveInfo
         )
-      ).rejects.toThrowError(`name "a" is already registered in "tag:${alreadyTag.id}"`);
+      ).rejects.toThrowError(`name "a" is reserved in "tag:${alreadyTag.id}"`);
+    });
+
+    test("extraNamesが既存のextraNamesと重複してエラー", async () => {
+      /* already */
+      const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "a", extraNames: ["A"] } },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { tag: alreadyTag } = already as { tag: Tag };
+
+      await expect(
+        registerTag({ dataSource: ds, neo4jDriver })?.(
+          {},
+          { input: { primaryName: "b", extraNames: ["A"] } },
+          {} as Context,
+          {} as GraphQLResolveInfo
+        )
+      ).rejects.toThrowError(`name "A" is reserved in "tag:${alreadyTag.id}"`);
     });
 
     test("存在しないタグをexplicitParentとして指定するとエラー", async () => {
@@ -521,7 +563,7 @@ describe("Mutation.registerTag", () => {
       );
     });
 
-    test("bが既に存在してb(a)を登録することは出来る", async () => {
+    test("bが既に存在して，b(a)を登録することは出来る", async () => {
       /* a */
       const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
@@ -585,23 +627,145 @@ describe("Mutation.registerTag", () => {
           ]),
         })
       );
+    });
 
-      /*
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const actualTagNameA = findResultByB.at(0)!;
-      expect(actualTagNameA).toStrictEqual(
-        expect.objectContaining({
-          id: expect.any(String),
-          name: "a",
-          createdAt: expect.any(Date),
-          updatedAt: expect.any(Date),
-          primary: true,
-          tag: expect.objectContaining({
-            id: (tagB as Tag).id,
-          }),
-        })
+    test("b(a)が既に存在するなら，bを登録することは出来ない", async () => {
+      /* a */
+      const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "a" } },
+        {} as Context,
+        {} as GraphQLResolveInfo
       );
-      */
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { tag: tagA } = resultTagA as { tag: Tag };
+
+      /* b(a) */
+      const resultTagB_A = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "b", explicitParent: `tag:${tagA.id}` } },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      expect(resultTagB_A).toBeDefined();
+      const { tag: tagB_A } = resultTagB_A as { tag: Tag };
+
+      await expect(
+        registerTag({ dataSource: ds, neo4jDriver })?.(
+          {},
+          { input: { primaryName: "b" } },
+          {} as Context,
+          {} as GraphQLResolveInfo
+        )
+      ).rejects.toThrowError(`name "b" is reserved in "tag:${tagB_A.id}"`);
+    });
+
+    test("b(a)が既に存在するなら，b(a)を登録することは出来ない", async () => {
+      /* a */
+      const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "a" } },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { tag: tagA } = resultTagA as { tag: Tag };
+
+      /* b(a) */
+      const resultTagB_A = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "b", explicitParent: `tag:${tagA.id}` } },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      expect(resultTagB_A).toBeDefined();
+      const { tag: tagB_A } = resultTagB_A as { tag: Tag };
+
+      await expect(
+        registerTag({ dataSource: ds, neo4jDriver })?.(
+          {},
+          {
+            input: {
+              primaryName: "b",
+              explicitParent: `tag:${tagA.id}`,
+            },
+          },
+          {} as Context,
+          {} as GraphQLResolveInfo
+        )
+      ).rejects.toThrowError(`name "b" with parent "tag:${tagA.id}" is already registered in "tag:${tagB_A.id}"`);
+    });
+
+    test("aを非明示的に親に持つb{a}が既に存在するなら，b(a)を登録することは出来ない", async () => {
+      /* a/A */
+      const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "a" } },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { tag: tagA } = resultTagA as { tag: Tag };
+
+      /* b{A} */
+      const resultTagB_A = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "b", implicitParents: [`tag:${tagA.id}`] } },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      expect(resultTagB_A).toBeDefined();
+      const { tag: tagB_A } = resultTagB_A as { tag: Tag };
+
+      await expect(
+        registerTag({ dataSource: ds, neo4jDriver })?.(
+          {},
+          {
+            input: {
+              primaryName: "b",
+              explicitParent: `tag:${tagA.id}`,
+            },
+          },
+          {} as Context,
+          {} as GraphQLResolveInfo
+        )
+      ).rejects.toThrowError(`name "b" with parent "tag:${tagA.id}" is already registered in "tag:${tagB_A.id}"`);
+    });
+
+    test("aを非明示的に親に持つb{a}が既に存在するなら，b{a}を登録することは出来ない", async () => {
+      /* a/A */
+      const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "a" } },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { tag: tagA } = resultTagA as { tag: Tag };
+
+      /* b{A} */
+      const resultTagB_A = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "b", implicitParents: [`tag:${tagA.id}`] } },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      expect(resultTagB_A).toBeDefined();
+      const { tag: tagB_A } = resultTagB_A as { tag: Tag };
+
+      await expect(
+        registerTag({ dataSource: ds, neo4jDriver })?.(
+          {},
+          {
+            input: {
+              primaryName: "b",
+              implicitParents: [`tag:${tagA.id}`],
+            },
+          },
+          {} as Context,
+          {} as GraphQLResolveInfo
+        )
+      ).rejects.toThrowError(`name "b" with parent "tag:${tagA.id}" is already registered in "tag:${tagB_A.id}"`);
     });
   });
 });
