@@ -51,6 +51,7 @@ export const registerTag =
         extraNames: extraNamesRaw,
         explicitParent: explicitParentRawId,
         implicitParents: implicitParentsRawIds,
+        meaningless, // TODO: default value
       },
     }
   ) => {
@@ -95,6 +96,7 @@ export const registerTag =
     const tag = new Tag();
     tag.id = ulid();
     tag.videoTags = [];
+    tag.meaningless = meaningless || false;
     await dataSource.transaction(async (manager) => {
       await manager.getRepository(Tag).insert(tag);
 

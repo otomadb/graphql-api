@@ -163,6 +163,26 @@ describe("Mutation.registerTag", () => {
       );
     });
 
+    test.todo("meaninglessフラグには権限が必要");
+
+    test("meaninglessフラグを立てて登録する", async () => {
+      const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
+        {},
+        { input: { primaryName: "a", meaningless: true } },
+        {} as Context,
+        {} as GraphQLResolveInfo
+      );
+      expect(registerResult).toBeDefined();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const { tag } = registerResult!;
+      expect(tag).toStrictEqual(
+        new TagModel({
+          id: expect.any(String),
+          meaningless: true,
+        })
+      );
+    });
+
     test("primaryNameとextraNamesで登録", async () => {
       const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},

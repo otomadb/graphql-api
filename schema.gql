@@ -374,6 +374,8 @@ input RegisterTagInput {
 
   explicitParent: ID
   implicitParents: [ID!] = []
+
+  meaningless: Boolean = false
 }
 
 type RegisterTagPayload {
