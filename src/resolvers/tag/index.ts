@@ -32,11 +32,11 @@ export const resolveTag = ({ dataSource }: { dataSource: DataSource }): Resolver
     return name.name;
   },
 
-  parents: async ({ id: tagId }) => {
-    const rel = await dataSource.getRepository(TagParent).find({
-      where: { child: { id: tagId } },
-      relations: { parent: true },
-    });
+  parents: async ({ id: tagId }, { meaningless }) => {
+    const rel = await dataSource
+      .getRepository(TagParent)
+      .find({ where: { child: { id: tagId } }, relations: { parent: true } })
+      .then((v) => v.filter(({ parent }) => typeof meaningless !== "boolean" || parent.meaningless === meaningless));
     return rel.map(({ parent, explicit }) => ({
       tag: new TagModel(parent),
       explicit,
