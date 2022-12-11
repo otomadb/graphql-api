@@ -370,10 +370,12 @@ type UserMylistsConnection {
 
 input RegisterTagInput {
   primaryName: String!
-  extraNames: [String!]
+  extraNames: [String!] = []
 
   explicitParent: ID
-  implicitParents: [ID!]
+  implicitParents: [ID!] = []
+
+  meaningless: Boolean = false
 }
 
 type RegisterTagPayload {
