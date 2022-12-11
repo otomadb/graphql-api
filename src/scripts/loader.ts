@@ -64,43 +64,124 @@ const getthumbnail = (v: string) => {
     .then((v) => v.data.video.thumbnail.player);
 };
 
+const querySearchTags = `
+query($query: String!){
+  searchTags(input:{query:$query,limit:1}) {
+    result {
+      tag {
+        id
+      }
+    }
+  }
+}`;
+
+const findTagIds = async (queries: string[]) =>
+  Promise.all(
+    queries
+      .map((query) =>
+        graphql({
+          source: querySearchTags,
+          schema,
+          contextValue: {},
+          variableValues: { query },
+        }).then((result) => (result.data?.searchTags as { result: { tag: { id: string } }[] }).result.at(0)?.tag.id)
+      )
+      .filter((id) => !!id)
+  );
+
 const tags = [
+  {
+    primaryName: "曲",
+    extraNames: ["MUSIC"],
+    meaningless: true,
+  },
+  {
+    primaryName: "作品",
+    extraNames: ["COPYRIGHT"],
+    meaningless: true,
+  },
+  {
+    primaryName: "シリーズ",
+    extraNames: ["SERIES"],
+    meaningless: true,
+  },
+  {
+    primaryName: "戦法",
+    extraNames: ["TACTICS"],
+    meaningless: true,
+  },
+  {
+    primaryName: "作風",
+    extraNames: ["STYLE"],
+    meaningless: true,
+  },
+  {
+    primaryName: "イベント",
+    extraNames: ["EVENT"],
+    meaningless: true,
+  },
+  {
+    primaryName: "キャラクター",
+    extraNames: ["CHARACTER"],
+    meaningless: true,
+  },
+  {
+    primaryName: "フレーズ",
+    extraNames: ["PHRASE"],
+    meaningless: true,
+  },
+  {
+    primaryName: "東方Project",
+    implicitParents: () => findTagIds(["COPYRIGHT"]),
+  },
   {
     primaryName: "U.N.オーエンは彼女なのか？",
     extraNames: ["U.N. Owen Was Her?"],
+    implicitParents: () => findTagIds(["東方Project", "MUSIC"]),
   },
   {
     primaryName: "最終鬼畜妹フランドール・S",
+    implicitParents: () => findTagIds(["MUSIC", "東方Project", "U.N.オーエンは彼女なのか？"]),
   },
   {
     primaryName: "AIN'T NOTHING LIKE A FUNKY BEAT",
+    implicitParents: () => findTagIds(["曲"]),
   },
   {
     primaryName: "ドナルド・マクドナルド",
-  },
-  {
-    primaryName: "KICK BACK",
-  },
-  {
-    primaryName: "momone - why did i enter the art course",
+    implicitParents: () => findTagIds(["キャラクター"]),
   },
   {
     primaryName: "米津玄師",
   },
   {
+    primaryName: "KICK BACK",
+    implicitParents: () => findTagIds(["米津玄師", "曲"]),
+  },
+  {
+    primaryName: "momone - why did i enter the art course",
+    implicitParents: () => findTagIds(["曲"]),
+  },
+  {
     primaryName: "ゆゆ式",
+    implicitParents: () => findTagIds(["作品"]),
   },
   {
     primaryName: "日向縁",
+    explicitParent: async () => (await findTagIds(["ゆゆ式"])).at(0),
+    implicitParents: () => findTagIds(["キャラクター"]),
   },
   {
     primaryName: "遠野妖怪前線",
+    implicitParents: () => findTagIds(["曲"]),
   },
   {
     primaryName: "リゼリスペクト",
+    implicitParents: () => findTagIds(["シリーズ"]),
   },
   {
     primaryName: "ベィスドロップ・フリークス",
+    implicitParents: () => findTagIds(["曲"]),
   },
   {
     primaryName: "真夏の夜の淫夢",
@@ -110,61 +191,88 @@ const tags = [
   },
   {
     primaryName: "TRIGGER★HAPPY",
+    implicitParents: () => findTagIds(["曲"]),
   },
   {
     primaryName: "ぼっち・ざ・ろっく！",
     extraNames: ["ぼっち・ざ・まっど！"],
+    implicitParents: () => findTagIds(["作品"]),
   },
   {
     primaryName: "後藤ひとり",
+    explicitParent: async () => (await findTagIds(["ぼっち・ざ・ろっく！"])).at(0),
+    implicitParents: () => findTagIds(["キャラクター"]),
   },
   {
     primaryName: "伊地知虹夏",
+    explicitParent: async () => (await findTagIds(["ぼっち・ざ・ろっく！"])).at(0),
+    implicitParents: () => findTagIds(["キャラクター"]),
   },
   {
     primaryName: "山田リョウ",
+    explicitParent: async () => (await findTagIds(["ぼっち・ざ・ろっく！"])).at(0),
+    implicitParents: () => findTagIds(["キャラクター"]),
   },
   {
     primaryName: "喜多郁代",
+    explicitParent: async () => (await findTagIds(["ぼっち・ざ・ろっく！"])).at(0),
+    implicitParents: () => findTagIds(["キャラクター"]),
   },
   {
     primaryName: "残酷な天使のテーゼ",
+    implicitParents: () => findTagIds(["曲"]),
   },
   {
     primaryName: "Magical Higan Tour 2009",
+    implicitParents: () => findTagIds(["曲"]),
   },
   {
     primaryName: "永谷園",
   },
   {
     primaryName: "Luv the lUNatic??",
+    implicitParents: () => findTagIds(["曲"]),
   },
   {
     primaryName: "私に天使が舞い降りた！",
+    implicitParents: () => findTagIds(["作品"]),
   },
   {
     primaryName: "白咲花",
+    explicitParent: async () => (await findTagIds(["私に天使が舞い降りた！"])).at(0),
+    implicitParents: () => findTagIds(["キャラクター"]),
   },
   {
     primaryName: "星野みやこ",
+    explicitParent: async () => (await findTagIds(["私に天使が舞い降りた！"])).at(0),
+    implicitParents: () => findTagIds(["キャラクター"]),
   },
   {
     primaryName: "星野ひなた",
+    explicitParent: async () => (await findTagIds(["私に天使が舞い降りた！"])).at(0),
+    implicitParents: () => findTagIds(["キャラクター"]),
   },
   {
     primaryName: "姫坂乃愛",
+    explicitParent: async () => (await findTagIds(["私に天使が舞い降りた！"])).at(0),
+    implicitParents: () => findTagIds(["キャラクター"]),
   },
   {
     primaryName: "種村小依",
+    explicitParent: async () => (await findTagIds(["私に天使が舞い降りた！"])).at(0),
+    implicitParents: () => findTagIds(["キャラクター"]),
   },
   {
     primaryName: "小之森夏音",
+    explicitParent: async () => (await findTagIds(["私に天使が舞い降りた！"])).at(0),
+    implicitParents: () => findTagIds(["キャラクター"]),
   },
   {
     primaryName: "真島茂樹",
   },
   {
     primaryName: "INTERNET OVERDOSE",
+    implicitParents: () => findTagIds(["曲"]),
   },
   {
     primaryName: "さまぁ～ず",
@@ -179,45 +287,62 @@ const tags = [
   },
   {
     primaryName: "今",
+    implicitParents: () => findTagIds(["曲"]),
   },
   {
     primaryName: "地の色は黄色",
+    implicitParents: () => findTagIds(["曲"]),
   },
   {
     primaryName: "ふ・れ・ん・ど・し・た・い",
+    implicitParents: () => findTagIds(["曲"]),
   },
   {
     primaryName: "対武器ボス戦",
+    implicitParents: () => findTagIds(["曲"]),
   },
   {
     primaryName: "スーパーマリオブラザーズ3",
   },
   {
     primaryName: "アスレチックBGM",
+    implicitParents: () => findTagIds(["曲"]),
   },
   {
     primaryName: "自己参照",
+    implicitParents: () => findTagIds(["作風"]),
   },
   {
     primaryName: "少女終末旅行",
+    implicitParents: () => findTagIds(["作品"]),
   },
   {
     primaryName: "More One Night",
+    implicitParents: () => findTagIds(["曲"]),
   },
   {
     primaryName: "ODESZA - All We Need ft. Shy Girls (Haywyre Remix)",
+    implicitParents: () => findTagIds(["作品"]),
   },
   {
-    primaryName: "YO-KAI Disco",
-  },
-  {
-    primaryName: "愛宕洋榎",
-  },
-  {
-    primaryName: "BLU-RAY Discシリーズ",
+    primaryName: "咲-saki-",
+    implicitParents: () => findTagIds(["作品"]),
   },
   {
     primaryName: "咲-saki- 全国編",
+    implicitParents: () => findTagIds(["咲-saki-", "作品"]),
+  },
+  {
+    primaryName: "YO-KAI Disco",
+    implicitParents: () => findTagIds(["曲"]),
+  },
+  {
+    primaryName: "愛宕洋榎",
+    implicitParents: () => findTagIds(["キャラクター"]),
+  },
+  {
+    primaryName: "BLU-RAY Discシリーズ",
+    implicitParents: () => findTagIds(["シリーズ"]),
   },
   {
     primaryName: "超次元ゲイムネプテューヌ",
@@ -242,6 +367,7 @@ const tags = [
   },
   {
     primaryName: "物売るっていうレベルじゃねぇぞ！",
+    implicitParents: () => findTagIds(["フレーズ"]),
   },
   {
     primaryName: "小林さんちのメイドラゴンS",
@@ -291,52 +417,38 @@ mutation($input: RegisterTagInput!) {
     }
   }
 }`;
-for (const tag of tags) {
-  await graphql({
+for (const { primaryName, extraNames, explicitParent, implicitParents, meaningless } of tags) {
+  const result = await graphql({
     source: mutationRegisterTag,
     schema,
     contextValue: { user: bot },
-    variableValues: { input: tag },
+    variableValues: {
+      input: {
+        primaryName,
+        extraNames,
+        meaningless,
+        explicitParent: await explicitParent?.(),
+        implicitParents: await implicitParents?.(),
+      },
+    },
   });
-}
-
-const querySearchTags = `
-query($query: String!){
-  searchTags(query: $query) {
-    result {
-      tag {
-        id
-      }
-    }
+  if (result.errors) {
+    console.dir(result.errors);
   }
-}`;
-
-const fetchTagsId = async (queries: string[]) =>
-  Promise.all(
-    queries
-      .map((query) =>
-        graphql({
-          source: querySearchTags,
-          schema,
-          contextValue: {},
-          variableValues: { query },
-        }).then((result) => (result.data?.searchTags as { result: { tag: { id: string } }[] }).result.at(0)?.tag.id)
-      )
-      .filter((id) => !!id)
-  );
+}
 
 const videos = [
   {
     primaryTitle: "M.C.ドナルドはダンスに夢中なのか？最終鬼畜道化師ドナルド・Ｍ",
     extraTitles: ["Ronald McDonald insanity"],
-    tags: await fetchTagsId(["ドナルド・マクドナルド", "U.N.オーエンは彼女なのか？", "最終鬼畜妹フランドール・S"]),
+    tags: await findTagIds(["ドナルド・マクドナルド", "U.N.オーエンは彼女なのか？", "最終鬼畜妹フランドール・S"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm2057168"),
   },
   {
     primaryTitle: "オールスターダスト計画",
     extraTitles: [],
-    tags: await fetchTagsId([
+    tags: await findTagIds([
       "U.N.オーエンは彼女なのか？",
       "Bad Apple!! feat. nomico",
       "今",
@@ -351,21 +463,21 @@ const videos = [
   {
     primaryTitle: "ノリノリなドンタコス",
     extraTitles: [],
-    tags: await fetchTagsId(["AIN'T NOTHING LIKE A FUNKY BEAT", "ドンタコス"]),
+    tags: await findTagIds(["AIN'T NOTHING LIKE A FUNKY BEAT", "ドンタコス"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm41483073"),
   },
   {
     primaryTitle: "R.P.カリアはラブホなのか？",
     extraTitles: [],
-    tags: await fetchTagsId(["U.N.オーエンは彼女なのか？", "ドナルド・マクドナルド"]),
+    tags: await findTagIds(["U.N.オーエンは彼女なのか？", "ドナルド・マクドナルド"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm41245677"),
   },
   {
     primaryTitle: "why did i enter the KICK BACK",
     extraTitles: [],
-    tags: await fetchTagsId(["米津玄師", "KICK BACK", "momone - why did i enter the art course"]),
+    tags: await findTagIds(["米津玄師", "KICK BACK", "momone - why did i enter the art course"]),
     sources: [],
 
     primaryThumbnail: await getthumbnail("sm41415426"),
@@ -373,21 +485,21 @@ const videos = [
   {
     primaryTitle: "縁妖怪前線",
     extraTitles: [],
-    tags: await fetchTagsId(["日向縁", "遠野妖怪前線", "リゼリスペクト"]),
+    tags: await findTagIds(["日向縁", "遠野妖怪前線", "リゼリスペクト"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm35936521"),
   },
   {
     primaryTitle: "小倉妖怪前線",
     extraTitles: [],
-    tags: await fetchTagsId(["ドナルド・マクドナルド", "遠野妖怪前線", "リゼリスペクト"]),
+    tags: await findTagIds(["ドナルド・マクドナルド", "遠野妖怪前線", "リゼリスペクト"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm36970839"),
   },
   {
     primaryTitle: "HITRIGGER★BOCCHIY",
     extraTitles: [],
-    tags: await fetchTagsId([
+    tags: await findTagIds([
       "TRIGGER★HAPPY",
       "ぼっち・ざ・ろっく！",
       "後藤ひとり",
@@ -401,14 +513,14 @@ const videos = [
   {
     primaryTitle: "Magical お茶漬け Tour 2009",
     extraTitles: [],
-    tags: await fetchTagsId(["永谷園", "Magical Higan Tour 2009"]),
+    tags: await findTagIds(["永谷園", "Magical Higan Tour 2009"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm11419749"),
   },
   {
     primaryTitle: "Luv the Hanatic??",
     extraTitles: [],
-    tags: await fetchTagsId(["Luv the lUNatic??", "Magical Higan Tour 2009", "白咲花"]),
+    tags: await findTagIds(["Luv the lUNatic??", "Magical Higan Tour 2009", "白咲花"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm38891901"),
   },
@@ -422,28 +534,28 @@ const videos = [
   {
     primaryTitle: "アンビエント真真茂島茂樹島茂樹",
     extraTitles: [],
-    tags: await fetchTagsId(["真島茂樹"]),
+    tags: await findTagIds(["真島茂樹"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm40655147"),
   },
   {
     primaryTitle: "HIMESAKA OVERDOSE",
     extraTitles: [],
-    tags: await fetchTagsId(["私に天使が舞い降りた！", "INTERNET OVERDOSE", "姫坂乃愛", "白咲花", "星野ひなた"]),
+    tags: await findTagIds(["私に天使が舞い降りた！", "INTERNET OVERDOSE", "姫坂乃愛", "白咲花", "星野ひなた"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm41417198"),
   },
   {
     primaryTitle: "音を立てずに作れる音MAD",
     extraTitles: [],
-    tags: await fetchTagsId(["Magical Higan Tour 2009", "さまぁ～ず"]),
+    tags: await findTagIds(["Magical Higan Tour 2009", "さまぁ～ず"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm41408413"),
   },
   {
     primaryTitle: "わたてん跋扈 ～ Who taken it!",
     extraTitles: [],
-    tags: await fetchTagsId(["私に天使が舞い降りた！"]),
+    tags: await findTagIds(["私に天使が舞い降りた！"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm41394602"),
   },
@@ -457,63 +569,56 @@ const videos = [
   {
     primaryTitle: "ナギットゾーン【久川凪】",
     extraTitles: [],
-    tags: await fetchTagsId(["久川凪", "フラットゾーン"]),
+    tags: await findTagIds(["久川凪", "フラットゾーン"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm37391126"),
   },
   {
     primaryTitle: "ぼっちのギターは黒色",
     extraTitles: [],
-    tags: await fetchTagsId(["地の色は黄色", "ぼっち・ざ・ろっく！", "後藤ひとり"]),
+    tags: await findTagIds(["地の色は黄色", "ぼっち・ざ・ろっく！", "後藤ひとり"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm41315514"),
   },
   {
     primaryTitle: "ふ・れ・ん・ど・い・な・い",
     extraTitles: [],
-    tags: await fetchTagsId(["ふ・れ・ん・ど・し・た・い", "ぼっち・ざ・ろっく！", "後藤ひとり"]),
+    tags: await findTagIds(["ふ・れ・ん・ど・し・た・い", "ぼっち・ざ・ろっく！", "後藤ひとり"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm41399552"),
   },
   {
     primaryTitle: "危険なぼっち",
     extraTitles: [],
-    tags: await fetchTagsId(["対武器ボス戦", "ぼっち・ざ・ろっく！", "後藤ひとり"]),
+    tags: await findTagIds(["対武器ボス戦", "ぼっち・ざ・ろっく！", "後藤ひとり"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm41398486"),
   },
   {
     primaryTitle: "ぼっち・ざ・りふれくしょん！",
     extraTitles: [],
-    tags: await fetchTagsId(["ぼっち・ざ・ろっく！", "後藤ひとり"]),
+    tags: await findTagIds(["ぼっち・ざ・ろっく！", "後藤ひとり"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm41391770"),
   },
   {
     primaryTitle: "ぼっち・ざ・がらーじ",
     extraTitles: [],
-    tags: await fetchTagsId(["ぼっち・ざ・ろっく！", "後藤ひとり"]),
+    tags: await findTagIds(["ぼっち・ざ・ろっく！", "後藤ひとり"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm41362383"),
   },
   {
     primaryTitle: "ぼっち　ろっく",
     extraTitles: [],
-    tags: await fetchTagsId([
-      "KICK BACK",
-      "ぼっち・ざ・ろっく！",
-      "後藤ひとり",
-      "伊地知虹夏",
-      "山田リョウ",
-      "喜多郁代",
-    ]),
+    tags: await findTagIds(["KICK BACK", "ぼっち・ざ・ろっく！", "後藤ひとり", "伊地知虹夏", "山田リョウ", "喜多郁代"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm41367458"),
   },
   {
     primaryTitle: "スーパー社会が怖いブラザーズ3",
     extraTitles: [],
-    tags: await fetchTagsId([
+    tags: await findTagIds([
       "アスレチックBGM",
       "ぼっち・ざ・ろっく！",
       "後藤ひとり",
@@ -534,56 +639,56 @@ const videos = [
   {
     primaryTitle: "四個分の靴嫁",
     extraTitles: [],
-    tags: await fetchTagsId(["ドナルド・マクドナルド"]),
+    tags: await findTagIds(["ドナルド・マクドナルド"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm40812025"),
   },
   {
     primaryTitle: "Nothing to Room 2009",
     extraTitles: [],
-    tags: await fetchTagsId(["Magical Higan Tour 2009"]),
+    tags: await findTagIds(["Magical Higan Tour 2009"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm25042575"),
   },
   {
     primaryTitle: "ベィスドロップ・フリークス.1919810",
     extraTitles: [],
-    tags: await fetchTagsId(["クッキー☆", "真夏の夜の淫夢", "ベィスドロップ・フリークス"]),
+    tags: await findTagIds(["クッキー☆", "真夏の夜の淫夢", "ベィスドロップ・フリークス"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm27602969"),
   },
   {
     primaryTitle: "カゲロウジジイズ",
     extraTitles: [],
-    tags: await fetchTagsId(["真島茂樹"]),
+    tags: await findTagIds(["真島茂樹"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm40926580"),
   },
   {
     primaryTitle: "気ままな天使たちが舞い降りた！",
     extraTitles: [],
-    tags: await fetchTagsId(["私に天使が舞い降りた！", "自己参照"]),
+    tags: await findTagIds(["私に天使が舞い降りた！", "自己参照"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm41333070"),
   },
   {
     primaryTitle: "fuuuuck we were supposed to KICKBACK",
     extraTitles: [],
-    tags: await fetchTagsId(["米津玄師", "KICK BACK"]),
+    tags: await findTagIds(["米津玄師", "KICK BACK"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm41290210"),
   },
   {
     primaryTitle: "マイヤヒーのうわさ",
     extraTitles: [],
-    tags: await fetchTagsId(["ドナルド・マクドナルド"]),
+    tags: await findTagIds(["ドナルド・マクドナルド"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm36859588"),
   },
   {
     primaryTitle: "All We Need",
     extraTitles: [],
-    tags: await fetchTagsId(["少女終末旅行", "More One Night", "ODESZA - All We Need ft. Shy Girls (Haywyre Remix)"]),
+    tags: await findTagIds(["少女終末旅行", "More One Night", "ODESZA - All We Need ft. Shy Girls (Haywyre Remix)"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm41069341"),
   },
@@ -604,147 +709,147 @@ const videos = [
   {
     primaryTitle: "小林さんちのメイドラゴンS Blu-ray & DVDisco",
     extraTitles: [],
-    tags: await fetchTagsId(["YO-KAI Disco", "小林さんちのメイドラゴンS", "BLU-RAY Discシリーズ"]),
+    tags: await findTagIds(["YO-KAI Disco", "小林さんちのメイドラゴンS", "BLU-RAY Discシリーズ"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm39199583"),
   },
   {
     primaryTitle: "私に天使が舞い降りた完全新作アニメ劇場公開決定Disco",
     extraTitles: [],
-    tags: await fetchTagsId(["YO-KAI Disco", "私に天使が舞い降りた！", "BLU-RAY Discシリーズ", "星野みやこ"]),
+    tags: await findTagIds(["YO-KAI Disco", "私に天使が舞い降りた！", "BLU-RAY Discシリーズ", "星野みやこ"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm39188862"),
   },
   {
     primaryTitle: "【咲-saki-全国編】BLU-RAY Disc",
     extraTitles: [],
-    tags: await fetchTagsId(["YO-KAI Disco", "愛宕洋榎", "BLU-RAY Discシリーズ", "咲-saki- 全国編"]),
+    tags: await findTagIds(["YO-KAI Disco", "愛宕洋榎", "BLU-RAY Discシリーズ", "咲-saki- 全国編"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm23628070"),
   },
   {
     primaryTitle: "【ゆゆ式】BLU-RAY Disc",
     extraTitles: [],
-    tags: await fetchTagsId(["YO-KAI Disco", "ゆゆ式", "BLU-RAY Discシリーズ", "日向縁"]),
+    tags: await findTagIds(["YO-KAI Disco", "ゆゆ式", "BLU-RAY Discシリーズ", "日向縁"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm23657484"),
   },
   {
     primaryTitle: "連続和了 Disco",
     extraTitles: [],
-    tags: await fetchTagsId(["YO-KAI Disco", "BLU-RAY Discシリーズ"]),
+    tags: await findTagIds(["YO-KAI Disco", "BLU-RAY Discシリーズ"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm28053934"),
   },
   {
     primaryTitle: "【超次元ゲイムネプテューヌ】BLU-RAY Disc",
     extraTitles: [],
-    tags: await fetchTagsId(["YO-KAI Disco", "BLU-RAY Discシリーズ", "超次元ゲイムネプテューヌ"]),
+    tags: await findTagIds(["YO-KAI Disco", "BLU-RAY Discシリーズ", "超次元ゲイムネプテューヌ"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm23752177"),
   },
   {
     primaryTitle: "【イカ娘】BLU-RAY Disc",
     extraTitles: [],
-    tags: await fetchTagsId(["YO-KAI Disco", "BLU-RAY Discシリーズ"]),
+    tags: await findTagIds(["YO-KAI Disco", "BLU-RAY Discシリーズ"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm23750111"),
   },
   {
     primaryTitle: "Luv the BLUe berric??",
     extraTitles: [],
-    tags: await fetchTagsId(["ブルーベリーシリーズ", "ストライクウィッチーズ", "Luv the lUNatic??"]),
+    tags: await findTagIds(["ブルーベリーシリーズ", "ストライクウィッチーズ", "Luv the lUNatic??"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm39829973"),
   },
   {
     primaryTitle: "Luv the MCDonaLD??",
     extraTitles: [],
-    tags: await fetchTagsId(["ドナルド・マクドナルド", "Luv the lUNatic??"]),
+    tags: await findTagIds(["ドナルド・マクドナルド", "Luv the lUNatic??"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm38789330"),
   },
   {
     primaryTitle: "Luv the SORamimic??",
     extraTitles: [],
-    tags: await fetchTagsId(["Luv the lUNatic??"]),
+    tags: await findTagIds(["Luv the lUNatic??"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm38408933"),
   },
   {
     primaryTitle: "6月3日ﾆﾁﾖｳﾋﾞﾆ!",
     extraTitles: [],
-    tags: await fetchTagsId(["Luv the lUNatic??"]),
+    tags: await findTagIds(["Luv the lUNatic??"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm38757330"),
   },
   {
     primaryTitle: "Luv the bROcCOlic??",
     extraTitles: [],
-    tags: await fetchTagsId(["Luv the lUNatic??"]),
+    tags: await findTagIds(["Luv the lUNatic??"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm38457760"),
   },
   {
     primaryTitle: "luv the nintendonotanoshimihamugendaidesu??",
     extraTitles: [],
-    tags: await fetchTagsId(["Luv the lUNatic??"]),
+    tags: await findTagIds(["Luv the lUNatic??"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm38514788"),
   },
   {
     primaryTitle: "ミスティック・ブルーベリー",
     extraTitles: [],
-    tags: await fetchTagsId(["ブルーベリーシリーズ", "ストライクウィッチーズ", "ミスティック・ガール"]),
+    tags: await findTagIds(["ブルーベリーシリーズ", "ストライクウィッチーズ", "ミスティック・ガール"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm37722279"),
   },
   {
     primaryTitle: "いっしょにメイドインワリオ　イッショニーのテーマ",
     extraTitles: [],
-    tags: await fetchTagsId(["アシュリーのテーマ", "いっしょにシリーズ"]),
+    tags: await findTagIds(["アシュリーのテーマ", "いっしょにシリーズ"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm34563179"),
   },
   {
     primaryTitle: "ラグ最終痴漢電車",
     extraTitles: [],
-    tags: await fetchTagsId(["ラグトレイン", "いっしょにシリーズ"]),
+    tags: await findTagIds(["ラグトレイン", "いっしょにシリーズ"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm39358316"),
   },
   {
     primaryTitle: "マクドメカニズム",
     extraTitles: [],
-    tags: await fetchTagsId(["ドナルド・マクドナルド", "マッドメカニズム"]),
+    tags: await findTagIds(["ドナルド・マクドナルド", "マッドメカニズム"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm40949648"),
   },
   {
     primaryTitle: "アラーっぽいな",
     extraTitles: [],
-    tags: await fetchTagsId(["ドナルド・マクドナルド", "神っぽいな"]),
+    tags: await findTagIds(["ドナルド・マクドナルド", "神っぽいな"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm40074046"),
   },
   {
     primaryTitle: "各駅停車で旅をして",
     extraTitles: [],
-    tags: await fetchTagsId(["ラグトレイン", "少女終末旅行"]),
+    tags: await findTagIds(["ラグトレイン", "少女終末旅行"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm39702443"),
   },
   {
     primaryTitle: "物売るっていうレベル5-judgelight-",
     extraTitles: [],
-    tags: await fetchTagsId(["物売るっていうレベルじゃねぇぞ！", "とある科学の超電磁砲", "LEVEL5-judgelight-"]),
+    tags: await findTagIds(["物売るっていうレベルじゃねぇぞ！", "とある科学の超電磁砲", "LEVEL5-judgelight-"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm36532704"),
   },
   {
     primaryTitle: "雛見沢症候群　LEVEL5 -judgelight-",
     extraTitles: [],
-    tags: await fetchTagsId([
+    tags: await findTagIds([
       "物売るっていうレベルじゃねぇぞ！",
       "LEVEL5-judgelight-",
       "とある科学の超電磁砲",
@@ -756,63 +861,63 @@ const videos = [
   {
     primaryTitle: "Minm Control.Zunboy",
     extraTitles: [],
-    tags: await fetchTagsId(["クッキー☆", "真夏の夜の淫夢", "Zomboy - Mind Control"]),
+    tags: await findTagIds(["クッキー☆", "真夏の夜の淫夢", "Zomboy - Mind Control"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm24820469"),
   },
   {
     primaryTitle: "ラグとレイン",
     extraTitles: [],
-    tags: await fetchTagsId(["ラグトレイン", "serial experiments lain"]),
+    tags: await findTagIds(["ラグトレイン", "serial experiments lain"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm39283556"),
   },
   {
     primaryTitle: "Raise Your Cookies.mp4",
     extraTitles: [],
-    tags: await fetchTagsId(["クッキー☆"]),
+    tags: await findTagIds(["クッキー☆"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm24102888"),
   },
   {
     primaryTitle: "ドS妖怪前線 ver2",
     extraTitles: [],
-    tags: await fetchTagsId(["ブレンド・S", "遠野妖怪前線", "リゼリスペクト"]),
+    tags: await findTagIds(["ブレンド・S", "遠野妖怪前線", "リゼリスペクト"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm38132036"),
   },
   {
     primaryTitle: "紗路妖怪前線",
     extraTitles: [],
-    tags: await fetchTagsId(["ご注文はうさぎですか？", "遠野妖怪前線", "リゼリスペクト"]),
+    tags: await findTagIds(["ご注文はうさぎですか？", "遠野妖怪前線", "リゼリスペクト"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm36671690"),
   },
   {
     primaryTitle: "遠野道化前線",
     extraTitles: [],
-    tags: await fetchTagsId(["ドナルド・マクドナルド", "遠野妖怪前線"]),
+    tags: await findTagIds(["ドナルド・マクドナルド", "遠野妖怪前線"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm40843640"),
   },
   {
     primaryTitle: "高音厨音域ティンコ",
     extraTitles: [],
-    tags: await fetchTagsId(["真島茂樹", "高音厨音域テスト"]),
+    tags: await findTagIds(["真島茂樹", "高音厨音域テスト"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm41042641"),
   },
   {
     primaryTitle: "Magical Myaa-Nee Tour 2019",
     extraTitles: [],
-    tags: await fetchTagsId(["私に天使が舞い降りた！", "星野ひなた", "Magical Higan Tour 2009"]),
+    tags: await findTagIds(["私に天使が舞い降りた！", "星野ひなた", "Magical Higan Tour 2009"]),
     sources: [],
     primaryThumbnail: await getthumbnail("sm36264241"),
   },
   {
     primaryTitle: "この音、フラットゾーンで使えるかな",
     extraTitles: [],
-    tags: await fetchTagsId([
+    tags: await findTagIds([
       "フラットゾーン",
       "ぼっち・ざ・ろっく！",
       "後藤ひとり",
@@ -826,7 +931,7 @@ const videos = [
   {
     primaryTitle: "ドウモー・プランクトン・ゴトウデス",
     extraTitles: [],
-    tags: await fetchTagsId([
+    tags: await findTagIds([
       "トウキョウ・シャンディ・ランデヴ",
       "ぼっち・ざ・ろっく！",
       "後藤ひとり",
@@ -859,7 +964,7 @@ for (const video of videos) {
 
 const querySearchVideos = `
 query($query: String!){
-  searchVideos(query: $query) {
+  searchVideos(input:{query:$query,limit:1}) {
     result {
       video {
         id
@@ -900,7 +1005,7 @@ for (let i = 1; i <= 10; i++) {
       schema,
       contextValue: {},
       variableValues: { query: videos[i].primaryTitle },
-    }).then(({ data }) => (data?.searchVideos as { result: { video: { id: string } }[] }).result.at(0)?.video.id);
+    }).then((result) => (result.data?.searchVideos as { result: { video: { id: string } }[] }).result.at(0)?.video.id);
     if (!videoId) continue;
     await graphql({
       source: mutationLikeVideo,
