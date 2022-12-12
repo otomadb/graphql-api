@@ -3,7 +3,7 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource, In } from "typeorm";
 import { ulid } from "ulid";
 
-import { NicovideoSource } from "../../db/entities/nicovideo_source.js";
+import { NicovideoVideoSource } from "../../db/entities/nicovideo_source.js";
 import { Tag } from "../../db/entities/tags.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { VideoThumbnail } from "../../db/entities/video_thumbnails.js";
@@ -74,7 +74,7 @@ export const registerVideo =
     });
 
     const nicovideoSources = nicovideoSourceIds.map((id) => {
-      const s = new NicovideoSource();
+      const s = new NicovideoVideoSource();
       s.id = ulid();
       s.video = video;
       s.sourceId = id.toLowerCase();
@@ -86,7 +86,7 @@ export const registerVideo =
       await manager.getRepository(VideoTitle).insert(titles);
       await manager.getRepository(VideoThumbnail).insert(primaryThumbnail);
       await manager.getRepository(VideoTag).insert(videoTags);
-      await manager.getRepository(NicovideoSource).insert(nicovideoSources);
+      await manager.getRepository(NicovideoVideoSource).insert(nicovideoSources);
     });
 
     await registerVideoInNeo4j(neo4jDriver)(video.id, { tagIds: tags.map(({ id }) => id) });

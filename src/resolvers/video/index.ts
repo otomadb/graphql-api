@@ -2,7 +2,7 @@ import { GraphQLError } from "graphql";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource, In } from "typeorm";
 
-import { NicovideoSource } from "../../db/entities/nicovideo_source.js";
+import { NicovideoVideoSource } from "../../db/entities/nicovideo_source.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { VideoThumbnail } from "../../db/entities/video_thumbnails.js";
 import { VideoTitle as VideoTitleEntity } from "../../db/entities/video_titles.js";
@@ -89,7 +89,7 @@ export const resolveVideo = ({
 
   nicovideoSources: async ({ id: videoId }) =>
     dataSource
-      .getRepository(NicovideoSource)
+      .getRepository(NicovideoVideoSource)
       .find({ where: { video: { id: videoId } }, relations: { video: true } })
       .then((ss) =>
         ss.map(({ id, sourceId, video }) => new NicovideoVideoSourceModel({ id, sourceId, videoId: video.id }))
