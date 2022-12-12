@@ -7,6 +7,7 @@ import { VideoTag } from "../../db/entities/video_tags.js";
 import { TagModel, VideoModel } from "../../graphql/models.js";
 import { Resolvers, TagType } from "../../graphql/resolvers.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
+import { resolvePseudoType } from "./pseudoType.js";
 
 export const resolveId = ({ id }: TagModel): string => addIDPrefix(ObjectType.Tag, id);
 export const resolveHistory = () => ({ nodes: [] });
@@ -14,6 +15,7 @@ export const resolveHistory = () => ({ nodes: [] });
 export const resolveTag = ({ dataSource }: { dataSource: DataSource }): Resolvers["Tag"] => ({
   id: resolveId,
   type: () => TagType.Material,
+  pseudoType: resolvePseudoType({ dataSource }),
 
   names: async ({ id: tagId }) => {
     const names = await dataSource.getRepository(TagName).find({
