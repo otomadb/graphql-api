@@ -1,6 +1,6 @@
 import { MylistRegistration } from "./mylist_registrations.js";
 import { Mylist } from "./mylists.js";
-import { NicovideoSource } from "./nicovideo_source.js";
+import { NicovideoVideoSource } from "./nicovideo_source.js";
 import { Session } from "./sessions.js";
 import { TagName } from "./tag_names.js";
 import { TagParent } from "./tag_parents.js";
@@ -25,5 +25,5 @@ export const entities = [
   Video,
   Mylist,
   MylistRegistration,
-  NicovideoSource,
+  NicovideoVideoSource,
 ];

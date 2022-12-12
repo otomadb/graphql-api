@@ -1,7 +1,7 @@
 import { CreateDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from "typeorm";
 import { type Relation } from "typeorm";
 
-import { NicovideoSource } from "./nicovideo_source.js";
+import { NicovideoVideoSource } from "./nicovideo_source.js";
 import { VideoTag } from "./video_tags.js";
 import { VideoThumbnail } from "./video_thumbnails.js";
 import { VideoTitle } from "./video_titles.js";
@@ -26,6 +26,6 @@ export class Video {
   @OneToMany(() => VideoTitle, (title) => title.video)
   titles!: Relation<VideoTitle[]>;
 
-  @OneToMany(() => NicovideoSource, (source) => source.video)
-  nicovideoSources!: Relation<NicovideoSource[]>;
+  @OneToMany(() => NicovideoVideoSource, (source) => source.video)
+  nicovideoSources!: Relation<NicovideoVideoSource[]>;
 }

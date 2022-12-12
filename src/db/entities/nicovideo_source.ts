@@ -3,9 +3,9 @@ import { type Relation } from "typeorm";
 
 import { Video } from "./videos.js";
 
-@Entity("nicovideo_source")
+@Entity("nicovideo_video_source")
 @Unique(["video"])
-export class NicovideoSource {
+export class NicovideoVideoSource {
   @PrimaryColumn("varchar", { length: 26 })
   id!: string;
 
