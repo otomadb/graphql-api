@@ -218,7 +218,7 @@ type Tag {
   history(input: TagHistoryInput!): TagHistoryCollection!
 
   explicitParent: Tag
-  parents: [TagParent!]!
+  parents(meaningless: Boolean): [TagParent!]!
   meaningless: Boolean!
 }
 
