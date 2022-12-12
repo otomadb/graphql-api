@@ -21,8 +21,10 @@ export function removeIDPrefix(type: ObjectType, id: string): string {
   return splitted[1];
 }
 
-export function parseGqlID(type: "tag", rawId: string): string | null {
-  const separated = rawId.split(":");
+type NodeType = "tag" | "nicovideoVideoSource";
+export const buildGqlId = (type: NodeType, dbId: string): string => `${type}:${dbId}`;
+export function parseGqlID(type: NodeType, gqlId: string): string | null {
+  const separated = gqlId.split(":");
   if (separated.length !== 2) return null;
 
   const [t, i] = separated;

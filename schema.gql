@@ -20,8 +20,8 @@ type Query {
   user(name: String!): User!
   whoami: User!
 
-  niconicoSource(id: ID!): NiconicoSource!
-  findNiconicoSource(id: ID!): NiconicoSource
+  nicovideoVideoSource(sourceId: ID): NicovideoVideoSource!
+  findNicovideoVideoSource(sourceId: ID!): NicovideoVideoSource
 }
 
 type Mutation {
@@ -51,6 +51,8 @@ type Video {
   history(input: VideoHistoryInput!): VideoHistoryCollection!
   registeredAt: DateTime!
   similarVideos(input: VideoSimilarVideosInput!): VideoSimilarVideosPayload!
+
+  nicovideoSources: [NicovideoVideoSource!]!
 }
 
 type VideoTitle {
@@ -64,17 +66,23 @@ type VideoThumbnail {
 }
 
 interface VideoSource {
-  videoId: String!
+  id: String!
+  sourceId: String!
   url: String!
+  video: Video!
 }
 
-type NiconicoVideoSource implements VideoSource {
-  videoId: String!
+type NicovideoVideoSource implements VideoSource {
+  id: String!
+  sourceId: String!
+  video: Video!
   url: String!
 }
 
 type YoutubeVideoSource implements VideoSource {
-  videoId: String!
+  id: String!
+  sourceId: String!
+  video: Video!
   url: String!
 }
 
@@ -172,12 +180,13 @@ type VideoDeleteTagHistoryItem implements VideoHistoryItem {
   tag: Tag!
 }
 
-type VideoAddNiconicoSourceHistoryItem implements VideoHistoryItem {
+type VideoAddNicovideoVideoSourceHistoryItem implements VideoHistoryItem {
   id: ID!
   user: User!
   createdAt: DateTime!
   video: Video!
-  niconico: NiconicoSource!
+
+  source: NicovideoVideoSource!
 }
 
 input GetVideosInput {
@@ -438,11 +447,6 @@ input TagVideoInput {
 input UntagVideoInput {
   videoId: ID!
   tagId: ID!
-}
-
-type NiconicoSource {
-  id: ID!
-  video: Video
 }
 
 type Mylist {

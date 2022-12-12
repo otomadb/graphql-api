@@ -2,11 +2,12 @@ import { GraphQLError } from "graphql";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource, In } from "typeorm";
 
+import { NicovideoSource } from "../../db/entities/nicovideo_source.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { VideoThumbnail } from "../../db/entities/video_thumbnails.js";
 import { VideoTitle as VideoTitleEntity } from "../../db/entities/video_titles.js";
 import { Video } from "../../db/entities/videos.js";
-import { TagModel, VideoModel } from "../../graphql/models.js";
+import { NicovideoVideoSourceModel, TagModel, VideoModel } from "../../graphql/models.js";
 import { Resolvers } from "../../graphql/resolvers.js";
 import { calcVideoSimilarities } from "../../neo4j/video_similarities.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
@@ -85,4 +86,12 @@ export const resolveVideo = ({
 
     return { items };
   },
+
+  nicovideoSources: async ({ id: videoId }) =>
+    dataSource
+      .getRepository(NicovideoSource)
+      .find({ where: { video: { id: videoId } }, relations: { video: true } })
+      .then((ss) =>
+        ss.map(({ id, sourceId, video }) => new NicovideoVideoSourceModel({ id, sourceId, videoId: video.id }))
+      ),
 });
