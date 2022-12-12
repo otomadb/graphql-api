@@ -3,16 +3,18 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource, In } from "typeorm";
 import { ulid } from "ulid";
 
+import { NicovideoSource } from "../../db/entities/nicovideo_source.js";
 import { Tag } from "../../db/entities/tags.js";
-import { VideoSource } from "../../db/entities/video_sources.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { VideoThumbnail } from "../../db/entities/video_thumbnails.js";
 import { VideoTitle } from "../../db/entities/video_titles.js";
 import { Video } from "../../db/entities/videos.js";
 import { VideoModel } from "../../graphql/models.js";
-import { MutationResolvers } from "../../graphql/resolvers.js";
+import { MutationResolvers, RegisterVideoInputSourceType } from "../../graphql/resolvers.js";
 import { registerVideo as registerVideoInNeo4j } from "../../neo4j/register_video.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
+
+export const isValidNicovideoSourceId = (id: string): boolean => /[a-z]{2}\d+/.test(id);
 
 export const registerVideo =
   ({
@@ -23,6 +25,15 @@ export const registerVideo =
     neo4jDriver: Neo4jDriver;
   }): MutationResolvers["registerVideo"] =>
   async (_parent, { input }) => {
+    // validity check
+    const nicovideoSourceIds = input.sources
+      .filter((v) => v.type === RegisterVideoInputSourceType.Nicovideo)
+      .map(({ sourceId }) => sourceId.toLocaleLowerCase());
+
+    for (const id of nicovideoSourceIds) {
+      if (!isValidNicovideoSourceId(id)) throw new GraphQLError(`"${id}" is invalid source id for niconico source`);
+    }
+
     const video = new Video();
     video.id = ulid();
     const titles: VideoTitle[] = [];
@@ -47,17 +58,6 @@ export const registerVideo =
     primaryThumbnail.imageUrl = input.primaryThumbnail;
     primaryThumbnail.video = video;
     primaryThumbnail.primary = true;
-    const sources = input.sources.map((source) => {
-      const s = new VideoSource();
-      s.id = ulid();
-      s.video = video;
-      if (source.type !== "NICOVIDEO") {
-        throw new Error("TODO: Add source type to VideoSource");
-      }
-      s.source = source.type;
-      s.sourceVideoId = source.sourceId;
-      return s;
-    });
 
     const tags = await dataSource
       .getRepository(Tag)
@@ -73,17 +73,21 @@ export const registerVideo =
       return videoTag;
     });
 
+    const nicovideoSources = nicovideoSourceIds.map((id) => {
+      const s = new NicovideoSource();
+      s.id = ulid();
+      s.video = video;
+      s.sourceId = id.toLowerCase();
+      return s;
+    });
+
     await dataSource.transaction(async (manager) => {
       await manager.getRepository(Video).insert(video);
       await manager.getRepository(VideoTitle).insert(titles);
       await manager.getRepository(VideoThumbnail).insert(primaryThumbnail);
-      await manager.getRepository(VideoSource).insert(sources);
       await manager.getRepository(VideoTag).insert(videoTags);
+      await manager.getRepository(NicovideoSource).insert(nicovideoSources);
     });
-
-    video.titles = titles;
-    video.thumbnails = [primaryThumbnail];
-    video.sources = sources;
 
     await registerVideoInNeo4j(neo4jDriver)(video.id, { tagIds: tags.map(({ id }) => id) });
 
