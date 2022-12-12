@@ -20,7 +20,7 @@ type Query {
   user(name: String!): User!
   whoami: User!
 
-  nicovideoVideoSource(sourceId: ID): NicovideoVideoSource!
+  nicovideoVideoSource(sourceId: ID!): NicovideoVideoSource!
   findNicovideoVideoSource(sourceId: ID!): NicovideoVideoSource
 }
 
