@@ -440,7 +440,7 @@ const videos = [
     primaryTitle: "M.C.ドナルドはダンスに夢中なのか？最終鬼畜道化師ドナルド・Ｍ",
     extraTitles: ["Ronald McDonald insanity"],
     tags: () => findTagIds(["ドナルド・マクドナルド", "U.N.オーエンは彼女なのか？", "最終鬼畜妹フランドール・S"]),
-    sources: [],
+    sources: [{ type: "NICOVIDEO", sourceId: "sm2057168" }],
     primaryThumbnail: await getthumbnail("sm2057168"),
   },
   {
@@ -456,43 +456,42 @@ const videos = [
         "ドナルド・マクドナルド",
         "真島茂樹",
       ]),
-    sources: [],
+    sources: [{ type: "NICOVIDEO", sourceId: "sm35331606" }],
     primaryThumbnail: await getthumbnail("sm35331606"),
   },
   {
     primaryTitle: "ノリノリなドンタコス",
     extraTitles: [],
     tags: () => findTagIds(["AIN'T NOTHING LIKE A FUNKY BEAT", "ドンタコス"]),
-    sources: [],
+    sources: [{ type: "NICOVIDEO", sourceId: "sm41483073" }],
     primaryThumbnail: await getthumbnail("sm41483073"),
   },
   {
     primaryTitle: "R.P.カリアはラブホなのか？",
     extraTitles: [],
     tags: () => findTagIds(["U.N.オーエンは彼女なのか？", "ドナルド・マクドナルド"]),
-    sources: [],
+    sources: [{ type: "NICOVIDEO", sourceId: "sm41245677" }],
     primaryThumbnail: await getthumbnail("sm41245677"),
   },
   {
     primaryTitle: "why did i enter the KICK BACK",
     extraTitles: [],
     tags: () => findTagIds(["米津玄師", "KICK BACK", "momone - why did i enter the art course"]),
-    sources: [],
-
+    sources: [{ type: "NICOVIDEO", sourceId: "sm41415426" }],
     primaryThumbnail: await getthumbnail("sm41415426"),
   },
   {
     primaryTitle: "縁妖怪前線",
     extraTitles: [],
     tags: () => findTagIds(["日向縁", "遠野妖怪前線", "リゼリスペクト"]),
-    sources: [],
+    sources: [{ type: "NICOVIDEO", sourceId: "sm35936521" }],
     primaryThumbnail: await getthumbnail("sm35936521"),
   },
   {
     primaryTitle: "小倉妖怪前線",
     extraTitles: [],
     tags: () => findTagIds(["ドナルド・マクドナルド", "遠野妖怪前線", "リゼリスペクト"]),
-    sources: [],
+    sources: [{ type: "NICOVIDEO", sourceId: "sm36970839" }],
     primaryThumbnail: await getthumbnail("sm36970839"),
   },
   {
@@ -500,7 +499,7 @@ const videos = [
     extraTitles: [],
     tags: () =>
       findTagIds(["TRIGGER★HAPPY", "ぼっち・ざ・ろっく！", "後藤ひとり", "伊地知虹夏", "山田リョウ", "喜多郁代"]),
-    sources: [],
+    sources: [{ type: "NICOVIDEO", sourceId: "sm41452822" }],
     primaryThumbnail: await getthumbnail("sm41452822"),
   },
   {

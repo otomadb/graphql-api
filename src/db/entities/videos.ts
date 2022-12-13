@@ -1,7 +1,7 @@
 import { CreateDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from "typeorm";
 import { type Relation } from "typeorm";
 
-import { VideoSource } from "./video_sources.js";
+import { NicovideoVideoSource } from "./nicovideo_source.js";
 import { VideoTag } from "./video_tags.js";
 import { VideoThumbnail } from "./video_thumbnails.js";
 import { VideoTitle } from "./video_titles.js";
@@ -17,9 +17,6 @@ export class Video {
   @UpdateDateColumn({ type: "timestamptz" })
   readonly updatedAt!: Date;
 
-  @OneToMany(() => VideoSource, (source) => source.video)
-  sources!: Relation<VideoSource[]>;
-
   @OneToMany(() => VideoTag, (videoTag) => videoTag.video)
   videoTags!: Relation<VideoTag[]>;
 
@@ -28,4 +25,7 @@ export class Video {
 
   @OneToMany(() => VideoTitle, (title) => title.video)
   titles!: Relation<VideoTitle[]>;
+
+  @OneToMany(() => NicovideoVideoSource, (source) => source.video)
+  nicovideoSources!: Relation<NicovideoVideoSource[]>;
 }
