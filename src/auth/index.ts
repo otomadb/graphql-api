@@ -12,14 +12,38 @@ import { User } from "../db/entities/users.js";
 export const handlerSignup =
   ({ dataSource }: { dataSource: DataSource }): Middleware =>
   async (ctx) => {
-    const { name, displayName, email, password } = z
-      .object({
-        name: z.string(),
-        displayName: z.string(),
-        email: z.string(),
-        password: z.string(),
-      })
-      .parse(ctx.request.body);
+    const parseRequest = z
+      .object({ name: z.string(), displayName: z.string(), email: z.string(), password: z.string() })
+      .safeParse(ctx.request.body);
+
+    if (!parseRequest.success) {
+      ctx.status = 400;
+      ctx.body = { code: "INVALID_REQUEST" };
+      return;
+    }
+    const { name, displayName, email, password } = parseRequest.data;
+
+    if (
+      await dataSource
+        .getRepository(User)
+        .findOne({ where: { name } })
+        .then((v) => !!v)
+    ) {
+      ctx.status = 400;
+      ctx.body = { code: "USER_NAME_ALREADY_REGISTERED" };
+      return;
+    }
+
+    if (
+      await dataSource
+        .getRepository(User)
+        .findOne({ where: { email } })
+        .then((v) => !!v)
+    ) {
+      ctx.status = 400;
+      ctx.body = { code: "EMAIL_ALREADY_REGISTERED" };
+      return;
+    }
 
     const passwordHash = await argon2.hash(password, {
       type: 2,
@@ -27,7 +51,6 @@ export const handlerSignup =
       timeCost: 2,
       parallelism: 1,
     });
-
     const user = new User();
     user.id = ulid();
     user.name = name;
