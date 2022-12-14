@@ -14,7 +14,7 @@ import neo4j from "neo4j-driver";
 import { DataSource } from "typeorm";
 import { z } from "zod";
 
-import { handlerSignin, handlerSignup } from "./auth/index.js";
+import { handlerSignin, handlerSignout, handlerSignup } from "./auth/index.js";
 import { getUserFromSession } from "./auth/session.js";
 import { Context } from "./context.js";
 import { entities } from "./db/entities/index.js";
@@ -54,6 +54,7 @@ const schema = makeExecutableSchema({
 
 router.post("/auth/signup", handlerSignup({ dataSource }));
 router.post("/auth/login", handlerSignin({ dataSource }));
+router.post("/auth/logout", handlerSignout());
 
 router.post("/graphql", async (ctx) => {
   // まずは Cookie からセッションを取る、取れなければ Authorization ヘッダーから取る、形式は `Authorization: Bearer session_token`
