@@ -9,6 +9,19 @@ import { Mylist, MylistShareRange } from "../db/entities/mylists.js";
 import { Session } from "../db/entities/sessions.js";
 import { User } from "../db/entities/users.js";
 
+export const createSession = async (ds: DataSource, user: User) => {
+  const secret = randomBytes(32).toString("hex");
+
+  const session = new Session();
+  session.id = ulid();
+  session.user = user;
+  session.secret = createHash("sha256").update(secret).digest("hex");
+  session.expiredAt = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000 /* 10 days */);
+
+  await ds.getRepository(Session).insert(session);
+  return { id: session.id, secret };
+};
+
 export const handlerSignup =
   ({ dataSource }: { dataSource: DataSource }): Middleware =>
   async (ctx) => {
@@ -71,6 +84,12 @@ export const handlerSignup =
       isLikeList: true,
     });
 
+    const session = await createSession(dataSource, user);
+    ctx.cookies.set("otmd-session", `${session.id}-${session.secret}`, {
+      httpOnly: true,
+      secure: ctx.secure,
+      sameSite: "strict",
+    });
     ctx.body = { id: user.id };
   };
 
