@@ -6,7 +6,7 @@ import { TagParent } from "../../db/entities/tag_parents.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { TagModel, VideoModel } from "../../graphql/models.js";
 import { Resolvers, TagType } from "../../graphql/resolvers.js";
-import { addIDPrefix, ObjectType } from "../../utils/id.js";
+import { addIDPrefix, ObjectType, parseGqlID } from "../../utils/id.js";
 import { resolvePseudoType } from "./pseudoType.js";
 
 export const resolveId = ({ id }: TagModel): string => addIDPrefix(ObjectType.Tag, id);
@@ -65,4 +65,14 @@ export const resolveTag = ({ dataSource }: { dataSource: DataSource }): Resolver
   },
 
   history: resolveHistory,
+
+  canTagTo: async ({ id: tagId }, { id: videoGqlId }) => {
+    const videoId = parseGqlID("video", videoGqlId);
+    if (!videoId) throw new GraphQLError(`"${videoGqlId}" is invalid for video id`);
+
+    return dataSource
+      .getRepository(VideoTag)
+      .findOne({ where: { tag: { id: tagId }, video: { id: videoId } } })
+      .then((v) => !v);
+  },
 });
