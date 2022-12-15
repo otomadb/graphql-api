@@ -18,7 +18,7 @@ type Query {
   searchTags(input: SearchTagInput!): SearchTagsPayload!
 
   user(name: String!): User!
-  whoami: User!
+  whoami: User
 
   nicovideoVideoSource(sourceId: ID!): NicovideoVideoSource!
   findNicovideoVideoSource(sourceId: ID!): NicovideoVideoSource
