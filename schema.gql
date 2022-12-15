@@ -230,6 +230,8 @@ type Tag {
   explicitParent: Tag
   parents(meaningless: Boolean): [TagParent!]!
   meaningless: Boolean!
+
+  canTagTo(id: ID!): Boolean!
 }
 
 input TagHistoryInput {
