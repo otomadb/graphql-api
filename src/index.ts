@@ -14,8 +14,10 @@ import neo4j from "neo4j-driver";
 import { DataSource } from "typeorm";
 import { z } from "zod";
 
-import { handlerSignin, handlerSignout, handlerSignup } from "./auth/index.js";
-import { getUserFromSession } from "./auth/session.js";
+import { getUserFromSession } from "./auth/getUserFromSession.js";
+import { handlerSignin } from "./auth/signin.js";
+import { handlerSignout } from "./auth/signout.js";
+import { handlerSignup } from "./auth/signup.js";
 import { Context } from "./context.js";
 import { entities } from "./db/entities/index.js";
 import { resolvers } from "./resolvers/index.js";

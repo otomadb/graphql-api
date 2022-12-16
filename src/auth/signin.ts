@@ -5,51 +5,8 @@ import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 import { z } from "zod";
 
-import { Mylist, MylistShareRange } from "../db/entities/mylists.js";
 import { Session } from "../db/entities/sessions.js";
 import { User } from "../db/entities/users.js";
-
-export const handlerSignup =
-  ({ dataSource }: { dataSource: DataSource }): Middleware =>
-  async (ctx) => {
-    const { name, displayName, email, password } = z
-      .object({
-        name: z.string(),
-        displayName: z.string(),
-        email: z.string(),
-        password: z.string(),
-      })
-      .parse(ctx.request.body);
-
-    const passwordHash = await argon2.hash(password, {
-      type: 2,
-      memoryCost: 15 * 1024,
-      timeCost: 2,
-      parallelism: 1,
-    });
-
-    const user = new User();
-    user.id = ulid();
-    user.name = name;
-    user.displayName = displayName;
-    user.email = email;
-    user.icon = "";
-    user.emailConfirmed = true; // FIXME: あとでなおす
-    user.password = passwordHash;
-
-    const userRepository = dataSource.getRepository(User);
-    await userRepository.insert(user);
-
-    await dataSource.getRepository(Mylist).insert({
-      id: ulid(),
-      title: `favorites for ${user.displayName}`,
-      range: MylistShareRange.PRIVATE,
-      holder: { id: user.id },
-      isLikeList: true,
-    });
-
-    ctx.body = { id: user.id };
-  };
 
 export const handlerSignin =
   ({ dataSource }: { dataSource: DataSource }): Middleware =>
@@ -94,16 +51,3 @@ export const handlerSignin =
 
     ctx.body = { id: user.id };
   };
-
-export const handlerSignout = (): Middleware => async (ctx) => {
-  const sessionId = ctx.cookies.get("otmd-session")?.split("-").at(0);
-  if (sessionId) {
-    // TODO: session expire
-  }
-  ctx.cookies.set("otmd-session", "", {
-    httpOnly: true,
-    secure: ctx.secure,
-    sameSite: "strict",
-  });
-  ctx.body = {};
-};
