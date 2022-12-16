@@ -6,10 +6,10 @@ import { ulid } from "ulid";
 import { Tag } from "../../db/entities/tags.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { Video } from "../../db/entities/videos.js";
-import { TagModel, UserModel, VideoModel } from "../../graphql/models.js";
+import { TagModel, VideoModel } from "../../graphql/models.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
 import { tagVideo as tagVideoInNeo4j } from "../../neo4j/tag_video.js";
-import { addIDPrefix, ObjectType, removeIDPrefix } from "../../utils/id.js";
+import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 
 export const tagVideo =
   ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }): MutationResolvers["tagVideo"] =>
@@ -35,10 +35,17 @@ export const tagVideo =
     await tagVideoInNeo4j(neo4jDriver)({ tagId: tag.id, videoId: video.id });
 
     return {
+      video: new VideoModel(videoTag.video),
+      tag: new TagModel(videoTag.tag),
+    };
+
+    /*
+    return {
       createdAt: new Date(),
       id: addIDPrefix(ObjectType.VideoTag, videoTag.id),
       tag: new TagModel(tag),
       user: new UserModel(user),
       video: new VideoModel(video),
     };
+    */
   };

@@ -28,8 +28,8 @@ type Mutation {
   registerTag(input: RegisterTagInput!): RegisterTagPayload!
   registerVideo(input: RegisterVideoInput!): RegisterVideoPayload!
 
-  tagVideo(input: TagVideoInput!): VideoAddTagHistoryItem!
-  untagVideo(input: UntagVideoInput!): VideoDeleteTagHistoryItem!
+  tagVideo(input: TagVideoInput!): TagVideoPayload!
+  untagVideo(input: UntagVideoInput!): UntagVideoPayload!
 
   createMylist(input: CreateMylistInput!): CreateMylistPayload!
 
@@ -446,9 +446,21 @@ input TagVideoInput {
   tagId: ID!
 }
 
+type TagVideoPayload {
+  video: Video!
+  tag: Tag!
+  # history: VideoAddTagHistoryItem!
+}
+
 input UntagVideoInput {
   videoId: ID!
   tagId: ID!
+}
+
+type UntagVideoPayload {
+  video: Video!
+  tag: Tag!
+  # history: VideoDeleteTagHistoryItem!
 }
 
 type Mylist {

@@ -3,10 +3,10 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 
 import { VideoTag } from "../../db/entities/video_tags.js";
-import { TagModel, UserModel, VideoModel } from "../../graphql/models.js";
+import { TagModel, VideoModel } from "../../graphql/models.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
 import { untagVideo as untagVideoInNeo4j } from "../../neo4j/untag_video.js";
-import { addIDPrefix, ObjectType, removeIDPrefix } from "../../utils/id.js";
+import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 
 export const untagVideo =
   ({
@@ -44,10 +44,17 @@ export const untagVideo =
     });
 
     return {
+      video: new VideoModel(videoTag.video),
+      tag: new TagModel(videoTag.tag),
+    };
+
+    /*
+    return {
       createdAt: new Date(),
       id: addIDPrefix(ObjectType.VideoTag, videoTag.id),
       tag: new TagModel(videoTag.tag),
       user: new UserModel(user),
       video: new VideoModel(videoTag.video),
     };
+    */
   };
