@@ -1,6 +1,7 @@
 import { DataSource } from "typeorm";
 
 import { type Resolvers } from "../../graphql/resolvers.js";
+import { findMylist } from "./find_mylist.js";
 import { findNicovideoVideoSource } from "./findNicovideoVideoSource.js";
 import { getMylist } from "./get_mylist.js";
 import { getTag } from "./get_tag.js";
@@ -22,6 +23,7 @@ export const resolveQuery = (deps: { dataSource: DataSource }): Resolvers["Query
   video: getVideo(deps),
   videos: getVideos(deps),
   mylist: getMylist(deps),
+  findMylist: findMylist(deps),
   whoami: whoami(),
   nicovideoVideoSource: getNicovideoVideoSource(deps),
   findNicovideoVideoSource: findNicovideoVideoSource(deps),
