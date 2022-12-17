@@ -1,3 +1,4 @@
+import { GraphQLError } from "graphql";
 import { DataSource, In, Like } from "typeorm";
 
 import { VideoTitle } from "../../db/entities/video_titles.js";
@@ -14,6 +15,8 @@ export const searchVideos =
       .where({ title: Like(`%${input.query}%`) })
       .leftJoinAndSelect("videoTitle.video", "videos")
       .distinctOn(["videoTitle.video.id"])
+      .skip(input.skip)
+      .limit(input.limit)
       .getMany();
 
     const videos = await dataSource.getRepository(Video).find({
@@ -23,7 +26,7 @@ export const searchVideos =
     return {
       result: videoTitles.map((t) => {
         const video = videos.find((v) => v.id === t.video.id);
-        if (!video) throw new Error(`Failed to find tag ${t.video.id}`);
+        if (!video) throw new GraphQLError(`Data inconcistency is occuring for "video:${t.video.id}"`);
         return {
           matchedTitle: t.title,
           video: new VideoModel(video),
