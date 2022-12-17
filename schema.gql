@@ -349,8 +349,8 @@ type TagChangePrimaryNameHistoryItem implements TagHistoryItem {
 
 input SearchVideoInput {
   query: String!
-  limit: Int = 10
-  skip: Int = 0
+  limit: Int! = 10
+  skip: Int! = 0
 }
 
 type SearchVideosPayload {
@@ -365,8 +365,8 @@ type SearchVideosResultItem {
 
 input SearchTagInput {
   query: String!
-  limit: Int = 10
-  skip: Int = 0
+  limit: Int! = 10
+  skip: Int! = 0
 }
 
 type SearchTagsPayload {
