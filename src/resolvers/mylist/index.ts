@@ -66,7 +66,7 @@ export const resolveMylist = ({
       .then((r) => !!r),
 
   recommendedVideos: async ({ id: videoId }, { input }) => {
-    const recommends = await calcRecommendedVideosByMylist(neo4jDriver)(videoId, { limit: input?.limit || 0 });
+    const recommends = await calcRecommendedVideosByMylist(neo4jDriver)(videoId, { limit: input.limit });
 
     const items = await dataSource
       .getRepository(Video)
@@ -82,7 +82,7 @@ export const resolveMylist = ({
   },
   includeTags: async ({ id: mylistId }, { input: { limit } }) => {
     try {
-      const neo4jResults = await calcMylistIncludeTags(neo4jDriver)(mylistId, { limit: limit || 0 });
+      const neo4jResults = await calcMylistIncludeTags(neo4jDriver)(mylistId, { limit });
 
       const items = await dataSource
         .getRepository(Tag)

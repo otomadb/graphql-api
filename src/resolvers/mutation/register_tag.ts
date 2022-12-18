@@ -55,14 +55,14 @@ export const registerTag =
       },
     }
   ) => {
-    const extraNames = extraNamesRaw || [];
+    const extraNames = extraNamesRaw;
 
     const explicitParentId = explicitParentRawId ? parseGqlID("tag", explicitParentRawId) : null;
     if (explicitParentRawId && !explicitParentId)
       throw new GraphQLError(`"${explicitParentRawId}" is invalid for tag id`);
 
     const implicitParentIds: string[] = [];
-    for (const implicitParentsRawId of implicitParentsRawIds || []) {
+    for (const implicitParentsRawId of implicitParentsRawIds) {
       const parsed = parseGqlID("tag", implicitParentsRawId);
       if (!parsed) throw new GraphQLError(`"${explicitParentRawId}" is invalid for tag id`);
       if (explicitParentId === parsed)
@@ -96,7 +96,7 @@ export const registerTag =
     const tag = new Tag();
     tag.id = ulid();
     tag.videoTags = [];
-    tag.meaningless = meaningless || false;
+    tag.meaningless = meaningless;
     await dataSource.transaction(async (manager) => {
       await manager.getRepository(Tag).insert(tag);
 
