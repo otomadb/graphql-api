@@ -128,7 +128,7 @@ describe("Mutation.registerTag", () => {
     test("primaryNameだけでタグを登録する", async () => {
       const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a" } },
+        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -168,7 +168,7 @@ describe("Mutation.registerTag", () => {
     test("meaninglessフラグを立てて登録する", async () => {
       const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", meaningless: true } },
+        { input: { primaryName: "a", meaningless: true, extraNames: [], implicitParents: [] } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -186,7 +186,7 @@ describe("Mutation.registerTag", () => {
     test("primaryNameとextraNamesで登録", async () => {
       const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: ["b"] } },
+        { input: { primaryName: "a", extraNames: ["b"], implicitParents: [], meaningless: false } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -239,7 +239,7 @@ describe("Mutation.registerTag", () => {
       /* already */
       const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a" } },
+        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -249,7 +249,7 @@ describe("Mutation.registerTag", () => {
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
-          { input: { primaryName: "a" } },
+          { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } },
           {} as Context,
           {} as GraphQLResolveInfo
         )
@@ -260,7 +260,7 @@ describe("Mutation.registerTag", () => {
       /* already */
       const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: ["A"] } },
+        { input: { primaryName: "a", extraNames: ["A"], implicitParents: [], meaningless: false } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -270,7 +270,7 @@ describe("Mutation.registerTag", () => {
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
-          { input: { primaryName: "A" } },
+          { input: { primaryName: "A", extraNames: [], implicitParents: [], meaningless: false } },
           {} as Context,
           {} as GraphQLResolveInfo
         )
@@ -281,7 +281,7 @@ describe("Mutation.registerTag", () => {
       /* already */
       const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a" } },
+        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -291,7 +291,7 @@ describe("Mutation.registerTag", () => {
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
-          { input: { primaryName: "b", extraNames: ["a"] } },
+          { input: { primaryName: "b", extraNames: ["a"], implicitParents: [], meaningless: false } },
           {} as Context,
           {} as GraphQLResolveInfo
         )
@@ -302,7 +302,7 @@ describe("Mutation.registerTag", () => {
       /* already */
       const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: ["A"] } },
+        { input: { primaryName: "a", extraNames: ["A"], implicitParents: [], meaningless: false } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -312,7 +312,7 @@ describe("Mutation.registerTag", () => {
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
-          { input: { primaryName: "b", extraNames: ["A"] } },
+          { input: { primaryName: "b", extraNames: ["A"], implicitParents: [], meaningless: false } },
           {} as Context,
           {} as GraphQLResolveInfo
         )
@@ -323,7 +323,15 @@ describe("Mutation.registerTag", () => {
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
-          { input: { primaryName: "a", explicitParent: "tag:p" } },
+          {
+            input: {
+              primaryName: "a",
+              explicitParent: "tag:p",
+              extraNames: [],
+              implicitParents: [],
+              meaningless: false,
+            },
+          },
           {} as Context,
           {} as GraphQLResolveInfo
         )
@@ -333,7 +341,7 @@ describe("Mutation.registerTag", () => {
     test("explicitParentだけを入れて登録する", async () => {
       const parentResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "p" } },
+        { input: { primaryName: "p", extraNames: [], implicitParents: [], meaningless: false } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -342,7 +350,15 @@ describe("Mutation.registerTag", () => {
 
       const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", explicitParent: `tag:${parentTag.id}` } },
+        {
+          input: {
+            primaryName: "a",
+            explicitParent: `tag:${parentTag.id}`,
+            extraNames: [],
+            implicitParents: [],
+            meaningless: false,
+          },
+        },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -399,7 +415,14 @@ describe("Mutation.registerTag", () => {
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
-          { input: { primaryName: "a", implicitParents: ["tag:p"] } },
+          {
+            input: {
+              primaryName: "a",
+              implicitParents: ["tag:p"],
+              extraNames: [],
+              meaningless: false,
+            },
+          },
           {} as Context,
           {} as GraphQLResolveInfo
         )
@@ -409,7 +432,7 @@ describe("Mutation.registerTag", () => {
     test("implicitParentsだけを入れて登録する", async () => {
       const parentResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "p" } },
+        { input: { primaryName: "p", extraNames: [], implicitParents: [], meaningless: false } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -418,7 +441,14 @@ describe("Mutation.registerTag", () => {
 
       const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", implicitParents: [`tag:${parentTag.id}`] } },
+        {
+          input: {
+            primaryName: "a",
+            implicitParents: [`tag:${parentTag.id}`],
+            extraNames: [],
+            meaningless: false,
+          },
+        },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -475,7 +505,15 @@ describe("Mutation.registerTag", () => {
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
-          { input: { primaryName: "a", explicitParent: "tag:p", implicitParents: ["tag:p"] } },
+          {
+            input: {
+              primaryName: "a",
+              explicitParent: "tag:p",
+              implicitParents: ["tag:p"],
+              extraNames: [],
+              meaningless: false,
+            },
+          },
           {} as Context,
           {} as GraphQLResolveInfo
         )
@@ -486,7 +524,14 @@ describe("Mutation.registerTag", () => {
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
-          { input: { primaryName: "a", implicitParents: ["tag:p", "tag:p"] } },
+          {
+            input: {
+              primaryName: "a",
+              implicitParents: ["tag:p", "tag:p"],
+              extraNames: [],
+              meaningless: false,
+            },
+          },
           {} as Context,
           {} as GraphQLResolveInfo
         )
@@ -496,7 +541,7 @@ describe("Mutation.registerTag", () => {
     test("explicitParentとimplicitParentsを入れて登録する", async () => {
       const parentRegisterResult1 = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "p1" } },
+        { input: { primaryName: "p1", extraNames: [], implicitParents: [], meaningless: false } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -505,7 +550,7 @@ describe("Mutation.registerTag", () => {
 
       const parentRegisterResult2 = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "p2" } },
+        { input: { primaryName: "p2", extraNames: [], implicitParents: [], meaningless: false } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -519,6 +564,8 @@ describe("Mutation.registerTag", () => {
             primaryName: "a",
             explicitParent: `tag:${parentTag1.id}`,
             implicitParents: [`tag:${parentTag2.id}`],
+            extraNames: [],
+            meaningless: false,
           },
         },
         {} as Context,
@@ -587,7 +634,7 @@ describe("Mutation.registerTag", () => {
       /* a */
       const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a" } },
+        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -597,7 +644,7 @@ describe("Mutation.registerTag", () => {
       /* b */
       const resultTagB = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "b" } },
+        { input: { primaryName: "b", extraNames: [], implicitParents: [], meaningless: false } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -607,7 +654,15 @@ describe("Mutation.registerTag", () => {
       /* b(a) */
       const resultTagB_A = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "b", explicitParent: `tag:${tagA.id}` } },
+        {
+          input: {
+            primaryName: "b",
+            explicitParent: `tag:${tagA.id}`,
+            extraNames: [],
+            implicitParents: [],
+            meaningless: false,
+          },
+        },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -653,7 +708,7 @@ describe("Mutation.registerTag", () => {
       /* a */
       const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a" } },
+        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -663,7 +718,15 @@ describe("Mutation.registerTag", () => {
       /* b(a) */
       const resultTagB_A = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "b", explicitParent: `tag:${tagA.id}` } },
+        {
+          input: {
+            primaryName: "b",
+            explicitParent: `tag:${tagA.id}`,
+            extraNames: [],
+            implicitParents: [],
+            meaningless: false,
+          },
+        },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -673,7 +736,7 @@ describe("Mutation.registerTag", () => {
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
-          { input: { primaryName: "b" } },
+          { input: { primaryName: "b", extraNames: [], implicitParents: [], meaningless: false } },
           {} as Context,
           {} as GraphQLResolveInfo
         )
@@ -684,7 +747,7 @@ describe("Mutation.registerTag", () => {
       /* a */
       const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a" } },
+        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -694,7 +757,15 @@ describe("Mutation.registerTag", () => {
       /* b(a) */
       const resultTagB_A = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "b", explicitParent: `tag:${tagA.id}` } },
+        {
+          input: {
+            primaryName: "b",
+            explicitParent: `tag:${tagA.id}`,
+            extraNames: [],
+            implicitParents: [],
+            meaningless: false,
+          },
+        },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -708,6 +779,9 @@ describe("Mutation.registerTag", () => {
             input: {
               primaryName: "b",
               explicitParent: `tag:${tagA.id}`,
+              extraNames: [],
+              implicitParents: [],
+              meaningless: false,
             },
           },
           {} as Context,
@@ -720,7 +794,7 @@ describe("Mutation.registerTag", () => {
       /* a/A */
       const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a" } },
+        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -730,7 +804,14 @@ describe("Mutation.registerTag", () => {
       /* b{A} */
       const resultTagB_A = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "b", implicitParents: [`tag:${tagA.id}`] } },
+        {
+          input: {
+            primaryName: "b",
+            implicitParents: [`tag:${tagA.id}`],
+            extraNames: [],
+            meaningless: false,
+          },
+        },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -744,6 +825,9 @@ describe("Mutation.registerTag", () => {
             input: {
               primaryName: "b",
               explicitParent: `tag:${tagA.id}`,
+              extraNames: [],
+              implicitParents: [],
+              meaningless: false,
             },
           },
           {} as Context,
@@ -756,7 +840,7 @@ describe("Mutation.registerTag", () => {
       /* a/A */
       const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a" } },
+        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -766,7 +850,14 @@ describe("Mutation.registerTag", () => {
       /* b{A} */
       const resultTagB_A = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "b", implicitParents: [`tag:${tagA.id}`] } },
+        {
+          input: {
+            primaryName: "b",
+            implicitParents: [`tag:${tagA.id}`],
+            extraNames: [],
+            meaningless: false,
+          },
+        },
         {} as Context,
         {} as GraphQLResolveInfo
       );
@@ -780,6 +871,8 @@ describe("Mutation.registerTag", () => {
             input: {
               primaryName: "b",
               implicitParents: [`tag:${tagA.id}`],
+              extraNames: [],
+              meaningless: false,
             },
           },
           {} as Context,
