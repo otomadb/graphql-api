@@ -13,6 +13,7 @@ type Query {
   tags(input: GetTagsInput!): TagCollection!
 
   mylist(id: ID!): Mylist!
+  findMylist(id: ID!): Mylist
 
   searchVideos(input: SearchVideoInput!): SearchVideosPayload!
   searchTags(input: SearchTagInput!): SearchTagsPayload!
