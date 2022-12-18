@@ -468,6 +468,7 @@ type Mylist {
   id: ID!
   title: String!
   holder: User!
+  isLikeList: Boolean!
   range: MylistShareRange!
   createdAt: DateTime!
   updatedAt: DateTime!
