@@ -88,9 +88,9 @@ type YoutubeVideoSource implements VideoSource {
 }
 
 input VideoHistoryInput {
-  skip: Int = 0
-  limit: Int = 10
-  order: VideoHistoryOrder = { createdAt: DESC }
+  skip: Int! = 0
+  limit: Int! = 10
+  order: VideoHistoryOrder! = { createdAt: DESC }
 }
 
 input VideoHistoryOrder {
@@ -191,9 +191,9 @@ type VideoAddNicovideoVideoSourceHistoryItem implements VideoHistoryItem {
 }
 
 input GetVideosInput {
-  limit: Int = 10
-  skip: Int = 0
-  order: GetVideosInputOrder = { createdAt: DESC }
+  limit: Int! = 10
+  skip: Int! = 0
+  order: GetVideosInputOrder! = { createdAt: DESC }
 }
 
 input GetVideosInputOrder {
@@ -206,7 +206,7 @@ type VideoCollection {
 }
 
 input VideoSimilarVideosInput {
-  limit: Int = 10
+  limit: Int! = 10
 }
 
 type VideoSimilarVideosPayload {
@@ -236,9 +236,9 @@ type Tag {
 }
 
 input TagHistoryInput {
-  skip: Int = 0
-  limit: Int = 10
-  order: TagHistoryOrder = { createdAt: DESC }
+  skip: Int! = 0
+  limit: Int! = 10
+  order: TagHistoryOrder! = { createdAt: DESC }
 }
 
 input TagHistoryOrder {
@@ -254,9 +254,9 @@ type TagCollection {
 }
 
 input GetTagsInput {
-  limit: Int
-  skip: Int
-  order: GetTagsInputOrder = { updatedAt: DESC }
+  limit: Int! = 10
+  skip: Int! = 0
+  order: GetTagsInputOrder! = { updatedAt: DESC }
 }
 
 input GetTagsInputOrder {
@@ -391,10 +391,10 @@ type User {
 }
 
 input UserMylistsInput {
-  limit: Int
-  skip: Int
-  order: UserMylistsInputOrder = { createdAt: ASC }
-  range: [MylistShareRange!] = [PUBLIC]
+  limit: Int! = 10
+  skip: Int! = 0
+  order: UserMylistsInputOrder! = { createdAt: ASC }
+  range: [MylistShareRange!]! = [PUBLIC]
 }
 
 input UserMylistsInputOrder {
@@ -408,12 +408,12 @@ type UserMylistsConnection {
 
 input RegisterTagInput {
   primaryName: String!
-  extraNames: [String!] = []
+  extraNames: [String!]! = []
 
   explicitParent: ID
-  implicitParents: [ID!] = []
+  implicitParents: [ID!]! = []
 
-  meaningless: Boolean = false
+  meaningless: Boolean! = false
 }
 
 type RegisterTagPayload {
@@ -508,7 +508,7 @@ type MylistRegistrationCollection {
 input MylistRegistrationsInput {
   limit: Int
   skip: Int
-  order: MylistRegistrationsInputOrder = { registeredAt: ASC }
+  order: MylistRegistrationsInputOrder! = { registeredAt: ASC }
 }
 
 input MylistRegistrationsInputOrder {
@@ -517,7 +517,7 @@ input MylistRegistrationsInputOrder {
 }
 
 input MylistRecommendedVideosInput {
-  limit: Int = 10
+  limit: Int! = 10
 }
 
 type MylistRecommendedVideosPayload {
@@ -530,7 +530,7 @@ type MylistRecommendedVideosItem {
 }
 
 input MylistIncludeTagsInput {
-  limit: Int = 10
+  limit: Int! = 10
 }
 
 type MylistIncludeTagsPayload {
