@@ -3,6 +3,8 @@ schema: ./schema.gql
 generates:
   ./src/graphql/resolvers.ts:
     config:
+      avoidOptionals:
+        defaultValue: true
       contextType: ../context.js#Context
       scalars:
         DateTime: Date

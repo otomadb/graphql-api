@@ -72,7 +72,7 @@ export const resolveVideo = ({
   history: resolveHistory,
 
   similarVideos: async ({ id: videoId }, { input }) => {
-    const similarities = await calcVideoSimilarities(neo4jDriver)(videoId, { limit: input?.limit || 0 });
+    const similarities = await calcVideoSimilarities(neo4jDriver)(videoId, { limit: input.limit });
 
     const items = await dataSource
       .getRepository(Video)
