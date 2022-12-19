@@ -9,7 +9,7 @@ import { Video } from "../../db/entities/videos.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
 import { addVideoToMylist as addVideoToMylistInNeo4j } from "../../neo4j/add_video_to_mylist.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
-import { MylistRegistrationModel } from "../MylistRegistration/models.js";
+import { MylistRegistrationModel } from "../MylistRegistration/model.js";
 
 export const likeVideo =
   ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }): MutationResolvers["likeVideo"] =>

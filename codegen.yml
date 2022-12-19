@@ -14,12 +14,12 @@ generates:
       scalars:
         DateTime: Date
       mappers:
-        Tag: ./models.js#TagModel
-        User: ./models.js#UserModel
-        Video: ./models.js#VideoModel
-        Mylist: ./models.js#MylistModel
-        MylistRegistration: ./models.js#MylistRegistrationModel
-        NicovideoVideoSource: ./models.js#NicovideoVideoSourceModel
+        Tag: ../resolvers/Tag/model.js#TagModel
+        User: ../resolvers/User/model.js#UserModel
+        Video: ../resolvers/Video/model.js#VideoModel
+        Mylist: ../resolvers/Mylist/model.js#MylistModel
+        MylistRegistration: ../resolvers/MylistRegistration/model.js#MylistRegistrationModel
+        NicovideoVideoSource: ../resolvers/NicovideoVideoSource/model.js#NicovideoVideoSourceModel
       makeResolverTypeCallable: true
     plugins:
       - typescript
