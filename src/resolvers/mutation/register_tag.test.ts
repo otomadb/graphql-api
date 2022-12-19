@@ -9,7 +9,7 @@ import { TagParent } from "../../db/entities/tag_parents.js";
 import { Tag } from "../../db/entities/tags.js";
 import { User } from "../../db/entities/users.js";
 import { migrations } from "../../db/migrations.js";
-import { TagModel } from "../../graphql/models.js";
+import { TagModel } from "../tag/model.js";
 import { calcNameParentPair, registerTag } from "./register_tag.js";
 
 describe("Mutation.registerTag", () => {

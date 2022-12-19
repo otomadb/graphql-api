@@ -6,10 +6,10 @@ import { ulid } from "ulid";
 import { TagName } from "../../db/entities/tag_names.js";
 import { TagParent } from "../../db/entities/tag_parents.js";
 import { Tag } from "../../db/entities/tags.js";
-import { TagModel } from "../../graphql/models.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
 import { registerTag as registerTagInNeo4j } from "../../neo4j/register_tag.js";
 import { parseGqlID } from "../../utils/id.js";
+import { TagModel } from "../tag/model.js";
 
 export const calcNameParentPair = ({
   primaryName,

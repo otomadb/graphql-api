@@ -1,5 +1,5 @@
-import { VideoModel } from "../../graphql/models.js";
 import { resolveHistory, resolveId } from "./index.js";
+import { VideoModel } from "./model.js";
 
 describe("resolver Video.id", () => {
   it("実装されているか", () => {

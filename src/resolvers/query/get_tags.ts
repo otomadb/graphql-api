@@ -1,8 +1,8 @@
 import { DataSource } from "typeorm";
 
 import { Tag } from "../../db/entities/tags.js";
-import { TagModel } from "../../graphql/models.js";
 import { QueryResolvers } from "../../graphql/resolvers.js";
+import { TagModel } from "../tag/model.js";
 
 export const getTags =
   ({ dataSource }: { dataSource: DataSource }): QueryResolvers["tags"] =>

@@ -2,9 +2,10 @@ import { GraphQLError } from "graphql";
 import { DataSource } from "typeorm";
 
 import { Mylist } from "../../db/entities/mylists.js";
-import { MylistModel, UserModel } from "../../graphql/models.js";
 import { Resolvers } from "../../graphql/resolvers.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
+import { MylistModel } from "../mylist/model.js";
+import { UserModel } from "./model.js";
 
 export const resolveId = ({ id }: UserModel) => addIDPrefix(ObjectType.User, id);
 

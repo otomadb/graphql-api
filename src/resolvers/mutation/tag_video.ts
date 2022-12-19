@@ -6,10 +6,11 @@ import { ulid } from "ulid";
 import { Tag } from "../../db/entities/tags.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { Video } from "../../db/entities/videos.js";
-import { TagModel, VideoModel } from "../../graphql/models.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
 import { tagVideo as tagVideoInNeo4j } from "../../neo4j/tag_video.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
+import { TagModel } from "../tag/model.js";
+import { VideoModel } from "../video/model.js";
 
 export const tagVideo =
   ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }): MutationResolvers["tagVideo"] =>

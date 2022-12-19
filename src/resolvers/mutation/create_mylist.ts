@@ -4,9 +4,9 @@ import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
 import { Mylist, MylistShareRange as MylistEntityShareRange } from "../../db/entities/mylists.js";
-import { MylistModel } from "../../graphql/models.js";
 import { MutationResolvers, MylistShareRange as MylistGQLShareRange } from "../../graphql/resolvers.js";
 import { createMylist as createMylistInNeo4j } from "../../neo4j/create_mylist.js";
+import { MylistModel } from "../mylist/model.js";
 
 export const createMylist =
   ({

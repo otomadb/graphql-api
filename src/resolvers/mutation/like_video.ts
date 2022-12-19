@@ -6,10 +6,10 @@ import { ulid } from "ulid";
 import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
 import { Mylist } from "../../db/entities/mylists.js";
 import { Video } from "../../db/entities/videos.js";
-import { MylistRegistrationModel } from "../../graphql/models.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
 import { addVideoToMylist as addVideoToMylistInNeo4j } from "../../neo4j/add_video_to_mylist.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
+import { MylistRegistrationModel } from "../mylist_registration/models.js";
 
 export const likeVideo =
   ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }): MutationResolvers["likeVideo"] =>

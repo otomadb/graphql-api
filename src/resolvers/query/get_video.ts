@@ -2,9 +2,9 @@ import { GraphQLError } from "graphql";
 import { DataSource } from "typeorm";
 
 import { Video } from "../../db/entities/videos.js";
-import { VideoModel } from "../../graphql/models.js";
 import { QueryResolvers } from "../../graphql/resolvers.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
+import { VideoModel } from "../video/model.js";
 
 export const getVideo =
   ({ dataSource }: { dataSource: DataSource }): QueryResolvers["video"] =>

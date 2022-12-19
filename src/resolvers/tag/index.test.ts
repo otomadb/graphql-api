@@ -1,5 +1,5 @@
-import { TagModel } from "../../graphql/models.js";
 import { resolveHistory, resolveId } from "./index.js";
+import { TagModel } from "./model.js";
 
 describe("resolver Tag.id", () => {
   it("実装されているか", () => {

@@ -3,10 +3,11 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 
 import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
-import { MylistModel, VideoModel } from "../../graphql/models.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
 import { removeVideoFromMylist as removeVideoFromMylistInNeo4j } from "../../neo4j/remove_video_from_mylist.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
+import { MylistModel } from "../mylist/model.js";
+import { VideoModel } from "../video/model.js";
 
 export const undoLikeVideo =
   ({

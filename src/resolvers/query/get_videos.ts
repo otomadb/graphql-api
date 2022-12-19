@@ -1,8 +1,8 @@
 import { DataSource } from "typeorm";
 
 import { Video } from "../../db/entities/videos.js";
-import { VideoModel } from "../../graphql/models.js";
 import { QueryResolvers } from "../../graphql/resolvers.js";
+import { VideoModel } from "../video/model.js";
 
 export const getVideos =
   ({ dataSource }: { dataSource: DataSource }): QueryResolvers["videos"] =>

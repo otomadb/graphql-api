@@ -2,9 +2,9 @@ import { GraphQLError } from "graphql";
 import { DataSource } from "typeorm";
 
 import { Tag } from "../../db/entities/tags.js";
-import { TagModel } from "../../graphql/models.js";
 import { QueryResolvers } from "../../graphql/resolvers.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
+import { TagModel } from "../tag/model.js";
 
 export const getTag =
   ({ dataSource }: { dataSource: DataSource }): QueryResolvers["tag"] =>

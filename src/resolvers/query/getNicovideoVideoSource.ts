@@ -2,7 +2,7 @@ import { GraphQLError } from "graphql";
 import { DataSource } from "typeorm";
 
 import { NicovideoVideoSource } from "../../db/entities/nicovideo_source.js";
-import { NicovideoVideoSourceModel } from "../../graphql/models.js";
+import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
 
 export const getNicovideoVideoSource =
   ({ dataSource: ds }: { dataSource: DataSource }) =>

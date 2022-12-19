@@ -1,5 +1,5 @@
-import { UserModel } from "../../graphql/models.js";
 import { resolveId } from "./index.js";
+import { UserModel } from "./model.js";
 
 describe("resolver User.id", () => {
   it("実装されているか", () => {

@@ -4,9 +4,10 @@ import { DataSource } from "typeorm";
 import { TagName } from "../../db/entities/tag_names.js";
 import { TagParent } from "../../db/entities/tag_parents.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
-import { TagModel, VideoModel } from "../../graphql/models.js";
 import { Resolvers, TagType } from "../../graphql/resolvers.js";
 import { addIDPrefix, ObjectType, parseGqlID } from "../../utils/id.js";
+import { VideoModel } from "../video/model.js";
+import { TagModel } from "./model.js";
 import { resolvePseudoType } from "./pseudoType.js";
 
 export const resolveId = ({ id }: TagModel): string => addIDPrefix(ObjectType.Tag, id);

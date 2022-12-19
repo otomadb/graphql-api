@@ -1,5 +1,5 @@
-import { UserModel } from "../../graphql/models.js";
 import { QueryResolvers } from "../../graphql/resolvers.js";
+import { UserModel } from "../user/model.js";
 
 export const whoami =
   (): QueryResolvers["whoami"] =>

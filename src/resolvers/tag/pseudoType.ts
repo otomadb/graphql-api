@@ -1,8 +1,8 @@
 import { DataSource } from "typeorm";
 
 import { TagParent } from "../../db/entities/tag_parents.js";
-import { TagModel } from "../../graphql/models.js";
 import { PseudoTagType } from "../../graphql/resolvers.js";
+import { TagModel } from "./model.js";
 
 export const calcType = (names: string[]): PseudoTagType => {
   const type: PseudoTagType[] = [];

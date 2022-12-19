@@ -6,12 +6,15 @@ import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
 import { Mylist, MylistShareRange } from "../../db/entities/mylists.js";
 import { Tag } from "../../db/entities/tags.js";
 import { Video } from "../../db/entities/videos.js";
-import { MylistRegistrationModel, TagModel, UserModel, VideoModel } from "../../graphql/models.js";
 import { MylistShareRange as MylistGQLShareRange } from "../../graphql/resolvers.js";
 import { Resolvers } from "../../graphql/resolvers.js";
 import { calcMylistIncludeTags } from "../../neo4j/mylist_include_tags.js";
 import { calcRecommendedVideosByMylist } from "../../neo4j/mylist_recommend_videos.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "../../utils/id.js";
+import { MylistRegistrationModel } from "../mylist_registration/models.js";
+import { TagModel } from "../tag/model.js";
+import { UserModel } from "../user/model.js";
+import { VideoModel } from "../video/model.js";
 
 export const resolveMylist = ({
   dataSource,

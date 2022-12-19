@@ -3,10 +3,11 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 
 import { VideoTag } from "../../db/entities/video_tags.js";
-import { TagModel, VideoModel } from "../../graphql/models.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
 import { untagVideo as untagVideoInNeo4j } from "../../neo4j/untag_video.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
+import { TagModel } from "../tag/model.js";
+import { VideoModel } from "../video/model.js";
 
 export const untagVideo =
   ({

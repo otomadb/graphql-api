@@ -3,9 +3,10 @@ import { DataSource } from "typeorm";
 
 import { Mylist } from "../../db/entities/mylists.js";
 import { Video } from "../../db/entities/videos.js";
-import { MylistModel, VideoModel } from "../../graphql/models.js";
 import { Resolvers } from "../../graphql/resolvers.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
+import { MylistModel } from "../mylist/model.js";
+import { VideoModel } from "../video/model.js";
 
 export const resolveMylistRegistration = ({
   dataSource,
