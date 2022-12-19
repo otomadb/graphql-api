@@ -1,6 +1,9 @@
 type Tag {
   id: ID!
+
+  type: TagType! @deprecated
   pseudoType: PseudoTagType!
+
   name: String!
   names: [TagName!]!
 
@@ -17,6 +20,17 @@ type Tag {
 type TagName {
   name: String!
   primary: Boolean!
+}
+
+enum TagType {
+  CLASS
+  COPYRIGHT
+  EVENT
+  IMAGE
+  MATERIAL
+  MUSIC
+  SERIES
+  TACTICS
 }
 
 enum PseudoTagType {

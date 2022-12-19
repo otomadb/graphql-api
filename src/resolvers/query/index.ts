@@ -1,17 +1,17 @@
 import { DataSource } from "typeorm";
 
 import { type Resolvers } from "../../graphql/resolvers.js";
-import { findMylist } from "./find_mylist.js";
+import { findMylist } from "./findMylist.js";
 import { findNicovideoVideoSource } from "./findNicovideoVideoSource.js";
-import { getMylist } from "./get_mylist.js";
-import { getTag } from "./get_tag.js";
-import { getTags } from "./get_tags.js";
-import { getUser } from "./get_user.js";
-import { getVideo } from "./get_video.js";
-import { getVideos } from "./get_videos.js";
+import { getMylist } from "./getMylist.js";
 import { getNicovideoVideoSource } from "./getNicovideoVideoSource.js";
-import { searchTags } from "./search_tags.js";
-import { searchVideos } from "./search_videos.js";
+import { getTag } from "./getTag.js";
+import { getTags } from "./getTags.js";
+import { getUser } from "./getUser.js";
+import { getVideo } from "./getVideo.js";
+import { getVideos } from "./getVideos.js";
+import { searchTags } from "./searchTags.js";
+import { searchVideos } from "./searchVideos.js";
 import { whoami } from "./whoami.js";
 
 export const resolveQuery = (deps: { dataSource: DataSource }): Resolvers["Query"] => ({

@@ -279,6 +279,7 @@ type Tag {
   parents(meaningless: Boolean): [TagParent!]!
   pseudoType: PseudoTagType!
   taggedVideos: [Video!]!
+  type: TagType! @deprecated
 }
 
 type TagAddNameHistoryItem implements TagHistoryItem {
@@ -345,6 +346,17 @@ type TagRegisterHistoryItem implements TagHistoryItem {
   id: ID!
   tag: Tag!
   user: User!
+}
+
+enum TagType {
+  CLASS
+  COPYRIGHT
+  EVENT
+  IMAGE
+  MATERIAL
+  MUSIC
+  SERIES
+  TACTICS
 }
 
 input TagVideoInput {

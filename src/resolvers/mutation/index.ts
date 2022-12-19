@@ -2,15 +2,15 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 
 import { type Resolvers } from "../../graphql/resolvers.js";
-import { addVideoToMylist } from "./add_video_to_mylist.js";
-import { createMylist } from "./create_mylist.js";
-import { likeVideo } from "./like_video.js";
-import { registerTag } from "./register_tag.js";
-import { registerVideo } from "./register_videos.js";
-import { removeVideoFromMylist } from "./remove_video_from_mylist.js";
-import { tagVideo } from "./tag_video.js";
-import { undoLikeVideo } from "./undo_like_video.js";
-import { untagVideo } from "./untag_video.js";
+import { addVideoToMylist } from "./addVideoToMylist.js";
+import { createMylist } from "./createMylist.js";
+import { likeVideo } from "./likeVideo.js";
+import { registerTag } from "./registerTag.js";
+import { registerVideo } from "./registerVideo.js";
+import { removeVideoFromMylist } from "./removeVideoFromMylist.js";
+import { tagVideo } from "./tagVideo.js";
+import { undoLikeVideo } from "./undoLikeVideo.js";
+import { untagVideo } from "./untagVideo.js";
 
 export const resolveMutation = (deps: { dataSource: DataSource; neo4jDriver: Neo4jDriver }): Resolvers["Mutation"] => ({
   registerTag: registerTag(deps),
