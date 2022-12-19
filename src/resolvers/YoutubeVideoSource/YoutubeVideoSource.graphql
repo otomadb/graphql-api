@@ -1,4 +1,4 @@
-type YoutubeVideoSource implements VideoSource {
+type YoutubeVideoSource implements Node & VideoSource {
   id: ID!
   sourceId: String!
   video: Video!

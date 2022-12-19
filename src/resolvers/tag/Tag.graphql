@@ -1,4 +1,4 @@
-type Tag {
+type Tag implements Node {
   id: ID!
 
   type: TagType! @deprecated

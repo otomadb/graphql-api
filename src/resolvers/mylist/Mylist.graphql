@@ -1,4 +1,4 @@
-type Mylist {
+type Mylist implements Node {
   id: ID!
   title: String!
   holder: User!

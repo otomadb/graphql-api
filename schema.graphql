@@ -61,7 +61,7 @@ type Mutation {
   untagVideo(input: UntagVideoInput!): UntagVideoPayload!
 }
 
-type Mylist {
+type Mylist implements Node {
   createdAt: DateTime!
   holder: User!
   id: ID!
@@ -103,7 +103,7 @@ type MylistRecommendedVideosPayload {
   items: [MylistRecommendedVideosItem!]!
 }
 
-type MylistRegistration {
+type MylistRegistration implements Node {
   createdAt: DateTime!
   id: ID!
   mylist: Mylist!
@@ -133,11 +133,15 @@ enum MylistShareRange {
   PUBLIC
 }
 
-type NicovideoVideoSource implements VideoSource {
+type NicovideoVideoSource implements Node & VideoSource {
   id: String!
   sourceId: String!
   url: String!
   video: Video!
+}
+
+interface Node {
+  id: ID!
 }
 
 enum PseudoTagType {
@@ -268,7 +272,7 @@ enum SortOrder {
   DESC
 }
 
-type Tag {
+type Tag implements Node {
   canTagTo(id: ID!): Boolean!
   explicitParent: Tag
   history(input: TagHistoryInput!): TagHistoryCollection!
@@ -388,7 +392,7 @@ type UntagVideoPayload {
   video: Video!
 }
 
-type User {
+type User implements Node {
   displayName: String!
   favorites: Mylist!
   icon: String!
@@ -413,7 +417,7 @@ input UserMylistsInputOrder {
   updatedAt: SortOrder
 }
 
-type Video {
+type Video implements Node {
   hasTag(id: ID!): Boolean!
   history(input: VideoHistoryInput!): VideoHistoryCollection!
   id: ID!
@@ -563,7 +567,7 @@ type VideoTitle {
   title: String!
 }
 
-type YoutubeVideoSource implements VideoSource {
+type YoutubeVideoSource implements Node & VideoSource {
   id: ID!
   sourceId: String!
   url: String!

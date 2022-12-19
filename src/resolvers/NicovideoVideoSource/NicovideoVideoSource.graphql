@@ -1,4 +1,4 @@
-type NicovideoVideoSource implements VideoSource {
+type NicovideoVideoSource implements Node & VideoSource {
   id: String!
   sourceId: String!
   video: Video!

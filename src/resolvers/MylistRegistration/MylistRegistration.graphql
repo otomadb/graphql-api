@@ -1,4 +1,4 @@
-type MylistRegistration {
+type MylistRegistration implements Node {
   id: ID!
   video: Video!
   mylist: Mylist!

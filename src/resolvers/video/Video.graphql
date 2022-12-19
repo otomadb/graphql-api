@@ -1,4 +1,4 @@
-type Video {
+type Video implements Node {
   id: ID!
   title: String!
   titles: [VideoTitle!]!
