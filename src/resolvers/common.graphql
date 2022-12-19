@@ -1,0 +1,6 @@
+scalar DateTime
+
+enum SortOrder {
+  ASC
+  DESC
+}

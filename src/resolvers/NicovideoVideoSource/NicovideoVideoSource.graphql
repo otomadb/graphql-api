@@ -1,0 +1,6 @@
+type NicovideoVideoSource implements VideoSource {
+  id: String!
+  sourceId: String!
+  video: Video!
+  url: String!
+}

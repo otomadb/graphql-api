@@ -1,0 +1,12 @@
+type Mutation {
+  createMylist(input: CreateMylistInput!): CreateMylistPayload!
+}
+
+input CreateMylistInput {
+  title: String!
+  range: MylistShareRange!
+}
+
+type CreateMylistPayload {
+  mylist: Mylist!
+}

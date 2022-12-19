@@ -1,0 +1,19 @@
+type Query {
+  searchTags(input: SearchTagInput!): SearchTagsPayload!
+}
+
+input SearchTagInput {
+  query: String!
+  limit: Int! = 10
+  skip: Int! = 0
+}
+
+type SearchTagsPayload {
+  # count: Int!
+  result: [SearchTagsResultItem!]!
+}
+
+type SearchTagsResultItem {
+  matchedName: String!
+  tag: Tag!
+}

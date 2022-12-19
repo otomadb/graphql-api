@@ -1,0 +1,25 @@
+type User {
+  id: ID!
+  name: String!
+  displayName: String!
+  icon: String!
+
+  favorites: Mylist!
+  mylists(input: UserMylistsInput!): UserMylistsConnection!
+}
+
+input UserMylistsInput {
+  limit: Int! = 10
+  skip: Int! = 0
+  order: UserMylistsInputOrder! = { createdAt: ASC }
+  range: [MylistShareRange!]! = [PUBLIC]
+}
+
+input UserMylistsInputOrder {
+  createdAt: SortOrder
+  updatedAt: SortOrder
+}
+
+type UserMylistsConnection {
+  nodes: [Mylist!]!
+}

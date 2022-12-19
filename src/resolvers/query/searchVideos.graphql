@@ -1,0 +1,19 @@
+type Query {
+  searchVideos(input: SearchVideoInput!): SearchVideosPayload!
+}
+
+input SearchVideoInput {
+  query: String!
+  limit: Int! = 10
+  skip: Int! = 0
+}
+
+type SearchVideosPayload {
+  # count: Int!
+  result: [SearchVideosResultItem!]!
+}
+
+type SearchVideosResultItem {
+  matchedTitle: String!
+  video: Video!
+}

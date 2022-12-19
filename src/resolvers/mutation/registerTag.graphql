@@ -1,0 +1,17 @@
+type Mutation {
+  registerTag(input: RegisterTagInput!): RegisterTagPayload!
+}
+
+input RegisterTagInput {
+  primaryName: String!
+  extraNames: [String!]! = []
+
+  explicitParent: ID
+  implicitParents: [ID!]! = []
+
+  meaningless: Boolean! = false
+}
+
+type RegisterTagPayload {
+  tag: Tag!
+}

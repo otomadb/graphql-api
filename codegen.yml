@@ -1,7 +1,12 @@
 # codegen.yml
-schema: ./schema.gql
 generates:
+  ./schema.graphql:
+    schema:
+      - ./src/resolvers/**/*.graphql
+    plugins:
+      - schema-ast
   ./src/graphql/resolvers.ts:
+    schema: ./schema.graphql
     config:
       avoidOptionals:
         defaultValue: true

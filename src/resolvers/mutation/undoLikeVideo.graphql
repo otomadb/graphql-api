@@ -1,0 +1,12 @@
+type Mutation {
+  undoLikeVideo(input: UndoLikeVideoInput!): UndoLikeVideoPayload!
+}
+
+input UndoLikeVideoInput {
+  videoId: ID!
+}
+
+type UndoLikeVideoPayload {
+  video: Video!
+  mylist: Mylist!
+}

@@ -1,0 +1,14 @@
+type Query {
+  videos(input: GetVideosInput!): VideoCollection!
+}
+
+input GetVideosInput {
+  limit: Int! = 10
+  skip: Int! = 0
+  order: GetVideosInputOrder! = { createdAt: DESC }
+}
+
+input GetVideosInputOrder {
+  updatedAt: SortOrder
+  createdAt: SortOrder
+}

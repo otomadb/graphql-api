@@ -1,0 +1,13 @@
+type Mutation {
+  removeVideoFromMylist(input: RemoveVideoFromMylistInput!): RemoveVideoFromMylistPayload!
+}
+
+input RemoveVideoFromMylistInput {
+  videoId: ID!
+  mylistId: ID!
+}
+
+type RemoveVideoFromMylistPayload {
+  video: Video!
+  mylist: Mylist!
+}

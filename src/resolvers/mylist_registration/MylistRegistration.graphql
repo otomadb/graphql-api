@@ -1,0 +1,13 @@
+type MylistRegistration {
+  id: ID!
+  video: Video!
+  mylist: Mylist!
+
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  note: String
+}
+
+type MylistRegistrationCollection {
+  nodes: [MylistRegistration!]!
+}

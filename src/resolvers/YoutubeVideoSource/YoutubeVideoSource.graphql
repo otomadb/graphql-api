@@ -1,0 +1,6 @@
+type YoutubeVideoSource implements VideoSource {
+  id: ID!
+  sourceId: String!
+  video: Video!
+  url: String!
+}
