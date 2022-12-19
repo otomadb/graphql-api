@@ -4,7 +4,7 @@ import { DataSource, In, Like } from "typeorm";
 import { TagName } from "../../db/entities/tag_names.js";
 import { Tag } from "../../db/entities/tags.js";
 import { QueryResolvers } from "../../graphql/resolvers.js";
-import { TagModel } from "../tag/model.js";
+import { TagModel } from "../Tag/model.js";
 
 export const searchTags =
   ({ dataSource }: { dataSource: DataSource }): QueryResolvers["searchTags"] =>

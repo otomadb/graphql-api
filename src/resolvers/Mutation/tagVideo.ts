@@ -9,8 +9,8 @@ import { Video } from "../../db/entities/videos.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
 import { tagVideo as tagVideoInNeo4j } from "../../neo4j/tag_video.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
-import { TagModel } from "../tag/model.js";
-import { VideoModel } from "../video/model.js";
+import { TagModel } from "../Tag/model.js";
+import { VideoModel } from "../Video/model.js";
 
 export const tagVideo =
   ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }): MutationResolvers["tagVideo"] =>

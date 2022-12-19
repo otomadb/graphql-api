@@ -6,7 +6,7 @@ import { ulid } from "ulid";
 import { Mylist, MylistShareRange as MylistEntityShareRange } from "../../db/entities/mylists.js";
 import { MutationResolvers, MylistShareRange as MylistGQLShareRange } from "../../graphql/resolvers.js";
 import { createMylist as createMylistInNeo4j } from "../../neo4j/create_mylist.js";
-import { MylistModel } from "../mylist/model.js";
+import { MylistModel } from "../Mylist/model.js";
 
 export const createMylist =
   ({

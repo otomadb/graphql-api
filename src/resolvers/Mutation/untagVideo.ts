@@ -6,8 +6,8 @@ import { VideoTag } from "../../db/entities/video_tags.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
 import { untagVideo as untagVideoInNeo4j } from "../../neo4j/untag_video.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
-import { TagModel } from "../tag/model.js";
-import { VideoModel } from "../video/model.js";
+import { TagModel } from "../Tag/model.js";
+import { VideoModel } from "../Video/model.js";
 
 export const untagVideo =
   ({

@@ -6,7 +6,7 @@ import { TagParent } from "../../db/entities/tag_parents.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { Resolvers, TagType } from "../../graphql/resolvers.js";
 import { addIDPrefix, ObjectType, parseGqlID } from "../../utils/id.js";
-import { VideoModel } from "../video/model.js";
+import { VideoModel } from "../Video/model.js";
 import { TagModel } from "./model.js";
 import { resolvePseudoType } from "./pseudoType.js";
 

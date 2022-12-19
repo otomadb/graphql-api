@@ -11,7 +11,7 @@ import { Resolvers } from "../../graphql/resolvers.js";
 import { calcVideoSimilarities } from "../../neo4j/video_similarities.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
-import { TagModel } from "../tag/model.js";
+import { TagModel } from "../Tag/model.js";
 import { VideoModel } from "./model.js";
 
 export const resolveId = ({ id }: VideoModel) => addIDPrefix(ObjectType.Video, id);

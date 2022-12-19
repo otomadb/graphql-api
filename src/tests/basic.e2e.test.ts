@@ -142,7 +142,7 @@ describe("basic e2e", () => {
           extraTitles: ["Ronald McDonald insanity"],
           tags: [tagId],
           primaryThumbnail:
-            "https://img.cdn.nimg.jp/s/nicovideo/thumbnails/2057168/2057168.original/r1280x720l?key=64c3379f18890e6747830c596be0a7276dab4e0fe574a98671b3b0c58c1f54c8",
+            "https://img.cdn.nimg.jp/s/nicoVideo/thumbnails/2057168/2057168.original/r1280x720l?key=64c3379f18890e6747830c596be0a7276dab4e0fe574a98671b3b0c58c1f54c8",
           sources: [{ type: "NICOVIDEO", sourceId: "sm2057168" }],
         },
       },
@@ -154,7 +154,7 @@ describe("basic e2e", () => {
           id: expect.any(String),
           title: "M.C.ドナルドはダンスに夢中なのか？最終鬼畜道化師ドナルド・Ｍ",
           thumbnailUrl:
-            "https://img.cdn.nimg.jp/s/nicovideo/thumbnails/2057168/2057168.original/r1280x720l?key=64c3379f18890e6747830c596be0a7276dab4e0fe574a98671b3b0c58c1f54c8",
+            "https://img.cdn.nimg.jp/s/nicoVideo/thumbnails/2057168/2057168.original/r1280x720l?key=64c3379f18890e6747830c596be0a7276dab4e0fe574a98671b3b0c58c1f54c8",
         },
       },
     });

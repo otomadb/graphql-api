@@ -3,7 +3,7 @@ import { DataSource } from "typeorm";
 
 import { User } from "../../db/entities/users.js";
 import { QueryResolvers } from "../../graphql/resolvers.js";
-import { UserModel } from "../user/model.js";
+import { UserModel } from "../User/model.js";
 
 export const getUser =
   ({ dataSource }: { dataSource: DataSource }): QueryResolvers["user"] =>

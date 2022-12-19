@@ -10,7 +10,7 @@ import { MutationResolvers } from "../../graphql/resolvers.js";
 import { addVideoToMylist as addVideoToMylistInNeo4j } from "../../neo4j/add_video_to_mylist.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 import { MylistRegistrationModel } from "../MylistRegistration/models.js";
-import { MYLIST_NOT_FOUND_OR_PRIVATE_ERROR, MYLIST_NOT_HOLDED_BY_YOU } from "../query/getMylist.js";
+import { MYLIST_NOT_FOUND_OR_PRIVATE_ERROR, MYLIST_NOT_HOLDED_BY_YOU } from "../Query/getMylist.js";
 
 export const addVideoToMylist =
   ({

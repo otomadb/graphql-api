@@ -5,8 +5,8 @@ import { Mylist } from "../../db/entities/mylists.js";
 import { Video } from "../../db/entities/videos.js";
 import { Resolvers } from "../../graphql/resolvers.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
-import { MylistModel } from "../mylist/model.js";
-import { VideoModel } from "../video/model.js";
+import { MylistModel } from "../Mylist/model.js";
+import { VideoModel } from "../Video/model.js";
 
 export const resolveMylistRegistration = ({
   dataSource,

@@ -2,14 +2,14 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 
 import { type Resolvers } from "../graphql/resolvers.js";
-import { resolveMutation } from "./mutation/index.js";
-import { resolveMylist } from "./mylist/index.js";
+import { resolveMutation } from "./Mutation/index.js";
+import { resolveMylist } from "./Mylist/index.js";
 import { resolveMylistRegistration } from "./MylistRegistration/index.js";
 import { resolveNicovideoVideoSource } from "./NicovideoVideoSource/index.js";
-import { resolveQuery } from "./query/index.js";
-import { resolveTag } from "./tag/index.js";
-import { resolveUser } from "./user/index.js";
-import { resolveVideo } from "./video/index.js";
+import { resolveQuery } from "./Query/index.js";
+import { resolveTag } from "./Tag/index.js";
+import { resolveUser } from "./User/index.js";
+import { resolveVideo } from "./Video/index.js";
 
 export const resolvers = (deps: { dataSource: DataSource; neo4jDriver: Neo4jDriver }): Resolvers => ({
   Query: resolveQuery(deps),

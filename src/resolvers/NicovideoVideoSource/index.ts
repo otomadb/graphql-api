@@ -4,7 +4,7 @@ import { DataSource } from "typeorm";
 import { Video } from "../../db/entities/videos.js";
 import { Resolvers } from "../../graphql/resolvers.js";
 import { buildGqlId } from "../../utils/id.js";
-import { VideoModel } from "../video/model.js";
+import { VideoModel } from "../Video/model.js";
 
 export const resolveNicovideoVideoSource = ({
   dataSource,

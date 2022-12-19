@@ -12,9 +12,9 @@ import { calcMylistIncludeTags } from "../../neo4j/mylist_include_tags.js";
 import { calcRecommendedVideosByMylist } from "../../neo4j/mylist_recommend_videos.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "../../utils/id.js";
 import { MylistRegistrationModel } from "../MylistRegistration/models.js";
-import { TagModel } from "../tag/model.js";
-import { UserModel } from "../user/model.js";
-import { VideoModel } from "../video/model.js";
+import { TagModel } from "../Tag/model.js";
+import { UserModel } from "../User/model.js";
+import { VideoModel } from "../Video/model.js";
 
 export const resolveMylist = ({
   dataSource,

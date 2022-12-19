@@ -6,8 +6,8 @@ import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
 import { MutationResolvers } from "../../graphql/resolvers.js";
 import { removeVideoFromMylist as removeVideoFromMylistInNeo4j } from "../../neo4j/remove_video_from_mylist.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
-import { MylistModel } from "../mylist/model.js";
-import { VideoModel } from "../video/model.js";
+import { MylistModel } from "../Mylist/model.js";
+import { VideoModel } from "../Video/model.js";
 
 export const removeVideoFromMylist =
   ({
