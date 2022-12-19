@@ -134,7 +134,7 @@ enum MylistShareRange {
 }
 
 type NicovideoVideoSource implements Node & VideoSource {
-  id: String!
+  id: ID!
   sourceId: String!
   url: String!
   video: Video!
