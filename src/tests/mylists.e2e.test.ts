@@ -12,7 +12,7 @@ import { User } from "../db/entities/users.js";
 import { resolvers } from "../resolvers/index.js";
 import { ObjectType, removeIDPrefix } from "../utils/id.js";
 
-const typeDefs = await readFile(new URL("../../schema.gql", import.meta.url), { encoding: "utf-8" });
+const typeDefs = await readFile(new URL("../../schema.graphql", import.meta.url), { encoding: "utf-8" });
 
 describe("マイリスト関連のE2Eテスト", () => {
   let ds: DataSource;
