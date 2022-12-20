@@ -25,4 +25,4 @@ pnpm run typeorm migration:run
 docker compose -f docker-compose.prod.yml up -d
 ```
 
-`4000`番ポートにAPIが立ち上がる．
+`4000`番ポートに API が立ち上がる．
