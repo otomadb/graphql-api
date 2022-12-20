@@ -1,0 +1,63 @@
+type Mylist implements Node {
+  id: ID!
+  title: String!
+  holder: User!
+  isLikeList: Boolean!
+  range: MylistShareRange!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  registrations(input: MylistRegistrationsInput!): MylistRegistrationCollection!
+
+  """
+  マイリストの中にビデオが追加されているか．
+  """
+  isIncludesVideo(id: ID!): Boolean!
+
+  recommendedVideos(input: MylistRecommendedVideosInput!): MylistRecommendedVideosPayload!
+
+  includeTags(input: MylistIncludeTagsInput!): MylistIncludeTagsPayload!
+}
+
+enum MylistShareRange {
+  PUBLIC
+  KNOW_LINK
+  PRIVATE
+}
+
+input MylistRegistrationsInput {
+  limit: Int
+  skip: Int
+  order: MylistRegistrationsInputOrder! = { registeredAt: ASC }
+}
+
+input MylistRegistrationsInputOrder {
+  createdAt: SortOrder
+  updatedAt: SortOrder
+}
+
+input MylistRecommendedVideosInput {
+  limit: Int! = 10
+}
+
+type MylistRecommendedVideosPayload {
+  items: [MylistRecommendedVideosItem!]!
+}
+
+type MylistRecommendedVideosItem {
+  video: Video!
+  score: Float!
+}
+
+input MylistIncludeTagsInput {
+  limit: Int! = 10
+}
+
+type MylistIncludeTagsPayload {
+  items: [MylistIncludeTagsItem!]!
+}
+
+type MylistIncludeTagsItem {
+  tag: Tag!
+  count: Int!
+}

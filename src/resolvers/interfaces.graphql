@@ -1,0 +1,11 @@
+interface Node {
+  id: ID!
+}
+
+interface VideoSource {
+  id: ID!
+  sourceId: String!
+
+  url: String!
+  video: Video!
+}

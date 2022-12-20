@@ -1,0 +1,13 @@
+type Mutation {
+  addVideoToMylist(input: AddVideoToMylistInput!): AddVideoToMylistPayload!
+}
+
+input AddVideoToMylistInput {
+  videoId: ID!
+  mylistId: ID!
+  note: String
+}
+
+type AddVideoToMylistPayload {
+  registration: MylistRegistration!
+}

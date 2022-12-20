@@ -19,6 +19,7 @@ jobs:
           node-version: 16
           cache: pnpm
       - run: pnpm install
+      - run: pnpm run codegen
       - run: pnpm run lint:schema
       - run: pnpm run lint:eslint
       - run: pnpm run lint:prettier

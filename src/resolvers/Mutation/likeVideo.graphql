@@ -1,0 +1,11 @@
+type Mutation {
+  likeVideo(input: LikeVideoInput!): LikeVideoPayload!
+}
+
+input LikeVideoInput {
+  videoId: ID!
+}
+
+type LikeVideoPayload {
+  registration: MylistRegistration!
+}

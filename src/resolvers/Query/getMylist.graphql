@@ -1,0 +1,3 @@
+type Query {
+  mylist(id: ID!): Mylist!
+}

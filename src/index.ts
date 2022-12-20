@@ -1,6 +1,5 @@
 import "reflect-metadata";
 
-import { readFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
 import { makeExecutableSchema } from "@graphql-tools/schema";
@@ -20,6 +19,7 @@ import { handlerSignout } from "./auth/signout.js";
 import { handlerSignup } from "./auth/signup.js";
 import { Context } from "./context.js";
 import { entities } from "./db/entities/index.js";
+import { typeDefs } from "./graphql.js";
 import { resolvers } from "./resolvers/index.js";
 
 const dir = dirname(new URL(import.meta.url).pathname);
@@ -46,8 +46,6 @@ app.use(koaBody());
 app.use(koaCors({ credentials: true }));
 
 const router = new Router();
-
-export const typeDefs = await readFile(new URL("../schema.gql", import.meta.url), { encoding: "utf-8" });
 
 const schema = makeExecutableSchema({
   typeDefs,

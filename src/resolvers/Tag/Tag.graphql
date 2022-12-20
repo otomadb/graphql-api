@@ -1,0 +1,120 @@
+type Tag implements Node {
+  id: ID!
+
+  type: TagType! @deprecated
+  pseudoType: PseudoTagType!
+
+  name: String!
+  names: [TagName!]!
+
+  taggedVideos: [Video!]!
+  history(input: TagHistoryInput!): TagHistoryCollection!
+
+  explicitParent: Tag
+  parents(meaningless: Boolean): [TagParent!]!
+  meaningless: Boolean!
+
+  canTagTo(id: ID!): Boolean!
+}
+
+type TagName {
+  name: String!
+  primary: Boolean!
+}
+
+enum TagType {
+  CLASS
+  COPYRIGHT
+  EVENT
+  IMAGE
+  MATERIAL
+  MUSIC
+  SERIES
+  TACTICS
+}
+
+enum PseudoTagType {
+  "曲"
+  MUSIC
+  "作品名"
+  COPYRIGHT
+  "キャラクター"
+  CHARACTER
+  "特徴的なセリフなど"
+  PHRASE
+  "シリーズ"
+  SERIES
+  "戦法"
+  TACTICS
+  "動画そのものに対しての性質，作風など"
+  STYLE
+  "動画の内容に依らない情報，分類など"
+  CLASS
+  "合作などのイベント"
+  EVENT
+  "2つ以上のタイプが算出された場合"
+  SUBTLE
+  "タイプを算出できなかった場合"
+  UNKNOWN
+}
+
+input TagHistoryInput {
+  skip: Int! = 0
+  limit: Int! = 10
+  order: TagHistoryOrder! = { createdAt: DESC }
+}
+
+input TagHistoryOrder {
+  createdAt: SortOrder
+}
+
+type TagParent {
+  tag: Tag!
+  explicit: Boolean!
+}
+
+type TagCollection {
+  nodes: [Tag!]!
+}
+
+type TagHistoryCollection {
+  nodes: [VideoHistoryItem!]!
+}
+
+interface TagHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+}
+
+type TagRegisterHistoryItem implements TagHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+  tag: Tag!
+}
+
+type TagAddNameHistoryItem implements TagHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+  tag: Tag!
+  name: String!
+}
+
+type TagDeleteNameHistoryItem implements TagHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+  tag: Tag!
+  name: String!
+}
+
+type TagChangePrimaryNameHistoryItem implements TagHistoryItem {
+  id: ID!
+  user: User!
+  createdAt: DateTime!
+  tag: Tag!
+  from: String
+  to: String!
+}

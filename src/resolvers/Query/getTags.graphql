@@ -1,0 +1,14 @@
+type Query {
+  tags(input: GetTagsInput!): TagCollection!
+}
+
+input GetTagsInput {
+  limit: Int! = 10
+  skip: Int! = 0
+  order: GetTagsInputOrder! = { updatedAt: DESC }
+}
+
+input GetTagsInputOrder {
+  updatedAt: SortOrder
+  createdAt: SortOrder
+}

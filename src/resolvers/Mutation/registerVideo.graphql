@@ -1,0 +1,25 @@
+type Mutation {
+  registerVideo(input: RegisterVideoInput!): RegisterVideoPayload!
+}
+
+input RegisterVideoInput {
+  primaryTitle: String!
+  extraTitles: [String!]
+  tags: [ID!]!
+  primaryThumbnail: String!
+  sources: [RegisterVideoInputSource!]!
+}
+
+enum RegisterVideoInputSourceType {
+  NICOVIDEO
+  # YOUTUBE
+}
+
+input RegisterVideoInputSource {
+  type: RegisterVideoInputSourceType!
+  sourceId: String!
+}
+
+type RegisterVideoPayload {
+  video: Video!
+}

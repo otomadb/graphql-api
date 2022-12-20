@@ -1,4 +1,3 @@
-import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 
 import { makeExecutableSchema } from "@graphql-tools/schema";
@@ -8,9 +7,8 @@ import { DataSource } from "typeorm";
 
 import { entities } from "../db/entities/index.js";
 import { User } from "../db/entities/users.js";
+import { typeDefs } from "../graphql.js";
 import { resolvers } from "../resolvers/index.js";
-
-const typeDefs = await readFile(new URL("../../schema.gql", import.meta.url), { encoding: "utf-8" });
 
 describe("basic e2e", () => {
   let ds: DataSource;
