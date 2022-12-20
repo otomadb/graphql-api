@@ -33,6 +33,10 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
       POSTGRES_DB: test
+    volumes:
+      - type: volume
+        source: postgres_data
+        target: /var/lib/postgresql/data
 
   migration:
     build:
@@ -53,3 +57,15 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    volumes:
+      - type: volume
+        source: neo4j_data
+        target: /data
+      - type: volume
+        source: neo4j_logs
+        target: /logs
+
+volumes:
+  postgres_data:
+  neo4j_data:
+  neo4j_logs:
