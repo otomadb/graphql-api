@@ -4,7 +4,7 @@ import { Video } from "../../db/entities/videos.js";
 import { QueryResolvers } from "../../graphql.js";
 import { VideoModel } from "../Video/model.js";
 
-export const getVideos = ({ dataSource }: { dataSource: DataSource }) =>
+export const findVideos = ({ dataSource }: { dataSource: DataSource }) =>
   (async (_parent, { input }) => {
     const videos = await dataSource.getRepository(Video).find({
       take: input.limit,
@@ -18,4 +18,4 @@ export const getVideos = ({ dataSource }: { dataSource: DataSource }) =>
     return {
       nodes: videos.map((v) => new VideoModel(v)),
     };
-  }) satisfies QueryResolvers["videos"];
+  }) satisfies QueryResolvers["findVideos"];
