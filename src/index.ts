@@ -1,7 +1,5 @@
 import "reflect-metadata";
 
-import { dirname } from "node:path";
-
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import koaCors from "@koa/cors";
 import Router from "@koa/router";
@@ -23,13 +21,13 @@ import { typeDefs } from "./graphql.js";
 import { handlerRemoteNicovideo } from "./remote/nicovideo.js";
 import { resolvers } from "./resolvers/index.js";
 
-const dir = dirname(new URL(import.meta.url).pathname);
+// const dir = dirname(new URL(import.meta.url).pathname);
 
 const dataSource = new DataSource({
   type: "postgres",
   url: process.env.DATABASE_URL,
   entities,
-  migrations: [`${dir}/db/migrations/*.ts`],
+  // migrations: [`${dir}/db/migrations/*.ts`],
 });
 await dataSource.initialize();
 

@@ -1,0 +1,55 @@
+name: otomad-database-api-prod
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: ./.
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migration:
+        condition: service_completed_successfully
+      neo4j:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgres://user:pass@postgres:5432/test"
+      NEO4J_URL: "bolt://neo4j:7687"
+      NEO4J_USERNAME: "neo4j"
+      NEO4J_PASSWORD: "password"
+    ports:
+      - target: 8080
+        published: 4000
+
+  postgres:
+    image: postgres:15
+    healthcheck:
+      test: pg_isready
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: test
+
+  migration:
+    build:
+      context: ./.
+      dockerfile: Dockerfile.migration
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgres://user:pass@postgres:5432/test"
+
+  neo4j:
+    image: neo4j:5.2
+    environment:
+      NEO4J_AUTH: neo4j/password
+    healthcheck:
+      test: neo4j status || exit 1 # TODO:
+      interval: 10s
+      timeout: 5s
+      retries: 5

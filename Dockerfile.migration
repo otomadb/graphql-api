@@ -1,0 +1,19 @@
+FROM node:18-slim
+WORKDIR /app
+
+## tini
+ENV TINI_VERSION v0.19.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+
+COPY package.json ./
+RUN corepack enable
+
+COPY pnpm-lock.yaml ./
+RUN pnpm install
+
+COPY ./tsconfig.json ./
+COPY ./src/db ./src/db
+
+ENTRYPOINT ["/tini", "--"]
+CMD ["pnpm", "run", "migration:run"]
