@@ -2,7 +2,7 @@ import { GraphQLError } from "graphql";
 import { DataSource } from "typeorm";
 
 import { Video } from "../../db/entities/videos.js";
-import { QueryResolvers } from "../../graphql/resolvers.js";
+import { QueryResolvers } from "../../graphql.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 import { VideoModel } from "../Video/model.js";
 

@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
 
-import { type Resolvers } from "../../graphql/resolvers.js";
+import { type Resolvers } from "../../graphql.js";
 import { findMylist } from "./findMylist.js";
 import { findNicovideoVideoSource } from "./findNicovideoVideoSource.js";
 import { getMylist } from "./getMylist.js";

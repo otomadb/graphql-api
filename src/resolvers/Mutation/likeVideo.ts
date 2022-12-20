@@ -6,7 +6,7 @@ import { ulid } from "ulid";
 import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
 import { Mylist } from "../../db/entities/mylists.js";
 import { Video } from "../../db/entities/videos.js";
-import { MutationResolvers } from "../../graphql/resolvers.js";
+import { MutationResolvers } from "../../graphql.js";
 import { addVideoToMylist as addVideoToMylistInNeo4j } from "../../neo4j/add_video_to_mylist.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 import { MylistRegistrationModel } from "../MylistRegistration/model.js";

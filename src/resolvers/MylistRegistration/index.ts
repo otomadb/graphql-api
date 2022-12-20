@@ -3,7 +3,7 @@ import { DataSource } from "typeorm";
 
 import { Mylist } from "../../db/entities/mylists.js";
 import { Video } from "../../db/entities/videos.js";
-import { Resolvers } from "../../graphql/resolvers.js";
+import { Resolvers } from "../../graphql.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
 import { MylistModel } from "../Mylist/model.js";
 import { VideoModel } from "../Video/model.js";

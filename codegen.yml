@@ -1,25 +1,24 @@
 # codegen.yml
+schema:
+  - ./src/resolvers/**/*.graphql
 generates:
-  ./schema.graphql:
-    schema:
-      - ./src/resolvers/**/*.graphql
+  ./src/schema.graphql:
     plugins:
       - schema-ast
-  ./src/graphql/resolvers.ts:
-    schema: ./schema.graphql
+  ./src/graphql.ts:
     config:
       avoidOptionals:
         defaultValue: true
-      contextType: ../context.js#Context
       scalars:
         DateTime: Date
+      contextType: ./context.js#Context
       mappers:
-        Tag: ../resolvers/Tag/model.js#TagModel
-        User: ../resolvers/User/model.js#UserModel
-        Video: ../resolvers/Video/model.js#VideoModel
-        Mylist: ../resolvers/Mylist/model.js#MylistModel
-        MylistRegistration: ../resolvers/MylistRegistration/model.js#MylistRegistrationModel
-        NicovideoVideoSource: ../resolvers/NicovideoVideoSource/model.js#NicovideoVideoSourceModel
+        Tag: ./resolvers/Tag/model.js#TagModel
+        User: ./resolvers/User/model.js#UserModel
+        Video: ./resolvers/Video/model.js#VideoModel
+        Mylist: ./resolvers/Mylist/model.js#MylistModel
+        MylistRegistration: ./resolvers/MylistRegistration/model.js#MylistRegistrationModel
+        NicovideoVideoSource: ./resolvers/NicovideoVideoSource/model.js#NicovideoVideoSourceModel
       makeResolverTypeCallable: true
     plugins:
       - typescript

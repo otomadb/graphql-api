@@ -10,7 +10,7 @@ import { entities } from "../db/entities/index.js";
 import { User } from "../db/entities/users.js";
 import { resolvers } from "../resolvers/index.js";
 
-const typeDefs = await readFile(new URL("../../schema.graphql", import.meta.url), { encoding: "utf-8" });
+const typeDefs = await readFile(new URL("../schema.graphql", import.meta.url), { encoding: "utf-8" });
 
 describe("basic e2e", () => {
   let ds: DataSource;

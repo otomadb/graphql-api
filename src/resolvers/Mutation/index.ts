@@ -1,7 +1,7 @@
 import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 
-import { type Resolvers } from "../../graphql/resolvers.js";
+import { type Resolvers } from "../../graphql.js";
 import { addVideoToMylist } from "./addVideoToMylist.js";
 import { createMylist } from "./createMylist.js";
 import { likeVideo } from "./likeVideo.js";

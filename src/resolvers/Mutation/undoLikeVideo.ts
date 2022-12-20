@@ -3,7 +3,7 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 
 import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
-import { MutationResolvers } from "../../graphql/resolvers.js";
+import { MutationResolvers } from "../../graphql.js";
 import { removeVideoFromMylist as removeVideoFromMylistInNeo4j } from "../../neo4j/remove_video_from_mylist.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 import { MylistModel } from "../Mylist/model.js";

@@ -43,7 +43,7 @@ try {
   await neo4jSession.close();
 }
 
-const typeDefs = await readFile(new URL("../../schema.graphql", import.meta.url), { encoding: "utf-8" });
+const typeDefs = await readFile(new URL("../schema.graphql", import.meta.url), { encoding: "utf-8" });
 const schema = makeExecutableSchema({
   typeDefs,
   resolvers: resolvers({

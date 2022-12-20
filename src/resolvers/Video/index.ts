@@ -7,7 +7,7 @@ import { VideoTag } from "../../db/entities/video_tags.js";
 import { VideoThumbnail } from "../../db/entities/video_thumbnails.js";
 import { VideoTitle as VideoTitleEntity } from "../../db/entities/video_titles.js";
 import { Video } from "../../db/entities/videos.js";
-import { Resolvers } from "../../graphql/resolvers.js";
+import { Resolvers } from "../../graphql.js";
 import { calcVideoSimilarities } from "../../neo4j/video_similarities.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";

@@ -2,7 +2,7 @@ import { GraphQLError } from "graphql";
 import { DataSource } from "typeorm";
 
 import { Video } from "../../db/entities/videos.js";
-import { Resolvers } from "../../graphql/resolvers.js";
+import { Resolvers } from "../../graphql.js";
 import { buildGqlId } from "../../utils/id.js";
 import { VideoModel } from "../Video/model.js";
 

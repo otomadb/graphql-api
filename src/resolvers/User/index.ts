@@ -2,7 +2,7 @@ import { GraphQLError } from "graphql";
 import { DataSource } from "typeorm";
 
 import { Mylist } from "../../db/entities/mylists.js";
-import { Resolvers } from "../../graphql/resolvers.js";
+import { Resolvers } from "../../graphql.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
 import { MylistModel } from "../Mylist/model.js";
 import { UserModel } from "./model.js";

@@ -4,7 +4,7 @@ import { DataSource } from "typeorm";
 import { TagName } from "../../db/entities/tag_names.js";
 import { TagParent } from "../../db/entities/tag_parents.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
-import { Resolvers, TagType } from "../../graphql/resolvers.js";
+import { Resolvers, TagType } from "../../graphql.js";
 import { addIDPrefix, ObjectType, parseGqlID } from "../../utils/id.js";
 import { VideoModel } from "../Video/model.js";
 import { TagModel } from "./model.js";

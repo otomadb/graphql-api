@@ -9,7 +9,7 @@ import { VideoTag } from "../../db/entities/video_tags.js";
 import { VideoThumbnail } from "../../db/entities/video_thumbnails.js";
 import { VideoTitle } from "../../db/entities/video_titles.js";
 import { Video } from "../../db/entities/videos.js";
-import { MutationResolvers, RegisterVideoInputSourceType } from "../../graphql/resolvers.js";
+import { MutationResolvers, RegisterVideoInputSourceType } from "../../graphql.js";
 import { registerVideo as registerVideoInNeo4j } from "../../neo4j/register_video.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 import { VideoModel } from "../Video/model.js";

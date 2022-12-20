@@ -2,7 +2,7 @@ import { GraphQLError } from "graphql";
 import { DataSource } from "typeorm";
 
 import { User } from "../../db/entities/users.js";
-import { QueryResolvers } from "../../graphql/resolvers.js";
+import { QueryResolvers } from "../../graphql.js";
 import { UserModel } from "../User/model.js";
 
 export const getUser =

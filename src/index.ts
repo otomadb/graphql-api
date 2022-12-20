@@ -47,7 +47,7 @@ app.use(koaCors({ credentials: true }));
 
 const router = new Router();
 
-export const typeDefs = await readFile(new URL("../schema.graphql", import.meta.url), { encoding: "utf-8" });
+export const typeDefs = await readFile(new URL("./schema.graphql", import.meta.url), { encoding: "utf-8" });
 
 const schema = makeExecutableSchema({
   typeDefs,

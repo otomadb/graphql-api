@@ -2,7 +2,7 @@ import { GraphQLError } from "graphql";
 import { DataSource } from "typeorm";
 
 import { Mylist, MylistShareRange as MylistEntityShareRange } from "../../db/entities/mylists.js";
-import { QueryResolvers } from "../../graphql/resolvers.js";
+import { QueryResolvers } from "../../graphql.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 import { MylistModel } from "../Mylist/model.js";
 

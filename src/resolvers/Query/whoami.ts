@@ -1,4 +1,4 @@
-import { QueryResolvers } from "../../graphql/resolvers.js";
+import { QueryResolvers } from "../../graphql.js";
 import { UserModel } from "../User/model.js";
 
 export const whoami =

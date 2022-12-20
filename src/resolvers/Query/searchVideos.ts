@@ -3,7 +3,7 @@ import { DataSource, In, Like } from "typeorm";
 
 import { VideoTitle } from "../../db/entities/video_titles.js";
 import { Video } from "../../db/entities/videos.js";
-import { QueryResolvers } from "../../graphql/resolvers.js";
+import { QueryResolvers } from "../../graphql.js";
 import { VideoModel } from "../Video/model.js";
 
 export const searchVideos =
