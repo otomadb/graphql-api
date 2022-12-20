@@ -8,15 +8,8 @@ import { MutationResolvers, MylistShareRange as MylistGQLShareRange } from "../.
 import { createMylist as createMylistInNeo4j } from "../../neo4j/create_mylist.js";
 import { MylistModel } from "../Mylist/model.js";
 
-export const createMylist =
-  ({
-    dataSource,
-    neo4jDriver,
-  }: {
-    dataSource: DataSource;
-    neo4jDriver: Neo4jDriver;
-  }): MutationResolvers["createMylist"] =>
-  async (_parent, { input }, { user }) => {
+export const createMylist = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+  (async (_parent, { input }, { user }) => {
     if (!user) throw new GraphQLError("need to authenticate");
     const mylist = new Mylist();
     mylist.id = ulid();
@@ -42,4 +35,4 @@ export const createMylist =
     return {
       mylist: new MylistModel(mylist),
     };
-  };
+  }) satisfies MutationResolvers["createMylist"];

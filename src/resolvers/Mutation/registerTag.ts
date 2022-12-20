@@ -35,15 +35,8 @@ export const calcNameParentPair = ({
     .reduce((p, c) => [...p, ...c], [] as { name: string; parent: string | null }[]);
 };
 
-export const registerTag =
-  ({
-    dataSource,
-    neo4jDriver,
-  }: {
-    dataSource: DataSource;
-    neo4jDriver: Neo4jDriver;
-  }): MutationResolvers["registerTag"] =>
-  async (
+export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+  (async (
     _,
     {
       input: {
@@ -152,4 +145,4 @@ export const registerTag =
     await registerTagInNeo4j(neo4jDriver)(tag.id);
 
     return { tag: new TagModel(tag) };
-  };
+  }) satisfies MutationResolvers["registerTag"];

@@ -11,13 +11,14 @@ import { resolveTag } from "./Tag/index.js";
 import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
 
-export const resolvers = (deps: { dataSource: DataSource; neo4jDriver: Neo4jDriver }): Resolvers => ({
-  Query: resolveQuery(deps),
-  Mutation: resolveMutation(deps),
-  Tag: resolveTag(deps),
-  Video: resolveVideo(deps),
-  User: resolveUser(deps),
-  Mylist: resolveMylist(deps),
-  MylistRegistration: resolveMylistRegistration(deps),
-  NicovideoVideoSource: resolveNicovideoVideoSource(deps),
-});
+export const resolvers = (deps: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+  ({
+    Query: resolveQuery(deps),
+    Mutation: resolveMutation(deps),
+    Tag: resolveTag(deps),
+    Video: resolveVideo(deps),
+    User: resolveUser(deps),
+    Mylist: resolveMylist(deps),
+    MylistRegistration: resolveMylistRegistration(deps),
+    NicovideoVideoSource: resolveNicovideoVideoSource(deps),
+  } satisfies Resolvers);

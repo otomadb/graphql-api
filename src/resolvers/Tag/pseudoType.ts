@@ -1,8 +1,7 @@
 import { DataSource } from "typeorm";
 
 import { TagParent } from "../../db/entities/tag_parents.js";
-import { PseudoTagType } from "../../graphql.js";
-import { TagModel } from "./model.js";
+import { PseudoTagType, TagResolvers } from "../../graphql.js";
 
 export const calcType = (names: string[]): PseudoTagType => {
   const type: PseudoTagType[] = [];
@@ -20,9 +19,8 @@ export const calcType = (names: string[]): PseudoTagType => {
   else return PseudoTagType.Subtle;
 };
 
-export const resolvePseudoType =
-  ({ dataSource }: { dataSource: DataSource }) =>
-  async ({ id: tagId }: TagModel) =>
+export const resolvePseudoType = ({ dataSource }: { dataSource: DataSource }) =>
+  (async ({ id: tagId }) =>
     dataSource
       .getRepository(TagParent)
       .find({ where: { child: { id: tagId } }, relations: ["parent.tagNames"] })
@@ -31,4 +29,4 @@ export const resolvePseudoType =
           .filter((p) => p.parent.meaningless) // TODO: なぜか`{where:{child:{meaningless:true}}}`で動かなかったので
           .reduce((p, { parent }) => [...p, ...parent.tagNames.map(({ name }) => name)], [] as string[])
       )
-      .then((names) => calcType(names));
+      .then((names) => calcType(names))) satisfies TagResolvers["pseudoType"];

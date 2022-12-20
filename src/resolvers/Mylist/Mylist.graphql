@@ -61,3 +61,7 @@ type MylistIncludeTagsItem {
   tag: Tag!
   count: Int!
 }
+
+type MylistsConnection {
+  nodes: [Mylist!]!
+}

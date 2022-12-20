@@ -12,9 +12,8 @@ import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 import { TagModel } from "../Tag/model.js";
 import { VideoModel } from "../Video/model.js";
 
-export const tagVideo =
-  ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }): MutationResolvers["tagVideo"] =>
-  async (_parent, { input: { tagId, videoId } }, { user }) => {
+export const tagVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+  (async (_parent, { input: { tagId, videoId } }, { user }) => {
     if (!user) {
       throw new GraphQLError("required to sign in");
     }
@@ -49,4 +48,4 @@ export const tagVideo =
       video: new VideoModel(video),
     };
     */
-  };
+  }) satisfies MutationResolvers["tagVideo"];

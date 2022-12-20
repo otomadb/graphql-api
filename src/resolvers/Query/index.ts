@@ -14,17 +14,18 @@ import { searchTags } from "./searchTags.js";
 import { searchVideos } from "./searchVideos.js";
 import { whoami } from "./whoami.js";
 
-export const resolveQuery = (deps: { dataSource: DataSource }): Resolvers["Query"] => ({
-  searchTags: searchTags(deps),
-  searchVideos: searchVideos(deps),
-  tag: getTag(deps),
-  tags: getTags(deps),
-  user: getUser(deps),
-  video: getVideo(deps),
-  videos: getVideos(deps),
-  mylist: getMylist(deps),
-  findMylist: findMylist(deps),
-  whoami: whoami(),
-  nicovideoVideoSource: getNicovideoVideoSource(deps),
-  findNicovideoVideoSource: findNicovideoVideoSource(deps),
-});
+export const resolveQuery = (deps: { dataSource: DataSource }) =>
+  ({
+    searchTags: searchTags(deps),
+    searchVideos: searchVideos(deps),
+    tag: getTag(deps),
+    tags: getTags(deps),
+    user: getUser(deps),
+    video: getVideo(deps),
+    videos: getVideos(deps),
+    mylist: getMylist(deps),
+    findMylist: findMylist(deps),
+    whoami: whoami(),
+    nicovideoVideoSource: getNicovideoVideoSource(deps),
+    findNicovideoVideoSource: findNicovideoVideoSource(deps),
+  } satisfies Resolvers["Query"]);

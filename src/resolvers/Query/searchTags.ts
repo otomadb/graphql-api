@@ -6,9 +6,8 @@ import { Tag } from "../../db/entities/tags.js";
 import { QueryResolvers } from "../../graphql.js";
 import { TagModel } from "../Tag/model.js";
 
-export const searchTags =
-  ({ dataSource }: { dataSource: DataSource }): QueryResolvers["searchTags"] =>
-  async (_, { input }) => {
+export const searchTags = ({ dataSource }: { dataSource: DataSource }) =>
+  (async (_, { input }) => {
     const tagNames = await dataSource
       .getRepository(TagName)
       .createQueryBuilder("tagName")
@@ -33,4 +32,4 @@ export const searchTags =
         };
       }),
     };
-  };
+  }) satisfies QueryResolvers["searchTags"];

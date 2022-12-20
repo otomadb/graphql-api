@@ -9,15 +9,14 @@ import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 import { MylistModel } from "../Mylist/model.js";
 import { VideoModel } from "../Video/model.js";
 
-export const removeVideoFromMylist =
-  ({
-    dataSource: ds,
-    neo4jDriver,
-  }: {
-    dataSource: DataSource;
-    neo4jDriver: Neo4jDriver;
-  }): MutationResolvers["removeVideoFromMylist"] =>
-  async (_, { input: { videoId, mylistId } }, { user }) => {
+export const removeVideoFromMylist = ({
+  dataSource: ds,
+  neo4jDriver,
+}: {
+  dataSource: DataSource;
+  neo4jDriver: Neo4jDriver;
+}) =>
+  (async (_, { input: { videoId, mylistId } }, { user }) => {
     if (!user) {
       throw new GraphQLError("required to sign in");
     }
@@ -46,4 +45,4 @@ export const removeVideoFromMylist =
       video: new VideoModel(registration.video),
       mylist: new MylistModel(registration.mylist),
     };
-  };
+  }) satisfies MutationResolvers["removeVideoFromMylist"];

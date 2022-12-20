@@ -16,15 +16,8 @@ import { VideoModel } from "../Video/model.js";
 
 export const isValidNicovideoSourceId = (id: string): boolean => /[a-z]{2}\d+/.test(id);
 
-export const registerVideo =
-  ({
-    dataSource,
-    neo4jDriver,
-  }: {
-    dataSource: DataSource;
-    neo4jDriver: Neo4jDriver;
-  }): MutationResolvers["registerVideo"] =>
-  async (_parent, { input }) => {
+export const registerVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+  (async (_parent, { input }) => {
     // validity check
     const nicovideoSourceIds = input.sources
       .filter((v) => v.type === RegisterVideoInputSourceType.Nicovideo)
@@ -94,4 +87,4 @@ export const registerVideo =
     return {
       video: new VideoModel(video),
     };
-  };
+  }) satisfies MutationResolvers["registerVideo"];

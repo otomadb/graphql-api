@@ -9,15 +9,8 @@ import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 import { MylistModel } from "../Mylist/model.js";
 import { VideoModel } from "../Video/model.js";
 
-export const undoLikeVideo =
-  ({
-    dataSource: ds,
-    neo4jDriver,
-  }: {
-    dataSource: DataSource;
-    neo4jDriver: Neo4jDriver;
-  }): MutationResolvers["undoLikeVideo"] =>
-  async (_, { input: { videoId } }, { user }) => {
+export const undoLikeVideo = ({ dataSource: ds, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+  (async (_, { input: { videoId } }, { user }) => {
     if (!user) {
       throw new GraphQLError("required to sign in");
     }
@@ -46,4 +39,4 @@ export const undoLikeVideo =
       video: new VideoModel(registration.video),
       mylist: new MylistModel(registration.mylist),
     };
-  };
+  }) satisfies MutationResolvers["undoLikeVideo"];

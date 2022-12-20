@@ -9,9 +9,8 @@ import { MylistModel } from "../Mylist/model.js";
 export const MYLIST_NOT_FOUND_OR_PRIVATE_ERROR = "Mylist Not Found or Private";
 export const MYLIST_NOT_HOLDED_BY_YOU = "This mylist is not holded by you";
 
-export const getMylist =
-  ({ dataSource }: { dataSource: DataSource }): QueryResolvers["mylist"] =>
-  async (_parent, { id }, { user }) => {
+export const getMylist = ({ dataSource }: { dataSource: DataSource }) =>
+  (async (_parent, { id }, { user }) => {
     const mylist = await dataSource.getRepository(Mylist).findOne({
       where: { id: removeIDPrefix(ObjectType.Mylist, id) },
       relations: {
@@ -25,4 +24,4 @@ export const getMylist =
     }
 
     return new MylistModel(mylist);
-  };
+  }) satisfies QueryResolvers["mylist"];

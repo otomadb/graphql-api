@@ -12,14 +12,15 @@ import { tagVideo } from "./tagVideo.js";
 import { undoLikeVideo } from "./undoLikeVideo.js";
 import { untagVideo } from "./untagVideo.js";
 
-export const resolveMutation = (deps: { dataSource: DataSource; neo4jDriver: Neo4jDriver }): Resolvers["Mutation"] => ({
-  registerTag: registerTag(deps),
-  registerVideo: registerVideo(deps),
-  tagVideo: tagVideo(deps),
-  untagVideo: untagVideo(deps),
-  addVideoToMylist: addVideoToMylist(deps),
-  createMylist: createMylist(deps),
-  likeVideo: likeVideo(deps),
-  removeVideoFromMylist: removeVideoFromMylist(deps),
-  undoLikeVideo: undoLikeVideo(deps),
-});
+export const resolveMutation = (deps: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+  ({
+    registerTag: registerTag(deps),
+    registerVideo: registerVideo(deps),
+    tagVideo: tagVideo(deps),
+    untagVideo: untagVideo(deps),
+    addVideoToMylist: addVideoToMylist(deps),
+    createMylist: createMylist(deps),
+    likeVideo: likeVideo(deps),
+    removeVideoFromMylist: removeVideoFromMylist(deps),
+    undoLikeVideo: undoLikeVideo(deps),
+  } satisfies Resolvers["Mutation"]);
