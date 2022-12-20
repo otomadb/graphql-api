@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit",
     "lint:eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:prettier": "prettier --check ./**/*.{js,ts,json,yml,md,graphql}",
-    "lint:schema": "graphql-schema-linter ./schema.graphql",
+    "lint:schema": "graphql-schema-linter ./src/schema.graphql",
     "lintfix": "run-s 'lintfix:*' 'fmt'",
     "lintfix:eslint": "pnpm run lint:eslint --fix",
     "migration:run": "pnpm run typeorm migration:run",
