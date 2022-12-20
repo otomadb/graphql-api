@@ -1,4 +1,3 @@
-import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 
 import { makeExecutableSchema } from "@graphql-tools/schema";
@@ -9,10 +8,9 @@ import { DataSource } from "typeorm";
 import { entities } from "../db/entities/index.js";
 import { Mylist } from "../db/entities/mylists.js";
 import { User } from "../db/entities/users.js";
+import { typeDefs } from "../graphql.js";
 import { resolvers } from "../resolvers/index.js";
 import { ObjectType, removeIDPrefix } from "../utils/id.js";
-
-const typeDefs = await readFile(new URL("../schema.graphql", import.meta.url), { encoding: "utf-8" });
 
 describe("マイリスト関連のE2Eテスト", () => {
   let ds: DataSource;

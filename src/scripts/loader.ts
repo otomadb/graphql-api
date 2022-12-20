@@ -1,5 +1,4 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import { readFile } from "fs/promises";
 import { graphql } from "graphql";
 import neo4j from "neo4j-driver";
 import { dirname } from "path";
@@ -9,6 +8,7 @@ import { ulid } from "ulid";
 import { entities } from "../db/entities/index.js";
 import { Mylist, MylistShareRange } from "../db/entities/mylists.js";
 import { User } from "../db/entities/users.js";
+import { typeDefs } from "../graphql.js";
 import { resolvers } from "../resolvers/index.js";
 
 const dataSource = new DataSource({
@@ -43,7 +43,6 @@ try {
   await neo4jSession.close();
 }
 
-const typeDefs = await readFile(new URL("../schema.graphql", import.meta.url), { encoding: "utf-8" });
 const schema = makeExecutableSchema({
   typeDefs,
   resolvers: resolvers({
