@@ -14,7 +14,15 @@ type Tag implements Node {
   parents(meaningless: Boolean): [TagParent!]!
   meaningless: Boolean!
 
-  canTagTo(id: ID!): Boolean!
+  """
+  動画に対してタグを付けることができるか
+  """
+  canTagTo(
+    """
+    動画のID
+    """
+    videoId: ID!
+  ): Boolean!
 }
 
 type TagName {

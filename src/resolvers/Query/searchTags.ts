@@ -6,9 +6,8 @@ import { Tag } from "../../db/entities/tags.js";
 import { QueryResolvers } from "../../graphql.js";
 import { TagModel } from "../Tag/model.js";
 
-export const searchTags =
-  ({ dataSource }: { dataSource: DataSource }): QueryResolvers["searchTags"] =>
-  async (_, { input }) => {
+export const searchTags = ({ dataSource }: { dataSource: DataSource }) =>
+  (async (_, { input }) => {
     const tagNames = await dataSource
       .getRepository(TagName)
       .createQueryBuilder("tagName")
@@ -24,7 +23,7 @@ export const searchTags =
     });
 
     return {
-      result: tagNames.map((n) => {
+      items: tagNames.map((n) => {
         const tag = tags.find((t) => t.id === n.tag.id);
         if (!tag) throw new GraphQLError(`Data inconcistency is occuring for "video:${n.tag.id}"`);
         return {
@@ -33,4 +32,4 @@ export const searchTags =
         };
       }),
     };
-  };
+  }) satisfies QueryResolvers["searchTags"];

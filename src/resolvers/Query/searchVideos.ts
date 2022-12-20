@@ -6,9 +6,8 @@ import { Video } from "../../db/entities/videos.js";
 import { QueryResolvers } from "../../graphql.js";
 import { VideoModel } from "../Video/model.js";
 
-export const searchVideos =
-  ({ dataSource }: { dataSource: DataSource }): QueryResolvers["searchVideos"] =>
-  async (_, { input }) => {
+export const searchVideos = ({ dataSource }: { dataSource: DataSource }) =>
+  (async (_, { input }) => {
     const videoTitles = await dataSource
       .getRepository(VideoTitle)
       .createQueryBuilder("videoTitle")
@@ -24,7 +23,7 @@ export const searchVideos =
     });
 
     return {
-      result: videoTitles.map((t) => {
+      items: videoTitles.map((t) => {
         const video = videos.find((v) => v.id === t.video.id);
         if (!video) throw new GraphQLError(`Data inconcistency is occuring for "video:${t.video.id}"`);
         return {
@@ -33,4 +32,4 @@ export const searchVideos =
         };
       }),
     };
-  };
+  }) satisfies QueryResolvers["searchVideos"];

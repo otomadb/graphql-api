@@ -1,0 +1,7 @@
+type Query {
+  findUser(input: FindUserInput!): User
+}
+
+input FindUserInput {
+  name: String
+}

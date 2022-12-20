@@ -1,3 +1,7 @@
 type Query {
-  findMylist(id: ID!): Mylist
+  findMylist(input: FindMylistInput!): Mylist
+}
+
+input FindMylistInput {
+  id: ID
 }

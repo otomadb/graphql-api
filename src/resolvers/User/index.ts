@@ -2,21 +2,21 @@ import { GraphQLError } from "graphql";
 import { DataSource } from "typeorm";
 
 import { Mylist } from "../../db/entities/mylists.js";
-import { Resolvers } from "../../graphql.js";
+import { Resolvers, UserResolvers } from "../../graphql.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
 import { MylistModel } from "../Mylist/model.js";
-import { UserModel } from "./model.js";
 
-export const resolveId = ({ id }: UserModel) => addIDPrefix(ObjectType.User, id);
+export const resolveId = (({ id }) => addIDPrefix(ObjectType.User, id)) satisfies UserResolvers["id"];
 
-export const resolveUser = ({ dataSource: ds }: { dataSource: DataSource }): Resolvers["User"] => ({
-  id: resolveId,
-  favorites: async ({ id: userId }) => {
-    const mylist = await ds.getRepository(Mylist).findOne({
-      where: { holder: { id: userId }, isLikeList: true },
-    });
+export const resolveUser = ({ dataSource: ds }: { dataSource: DataSource }) =>
+  ({
+    id: resolveId,
+    favorites: async ({ id: userId }) => {
+      const mylist = await ds.getRepository(Mylist).findOne({
+        where: { holder: { id: userId }, isLikeList: true },
+      });
 
-    if (!mylist) throw new GraphQLError(`User "${userId}" favorites not found`);
-    return new MylistModel(mylist);
-  },
-});
+      if (!mylist) throw new GraphQLError(`User "${userId}" favorites not found`);
+      return new MylistModel(mylist);
+    },
+  } satisfies Resolvers["User"]);

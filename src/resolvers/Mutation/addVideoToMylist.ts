@@ -12,15 +12,8 @@ import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 import { MylistRegistrationModel } from "../MylistRegistration/model.js";
 import { MYLIST_NOT_FOUND_OR_PRIVATE_ERROR, MYLIST_NOT_HOLDED_BY_YOU } from "../Query/getMylist.js";
 
-export const addVideoToMylist =
-  ({
-    dataSource,
-    neo4jDriver,
-  }: {
-    dataSource: DataSource;
-    neo4jDriver: Neo4jDriver;
-  }): MutationResolvers["addVideoToMylist"] =>
-  async (_parent, { input }, { user }) => {
+export const addVideoToMylist = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+  (async (_parent, { input }, { user }) => {
     if (!user) throw new GraphQLError("need to authenticate");
     const mylist = await dataSource
       .getRepository(Mylist)
@@ -63,4 +56,4 @@ export const addVideoToMylist =
         videoId: registration.video.id,
       }),
     };
-  };
+  }) satisfies MutationResolvers["addVideoToMylist"];

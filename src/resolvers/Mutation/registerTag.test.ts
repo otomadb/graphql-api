@@ -1,8 +1,6 @@
-import { GraphQLResolveInfo } from "graphql";
 import neo4j, { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 
-import { Context } from "../../context.js";
 import { entities } from "../../db/entities.js";
 import { TagName } from "../../db/entities/tag_names.js";
 import { TagParent } from "../../db/entities/tag_parents.js";
@@ -128,9 +126,7 @@ describe("Mutation.registerTag", () => {
     test("primaryNameだけでタグを登録する", async () => {
       const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } }
       );
       expect(registerResult).toBeDefined();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -168,9 +164,7 @@ describe("Mutation.registerTag", () => {
     test("meaninglessフラグを立てて登録する", async () => {
       const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", meaningless: true, extraNames: [], implicitParents: [] } },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        { input: { primaryName: "a", meaningless: true, extraNames: [], implicitParents: [] } }
       );
       expect(registerResult).toBeDefined();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -186,9 +180,7 @@ describe("Mutation.registerTag", () => {
     test("primaryNameとextraNamesで登録", async () => {
       const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: ["b"], implicitParents: [], meaningless: false } },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        { input: { primaryName: "a", extraNames: ["b"], implicitParents: [], meaningless: false } }
       );
       expect(registerResult).toBeDefined();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -239,9 +231,7 @@ describe("Mutation.registerTag", () => {
       /* already */
       const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: alreadyTag } = already as { tag: Tag };
@@ -249,9 +239,7 @@ describe("Mutation.registerTag", () => {
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
-          { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } },
-          {} as Context,
-          {} as GraphQLResolveInfo
+          { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } }
         )
       ).rejects.toThrowError(`name "a" is reserved in "tag:${alreadyTag.id}"`);
     });
@@ -260,9 +248,7 @@ describe("Mutation.registerTag", () => {
       /* already */
       const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: ["A"], implicitParents: [], meaningless: false } },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        { input: { primaryName: "a", extraNames: ["A"], implicitParents: [], meaningless: false } }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: alreadyTag } = already as { tag: Tag };
@@ -270,9 +256,7 @@ describe("Mutation.registerTag", () => {
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
-          { input: { primaryName: "A", extraNames: [], implicitParents: [], meaningless: false } },
-          {} as Context,
-          {} as GraphQLResolveInfo
+          { input: { primaryName: "A", extraNames: [], implicitParents: [], meaningless: false } }
         )
       ).rejects.toThrowError(`name "A" is reserved in "tag:${alreadyTag.id}"`);
     });
@@ -281,9 +265,7 @@ describe("Mutation.registerTag", () => {
       /* already */
       const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: alreadyTag } = already as { tag: Tag };
@@ -291,9 +273,7 @@ describe("Mutation.registerTag", () => {
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
-          { input: { primaryName: "b", extraNames: ["a"], implicitParents: [], meaningless: false } },
-          {} as Context,
-          {} as GraphQLResolveInfo
+          { input: { primaryName: "b", extraNames: ["a"], implicitParents: [], meaningless: false } }
         )
       ).rejects.toThrowError(`name "a" is reserved in "tag:${alreadyTag.id}"`);
     });
@@ -302,9 +282,7 @@ describe("Mutation.registerTag", () => {
       /* already */
       const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: ["A"], implicitParents: [], meaningless: false } },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        { input: { primaryName: "a", extraNames: ["A"], implicitParents: [], meaningless: false } }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: alreadyTag } = already as { tag: Tag };
@@ -312,9 +290,7 @@ describe("Mutation.registerTag", () => {
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
-          { input: { primaryName: "b", extraNames: ["A"], implicitParents: [], meaningless: false } },
-          {} as Context,
-          {} as GraphQLResolveInfo
+          { input: { primaryName: "b", extraNames: ["A"], implicitParents: [], meaningless: false } }
         )
       ).rejects.toThrowError(`name "A" is reserved in "tag:${alreadyTag.id}"`);
     });
@@ -331,9 +307,7 @@ describe("Mutation.registerTag", () => {
               implicitParents: [],
               meaningless: false,
             },
-          },
-          {} as Context,
-          {} as GraphQLResolveInfo
+          }
         )
       ).rejects.toThrowError('"tag:p" is specified as parent but not exists');
     });
@@ -341,9 +315,7 @@ describe("Mutation.registerTag", () => {
     test("explicitParentだけを入れて登録する", async () => {
       const parentResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "p", extraNames: [], implicitParents: [], meaningless: false } },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        { input: { primaryName: "p", extraNames: [], implicitParents: [], meaningless: false } }
       );
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const { tag: parentTag } = parentResult! as { tag: Tag };
@@ -358,9 +330,7 @@ describe("Mutation.registerTag", () => {
             implicitParents: [],
             meaningless: false,
           },
-        },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        }
       );
       expect(registerResult).toBeDefined();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -422,9 +392,7 @@ describe("Mutation.registerTag", () => {
               extraNames: [],
               meaningless: false,
             },
-          },
-          {} as Context,
-          {} as GraphQLResolveInfo
+          }
         )
       ).rejects.toThrowError('"tag:p" is specified as parent but not exists');
     });
@@ -432,9 +400,7 @@ describe("Mutation.registerTag", () => {
     test("implicitParentsだけを入れて登録する", async () => {
       const parentResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "p", extraNames: [], implicitParents: [], meaningless: false } },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        { input: { primaryName: "p", extraNames: [], implicitParents: [], meaningless: false } }
       );
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const { tag: parentTag } = parentResult! as { tag: Tag };
@@ -448,9 +414,7 @@ describe("Mutation.registerTag", () => {
             extraNames: [],
             meaningless: false,
           },
-        },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        }
       );
       expect(registerResult).toBeDefined();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -513,9 +477,7 @@ describe("Mutation.registerTag", () => {
               extraNames: [],
               meaningless: false,
             },
-          },
-          {} as Context,
-          {} as GraphQLResolveInfo
+          }
         )
       ).rejects.toThrowError('"tag:p" is specified as explicitParent and also included in implicitParents');
     });
@@ -531,9 +493,7 @@ describe("Mutation.registerTag", () => {
               extraNames: [],
               meaningless: false,
             },
-          },
-          {} as Context,
-          {} as GraphQLResolveInfo
+          }
         )
       ).rejects.toThrowError('"tag:p" is included in implicitParents multiple times');
     });
@@ -541,18 +501,14 @@ describe("Mutation.registerTag", () => {
     test("explicitParentとimplicitParentsを入れて登録する", async () => {
       const parentRegisterResult1 = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "p1", extraNames: [], implicitParents: [], meaningless: false } },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        { input: { primaryName: "p1", extraNames: [], implicitParents: [], meaningless: false } }
       );
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const { tag: parentTag1 } = parentRegisterResult1! as { tag: Tag };
 
       const parentRegisterResult2 = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "p2", extraNames: [], implicitParents: [], meaningless: false } },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        { input: { primaryName: "p2", extraNames: [], implicitParents: [], meaningless: false } }
       );
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const { tag: parentTag2 } = parentRegisterResult2! as { tag: Tag };
@@ -567,9 +523,7 @@ describe("Mutation.registerTag", () => {
             extraNames: [],
             meaningless: false,
           },
-        },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        }
       );
       expect(actualRegisterResult).toBeDefined();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -634,9 +588,7 @@ describe("Mutation.registerTag", () => {
       /* a */
       const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: tagA } = resultTagA as { tag: Tag };
@@ -644,9 +596,7 @@ describe("Mutation.registerTag", () => {
       /* b */
       const resultTagB = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "b", extraNames: [], implicitParents: [], meaningless: false } },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        { input: { primaryName: "b", extraNames: [], implicitParents: [], meaningless: false } }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: tagB } = resultTagB as { tag: Tag };
@@ -662,9 +612,7 @@ describe("Mutation.registerTag", () => {
             implicitParents: [],
             meaningless: false,
           },
-        },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        }
       );
       expect(resultTagB_A).toBeDefined();
       const { tag: tagB_A } = resultTagB_A as { tag: Tag };
@@ -708,9 +656,7 @@ describe("Mutation.registerTag", () => {
       /* a */
       const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: tagA } = resultTagA as { tag: Tag };
@@ -726,9 +672,7 @@ describe("Mutation.registerTag", () => {
             implicitParents: [],
             meaningless: false,
           },
-        },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        }
       );
       expect(resultTagB_A).toBeDefined();
       const { tag: tagB_A } = resultTagB_A as { tag: Tag };
@@ -736,9 +680,7 @@ describe("Mutation.registerTag", () => {
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
-          { input: { primaryName: "b", extraNames: [], implicitParents: [], meaningless: false } },
-          {} as Context,
-          {} as GraphQLResolveInfo
+          { input: { primaryName: "b", extraNames: [], implicitParents: [], meaningless: false } }
         )
       ).rejects.toThrowError(`name "b" is reserved in "tag:${tagB_A.id}"`);
     });
@@ -747,9 +689,7 @@ describe("Mutation.registerTag", () => {
       /* a */
       const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: tagA } = resultTagA as { tag: Tag };
@@ -765,9 +705,7 @@ describe("Mutation.registerTag", () => {
             implicitParents: [],
             meaningless: false,
           },
-        },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        }
       );
       expect(resultTagB_A).toBeDefined();
       const { tag: tagB_A } = resultTagB_A as { tag: Tag };
@@ -783,9 +721,7 @@ describe("Mutation.registerTag", () => {
               implicitParents: [],
               meaningless: false,
             },
-          },
-          {} as Context,
-          {} as GraphQLResolveInfo
+          }
         )
       ).rejects.toThrowError(`name "b" with parent "tag:${tagA.id}" is already registered in "tag:${tagB_A.id}"`);
     });
@@ -794,9 +730,7 @@ describe("Mutation.registerTag", () => {
       /* a/A */
       const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: tagA } = resultTagA as { tag: Tag };
@@ -811,9 +745,7 @@ describe("Mutation.registerTag", () => {
             extraNames: [],
             meaningless: false,
           },
-        },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        }
       );
       expect(resultTagB_A).toBeDefined();
       const { tag: tagB_A } = resultTagB_A as { tag: Tag };
@@ -829,9 +761,7 @@ describe("Mutation.registerTag", () => {
               implicitParents: [],
               meaningless: false,
             },
-          },
-          {} as Context,
-          {} as GraphQLResolveInfo
+          }
         )
       ).rejects.toThrowError(`name "b" with parent "tag:${tagA.id}" is already registered in "tag:${tagB_A.id}"`);
     });
@@ -840,9 +770,7 @@ describe("Mutation.registerTag", () => {
       /* a/A */
       const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: tagA } = resultTagA as { tag: Tag };
@@ -857,9 +785,7 @@ describe("Mutation.registerTag", () => {
             extraNames: [],
             meaningless: false,
           },
-        },
-        {} as Context,
-        {} as GraphQLResolveInfo
+        }
       );
       expect(resultTagB_A).toBeDefined();
       const { tag: tagB_A } = resultTagB_A as { tag: Tag };
@@ -874,9 +800,7 @@ describe("Mutation.registerTag", () => {
               extraNames: [],
               meaningless: false,
             },
-          },
-          {} as Context,
-          {} as GraphQLResolveInfo
+          }
         )
       ).rejects.toThrowError(`name "b" with parent "tag:${tagA.id}" is already registered in "tag:${tagB_A.id}"`);
     });
