@@ -23,7 +23,7 @@ export const searchTags = ({ dataSource }: { dataSource: DataSource }) =>
     });
 
     return {
-      result: tagNames.map((n) => {
+      items: tagNames.map((n) => {
         const tag = tags.find((t) => t.id === n.tag.id);
         if (!tag) throw new GraphQLError(`Data inconcistency is occuring for "video:${n.tag.id}"`);
         return {
