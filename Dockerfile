@@ -10,6 +10,7 @@ RUN pnpm install
 
 COPY ./codegen.yml ./tsconfig.json ./
 COPY src ./src
+COPY codegen-plugins ./codegen-plugins
 RUN pnpm run codegen
 RUN pnpm run build
 
