@@ -16,4 +16,12 @@ export const resolveSemitag = ({ dataSource }: { dataSource: DataSource }) =>
       if (!semitag) throw new GraphQLError(`"video" for "semitag:${id}" is not found`);
       return semitag.video;
     },
+    async resolvedTag({ id }) {
+      const semitag = await dataSource.getRepository(Semitag).findOne({
+        where: { id },
+        relations: { tag: true },
+      });
+      if (!semitag) throw new GraphQLError(`"video" for "semitag:${id}" is not found`);
+      return semitag.tag;
+    },
   } satisfies Resolvers["Semitag"]);

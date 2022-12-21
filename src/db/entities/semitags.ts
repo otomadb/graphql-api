@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryColumn,
   Relation,
@@ -33,7 +34,6 @@ export class Semitag {
   @JoinColumn()
   video!: Relation<Video>;
 
-  @OneToOne(() => Tag, (source) => source.id, { nullable: true })
-  @JoinColumn()
+  @ManyToOne(() => Tag, (source) => source.id, { nullable: true })
   tag!: Relation<Tag> | null;
 }
