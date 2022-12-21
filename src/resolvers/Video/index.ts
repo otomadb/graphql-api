@@ -3,6 +3,7 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource, In } from "typeorm";
 
 import { NicovideoVideoSource } from "../../db/entities/nicovideo_source.js";
+import { Semitag } from "../../db/entities/semitags.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { VideoThumbnail } from "../../db/entities/video_thumbnails.js";
 import { VideoTitle as VideoTitleEntity } from "../../db/entities/video_titles.js";
@@ -11,6 +12,7 @@ import { Resolvers, VideoResolvers } from "../../graphql.js";
 import { calcVideoSimilarities } from "../../neo4j/video_similarities.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
+import { SemitagModel } from "../Semitag/model.js";
 import { TagModel } from "../Tag/model.js";
 import { VideoModel } from "./model.js";
 
@@ -91,4 +93,15 @@ export const resolveVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSour
         .then((ss) =>
           ss.map(({ id, sourceId, video }) => new NicovideoVideoSourceModel({ id, sourceId, videoId: video.id }))
         ),
+
+    semitags: ({ id: videoId }, { resolved }) =>
+      dataSource
+        .getRepository(Semitag)
+        .find({
+          where: {
+            video: { id: videoId },
+            ...(resolved ? { resolved } : {}),
+          },
+        })
+        .then((semitags) => semitags.map((semitag) => new SemitagModel(semitag))),
   } satisfies Resolvers["Video"]);
