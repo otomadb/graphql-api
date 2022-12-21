@@ -79,6 +79,7 @@ export const registerVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSou
       const semitag = new Semitag();
       semitag.id = ulid();
       semitag.name = name;
+      semitag.video = video;
       return semitag;
     });
 
