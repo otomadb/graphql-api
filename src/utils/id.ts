@@ -21,7 +21,7 @@ export function removeIDPrefix(type: ObjectType, id: string): string {
   return splitted[1];
 }
 
-type NodeType = "video" | "tag" | "nicovideoVideoSource";
+type NodeType = "video" | "tag" | "semitag" | "nicovideoVideoSource";
 export const buildGqlId = (type: NodeType, dbId: string): string => `${type}:${dbId}`;
 export function parseGqlID(type: NodeType, gqlId: string): string | null {
   const separated = gqlId.split(":");

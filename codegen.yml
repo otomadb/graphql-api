@@ -14,6 +14,7 @@ generates:
       contextType: ./context.js#Context
       mappers:
         Tag: ./resolvers/Tag/model.js#TagModel
+        Semitag: ./resolvers/Semitag/model.js#SemitagModel
         User: ./resolvers/User/model.js#UserModel
         Video: ./resolvers/Video/model.js#VideoModel
         Mylist: ./resolvers/Mylist/model.js#MylistModel
