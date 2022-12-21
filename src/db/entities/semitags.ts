@@ -3,7 +3,7 @@ import { Column, CreateDateColumn, Entity, OneToOne, PrimaryColumn, Relation, Up
 import { Tag } from "./tags.js";
 import { Video } from "./videos.js";
 
-@Entity("semitag")
+@Entity("semitags")
 export class Semitag {
   @PrimaryColumn("varchar", { length: 26 })
   id!: string;

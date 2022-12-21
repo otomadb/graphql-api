@@ -1,7 +1,7 @@
 import { MylistRegistration } from "./mylist_registrations.js";
 import { Mylist } from "./mylists.js";
 import { NicovideoVideoSource } from "./nicovideo_source.js";
-import { Semitag } from "./semitag.js";
+import { Semitag } from "./semitags.js";
 import { Session } from "./sessions.js";
 import { TagName } from "./tag_names.js";
 import { TagParent } from "./tag_parents.js";

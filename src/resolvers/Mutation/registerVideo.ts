@@ -4,7 +4,7 @@ import { DataSource, In } from "typeorm";
 import { ulid } from "ulid";
 
 import { NicovideoVideoSource } from "../../db/entities/nicovideo_source.js";
-import { Semitag } from "../../db/entities/semitag.js";
+import { Semitag } from "../../db/entities/semitags.js";
 import { Tag } from "../../db/entities/tags.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { VideoThumbnail } from "../../db/entities/video_thumbnails.js";
