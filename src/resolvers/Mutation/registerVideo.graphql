@@ -4,10 +4,11 @@ type Mutation {
 
 input RegisterVideoInput {
   primaryTitle: String!
-  extraTitles: [String!]
+  extraTitles: [String!]! = []
   tags: [ID!]!
   primaryThumbnail: String!
   sources: [RegisterVideoInputSource!]!
+  semitags: [String!]! = []
 }
 
 enum RegisterVideoInputSourceType {
