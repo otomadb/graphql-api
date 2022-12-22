@@ -1,0 +1,14 @@
+type Mutation {
+  removeTagFromVideo(input: RemoveTagFromVideoInput!): RemoveTagFromVideoPayload!
+}
+
+input RemoveTagFromVideoInput {
+  videoId: ID!
+  tagId: ID!
+}
+
+type RemoveTagFromVideoPayload {
+  video: Video!
+  tag: Tag!
+  # history: VideoDeleteTagHistoryItem!
+}
