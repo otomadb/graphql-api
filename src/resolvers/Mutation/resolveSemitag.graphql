@@ -1,0 +1,12 @@
+type Mutation {
+  resovleSemitag(input: ResolveSemitagInput!): ResolveSemitagPayload!
+}
+
+input ResolveSemitagInput {
+  id: ID!
+  tagId: ID
+}
+
+type ResolveSemitagPayload {
+  semitag: Semitag!
+}

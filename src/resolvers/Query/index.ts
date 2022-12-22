@@ -8,6 +8,7 @@ import { findUser } from "./findUser.js";
 import { findVideos } from "./findVideos.js";
 import { getMylist } from "./getMylist.js";
 import { getNicovideoVideoSource } from "./getNicovideoVideoSource.js";
+import { getSemitag } from "./getSemitag.js";
 import { getTag } from "./getTag.js";
 import { getUser } from "./getUser.js";
 import { getVideo } from "./getVideo.js";
@@ -26,6 +27,7 @@ export const resolveQuery = (deps: { dataSource: DataSource }) =>
     nicovideoVideoSource: getNicovideoVideoSource(deps),
     searchTags: searchTags(deps),
     searchVideos: searchVideos(deps),
+    semitag: getSemitag(deps),
     tag: getTag(deps),
     user: getUser(deps),
     video: getVideo(deps),
