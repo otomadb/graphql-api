@@ -2,6 +2,7 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 
 import { type Resolvers } from "../../graphql.js";
+import { addSemitagToVideo } from "./addSemitagToVideo.js";
 import { addVideoToMylist } from "./addVideoToMylist.js";
 import { createMylist } from "./createMylist.js";
 import { likeVideo } from "./likeVideo.js";
@@ -15,14 +16,15 @@ import { untagVideo } from "./untagVideo.js";
 
 export const resolveMutation = (deps: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   ({
-    registerTag: registerTag(deps),
-    registerVideo: registerVideo(deps),
-    tagVideo: tagVideo(deps),
-    untagVideo: untagVideo(deps),
+    addSemitagToVideo: addSemitagToVideo(deps),
     addVideoToMylist: addVideoToMylist(deps),
     createMylist: createMylist(deps),
     likeVideo: likeVideo(deps),
+    registerTag: registerTag(deps),
+    registerVideo: registerVideo(deps),
     removeVideoFromMylist: removeVideoFromMylist(deps),
-    undoLikeVideo: undoLikeVideo(deps),
     resovleSemitag: resolveSemitag(deps),
+    tagVideo: tagVideo(deps),
+    undoLikeVideo: undoLikeVideo(deps),
+    untagVideo: untagVideo(deps),
   } satisfies Resolvers["Mutation"]);
