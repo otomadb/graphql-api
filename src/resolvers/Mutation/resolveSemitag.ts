@@ -6,7 +6,6 @@ import { ulid } from "ulid";
 import { Semitag } from "../../db/entities/semitags.js";
 import { Tag } from "../../db/entities/tags.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
-import { Video } from "../../db/entities/videos.js";
 import { MutationResolvers } from "../../graphql.js";
 import { tagVideo as tagVideoInNeo4j } from "../../neo4j/tag_video.js";
 import { parseGqlID } from "../../utils/id.js";
@@ -17,7 +16,7 @@ export const resolveSemitag = ({ dataSource: ds, neo4jDriver }: { dataSource: Da
 
     const semitagRepo = ds.getRepository(Semitag);
     const tagRepo = ds.getRepository(Tag);
-    const videoRepo = ds.getRepository(Video);
+    const videoTagRepo = ds.getRepository(VideoTag);
 
     const semitagId = parseGqlID("semitag", semitagGqlId);
     if (!semitagId) throw new GraphQLError(`"${semitagGqlId}" is invalid id for semitag`);
@@ -44,7 +43,7 @@ export const resolveSemitag = ({ dataSource: ds, neo4jDriver }: { dataSource: Da
       videoTag.id = ulid();
       videoTag.video = semitag.video;
       videoTag.tag = tag;
-      await videoRepo.insert(videoTag);
+      await videoTagRepo.insert(videoTag);
       await tagVideoInNeo4j(neo4jDriver)({ tagId: tag.id, videoId: semitag.video.id });
 
       return { semitag };
