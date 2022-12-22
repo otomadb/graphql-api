@@ -1,0 +1,14 @@
+type Mutation {
+  addTagToVideo(input: AddTagToVideoInput!): AddTagToVideoPayload!
+}
+
+input AddTagToVideoInput {
+  videoId: ID!
+  tagId: ID!
+}
+
+type AddTagToVideoPayload {
+  video: Video!
+  tag: Tag!
+  # history: VideoAddTagHistoryItem!
+}
