@@ -100,7 +100,7 @@ export const resolveVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSour
         .find({
           where: {
             video: { id: videoId },
-            ...(resolved ? { resolved } : {}),
+            resolved: resolved?.valueOf(),
           },
         })
         .then((semitags) => semitags.map((semitag) => new SemitagModel(semitag))),
