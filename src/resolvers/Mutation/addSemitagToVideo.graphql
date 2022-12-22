@@ -1,0 +1,13 @@
+type Mutation {
+  addSemitagToVideo(input: AddSemitagToVideoInput!): AddSemitagToVideoPayload!
+}
+
+input AddSemitagToVideoInput {
+  videoId: ID!
+  name: String!
+}
+
+type AddSemitagToVideoPayload {
+  video: Video!
+  semitag: Semitag!
+}

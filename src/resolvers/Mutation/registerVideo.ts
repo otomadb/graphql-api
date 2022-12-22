@@ -4,6 +4,7 @@ import { DataSource, In } from "typeorm";
 import { ulid } from "ulid";
 
 import { NicovideoVideoSource } from "../../db/entities/nicovideo_source.js";
+import { Semitag } from "../../db/entities/semitags.js";
 import { Tag } from "../../db/entities/tags.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { VideoThumbnail } from "../../db/entities/video_thumbnails.js";
@@ -29,6 +30,7 @@ export const registerVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSou
 
     const video = new Video();
     video.id = ulid();
+
     const titles: VideoTitle[] = [];
     const primaryTitle = new VideoTitle();
     primaryTitle.id = ulid();
@@ -36,16 +38,15 @@ export const registerVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSou
     primaryTitle.video = video;
     primaryTitle.isPrimary = true;
     titles.push(primaryTitle);
-    if (input.extraTitles) {
-      for (const extraTitle of input.extraTitles) {
-        const title = new VideoTitle();
-        title.id = ulid();
-        title.title = extraTitle;
-        title.video = video;
-        title.isPrimary = false;
-        titles.push(title);
-      }
+    for (const extraTitle of input.extraTitles) {
+      const title = new VideoTitle();
+      title.id = ulid();
+      title.title = extraTitle;
+      title.video = video;
+      title.isPrimary = false;
+      titles.push(title);
     }
+
     const primaryThumbnail = new VideoThumbnail();
     primaryThumbnail.id = ulid();
     primaryThumbnail.imageUrl = input.primaryThumbnail;
@@ -74,12 +75,21 @@ export const registerVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSou
       return s;
     });
 
+    const semitags = input.semitags.map((name) => {
+      const semitag = new Semitag();
+      semitag.id = ulid();
+      semitag.name = name;
+      semitag.video = video;
+      return semitag;
+    });
+
     await dataSource.transaction(async (manager) => {
       await manager.getRepository(Video).insert(video);
       await manager.getRepository(VideoTitle).insert(titles);
       await manager.getRepository(VideoThumbnail).insert(primaryThumbnail);
       await manager.getRepository(VideoTag).insert(videoTags);
       await manager.getRepository(NicovideoVideoSource).insert(nicovideoSources);
+      await manager.getRepository(Semitag).insert(semitags);
     });
 
     await registerVideoInNeo4j(neo4jDriver)(video.id, { tagIds: tags.map(({ id }) => id) });

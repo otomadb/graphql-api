@@ -7,6 +7,7 @@ import { resolveMylist } from "./Mylist/index.js";
 import { resolveMylistRegistration } from "./MylistRegistration/index.js";
 import { resolveNicovideoVideoSource } from "./NicovideoVideoSource/index.js";
 import { resolveQuery } from "./Query/index.js";
+import { resolveSemitag } from "./Semitag/index.js";
 import { resolveTag } from "./Tag/index.js";
 import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
@@ -21,4 +22,5 @@ export const resolvers = (deps: { dataSource: DataSource; neo4jDriver: Neo4jDriv
     Mylist: resolveMylist(deps),
     MylistRegistration: resolveMylistRegistration(deps),
     NicovideoVideoSource: resolveNicovideoVideoSource(deps),
+    Semitag: resolveSemitag(deps),
   } satisfies Resolvers);

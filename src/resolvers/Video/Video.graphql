@@ -11,6 +11,8 @@ type Video implements Node {
   similarVideos(input: VideoSimilarVideosInput!): VideoSimilarVideosPayload!
 
   nicovideoSources: [NicovideoVideoSource!]!
+
+  semitags(resolved: Boolean): [Semitag!]!
 }
 
 type VideoTitle {
@@ -22,6 +24,8 @@ type VideoThumbnail {
   imageUrl: String!
   primary: Boolean!
 }
+
+# History
 
 input VideoHistoryInput {
   skip: Int! = 0

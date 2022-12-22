@@ -1,0 +1,10 @@
+type Semitag implements Node {
+  id: ID!
+
+  name: String!
+
+  video: Video!
+
+  resolved: Boolean!
+  resolvedTag: Tag
+}
