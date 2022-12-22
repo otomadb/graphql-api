@@ -1,14 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  PrimaryColumn,
-  Relation,
-  UpdateDateColumn,
-} from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn, Relation, UpdateDateColumn } from "typeorm";
 
 import { Tag } from "./tags.js";
 import { Video } from "./videos.js";
@@ -30,8 +20,7 @@ export class Semitag {
   @Column("boolean", { nullable: false, default: false })
   resolved!: boolean;
 
-  @OneToOne(() => Video, (source) => source.id)
-  @JoinColumn()
+  @ManyToOne(() => Video, (source) => source.id)
   video!: Relation<Video>;
 
   @ManyToOne(() => Tag, (source) => source.id, { nullable: true })
