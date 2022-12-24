@@ -2,7 +2,7 @@ import { GraphQLError } from "graphql";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource, In } from "typeorm";
 
-import { NicovideoVideoSource } from "../../db/entities/nicovideo_source.js";
+import { NicovideoVideoSource } from "../../db/entities/nicovideo_video_sources.js";
 import { Semitag } from "../../db/entities/semitags.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { VideoThumbnail } from "../../db/entities/video_thumbnails.js";

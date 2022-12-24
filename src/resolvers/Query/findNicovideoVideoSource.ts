@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
 import { DataSource } from "typeorm";
 
-import { NicovideoVideoSource } from "../../db/entities/nicovideo_source.js";
+import { NicovideoVideoSource } from "../../db/entities/nicovideo_video_sources.js";
 import { QueryResolvers } from "../../graphql.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
 
