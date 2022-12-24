@@ -3,7 +3,7 @@ import { type Relation } from "typeorm";
 
 import { Video } from "./videos.js";
 
-@Entity("nicovideo_video_source")
+@Entity("nicovideo_video_sources")
 @Unique(["video"])
 export class NicovideoVideoSource {
   @PrimaryColumn("varchar", { length: 26 })

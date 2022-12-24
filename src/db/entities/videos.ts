@@ -1,7 +1,7 @@
 import { CreateDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from "typeorm";
 import { type Relation } from "typeorm";
 
-import { NicovideoVideoSource } from "./nicovideo_source.js";
+import { NicovideoVideoSource } from "./nicovideo_video_sources.js";
 import { VideoTag } from "./video_tags.js";
 import { VideoThumbnail } from "./video_thumbnails.js";
 import { VideoTitle } from "./video_titles.js";
