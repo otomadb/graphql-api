@@ -3,6 +3,7 @@ import { DataSource } from "typeorm";
 import { type Resolvers } from "../../graphql.js";
 import { findMylist } from "./findMylist.js";
 import { findNicovideoVideoSource } from "./findNicovideoVideoSource.js";
+import { findSemitags } from "./findSemitags.js";
 import { findTags } from "./findTags.js";
 import { findUser } from "./findUser.js";
 import { findVideos } from "./findVideos.js";
@@ -20,6 +21,7 @@ export const resolveQuery = (deps: { dataSource: DataSource }) =>
   ({
     findMylist: findMylist(deps),
     findNicovideoVideoSource: findNicovideoVideoSource(deps),
+    findSemitags: findSemitags(deps),
     findTags: findTags(deps),
     findUser: findUser(deps),
     findVideos: findVideos(deps),

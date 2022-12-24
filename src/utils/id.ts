@@ -32,3 +32,15 @@ export function parseGqlID(type: NodeType, gqlId: string): string | null {
 
   return i;
 }
+export const buildInvalidGqlIdError = (type: NodeType, id: string) =>
+  new GraphQLError(`"${id}" is invalid id for "${type}"`);
+
+export function parseGqlIDs(type: NodeType, gqlIds: string[]): string[] {
+  const ids = [];
+  for (const exceptGqlId of gqlIds) {
+    const exceptId = parseGqlID(type, exceptGqlId);
+    if (!exceptId) throw buildInvalidGqlIdError(type, exceptGqlId);
+    ids.push(exceptId);
+  }
+  return ids;
+}
