@@ -13,9 +13,8 @@ import { Video } from "../../db/entities/videos.js";
 import { MutationResolvers, RegisterVideoInputSourceType } from "../../graphql.js";
 import { registerVideo as registerVideoInNeo4j } from "../../neo4j/register_video.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
+import { isValidNicovideoSourceId } from "../../utils/isValidNicovideoSourceId.js";
 import { VideoModel } from "../Video/model.js";
-
-export const isValidNicovideoSourceId = (id: string): boolean => /[a-z]{2}\d+/.test(id);
 
 export const registerVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   (async (_parent, { input }) => {
