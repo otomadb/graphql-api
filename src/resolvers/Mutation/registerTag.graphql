@@ -10,6 +10,8 @@ input RegisterTagInput {
   implicitParents: [ID!]! = []
 
   meaningless: Boolean! = false
+
+  resolveSemitags: [ID!]! = []
 }
 
 type RegisterTagPayload {
