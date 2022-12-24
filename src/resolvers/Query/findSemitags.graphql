@@ -1,0 +1,15 @@
+type Query {
+  findSemitags(input: FindSemitagsInput!): SemitagCollection!
+}
+
+input FindSemitagsInput {
+  limit: Int! = 10
+  skip: Int! = 0
+  order: FindSemitagsInputOrder! = { updatedAt: DESC }
+  except: [ID!]! = []
+}
+
+input FindSemitagsInputOrder {
+  updatedAt: SortOrder
+  createdAt: SortOrder
+}

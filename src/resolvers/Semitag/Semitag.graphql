@@ -8,3 +8,7 @@ type Semitag implements Node {
   resolved: Boolean!
   resolvedTag: Tag
 }
+
+type SemitagCollection {
+  nodes: [Semitag!]!
+}
