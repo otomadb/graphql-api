@@ -1,14 +1,16 @@
 import { GraphQLError } from "graphql";
 import { Driver as Neo4jDriver } from "neo4j-driver";
-import { DataSource } from "typeorm";
+import { DataSource, EntityManager } from "typeorm";
 import { ulid } from "ulid";
 
+import { Semitag } from "../../db/entities/semitags.js";
 import { TagName } from "../../db/entities/tag_names.js";
 import { TagParent } from "../../db/entities/tag_parents.js";
 import { Tag } from "../../db/entities/tags.js";
+import { VideoTag } from "../../db/entities/video_tags.js";
 import { MutationResolvers } from "../../graphql.js";
 import { registerTag as registerTagInNeo4j } from "../../neo4j/register_tag.js";
-import { parseGqlID } from "../../utils/id.js";
+import { parseGqlID, parseGqlIDs } from "../../utils/id.js";
 import { TagModel } from "../Tag/model.js";
 
 export const calcNameParentPair = ({
@@ -35,6 +37,32 @@ export const calcNameParentPair = ({
     .reduce((p, c) => [...p, ...c], [] as { name: string; parent: string | null }[]);
 };
 
+export const getSemitags = (manager: EntityManager) => async (ids: string[]) =>
+  Promise.all(
+    ids.map(async (id) => {
+      try {
+        return manager
+          .getRepository(Semitag)
+          .findOneOrFail({ where: { id, resolved: false }, relations: { video: true } });
+      } catch {
+        throw id;
+      }
+    })
+  );
+
+export const resolveSemitags = (manager: EntityManager) => async (semitags: Semitag[], tag: Tag) =>
+  Promise.all(semitags.map((semitag) => resolveSemitag(manager)(semitag, tag)));
+
+export const resolveSemitag = (manager: EntityManager) => async (semitag: Semitag, tag: Tag) => {
+  await manager.getRepository(Semitag).update({ id: semitag.id }, { resolved: true, tag });
+
+  const videoTag = new VideoTag();
+  videoTag.id = ulid();
+  videoTag.tag = tag;
+  videoTag.video = semitag.video;
+  await manager.getRepository(VideoTag).insert(videoTag);
+};
+
 export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   (async (
     _,
@@ -45,6 +73,7 @@ export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSourc
         explicitParent: explicitParentRawId,
         implicitParents: implicitParentsRawIds,
         meaningless, // TODO: default value
+        resolveSemitags: resolveSemitagIds,
       },
     }
   ) => {
@@ -64,6 +93,8 @@ export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSourc
         throw new GraphQLError(`"tag:${parsed}" is included in implicitParents multiple times`);
       implicitParentIds.push(parsed);
     }
+
+    const semitagIds = parseGqlIDs("semitag", resolveSemitagIds);
 
     /* name check */
     const pairs = calcNameParentPair({
@@ -140,6 +171,13 @@ export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSourc
 
         await manager.getRepository(TagParent).insert(parentRel);
       }
+
+      const semitags = await getSemitags(manager)(semitagIds).catch((id: string) => {
+        throw new GraphQLError(`No "semitag" found for "semitag:${id}"`);
+      });
+      await resolveSemitags(manager)(semitags, tag).catch(() => {
+        throw new GraphQLError("Something happens");
+      });
     });
 
     await registerTagInNeo4j(neo4jDriver)(tag.id);
