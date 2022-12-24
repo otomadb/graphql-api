@@ -16,7 +16,10 @@ export const findSemitags = ({ dataSource }: { dataSource: DataSource }) =>
         createdAt: input.order?.createdAt || undefined,
         updatedAt: input.order?.updatedAt || undefined,
       },
-      where: { id: Not(In(execptIds)) },
+      where: {
+        id: Not(In(execptIds)),
+        resolved: input.resolved?.valueOf(),
+      },
     });
     return { nodes: semitags.map((t) => new SemitagModel(t)) };
   }) satisfies QueryResolvers["findSemitags"];

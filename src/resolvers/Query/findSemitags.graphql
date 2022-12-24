@@ -7,6 +7,7 @@ input FindSemitagsInput {
   skip: Int! = 0
   order: FindSemitagsInputOrder! = { updatedAt: DESC }
   except: [ID!]! = []
+  resolved: Boolean
 }
 
 input FindSemitagsInputOrder {
