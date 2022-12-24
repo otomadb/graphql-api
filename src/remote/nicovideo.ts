@@ -74,7 +74,7 @@ export const handlerRemoteNicovideo: Middleware = async (ctx) => {
       mylist: video.count.mylist,
       comment: video.count.comment,
     },
-    thumbnail: {
+    thumbnails: {
       ogp: video.thumbnail.ogp,
     },
     tags: tag.items.map(({ name }) => ({ name })),
