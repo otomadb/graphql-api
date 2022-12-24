@@ -20,6 +20,7 @@ import { handlerSignup } from "./auth/signup.js";
 import { Context } from "./context.js";
 import { entities } from "./db/entities/index.js";
 import { typeDefs } from "./graphql.js";
+import { handlerRemoteNicovideo } from "./remote/nicovideo.js";
 import { resolvers } from "./resolvers/index.js";
 
 const dir = dirname(new URL(import.meta.url).pathname);
@@ -55,6 +56,8 @@ const schema = makeExecutableSchema({
 router.post("/auth/signup", handlerSignup({ dataSource }));
 router.post("/auth/login", handlerSignin({ dataSource }));
 router.post("/auth/logout", handlerSignout());
+
+router.get("/remote/nicovideo", handlerRemoteNicovideo);
 
 router.post("/graphql", async (ctx) => {
   // まずは Cookie からセッションを取る、取れなければ Authorization ヘッダーから取る、形式は `Authorization: Bearer session_token`
