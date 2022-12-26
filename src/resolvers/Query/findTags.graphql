@@ -6,6 +6,10 @@ input FindTagsInput {
   limit: Int! = 10
   skip: Int! = 0
   order: FindTagsInputOrder! = { updatedAt: DESC }
+
+  "正確に一致"
+  name: String
+  parents: [ID!]
 }
 
 input FindTagsInputOrder {

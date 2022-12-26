@@ -1,4 +1,4 @@
-import { DataSource } from "typeorm";
+import { DataSource, In } from "typeorm";
 
 import { Tag } from "../../db/entities/tags.js";
 import { QueryResolvers } from "../../graphql.js";
@@ -12,6 +12,10 @@ export const findTags = ({ dataSource }: { dataSource: DataSource }) =>
       order: {
         createdAt: input.order?.createdAt || undefined,
         updatedAt: input.order?.updatedAt || undefined,
+      },
+      where: {
+        ...(input.name ? { tagNames: { name: input.name } } : {}),
+        ...(input.parents ? { tagParents: { parent: In(input.parents) } } : {}),
       },
     });
 
