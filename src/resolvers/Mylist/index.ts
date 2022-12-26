@@ -39,10 +39,14 @@ export const resolveMylist = ({ dataSource, neo4jDriver }: { dataSource: DataSou
       if (!mylist) throw new GraphQLError(`holder for mylist ${mylistId} is not found`);
       return new UserModel(mylist.holder);
     },
-    registrations: async ({ id: mylistId }) => {
+    registrations: async ({ id: mylistId }, { input }) => {
       const regs = await dataSource.getRepository(MylistRegistration).find({
         where: { mylist: { id: mylistId } },
         relations: { mylist: true, video: true },
+        order: {
+          createdAt: input.order?.createdAt || undefined,
+          updatedAt: input.order?.updatedAt || undefined,
+        },
       });
       return {
         nodes: regs.map(
