@@ -126,7 +126,15 @@ describe("Mutation.registerTag", () => {
     test("primaryNameだけでタグを登録する", async () => {
       const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } }
+        {
+          input: {
+            primaryName: "a",
+            extraNames: [],
+            implicitParents: [],
+            meaningless: false,
+            resolveSemitags: [],
+          },
+        }
       );
       expect(registerResult).toBeDefined();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -164,7 +172,15 @@ describe("Mutation.registerTag", () => {
     test("meaninglessフラグを立てて登録する", async () => {
       const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", meaningless: true, extraNames: [], implicitParents: [] } }
+        {
+          input: {
+            primaryName: "a",
+            meaningless: true,
+            extraNames: [],
+            implicitParents: [],
+            resolveSemitags: [],
+          },
+        }
       );
       expect(registerResult).toBeDefined();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -180,7 +196,15 @@ describe("Mutation.registerTag", () => {
     test("primaryNameとextraNamesで登録", async () => {
       const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: ["b"], implicitParents: [], meaningless: false } }
+        {
+          input: {
+            primaryName: "a",
+            extraNames: ["b"],
+            implicitParents: [],
+            meaningless: false,
+            resolveSemitags: [],
+          },
+        }
       );
       expect(registerResult).toBeDefined();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -231,7 +255,15 @@ describe("Mutation.registerTag", () => {
       /* already */
       const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } }
+        {
+          input: {
+            primaryName: "a",
+            extraNames: [],
+            implicitParents: [],
+            meaningless: false,
+            resolveSemitags: [],
+          },
+        }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: alreadyTag } = already as { tag: Tag };
@@ -239,7 +271,15 @@ describe("Mutation.registerTag", () => {
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
-          { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } }
+          {
+            input: {
+              primaryName: "a",
+              extraNames: [],
+              implicitParents: [],
+              meaningless: false,
+              resolveSemitags: [],
+            },
+          }
         )
       ).rejects.toThrowError(`name "a" is reserved in "tag:${alreadyTag.id}"`);
     });
@@ -248,7 +288,15 @@ describe("Mutation.registerTag", () => {
       /* already */
       const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: ["A"], implicitParents: [], meaningless: false } }
+        {
+          input: {
+            primaryName: "a",
+            extraNames: ["A"],
+            implicitParents: [],
+            meaningless: false,
+            resolveSemitags: [],
+          },
+        }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: alreadyTag } = already as { tag: Tag };
@@ -256,7 +304,15 @@ describe("Mutation.registerTag", () => {
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
-          { input: { primaryName: "A", extraNames: [], implicitParents: [], meaningless: false } }
+          {
+            input: {
+              primaryName: "A",
+              extraNames: [],
+              implicitParents: [],
+              meaningless: false,
+              resolveSemitags: [],
+            },
+          }
         )
       ).rejects.toThrowError(`name "A" is reserved in "tag:${alreadyTag.id}"`);
     });
@@ -265,7 +321,15 @@ describe("Mutation.registerTag", () => {
       /* already */
       const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } }
+        {
+          input: {
+            primaryName: "a",
+            extraNames: [],
+            implicitParents: [],
+            meaningless: false,
+            resolveSemitags: [],
+          },
+        }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: alreadyTag } = already as { tag: Tag };
@@ -273,7 +337,15 @@ describe("Mutation.registerTag", () => {
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
-          { input: { primaryName: "b", extraNames: ["a"], implicitParents: [], meaningless: false } }
+          {
+            input: {
+              primaryName: "b",
+              extraNames: ["a"],
+              implicitParents: [],
+              meaningless: false,
+              resolveSemitags: [],
+            },
+          }
         )
       ).rejects.toThrowError(`name "a" is reserved in "tag:${alreadyTag.id}"`);
     });
@@ -282,7 +354,15 @@ describe("Mutation.registerTag", () => {
       /* already */
       const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: ["A"], implicitParents: [], meaningless: false } }
+        {
+          input: {
+            primaryName: "a",
+            extraNames: ["A"],
+            implicitParents: [],
+            meaningless: false,
+            resolveSemitags: [],
+          },
+        }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: alreadyTag } = already as { tag: Tag };
@@ -290,7 +370,15 @@ describe("Mutation.registerTag", () => {
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
-          { input: { primaryName: "b", extraNames: ["A"], implicitParents: [], meaningless: false } }
+          {
+            input: {
+              primaryName: "b",
+              extraNames: ["A"],
+              implicitParents: [],
+              meaningless: false,
+              resolveSemitags: [],
+            },
+          }
         )
       ).rejects.toThrowError(`name "A" is reserved in "tag:${alreadyTag.id}"`);
     });
@@ -306,6 +394,7 @@ describe("Mutation.registerTag", () => {
               extraNames: [],
               implicitParents: [],
               meaningless: false,
+              resolveSemitags: [],
             },
           }
         )
@@ -315,7 +404,15 @@ describe("Mutation.registerTag", () => {
     test("explicitParentだけを入れて登録する", async () => {
       const parentResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "p", extraNames: [], implicitParents: [], meaningless: false } }
+        {
+          input: {
+            primaryName: "p",
+            extraNames: [],
+            implicitParents: [],
+            meaningless: false,
+            resolveSemitags: [],
+          },
+        }
       );
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const { tag: parentTag } = parentResult! as { tag: Tag };
@@ -329,6 +426,7 @@ describe("Mutation.registerTag", () => {
             extraNames: [],
             implicitParents: [],
             meaningless: false,
+            resolveSemitags: [],
           },
         }
       );
@@ -391,6 +489,7 @@ describe("Mutation.registerTag", () => {
               implicitParents: ["tag:p"],
               extraNames: [],
               meaningless: false,
+              resolveSemitags: [],
             },
           }
         )
@@ -400,7 +499,15 @@ describe("Mutation.registerTag", () => {
     test("implicitParentsだけを入れて登録する", async () => {
       const parentResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "p", extraNames: [], implicitParents: [], meaningless: false } }
+        {
+          input: {
+            primaryName: "p",
+            extraNames: [],
+            implicitParents: [],
+            meaningless: false,
+            resolveSemitags: [],
+          },
+        }
       );
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const { tag: parentTag } = parentResult! as { tag: Tag };
@@ -413,6 +520,7 @@ describe("Mutation.registerTag", () => {
             implicitParents: [`tag:${parentTag.id}`],
             extraNames: [],
             meaningless: false,
+            resolveSemitags: [],
           },
         }
       );
@@ -476,6 +584,7 @@ describe("Mutation.registerTag", () => {
               implicitParents: ["tag:p"],
               extraNames: [],
               meaningless: false,
+              resolveSemitags: [],
             },
           }
         )
@@ -492,6 +601,7 @@ describe("Mutation.registerTag", () => {
               implicitParents: ["tag:p", "tag:p"],
               extraNames: [],
               meaningless: false,
+              resolveSemitags: [],
             },
           }
         )
@@ -501,14 +611,30 @@ describe("Mutation.registerTag", () => {
     test("explicitParentとimplicitParentsを入れて登録する", async () => {
       const parentRegisterResult1 = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "p1", extraNames: [], implicitParents: [], meaningless: false } }
+        {
+          input: {
+            primaryName: "p1",
+            extraNames: [],
+            implicitParents: [],
+            meaningless: false,
+            resolveSemitags: [],
+          },
+        }
       );
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const { tag: parentTag1 } = parentRegisterResult1! as { tag: Tag };
 
       const parentRegisterResult2 = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "p2", extraNames: [], implicitParents: [], meaningless: false } }
+        {
+          input: {
+            primaryName: "p2",
+            extraNames: [],
+            implicitParents: [],
+            meaningless: false,
+            resolveSemitags: [],
+          },
+        }
       );
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const { tag: parentTag2 } = parentRegisterResult2! as { tag: Tag };
@@ -522,6 +648,7 @@ describe("Mutation.registerTag", () => {
             implicitParents: [`tag:${parentTag2.id}`],
             extraNames: [],
             meaningless: false,
+            resolveSemitags: [],
           },
         }
       );
@@ -588,7 +715,16 @@ describe("Mutation.registerTag", () => {
       /* a */
       const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } }
+        {
+          input: {
+            primaryName: "a",
+            extraNames: [],
+            implicitParents: [],
+            meaningless: false,
+
+            resolveSemitags: [],
+          },
+        }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: tagA } = resultTagA as { tag: Tag };
@@ -596,7 +732,15 @@ describe("Mutation.registerTag", () => {
       /* b */
       const resultTagB = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "b", extraNames: [], implicitParents: [], meaningless: false } }
+        {
+          input: {
+            primaryName: "b",
+            extraNames: [],
+            implicitParents: [],
+            meaningless: false,
+            resolveSemitags: [],
+          },
+        }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: tagB } = resultTagB as { tag: Tag };
@@ -611,6 +755,7 @@ describe("Mutation.registerTag", () => {
             extraNames: [],
             implicitParents: [],
             meaningless: false,
+            resolveSemitags: [],
           },
         }
       );
@@ -656,7 +801,15 @@ describe("Mutation.registerTag", () => {
       /* a */
       const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } }
+        {
+          input: {
+            primaryName: "a",
+            extraNames: [],
+            implicitParents: [],
+            meaningless: false,
+            resolveSemitags: [],
+          },
+        }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: tagA } = resultTagA as { tag: Tag };
@@ -671,6 +824,7 @@ describe("Mutation.registerTag", () => {
             extraNames: [],
             implicitParents: [],
             meaningless: false,
+            resolveSemitags: [],
           },
         }
       );
@@ -680,7 +834,15 @@ describe("Mutation.registerTag", () => {
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
           {},
-          { input: { primaryName: "b", extraNames: [], implicitParents: [], meaningless: false } }
+          {
+            input: {
+              primaryName: "b",
+              extraNames: [],
+              implicitParents: [],
+              meaningless: false,
+              resolveSemitags: [],
+            },
+          }
         )
       ).rejects.toThrowError(`name "b" is reserved in "tag:${tagB_A.id}"`);
     });
@@ -689,7 +851,15 @@ describe("Mutation.registerTag", () => {
       /* a */
       const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } }
+        {
+          input: {
+            primaryName: "a",
+            extraNames: [],
+            implicitParents: [],
+            meaningless: false,
+            resolveSemitags: [],
+          },
+        }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: tagA } = resultTagA as { tag: Tag };
@@ -704,6 +874,7 @@ describe("Mutation.registerTag", () => {
             extraNames: [],
             implicitParents: [],
             meaningless: false,
+            resolveSemitags: [],
           },
         }
       );
@@ -720,6 +891,7 @@ describe("Mutation.registerTag", () => {
               extraNames: [],
               implicitParents: [],
               meaningless: false,
+              resolveSemitags: [],
             },
           }
         )
@@ -730,7 +902,15 @@ describe("Mutation.registerTag", () => {
       /* a/A */
       const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } }
+        {
+          input: {
+            primaryName: "a",
+            extraNames: [],
+            implicitParents: [],
+            meaningless: false,
+            resolveSemitags: [],
+          },
+        }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: tagA } = resultTagA as { tag: Tag };
@@ -744,6 +924,7 @@ describe("Mutation.registerTag", () => {
             implicitParents: [`tag:${tagA.id}`],
             extraNames: [],
             meaningless: false,
+            resolveSemitags: [],
           },
         }
       );
@@ -760,6 +941,7 @@ describe("Mutation.registerTag", () => {
               extraNames: [],
               implicitParents: [],
               meaningless: false,
+              resolveSemitags: [],
             },
           }
         )
@@ -770,7 +952,15 @@ describe("Mutation.registerTag", () => {
       /* a/A */
       const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
         {},
-        { input: { primaryName: "a", extraNames: [], implicitParents: [], meaningless: false } }
+        {
+          input: {
+            primaryName: "a",
+            extraNames: [],
+            implicitParents: [],
+            meaningless: false,
+            resolveSemitags: [],
+          },
+        }
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tag: tagA } = resultTagA as { tag: Tag };
@@ -784,6 +974,7 @@ describe("Mutation.registerTag", () => {
             implicitParents: [`tag:${tagA.id}`],
             extraNames: [],
             meaningless: false,
+            resolveSemitags: [],
           },
         }
       );
@@ -799,6 +990,7 @@ describe("Mutation.registerTag", () => {
               implicitParents: [`tag:${tagA.id}`],
               extraNames: [],
               meaningless: false,
+              resolveSemitags: [],
             },
           }
         )
