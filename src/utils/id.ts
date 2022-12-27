@@ -24,24 +24,18 @@ export function removeIDPrefix(type: ObjectType, id: string): string {
 export type NodeType = "video" | "tag" | "semitag" | "nicovideoVideoSource" | "mylist";
 export const buildGqlId = (type: NodeType, dbId: string): string => `${type}:${dbId}`;
 
-export function parseGqlID(type: NodeType, gqlId: string): string | null {
+export function parseGqlID(type: NodeType, gqlId: string): string {
   const separated = gqlId.split(":");
-  if (separated.length !== 2) return null;
+  if (separated.length !== 2) throw GraphQLInvalidIdError(type, gqlId);
 
   const [t, i] = separated;
-  if (t !== type) return null;
+  if (t !== type) throw GraphQLInvalidIdError(type, gqlId);
 
   return i;
 }
 
-export function parseGqlID2(type: NodeType, gqlId: string): string {
-  const id = parseGqlID(type, gqlId);
-  if (!id) throw GraphQLInvalidIdError(type, gqlId);
-  return id;
-}
-
 export function parseGqlIDs(type: NodeType, gqlIds: string[]): string[] {
-  return gqlIds.map((gqlId) => parseGqlID2(type, gqlId));
+  return gqlIds.map((gqlId) => parseGqlID(type, gqlId));
 }
 
 export const GraphQLInvalidIdError = (type: NodeType, invalidId: string) =>

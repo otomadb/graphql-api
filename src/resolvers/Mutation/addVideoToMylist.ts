@@ -8,15 +8,15 @@ import { Mylist } from "../../db/entities/mylists.js";
 import { Video } from "../../db/entities/videos.js";
 import { MutationResolvers } from "../../graphql.js";
 import { addVideoToMylist as addVideoToMylistInNeo4j } from "../../neo4j/add_video_to_mylist.js";
-import { GraphQLNotFoundError, parseGqlID2 } from "../../utils/id.js";
+import { GraphQLNotFoundError, parseGqlID } from "../../utils/id.js";
 import { MylistRegistrationModel } from "../MylistRegistration/model.js";
 
 export const addVideoToMylist = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   (async (_parent, { input: { mylistId: mylistGqlId, note, videoId: videoGqlId } }, { user }) => {
     if (!user) throw new GraphQLError("need to authenticate");
 
-    const mylistId = parseGqlID2("mylist", mylistGqlId);
-    const videoId = parseGqlID2("video", videoGqlId);
+    const mylistId = parseGqlID("mylist", mylistGqlId);
+    const videoId = parseGqlID("video", videoGqlId);
 
     const registration = new MylistRegistration();
     registration.id = ulid();

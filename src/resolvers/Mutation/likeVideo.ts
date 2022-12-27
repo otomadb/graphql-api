@@ -8,14 +8,14 @@ import { Mylist } from "../../db/entities/mylists.js";
 import { Video } from "../../db/entities/videos.js";
 import { MutationResolvers } from "../../graphql.js";
 import { addVideoToMylist as addVideoToMylistInNeo4j } from "../../neo4j/add_video_to_mylist.js";
-import { GraphQLNotFoundError, parseGqlID2 } from "../../utils/id.js";
+import { GraphQLNotFoundError, parseGqlID } from "../../utils/id.js";
 import { MylistRegistrationModel } from "../MylistRegistration/model.js";
 
 export const likeVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   (async (_, { input: { videoId: videoGqlId } }, { user }) => {
     if (!user) throw new GraphQLError("need to authenticate");
 
-    const videoId = parseGqlID2("video", videoGqlId);
+    const videoId = parseGqlID("video", videoGqlId);
 
     const registration = new MylistRegistration();
     registration.id = ulid();
@@ -33,7 +33,7 @@ export const likeVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource;
         where: { holder: { id: user.id }, isLikeList: true },
         relations: { holder: true },
       });
-      if (!mylist) throw new GraphQLError(`like list for user "${user.id}" is not found`); // TODO:
+      if (!mylist) throw new GraphQLError(`like list for "${user.id}" is not found`); // TODO:
 
       registration.video = video;
       registration.mylist = mylist;

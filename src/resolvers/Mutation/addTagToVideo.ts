@@ -8,7 +8,7 @@ import { VideoTag } from "../../db/entities/video_tags.js";
 import { Video } from "../../db/entities/videos.js";
 import { MutationResolvers } from "../../graphql.js";
 import { tagVideo as tagVideoInNeo4j } from "../../neo4j/tag_video.js";
-import { GraphQLNotFoundError, parseGqlID2 } from "../../utils/id.js";
+import { GraphQLNotFoundError, parseGqlID } from "../../utils/id.js";
 import { TagModel } from "../Tag/model.js";
 import { VideoModel } from "../Video/model.js";
 
@@ -16,8 +16,8 @@ export const addTagToVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSou
   (async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { user }) => {
     if (!user) throw new GraphQLError("required to sign in");
 
-    const videoId = parseGqlID2("video", videoGqlId);
-    const tagId = parseGqlID2("tag", tagGqlId);
+    const videoId = parseGqlID("video", videoGqlId);
+    const tagId = parseGqlID("tag", tagGqlId);
 
     const videoTag = new VideoTag();
     videoTag.id = ulid();

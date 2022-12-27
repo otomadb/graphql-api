@@ -9,7 +9,7 @@ import { TagParent } from "../../db/entities/tag_parents.js";
 import { Tag } from "../../db/entities/tags.js";
 import { MutationResolvers } from "../../graphql.js";
 import { registerTag as registerTagInNeo4j } from "../../neo4j/register_tag.js";
-import { GraphQLNotFoundError, parseGqlID2, parseGqlIDs } from "../../utils/id.js";
+import { GraphQLNotFoundError, parseGqlID, parseGqlIDs } from "../../utils/id.js";
 import { TagModel } from "../Tag/model.js";
 
 export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
@@ -23,7 +23,7 @@ export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSourc
     if (duplicatedImplicitParentGqlId)
       throw new GraphQLError(`"${duplicatedImplicitParentGqlId}" is duplicated in implicitParents`);
 
-    const explicitParentId = input.explicitParent ? parseGqlID2("tag", input.explicitParent) : null;
+    const explicitParentId = input.explicitParent ? parseGqlID("tag", input.explicitParent) : null;
     const implicitParentIds = parseGqlIDs("tag", input.implicitParents);
 
     const semitagIds = parseGqlIDs("semitag", input.resolveSemitags);

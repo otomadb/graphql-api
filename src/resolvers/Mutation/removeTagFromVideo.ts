@@ -5,50 +5,33 @@ import { DataSource } from "typeorm";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { MutationResolvers } from "../../graphql.js";
 import { untagVideo as untagVideoInNeo4j } from "../../neo4j/untag_video.js";
-import { ObjectType, removeIDPrefix } from "../../utils/id.js";
+import { parseGqlID } from "../../utils/id.js";
 import { TagModel } from "../Tag/model.js";
 import { VideoModel } from "../Video/model.js";
 
 export const removeTagFromVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
-  (async (_parent, { input: { tagId, videoId } }, { user }) => {
-    if (!user) {
-      throw new GraphQLError("required to sign in");
-    }
+  (async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { user }) => {
+    if (!user) throw new GraphQLError("required to sign in");
 
-    const repository = dataSource.getRepository(VideoTag);
+    const videoId = parseGqlID("video", videoGqlId);
+    const tagId = parseGqlID("tag", tagGqlId);
 
-    const videoTag = await repository.findOne({
-      relations: {
-        tag: true,
-        video: true,
-      },
-      where: {
-        video: { id: removeIDPrefix(ObjectType.Video, videoId) },
-        tag: { id: removeIDPrefix(ObjectType.Tag, tagId) },
-      },
+    const repoVideoTag = dataSource.getRepository(VideoTag);
+
+    const tagging = await repoVideoTag.findOne({
+      where: { video: { id: videoId }, tag: { id: tagId } },
+      relations: { tag: true, video: true },
     });
-    if (!videoTag) {
-      throw new GraphQLError("Not Found");
-    }
+    if (!tagging) throw new GraphQLError(`"tag:${tagId}" is not tagged to "video:${videoId}"`);
 
-    await repository.remove(videoTag);
+    await repoVideoTag.remove(tagging);
+
     await untagVideoInNeo4j(neo4jDriver)({
-      tagId: removeIDPrefix(ObjectType.Tag, tagId),
-      videoId: removeIDPrefix(ObjectType.Video, videoId),
+      tagId: tagging.tag.id,
+      videoId: tagging.video.id,
     });
-
     return {
-      video: new VideoModel(videoTag.video),
-      tag: new TagModel(videoTag.tag),
+      video: new VideoModel(tagging.video),
+      tag: new TagModel(tagging.tag),
     };
-
-    /*
-    return {
-      createdAt: new Date(),
-      id: addIDPrefix(ObjectType.VideoTag, videoTag.id),
-      tag: new TagModel(videoTag.tag),
-      user: new UserModel(user),
-      video: new VideoModel(videoTag.video),
-    };
-    */
   }) satisfies MutationResolvers["removeTagFromVideo"];
