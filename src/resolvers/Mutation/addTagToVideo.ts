@@ -19,12 +19,6 @@ export const addTagToVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSou
     const videoId = parseGqlID2("video", videoGqlId);
     const tagId = parseGqlID2("tag", tagGqlId);
 
-    const video = await dataSource.getRepository(Video).findOne({ where: { id: videoId } });
-    if (!video) throw GraphQLNotFoundError("video", videoGqlId);
-
-    const tag = await dataSource.getRepository(Tag).findOne({ where: { id: tagId } });
-    if (!tag) throw GraphQLNotFoundError("tag", tagGqlId);
-
     const videoTag = new VideoTag();
     videoTag.id = ulid();
 
@@ -44,7 +38,10 @@ export const addTagToVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSou
       await repoVideoTag.insert(videoTag);
     });
 
-    await tagVideoInNeo4j(neo4jDriver)({ tagId: tag.id, videoId: video.id });
+    await tagVideoInNeo4j(neo4jDriver)({
+      tagId: videoTag.tag.id,
+      videoId: videoTag.video.id,
+    });
 
     return {
       video: new VideoModel(videoTag.video),
