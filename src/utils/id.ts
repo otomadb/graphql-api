@@ -23,6 +23,7 @@ export function removeIDPrefix(type: ObjectType, id: string): string {
 
 export type NodeType = "video" | "tag" | "semitag" | "nicovideoVideoSource" | "mylist";
 export const buildGqlId = (type: NodeType, dbId: string): string => `${type}:${dbId}`;
+
 export function parseGqlID(type: NodeType, gqlId: string): string | null {
   const separated = gqlId.split(":");
   if (separated.length !== 2) return null;
@@ -34,13 +35,9 @@ export function parseGqlID(type: NodeType, gqlId: string): string | null {
 }
 
 export function parseGqlID2(type: NodeType, gqlId: string): string {
-  const separated = gqlId.split(":");
-  if (separated.length !== 2) throw GraphQLInvalidIdError(type, gqlId);
-
-  const [t, i] = separated;
-  if (t !== type) throw GraphQLInvalidIdError(type, gqlId);
-
-  return i;
+  const id = parseGqlID(type, gqlId);
+  if (!id) throw GraphQLInvalidIdError(type, gqlId);
+  return id;
 }
 
 export function parseGqlIDs(type: NodeType, gqlIds: string[]): string[] {
@@ -50,5 +47,5 @@ export function parseGqlIDs(type: NodeType, gqlIds: string[]): string[] {
 export const GraphQLInvalidIdError = (type: NodeType, invalidId: string) =>
   new GraphQLError(`"${invalidId}" is invalid id for "${type}"`);
 
-export const GraphQLNotFoundError = (type: NodeType, gqlId: string) =>
-  new GraphQLError(`"${type}" for "${gqlId}" is not found `);
+export const GraphQLNotFoundError = (type: NodeType, dbId: string) =>
+  new GraphQLError(`"${type}" for "${type}:${dbId}" is not found `);

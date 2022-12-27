@@ -21,7 +21,7 @@ export const addSemitagToVideo = ({ dataSource }: { dataSource: DataSource }) =>
       const repoSemitag = manager.getRepository(Semitag);
 
       const video = await repoVideo.findOne({ where: { id: videoId } });
-      if (!video) throw GraphQLNotFoundError("video", videoGqlId);
+      if (!video) throw GraphQLNotFoundError("video", videoId);
 
       if (await repoSemitag.findOne({ where: { video: { id: video.id }, name: semitagName, resolved: false } }))
         throw new GraphQLError(`"${semitagName}" is already registered for "${videoGqlId}"`);

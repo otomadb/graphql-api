@@ -27,10 +27,10 @@ export const addVideoToMylist = ({ dataSource, neo4jDriver }: { dataSource: Data
       const repoMylistRegistration = manager.getRepository(MylistRegistration);
 
       const video = await repoVideo.findOne({ where: { id: videoId } });
-      if (!video) throw GraphQLNotFoundError("video", videoGqlId);
+      if (!video) throw GraphQLNotFoundError("video", videoId);
 
       const mylist = await repoMylist.findOne({ where: { id: mylistId }, relations: { holder: true } });
-      if (!mylist) throw GraphQLNotFoundError("mylist", mylistGqlId);
+      if (!mylist) throw GraphQLNotFoundError("mylist", mylistId);
       if (mylist.holder.id !== user.id) throw new GraphQLError(`mylist "${mylistGqlId}" is not holded by you`);
 
       registration.video = video;

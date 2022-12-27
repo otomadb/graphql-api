@@ -27,7 +27,7 @@ export const likeVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource;
       const repoMylistRegistration = manager.getRepository(MylistRegistration);
 
       const video = await repoVideo.findOne({ where: { id: videoId } });
-      if (!video) throw GraphQLNotFoundError("video", videoGqlId);
+      if (!video) throw GraphQLNotFoundError("video", videoId);
 
       const mylist = await repoMylist.findOne({
         where: { holder: { id: user.id }, isLikeList: true },
