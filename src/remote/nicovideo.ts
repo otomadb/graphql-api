@@ -24,9 +24,6 @@ const apiResponse = z.object({
       duration: z.number().int(),
       thumbnail: z.object({
         url: z.string(),
-        middleUrl: z.string(),
-        largeUrl: z.string(),
-        player: z.string(),
         ogp: z.string(),
       }),
       registeredAt: z.preprocess((arg) => {
