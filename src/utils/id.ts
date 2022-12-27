@@ -35,10 +35,10 @@ export function parseGqlID(type: NodeType, gqlId: string): string | null {
 
 export function parseGqlID2(type: NodeType, gqlId: string): string {
   const separated = gqlId.split(":");
-  if (separated.length !== 2) throw new GraphQLError(`"${gqlId}" is invalid id for "${type}"`);
+  if (separated.length !== 2) throw GraphQLInvalidIdError(type, gqlId);
 
   const [t, i] = separated;
-  if (t !== type) throw new GraphQLError(`"${gqlId}" is invalid id for "${type}"`);
+  if (t !== type) throw GraphQLInvalidIdError(type, gqlId);
 
   return i;
 }
@@ -51,4 +51,4 @@ export const GraphQLInvalidIdError = (type: NodeType, invalidId: string) =>
   new GraphQLError(`"${invalidId}" is invalid id for "${type}"`);
 
 export const GraphQLNotFoundError = (type: NodeType, gqlId: string) =>
-  new GraphQLError(`No "${type}" found for "${gqlId}"`);
+  new GraphQLError(`"${type}" for "${gqlId}" is not found `);
