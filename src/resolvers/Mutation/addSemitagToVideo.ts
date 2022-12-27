@@ -16,7 +16,7 @@ export const addSemitagToVideo = ({ dataSource }: { dataSource: DataSource }) =>
     semitag.id = ulid();
     semitag.name = semitagName;
 
-    dataSource.transaction(async (manager) => {
+    await dataSource.transaction(async (manager) => {
       const repoVideo = manager.getRepository(Video);
       const repoSemitag = manager.getRepository(Semitag);
 

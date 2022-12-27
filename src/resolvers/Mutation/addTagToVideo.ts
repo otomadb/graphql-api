@@ -22,7 +22,7 @@ export const addTagToVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSou
     const videoTag = new VideoTag();
     videoTag.id = ulid();
 
-    dataSource.transaction(async (manager) => {
+    await dataSource.transaction(async (manager) => {
       const repoVideo = manager.getRepository(Video);
       const tagRepo = manager.getRepository(Tag);
       const repoVideoTag = manager.getRepository(VideoTag);
