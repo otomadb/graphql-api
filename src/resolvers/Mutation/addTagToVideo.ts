@@ -24,13 +24,13 @@ export const addTagToVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSou
 
     await dataSource.transaction(async (manager) => {
       const repoVideo = manager.getRepository(Video);
-      const tagRepo = manager.getRepository(Tag);
+      const repoTag = manager.getRepository(Tag);
       const repoVideoTag = manager.getRepository(VideoTag);
 
       const video = await repoVideo.findOne({ where: { id: videoId } });
       if (!video) throw GraphQLNotFoundError("video", videoGqlId);
 
-      const tag = await tagRepo.findOne({ where: { id: tagId } });
+      const tag = await repoTag.findOne({ where: { id: tagId } });
       if (!tag) throw GraphQLNotFoundError("tag", tagGqlId);
 
       videoTag.video = video;

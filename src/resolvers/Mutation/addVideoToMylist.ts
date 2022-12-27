@@ -4,46 +4,45 @@ import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
 import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
-import { Mylist, MylistShareRange as MylistEntityShareRange } from "../../db/entities/mylists.js";
+import { Mylist } from "../../db/entities/mylists.js";
 import { Video } from "../../db/entities/videos.js";
 import { MutationResolvers } from "../../graphql.js";
 import { addVideoToMylist as addVideoToMylistInNeo4j } from "../../neo4j/add_video_to_mylist.js";
-import { ObjectType, removeIDPrefix } from "../../utils/id.js";
+import { GraphQLNotFoundError, parseGqlID2 } from "../../utils/id.js";
 import { MylistRegistrationModel } from "../MylistRegistration/model.js";
-import { MYLIST_NOT_FOUND_OR_PRIVATE_ERROR, MYLIST_NOT_HOLDED_BY_YOU } from "../Query/getMylist.js";
 
 export const addVideoToMylist = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
-  (async (_parent, { input }, { user }) => {
+  (async (_parent, { input: { mylistId: mylistGqlId, note, videoId: videoGqlId } }, { user }) => {
     if (!user) throw new GraphQLError("need to authenticate");
-    const mylist = await dataSource
-      .getRepository(Mylist)
-      .findOne({ where: { id: removeIDPrefix(ObjectType.Mylist, input.mylistId) }, relations: { holder: true } });
-    if (!mylist) {
-      throw new GraphQLError(MYLIST_NOT_FOUND_OR_PRIVATE_ERROR);
-    }
-    if (mylist.holder.id !== user.id) {
-      if (mylist.range === MylistEntityShareRange.PRIVATE) {
-        throw new GraphQLError(MYLIST_NOT_FOUND_OR_PRIVATE_ERROR);
-      } else {
-        throw new GraphQLError(MYLIST_NOT_HOLDED_BY_YOU);
-      }
-    }
-    const video = await dataSource
-      .getRepository(Video)
-      .findOne({ where: { id: removeIDPrefix(ObjectType.Video, input.videoId) } });
-    if (video === null) {
-      throw new GraphQLError("Video not found");
-    }
+
+    const mylistId = parseGqlID2("mylist", mylistGqlId);
+    const videoId = parseGqlID2("video", videoGqlId);
+
     const registration = new MylistRegistration();
     registration.id = ulid();
-    registration.mylist = mylist;
-    registration.video = video;
-    registration.note = input.note ?? null;
-    await dataSource.getRepository(MylistRegistration).insert(registration);
+
+    await dataSource.transaction(async (manager) => {
+      const repoVideo = manager.getRepository(Video);
+      const repoMylist = manager.getRepository(Mylist);
+      const repoMylistRegistration = manager.getRepository(MylistRegistration);
+
+      const video = await repoVideo.findOne({ where: { id: videoId } });
+      if (!video) throw GraphQLNotFoundError("video", videoGqlId);
+
+      const mylist = await repoMylist.findOne({ where: { id: mylistId }, relations: { holder: true } });
+      if (!mylist) throw GraphQLNotFoundError("mylist", mylistGqlId);
+      if (mylist.holder.id !== user.id) throw new GraphQLError(`mylist "${mylistGqlId}" is not holded by you`);
+
+      registration.video = video;
+      registration.mylist = mylist;
+      registration.note = note ?? null;
+
+      await repoMylistRegistration.insert(registration);
+    });
 
     await addVideoToMylistInNeo4j(neo4jDriver)({
-      mylistId: mylist.id,
-      videoId: video.id,
+      mylistId: registration.mylist.id,
+      videoId: registration.video.id,
     });
 
     return {
