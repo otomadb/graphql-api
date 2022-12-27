@@ -6,6 +6,7 @@ import { Semitag } from "../../db/entities/semitags.js";
 import { Video } from "../../db/entities/videos.js";
 import { MutationResolvers } from "../../graphql.js";
 import { GraphQLNotFoundError, parseGqlID } from "../../utils/id.js";
+import { SemitagModel } from "../Semitag/model.js";
 
 export const addSemitagToVideo = ({ dataSource }: { dataSource: DataSource }) =>
   (async (_parent, { input: { videoId: videoGqlId, name: semitagName } }) => {
@@ -30,5 +31,5 @@ export const addSemitagToVideo = ({ dataSource }: { dataSource: DataSource }) =>
       repoSemitag.insert(semitag);
     });
 
-    return { semitag };
+    return { semitag: new SemitagModel(semitag) };
   }) satisfies MutationResolvers["addSemitagToVideo"];
