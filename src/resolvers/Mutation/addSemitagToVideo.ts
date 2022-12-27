@@ -5,31 +5,30 @@ import { ulid } from "ulid";
 import { Semitag } from "../../db/entities/semitags.js";
 import { Video } from "../../db/entities/videos.js";
 import { MutationResolvers } from "../../graphql.js";
-import { parseGqlID } from "../../utils/id.js";
+import { GraphQLNotFoundError, parseGqlID2 } from "../../utils/id.js";
 
-export const addSemitagToVideo = ({ dataSource: ds }: { dataSource: DataSource }) =>
+export const addSemitagToVideo = ({ dataSource }: { dataSource: DataSource }) =>
   (async (_parent, { input: { videoId: videoGqlId, name: semitagName } }) => {
     // TODO: auth
-
-    const videoId = parseGqlID("video", videoGqlId);
-    if (!videoId) throw new GraphQLError(`"${videoGqlId}" is invalid id for video`);
-
-    const video = await ds.getRepository(Video).findOne({ where: { id: videoId } });
-    if (!video) throw new GraphQLError(`No video found for "${videoGqlId}"`);
-
-    if (
-      await ds
-        .getRepository(Semitag)
-        .findOne({ where: { video: { id: video.id }, name: semitagName, resolved: false } })
-    )
-      throw new GraphQLError(`"${semitagName}" is already registered for "${videoGqlId}"`);
+    const videoId = parseGqlID2("video", videoGqlId);
 
     const semitag = new Semitag();
     semitag.id = ulid();
     semitag.name = semitagName;
-    semitag.video = video;
 
-    await ds.getRepository(Semitag).insert(semitag);
+    dataSource.transaction(async (manager) => {
+      const repoVideo = manager.getRepository(Video);
+      const repoSemitag = manager.getRepository(Semitag);
 
-    return { video, semitag };
+      const video = await repoVideo.findOne({ where: { id: videoId } });
+      if (!video) throw GraphQLNotFoundError("video", videoGqlId);
+
+      if (await repoSemitag.findOne({ where: { video: { id: video.id }, name: semitagName, resolved: false } }))
+        throw new GraphQLError(`"${semitagName}" is already registered for "${videoGqlId}"`);
+
+      semitag.video = video;
+      repoSemitag.insert(semitag);
+    });
+
+    return { semitag };
   }) satisfies MutationResolvers["addSemitagToVideo"];
