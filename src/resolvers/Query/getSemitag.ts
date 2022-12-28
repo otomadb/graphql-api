@@ -9,7 +9,7 @@ import { SemitagModel } from "../Semitag/model.js";
 export const getSemitag = ({ dataSource }: { dataSource: DataSource }) =>
   (async (_parent, { id: gqlId }) => {
     const id = parseGqlID("semitag", gqlId);
-    if (!id) throw new GraphQLError(`"${gqlId}" is invalid id for semitag`);
+
     const semitag = await dataSource.getRepository(Semitag).findOne({ where: { id } });
     if (!semitag) throw new GraphQLError(`No semitag found for "${gqlId}"`);
     return new SemitagModel(semitag);

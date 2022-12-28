@@ -70,7 +70,6 @@ export const resolveTag = ({ dataSource }: { dataSource: DataSource }) =>
 
     canTagTo: async ({ id: tagId }, { videoId: videoGqlId }) => {
       const videoId = parseGqlID("video", videoGqlId);
-      if (!videoId) throw new GraphQLError(`"${videoGqlId}" is invalid for video id`);
 
       return dataSource
         .getRepository(VideoTag)

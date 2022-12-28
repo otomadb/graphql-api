@@ -21,26 +21,25 @@ export function removeIDPrefix(type: ObjectType, id: string): string {
   return splitted[1];
 }
 
-type NodeType = "video" | "tag" | "semitag" | "nicovideoVideoSource";
+export type NodeType = "video" | "tag" | "semitag" | "nicovideoVideoSource" | "mylist";
 export const buildGqlId = (type: NodeType, dbId: string): string => `${type}:${dbId}`;
-export function parseGqlID(type: NodeType, gqlId: string): string | null {
+
+export function parseGqlID(type: NodeType, gqlId: string): string {
   const separated = gqlId.split(":");
-  if (separated.length !== 2) return null;
+  if (separated.length !== 2) throw GraphQLInvalidIdError(type, gqlId);
 
   const [t, i] = separated;
-  if (t !== type) return null;
+  if (t !== type) throw GraphQLInvalidIdError(type, gqlId);
 
   return i;
 }
-export const buildInvalidGqlIdError = (type: NodeType, id: string) =>
-  new GraphQLError(`"${id}" is invalid id for "${type}"`);
 
 export function parseGqlIDs(type: NodeType, gqlIds: string[]): string[] {
-  const ids = [];
-  for (const exceptGqlId of gqlIds) {
-    const exceptId = parseGqlID(type, exceptGqlId);
-    if (!exceptId) throw buildInvalidGqlIdError(type, exceptGqlId);
-    ids.push(exceptId);
-  }
-  return ids;
+  return gqlIds.map((gqlId) => parseGqlID(type, gqlId));
 }
+
+export const GraphQLInvalidIdError = (type: NodeType, invalidId: string) =>
+  new GraphQLError(`"${invalidId}" is invalid id for "${type}"`);
+
+export const GraphQLNotFoundError = (type: NodeType, dbId: string) =>
+  new GraphQLError(`"${type}" for "${type}:${dbId}" is not found `);

@@ -9,30 +9,33 @@ import { createMylist as createMylistInNeo4j } from "../../neo4j/create_mylist.j
 import { MylistModel } from "../Mylist/model.js";
 
 export const createMylist = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
-  (async (_parent, { input }, { user }) => {
+  (async (_parent, { input: { title, range } }, { user }) => {
     if (!user) throw new GraphQLError("need to authenticate");
+
     const mylist = new Mylist();
+
     mylist.id = ulid();
-    mylist.title = input.title;
-    if (input.range === MylistGQLShareRange.Public) {
-      mylist.range = MylistEntityShareRange.PUBLIC;
-    } else if (input.range === MylistGQLShareRange.KnowLink) {
-      mylist.range = MylistEntityShareRange.KNOW_LINK;
-    } else if (input.range === MylistGQLShareRange.Private) {
-      mylist.range = MylistEntityShareRange.PRIVATE;
-    } else {
-      throw new GraphQLError("unknown share range");
+    mylist.title = title;
+    switch (range) {
+      case MylistGQLShareRange.Public:
+        mylist.range = MylistEntityShareRange.PUBLIC;
+        break;
+      case MylistGQLShareRange.KnowLink:
+        mylist.range = MylistEntityShareRange.KNOW_LINK;
+        break;
+      case MylistGQLShareRange.Private:
+        mylist.range = MylistEntityShareRange.PRIVATE;
+        break;
     }
     mylist.holder = user;
     mylist.isLikeList = false;
 
     await dataSource.getRepository(Mylist).insert(mylist);
+
     await createMylistInNeo4j(neo4jDriver)({
       userId: user.id,
       mylistId: mylist.id,
     });
 
-    return {
-      mylist: new MylistModel(mylist),
-    };
+    return { mylist: new MylistModel(mylist) };
   }) satisfies MutationResolvers["createMylist"];

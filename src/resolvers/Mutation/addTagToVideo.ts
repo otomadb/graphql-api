@@ -8,44 +8,43 @@ import { VideoTag } from "../../db/entities/video_tags.js";
 import { Video } from "../../db/entities/videos.js";
 import { MutationResolvers } from "../../graphql.js";
 import { tagVideo as tagVideoInNeo4j } from "../../neo4j/tag_video.js";
-import { ObjectType, removeIDPrefix } from "../../utils/id.js";
+import { GraphQLNotFoundError, parseGqlID } from "../../utils/id.js";
 import { TagModel } from "../Tag/model.js";
 import { VideoModel } from "../Video/model.js";
 
 export const addTagToVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
-  (async (_parent, { input: { tagId, videoId } }, { user }) => {
-    if (!user) {
-      throw new GraphQLError("required to sign in");
-    }
+  (async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { user }) => {
+    if (!user) throw new GraphQLError("required to sign in");
 
-    const video = await dataSource.getRepository(Video).findOne({
-      where: { id: removeIDPrefix(ObjectType.Video, videoId) },
-    });
-    if (video === null) throw new GraphQLError("Video Not Found");
-    const tag = await dataSource.getRepository(Tag).findOne({
-      where: { id: removeIDPrefix(ObjectType.Tag, tagId) },
-    });
-    if (tag === null) throw new GraphQLError("Tag Not Found");
+    const videoId = parseGqlID("video", videoGqlId);
+    const tagId = parseGqlID("tag", tagGqlId);
+
     const videoTag = new VideoTag();
     videoTag.id = ulid();
-    videoTag.video = video;
-    videoTag.tag = tag;
-    await dataSource.getRepository(VideoTag).insert(videoTag);
 
-    await tagVideoInNeo4j(neo4jDriver)({ tagId: tag.id, videoId: video.id });
+    await dataSource.transaction(async (manager) => {
+      const repoVideo = manager.getRepository(Video);
+      const repoTag = manager.getRepository(Tag);
+      const repoVideoTag = manager.getRepository(VideoTag);
+
+      const video = await repoVideo.findOne({ where: { id: videoId } });
+      if (!video) throw GraphQLNotFoundError("video", videoId);
+
+      const tag = await repoTag.findOne({ where: { id: tagId } });
+      if (!tag) throw GraphQLNotFoundError("tag", tagId);
+
+      videoTag.video = video;
+      videoTag.tag = tag;
+      await repoVideoTag.insert(videoTag);
+    });
+
+    await tagVideoInNeo4j(neo4jDriver)({
+      tagId: videoTag.tag.id,
+      videoId: videoTag.video.id,
+    });
 
     return {
       video: new VideoModel(videoTag.video),
       tag: new TagModel(videoTag.tag),
     };
-
-    /*
-    return {
-      createdAt: new Date(),
-      id: addIDPrefix(ObjectType.VideoTag, videoTag.id),
-      tag: new TagModel(tag),
-      user: new UserModel(user),
-      video: new VideoModel(video),
-    };
-    */
   }) satisfies MutationResolvers["addTagToVideo"];

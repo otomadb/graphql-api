@@ -8,7 +8,7 @@ import { Tag } from "../../db/entities/tags.js";
 import { User } from "../../db/entities/users.js";
 import { migrations } from "../../db/migrations.js";
 import { TagModel } from "../Tag/model.js";
-import { calcNameParentPair, registerTag } from "./registerTag.js";
+import { registerTag } from "./registerTag.js";
 
 describe("Mutation.registerTag", () => {
   test("is defined", () => {
@@ -16,63 +16,6 @@ describe("Mutation.registerTag", () => {
   });
 
   test.todo("contextにuserがない場合は認証エラー");
-
-  test.each([
-    ["a", [], "1", [], [{ name: "a", parent: "1" }]],
-    [
-      "a",
-      ["b"],
-      "1",
-      [],
-      [
-        { name: "a", parent: "1" },
-        { name: "b", parent: "1" },
-      ],
-    ],
-    [
-      "a",
-      [],
-      "1",
-      ["2"],
-      [
-        { name: "a", parent: "1" },
-        { name: "a", parent: "2" },
-      ],
-    ],
-    [
-      "a",
-      ["b"],
-      "1",
-      ["2"],
-      [
-        { name: "a", parent: "1" },
-        { name: "a", parent: "2" },
-        { name: "b", parent: "1" },
-        { name: "b", parent: "2" },
-      ],
-    ],
-    ["a", [], null, [], [{ name: "a", parent: null }]],
-    ["a", [], null, ["2"], [{ name: "a", parent: "2" }]],
-  ])(
-    "calcNameParentPair() %#",
-    (
-      primaryName,
-      extraNames,
-      explicitParent,
-      implicitParents,
-      expected: ({ name: string; parent: string } | { name: string; parent: null })[]
-    ) => {
-      const actual = calcNameParentPair({
-        primaryName,
-        extraNames,
-        explicitParent,
-        implicitParents,
-      });
-
-      expect(actual.length).toBe(expected.length);
-      expect(actual).toStrictEqual(expect.arrayContaining(expected));
-    }
-  );
 
   describe("with DB", () => {
     let ds: DataSource;
@@ -281,7 +224,7 @@ describe("Mutation.registerTag", () => {
             },
           }
         )
-      ).rejects.toThrowError(`name "a" is reserved in "tag:${alreadyTag.id}"`);
+      ).rejects.toThrowError(`"tag:${alreadyTag.id}" is already registered for "a"`);
     });
 
     test("primaryNameが既存のextraNamesと重複してエラー", async () => {
@@ -314,7 +257,7 @@ describe("Mutation.registerTag", () => {
             },
           }
         )
-      ).rejects.toThrowError(`name "A" is reserved in "tag:${alreadyTag.id}"`);
+      ).rejects.toThrowError(`"tag:${alreadyTag.id}" is already registered for "A"`);
     });
 
     test("extraNamesが既存のprimaryNameと重複してエラー", async () => {
@@ -347,7 +290,7 @@ describe("Mutation.registerTag", () => {
             },
           }
         )
-      ).rejects.toThrowError(`name "a" is reserved in "tag:${alreadyTag.id}"`);
+      ).rejects.toThrowError(`"tag:${alreadyTag.id}" is already registered for "a"`);
     });
 
     test("extraNamesが既存のextraNamesと重複してエラー", async () => {
@@ -380,7 +323,7 @@ describe("Mutation.registerTag", () => {
             },
           }
         )
-      ).rejects.toThrowError(`name "A" is reserved in "tag:${alreadyTag.id}"`);
+      ).rejects.toThrowError(`"tag:${alreadyTag.id}" is already registered for "A"`);
     });
 
     test("存在しないタグをexplicitParentとして指定するとエラー", async () => {
@@ -398,7 +341,7 @@ describe("Mutation.registerTag", () => {
             },
           }
         )
-      ).rejects.toThrowError('"tag:p" is specified as parent but not exists');
+      ).rejects.toThrowError('"tag" for "tag:p" is not found');
     });
 
     test("explicitParentだけを入れて登録する", async () => {
@@ -493,7 +436,7 @@ describe("Mutation.registerTag", () => {
             },
           }
         )
-      ).rejects.toThrowError('"tag:p" is specified as parent but not exists');
+      ).rejects.toThrowError('"tag" for "tag:p" is not found');
     });
 
     test("implicitParentsだけを入れて登録する", async () => {
@@ -588,7 +531,7 @@ describe("Mutation.registerTag", () => {
             },
           }
         )
-      ).rejects.toThrowError('"tag:p" is specified as explicitParent and also included in implicitParents');
+      ).rejects.toThrowError('"tag:p" is specified as explicitParent and also implicitParents');
     });
 
     test("implicitParentsに同じタグを複数回入れるとエラー", async () => {
@@ -605,7 +548,7 @@ describe("Mutation.registerTag", () => {
             },
           }
         )
-      ).rejects.toThrowError('"tag:p" is included in implicitParents multiple times');
+      ).rejects.toThrowError('"tag:p" is duplicated in implicitParents');
     });
 
     test("explicitParentとimplicitParentsを入れて登録する", async () => {
@@ -844,7 +787,7 @@ describe("Mutation.registerTag", () => {
             },
           }
         )
-      ).rejects.toThrowError(`name "b" is reserved in "tag:${tagB_A.id}"`);
+      ).rejects.toThrowError(`"tag:${tagB_A.id}" is already registered for "b"`);
     });
 
     test("b(a)が既に存在するなら，b(a)を登録することは出来ない", async () => {
@@ -861,8 +804,7 @@ describe("Mutation.registerTag", () => {
           },
         }
       );
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { tag: tagA } = resultTagA as { tag: Tag };
+      const { tag: tagA } = resultTagA;
 
       /* b(a) */
       const resultTagB_A = await registerTag({ dataSource: ds, neo4jDriver })?.(
@@ -879,7 +821,7 @@ describe("Mutation.registerTag", () => {
         }
       );
       expect(resultTagB_A).toBeDefined();
-      const { tag: tagB_A } = resultTagB_A as { tag: Tag };
+      const { tag: tagB_A } = resultTagB_A;
 
       await expect(
         registerTag({ dataSource: ds, neo4jDriver })?.(
@@ -895,7 +837,7 @@ describe("Mutation.registerTag", () => {
             },
           }
         )
-      ).rejects.toThrowError(`name "b" with parent "tag:${tagA.id}" is already registered in "tag:${tagB_A.id}"`);
+      ).rejects.toThrowError(`"tag:${tagB_A.id}" is already registered for "b" with parent "tag:${tagA.id}"`);
     });
 
     test("aを非明示的に親に持つb{a}が既に存在するなら，b(a)を登録することは出来ない", async () => {
@@ -945,7 +887,7 @@ describe("Mutation.registerTag", () => {
             },
           }
         )
-      ).rejects.toThrowError(`name "b" with parent "tag:${tagA.id}" is already registered in "tag:${tagB_A.id}"`);
+      ).rejects.toThrowError(`"tag:${tagB_A.id}" is already registered for "b" with parent "tag:${tagA.id}"`);
     });
 
     test("aを非明示的に親に持つb{a}が既に存在するなら，b{a}を登録することは出来ない", async () => {
@@ -994,7 +936,7 @@ describe("Mutation.registerTag", () => {
             },
           }
         )
-      ).rejects.toThrowError(`name "b" with parent "tag:${tagA.id}" is already registered in "tag:${tagB_A.id}"`);
+      ).rejects.toThrowError(`"tag:${tagB_A.id}" is already registered for "b" with parent "tag:${tagA.id}"`);
     });
   });
 });
