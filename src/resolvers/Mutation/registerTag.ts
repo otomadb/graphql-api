@@ -7,6 +7,7 @@ import { Semitag } from "../../db/entities/semitags.js";
 import { TagName } from "../../db/entities/tag_names.js";
 import { TagParent } from "../../db/entities/tag_parents.js";
 import { Tag } from "../../db/entities/tags.js";
+import { VideoTag } from "../../db/entities/video_tags.js";
 import { MutationResolvers } from "../../graphql.js";
 import { registerTag as registerTagInNeo4j } from "../../neo4j/register_tag.js";
 import { GraphQLNotFoundError, parseGqlID, parseGqlIDs } from "../../utils/id.js";
@@ -52,6 +53,7 @@ export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSourc
       const repoTagName = manager.getRepository(TagName);
       const repoTagParent = manager.getRepository(TagParent);
       const repoSemitag = manager.getRepository(Semitag);
+      const repoVideoTag = manager.getRepository(VideoTag);
 
       await repoTag.insert(tag);
 
@@ -115,9 +117,19 @@ export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSourc
       }
 
       for (const semitagId of semitagIds) {
-        const semitag = await repoSemitag.findOne({ where: { id: semitagId, resolved: false } });
+        const semitag = await repoSemitag.findOne({
+          where: { id: semitagId, resolved: false },
+          relations: { video: true },
+        });
         if (!semitag) throw GraphQLNotFoundError("semitag", semitagId);
+
         await repoSemitag.update({ id: semitag.id }, { resolved: true, tag });
+
+        const videoTag = new VideoTag();
+        videoTag.id = ulid();
+        videoTag.tag = tag;
+        videoTag.video = semitag.video;
+        await repoVideoTag.insert(videoTag);
       }
     });
 
