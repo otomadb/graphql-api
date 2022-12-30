@@ -7,6 +7,7 @@ import { Semitag } from "../../db/entities/semitags.js";
 import { Tag } from "../../db/entities/tags.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { MutationResolvers } from "../../graphql.js";
+import { addVideoTag as addVideoTagToNeo4j } from "../../neo4j/addVideoTag.js";
 import { GraphQLNotFoundError, parseGqlID } from "../../utils/id.js";
 
 export const resolveSemitag = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
@@ -45,8 +46,7 @@ export const resolveSemitag = ({ dataSource, neo4jDriver }: { dataSource: DataSo
         videoTag.tag = tag;
         await videoTagRepo.insert(videoTag);
       });
-
-      // await tagVideoInNeo4j(neo4jDriver)({ tagId: tag.id, videoId: semitag.video.id });
+      await addVideoTagToNeo4j({ neo4jDriver })(videoTag);
       return { semitag };
     }
   }) satisfies MutationResolvers["resovleSemitag"];

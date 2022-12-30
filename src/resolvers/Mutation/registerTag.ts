@@ -9,7 +9,6 @@ import { TagParent } from "../../db/entities/tag_parents.js";
 import { Tag } from "../../db/entities/tags.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { MutationResolvers } from "../../graphql.js";
-import { registerTag as registerTagInNeo4j } from "../../neo4j/register_tag.js";
 import { GraphQLNotFoundError, parseGqlID, parseGqlIDs } from "../../utils/id.js";
 import { TagModel } from "../Tag/model.js";
 
@@ -133,6 +132,6 @@ export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSourc
       }
     });
 
-    await registerTagInNeo4j(neo4jDriver)(tag.id);
+    // await registerTagInNeo4j(neo4jDriver)(tag.id);
     return { tag: new TagModel(tag) };
   }) satisfies MutationResolvers["registerTag"];

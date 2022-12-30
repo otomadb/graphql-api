@@ -4,7 +4,7 @@ import { DataSource } from "typeorm";
 
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { MutationResolvers } from "../../graphql.js";
-import { untagVideo as untagVideoInNeo4j } from "../../neo4j/untag_video.js";
+import { removeVideoTag as removeVideoTagInNeo4j } from "../../neo4j/removeVideoTag.js";
 import { parseGqlID } from "../../utils/id.js";
 import { TagModel } from "../Tag/model.js";
 import { VideoModel } from "../Video/model.js";
@@ -26,10 +26,8 @@ export const removeTagFromVideo = ({ dataSource, neo4jDriver }: { dataSource: Da
 
     await repoVideoTag.remove(tagging);
 
-    await untagVideoInNeo4j(neo4jDriver)({
-      tagId: tagging.tag.id,
-      videoId: tagging.video.id,
-    });
+    await removeVideoTagInNeo4j({ neo4jDriver })(tagging);
+
     return {
       video: new VideoModel(tagging.video),
       tag: new TagModel(tagging.tag),

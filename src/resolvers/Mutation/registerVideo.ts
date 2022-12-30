@@ -11,7 +11,7 @@ import { VideoThumbnail } from "../../db/entities/video_thumbnails.js";
 import { VideoTitle } from "../../db/entities/video_titles.js";
 import { Video } from "../../db/entities/videos.js";
 import { MutationResolvers, RegisterVideoInputSourceType } from "../../graphql.js";
-import { registerVideo as registerVideoInNeo4j } from "../../neo4j/register_video.js";
+import { addVideoTags } from "../../neo4j/addVideoTags.js";
 import { ObjectType, removeIDPrefix } from "../../utils/id.js";
 import { isValidNicovideoSourceId } from "../../utils/isValidNicovideoSourceId.js";
 import { VideoModel } from "../Video/model.js";
@@ -91,7 +91,7 @@ export const registerVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSou
       await manager.getRepository(Semitag).insert(semitags);
     });
 
-    await registerVideoInNeo4j(neo4jDriver)(video.id, { tagIds: tags.map(({ id }) => id) });
+    await addVideoTags({ neo4jDriver })(videoTags);
 
     return {
       video: new VideoModel(video),
