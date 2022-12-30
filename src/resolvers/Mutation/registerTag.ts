@@ -9,6 +9,7 @@ import { TagParent } from "../../db/entities/tag_parents.js";
 import { Tag } from "../../db/entities/tags.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { MutationResolvers } from "../../graphql.js";
+import { addVideoTags } from "../../neo4j/addVideoTags.js";
 import { GraphQLNotFoundError, parseGqlID, parseGqlIDs } from "../../utils/id.js";
 import { TagModel } from "../Tag/model.js";
 
@@ -47,6 +48,9 @@ export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSourc
       return extraTagName;
     });
 
+    const tagParents: TagParent[] = [];
+    const semitagVideoTags: VideoTag[] = [];
+
     await dataSource.transaction(async (manager) => {
       const repoTag = manager.getRepository(Tag);
       const repoTagName = manager.getRepository(TagName);
@@ -62,8 +66,6 @@ export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSourc
           if (already) throw new GraphQLError(`"tag:${already.id}" is already registered for "${name}"`);
         }
       }
-
-      await repoTagName.insert([primaryTagName, ...extraTagNames]);
 
       if (explicitParentId) {
         const explicitParent = await repoTag.findOne({ where: { id: explicitParentId } });
@@ -87,7 +89,7 @@ export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSourc
         explicitTagParent.explicit = true;
         explicitTagParent.parent = explicitParent;
         explicitTagParent.child = tag;
-        await repoTagParent.insert(explicitTagParent);
+        tagParents.push(explicitTagParent);
       }
 
       for (const implicitParentId of implicitParentIds) {
@@ -107,20 +109,23 @@ export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSourc
             );
         }
 
-        const explicitTagParent = new TagParent();
-        explicitTagParent.id = ulid();
-        explicitTagParent.explicit = false;
-        explicitTagParent.parent = implicitParent;
-        explicitTagParent.child = tag;
-        await repoTagParent.insert(explicitTagParent);
+        const implicitTagParent = new TagParent();
+        implicitTagParent.id = ulid();
+        implicitTagParent.explicit = false;
+        implicitTagParent.parent = implicitParent;
+        implicitTagParent.child = tag;
+        tagParents.push(implicitTagParent);
       }
 
       for (const semitagId of semitagIds) {
-        const semitag = await repoSemitag.findOne({
-          where: { id: semitagId, resolved: false },
-          relations: { video: true },
-        });
-        if (!semitag) throw GraphQLNotFoundError("semitag", semitagId);
+        const semitag = await repoSemitag
+          .findOneOrFail({
+            where: { id: semitagId, resolved: false },
+            relations: { video: true },
+          })
+          .catch(() => {
+            throw GraphQLNotFoundError("semitag", semitagId);
+          });
 
         await repoSemitag.update({ id: semitag.id }, { resolved: true, tag });
 
@@ -128,10 +133,16 @@ export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSourc
         videoTag.id = ulid();
         videoTag.tag = tag;
         videoTag.video = semitag.video;
-        await repoVideoTag.insert(videoTag);
+
+        semitagVideoTags.push(videoTag);
       }
+
+      await repoTagName.insert([primaryTagName, ...extraTagNames]);
+      await repoTagParent.insert(tagParents);
+      await repoVideoTag.insert(semitagVideoTags);
     });
 
-    // await registerTagInNeo4j(neo4jDriver)(tag.id);
+    await addVideoTags({ neo4jDriver })(semitagVideoTags);
+
     return { tag: new TagModel(tag) };
   }) satisfies MutationResolvers["registerTag"];
