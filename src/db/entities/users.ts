@@ -14,8 +14,8 @@ export class User {
   @Column("text", { nullable: false })
   displayName!: string;
 
-  @Column("text", { nullable: false })
-  icon!: string;
+  @Column("text", { nullable: true })
+  icon!: string | null;
 
   @Column("text", { nullable: false })
   email!: string;
