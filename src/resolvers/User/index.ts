@@ -11,12 +11,12 @@ export const resolveId = (({ id }) => addIDPrefix(ObjectType.User, id)) satisfie
 export const resolveUser = ({ dataSource: ds }: { dataSource: DataSource }) =>
   ({
     id: resolveId,
-    favorites: async ({ id: userId }) => {
+    likes: async ({ id: userId }) => {
       const mylist = await ds.getRepository(Mylist).findOne({
         where: { holder: { id: userId }, isLikeList: true },
       });
 
-      if (!mylist) throw new GraphQLError(`User "${userId}" favorites not found`);
+      if (!mylist) throw new GraphQLError(`User "${userId}" likes list not found`);
       return new MylistModel(mylist);
     },
   } satisfies Resolvers["User"]);
