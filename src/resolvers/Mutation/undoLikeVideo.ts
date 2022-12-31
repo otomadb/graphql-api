@@ -5,7 +5,7 @@ import { DataSource } from "typeorm";
 import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
 import { Mylist } from "../../db/entities/mylists.js";
 import { MutationResolvers } from "../../graphql.js";
-import { removeVideoFromMylist as removeVideoFromMylistInNeo4j } from "../../neo4j/remove_video_from_mylist.js";
+import { removeMylistRegistration as removeMylistRegistrationInNeo4j } from "../../neo4j/removeMylistRegistration.js";
 import { parseGqlID } from "../../utils/id.js";
 import { MylistModel } from "../Mylist/model.js";
 import { VideoModel } from "../Video/model.js";
@@ -33,10 +33,7 @@ export const undoLikeVideo = ({ dataSource: ds, neo4jDriver }: { dataSource: Dat
 
     await repoMylistRegistration.remove(registration);
 
-    await removeVideoFromMylistInNeo4j(neo4jDriver)({
-      mylistId: registration.mylist.id,
-      videoId: registration.video.id,
-    });
+    await removeMylistRegistrationInNeo4j({ neo4jDriver })(registration);
 
     return {
       video: new VideoModel(registration.video),

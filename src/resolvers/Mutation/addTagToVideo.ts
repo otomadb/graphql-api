@@ -7,7 +7,7 @@ import { Tag } from "../../db/entities/tags.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { Video } from "../../db/entities/videos.js";
 import { MutationResolvers } from "../../graphql.js";
-import { tagVideo as tagVideoInNeo4j } from "../../neo4j/tag_video.js";
+import { addVideoTag as addVideoTagInNeo4j } from "../../neo4j/addVideoTag.js";
 import { GraphQLNotFoundError, parseGqlID } from "../../utils/id.js";
 import { TagModel } from "../Tag/model.js";
 import { VideoModel } from "../Video/model.js";
@@ -38,10 +38,7 @@ export const addTagToVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSou
       await repoVideoTag.insert(videoTag);
     });
 
-    await tagVideoInNeo4j(neo4jDriver)({
-      tagId: videoTag.tag.id,
-      videoId: videoTag.video.id,
-    });
+    await addVideoTagInNeo4j({ neo4jDriver })(videoTag);
 
     return {
       video: new VideoModel(videoTag.video),
