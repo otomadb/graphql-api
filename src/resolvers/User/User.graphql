@@ -5,7 +5,7 @@ type User implements Node {
   icon: String
 
   likes: Mylist!
-  mylists(input: UserMylistsInput!): MylistsConnection!
+  mylists(input: UserMylistsInput!): MylistCollection!
 }
 
 input UserMylistsInput {
