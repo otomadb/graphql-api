@@ -7,7 +7,7 @@ type Mylist implements Node {
   createdAt: DateTime!
   updatedAt: DateTime!
 
-  registrations(input: MylistRegistrationsInput!): MylistRegistrationCollection!
+  registrations(input: MylistRegistrationsInput!): MylistRegistrationConnection!
 
   """
   マイリストの中にビデオが追加されているか．
@@ -62,6 +62,6 @@ type MylistIncludeTagsItem {
   count: Int!
 }
 
-type MylistCollection {
+type MylistConnection {
   nodes: [Mylist!]!
 }

@@ -8,7 +8,7 @@ type Tag implements Node {
   names: [TagName!]!
 
   taggedVideos: [Video!]!
-  history(input: TagHistoryInput!): TagHistoryCollection!
+  history(input: TagHistoryInput!): TagHistoryConnection!
 
   explicitParent: Tag
   parents(meaningless: Boolean): [TagParent!]!
@@ -81,11 +81,11 @@ type TagParent {
   explicit: Boolean!
 }
 
-type TagCollection {
+type TagConnection {
   nodes: [Tag!]!
 }
 
-type TagHistoryCollection {
+type TagHistoryConnection {
   nodes: [VideoHistoryItem!]!
 }
 

@@ -1,5 +1,5 @@
 type Query {
-  findVideos(input: FindVideosInput!): VideoCollection!
+  findVideos(input: FindVideosInput!): VideoConnection!
 }
 
 input FindVideosInput {
