@@ -42,4 +42,4 @@ export const GraphQLInvalidIdError = (type: NodeType, invalidId: string) =>
   new GraphQLError(`"${invalidId}" is invalid id for "${type}"`);
 
 export const GraphQLNotFoundError = (type: NodeType, dbId: string) =>
-  new GraphQLError(`"${type}" for "${type}:${dbId}" is not found `);
+  new GraphQLError(`"${type}" for "${buildGqlId(type, dbId)}" is not found `);
