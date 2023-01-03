@@ -1,5 +1,5 @@
 type Query {
-  findTags(input: FindTagsInput!): TagCollection!
+  findTags(input: FindTagsInput!): TagConnection!
 }
 
 input FindTagsInput {

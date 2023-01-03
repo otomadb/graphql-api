@@ -9,6 +9,6 @@ type Semitag implements Node {
   resolvedTag: Tag
 }
 
-type SemitagCollection {
+type SemitagConnection {
   nodes: [Semitag!]!
 }

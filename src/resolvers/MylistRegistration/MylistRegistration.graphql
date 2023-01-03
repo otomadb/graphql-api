@@ -8,6 +8,6 @@ type MylistRegistration implements Node {
   note: String
 }
 
-type MylistRegistrationCollection {
+type MylistRegistrationConnection {
   nodes: [MylistRegistration!]!
 }

@@ -6,7 +6,7 @@ type Video implements Node {
   thumbnails: [VideoThumbnail!]!
   tags: [Tag!]!
   hasTag(id: ID!): Boolean!
-  history(input: VideoHistoryInput!): VideoHistoryCollection!
+  history(input: VideoHistoryInput!): VideoHistoryConnection!
   registeredAt: DateTime!
   similarVideos(input: VideoSimilarVideosInput!): VideoSimilarVideosPayload!
 
@@ -37,7 +37,7 @@ input VideoHistoryOrder {
   createdAt: SortOrder
 }
 
-type VideoHistoryCollection {
+type VideoHistoryConnection {
   nodes: [VideoHistoryItem!]!
 }
 
@@ -143,6 +143,6 @@ type VideoSimilarVideoItem {
   score: Float!
 }
 
-type VideoCollection {
+type VideoConnection {
   nodes: [Video!]!
 }
