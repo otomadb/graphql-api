@@ -19,6 +19,7 @@ generates:
         Video: ./resolvers/Video/model.js#VideoModel
         Mylist: ./resolvers/Mylist/model.js#MylistModel
         MylistRegistration: ./resolvers/MylistRegistration/model.js#MylistRegistrationModel
+        MylistGroup: ./resolvers/MylistGroup/model.js#MylistGroupModel
         NicovideoVideoSource: ./resolvers/NicovideoVideoSource/model.js#NicovideoVideoSourceModel
       makeResolverTypeCallable: true
     plugins:

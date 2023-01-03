@@ -1,0 +1,41 @@
+type MylistGroup implements Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  title: String!
+  holder: User!
+
+  mylists(input: MylistGroupMylistsInput!): MylistCollection!
+  videos(input: MylistGroupVideosInput!): MylistGroupVideoInclusionCollection!
+}
+
+input MylistGroupMylistsInput {
+  limit: Int! = 10
+  skip: Int! = 0
+  order: MylistGroupMylistsInputOrder! = { ID: DESC }
+}
+
+input MylistGroupMylistsInputOrder {
+  ID: SortOrder!
+}
+
+type MylistGroupVideoInclusion {
+  id: ID!
+  video: Video!
+  count: Int!
+}
+
+type MylistGroupVideoInclusionCollection {
+  nodes: [MylistGroupVideoInclusion!]!
+}
+
+input MylistGroupVideosInput {
+  limit: Int! = 10
+  skip: Int! = 0
+  order: MylistGroupVideosInputOrder! = { COUNT: ASC }
+}
+
+input MylistGroupVideosInputOrder {
+  COUNT: SortOrder!
+}
