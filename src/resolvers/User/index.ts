@@ -5,6 +5,7 @@ import { Mylist, MylistShareRange } from "../../db/entities/mylists.js";
 import { MylistShareRange as GraphQLMylistShareRange, Resolvers, UserResolvers } from "../../graphql.js";
 import { addIDPrefix, buildGqlId, ObjectType, parseGqlID } from "../../utils/id.js";
 import { MylistModel } from "../Mylist/model.js";
+import { resolveUserLikes } from "./likes.js";
 
 export const convertMylistShareRange = (ranges: GraphQLMylistShareRange[]) =>
   ranges.map((r) => {
@@ -23,14 +24,7 @@ export const resolveId = (({ id }) => addIDPrefix(ObjectType.User, id)) satisfie
 export const resolveUser = ({ dataSource: ds }: { dataSource: DataSource }) =>
   ({
     id: resolveId,
-    likes: async ({ id: userId }) => {
-      const mylist = await ds.getRepository(Mylist).findOne({
-        where: { holder: { id: userId }, isLikeList: true },
-      });
-
-      if (!mylist) throw new GraphQLError(`User "${userId}" likes list not found`);
-      return new MylistModel(mylist);
-    },
+    likes: resolveUserLikes({ dataSource: ds }),
 
     mylist: async ({ id: userId }, { id: gqlMylistId }, { user: authuser }) => {
       const mylist = await ds.getRepository(Mylist).findOne({ where: { id: parseGqlID("mylist", gqlMylistId) } });
