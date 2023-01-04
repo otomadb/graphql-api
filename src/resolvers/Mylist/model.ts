@@ -5,11 +5,15 @@ export class MylistModel {
   public range;
   public title;
   public isLikeList: boolean;
+  public createdAt: Date;
+  public updatedAt: Date;
 
-  constructor(private readonly mylist: Mylist) {
-    this.id = mylist.id;
-    this.range = mylist.range;
-    this.title = mylist.title;
-    this.isLikeList = mylist.isLikeList;
+  constructor({ id, range, title, createdAt, updatedAt, isLikeList }: Mylist) {
+    this.id = id;
+    this.title = title;
+    this.range = range;
+    this.isLikeList = isLikeList;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
 }
