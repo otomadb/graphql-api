@@ -26,8 +26,8 @@ enum MylistShareRange {
 }
 
 input MylistRegistrationsInput {
-  limit: Int
-  skip: Int
+  limit: Int! = 10
+  skip: Int! = 0
   order: MylistRegistrationsInputOrder! = { registeredAt: ASC }
 }
 

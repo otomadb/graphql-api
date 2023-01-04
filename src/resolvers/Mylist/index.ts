@@ -47,6 +47,8 @@ export const resolveMylist = ({ dataSource, neo4jDriver }: { dataSource: DataSou
           createdAt: input.order?.createdAt || undefined,
           updatedAt: input.order?.updatedAt || undefined,
         },
+        take: input.limit,
+        skip: input.skip,
       });
       return {
         nodes: regs.map(
