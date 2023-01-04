@@ -3,7 +3,7 @@ import { DataSource, In } from "typeorm";
 
 import { Mylist, MylistShareRange } from "../../db/entities/mylists.js";
 import { MylistShareRange as GraphQLMylistShareRange, Resolvers, UserResolvers } from "../../graphql.js";
-import { addIDPrefix, buildGqlId, ObjectType } from "../../utils/id.js";
+import { addIDPrefix, buildGqlId, ObjectType, parseGqlID } from "../../utils/id.js";
 import { MylistModel } from "../Mylist/model.js";
 
 export const convertMylistShareRange = (ranges: GraphQLMylistShareRange[]) =>
@@ -31,6 +31,16 @@ export const resolveUser = ({ dataSource: ds }: { dataSource: DataSource }) =>
       if (!mylist) throw new GraphQLError(`User "${userId}" likes list not found`);
       return new MylistModel(mylist);
     },
+
+    mylist: async ({ id: userId }, { id: gqlMylistId }, { user: authuser }) => {
+      const mylist = await ds.getRepository(Mylist).findOne({ where: { id: parseGqlID("mylist", gqlMylistId) } });
+
+      if (!mylist) return null;
+      if (mylist.range === MylistShareRange.PRIVATE && authuser?.id !== userId) return null;
+
+      return new MylistModel(mylist);
+    },
+
     mylists: async ({ id: userId }, { input }, { user: authuser }) => {
       if (input.range.includes(GraphQLMylistShareRange.Private) && userId !== authuser?.id)
         throw new GraphQLError(
