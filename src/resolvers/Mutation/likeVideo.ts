@@ -44,13 +44,6 @@ export const likeVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource;
     await addMylistRegistrationInNeo4j({ neo4jDriver })(registration);
 
     return {
-      registration: new MylistRegistrationModel({
-        id: registration.id,
-        note: registration.note,
-        createdAt: registration.createdAt,
-        updatedAt: registration.updatedAt,
-        mylistId: registration.mylist.id,
-        videoId: registration.video.id,
-      }),
+      registration: new MylistRegistrationModel(registration),
     };
   }) satisfies MutationResolvers["likeVideo"];
