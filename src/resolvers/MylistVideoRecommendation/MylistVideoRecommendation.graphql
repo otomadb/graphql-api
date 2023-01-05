@@ -1,0 +1,6 @@
+type MylistVideoRecommendation {
+  score: Float!
+
+  origin: Mylist!
+  to: Video!
+}

@@ -41,12 +41,7 @@ input MylistRecommendedVideosInput {
 }
 
 type MylistRecommendedVideosPayload {
-  items: [MylistRecommendedVideosItem!]!
-}
-
-type MylistRecommendedVideosItem {
-  video: Video!
-  score: Float!
+  items: [MylistVideoRecommendation!]!
 }
 
 input MylistIncludeTagsInput {

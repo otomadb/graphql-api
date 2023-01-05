@@ -5,16 +5,14 @@ import { DataSource, In } from "typeorm";
 import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
 import { Mylist, MylistShareRange } from "../../db/entities/mylists.js";
 import { Tag } from "../../db/entities/tags.js";
-import { Video } from "../../db/entities/videos.js";
 import { MylistShareRange as MylistGQLShareRange } from "../../graphql.js";
 import { Resolvers } from "../../graphql.js";
 import { calcMylistIncludeTags } from "../../neo4j/mylist_include_tags.js";
-import { calcRecommendedVideosByMylist } from "../../neo4j/mylist_recommend_videos.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "../../utils/id.js";
 import { MylistRegistrationModel } from "../MylistRegistration/model.js";
 import { TagModel } from "../Tag/model.js";
 import { UserModel } from "../User/model.js";
-import { VideoModel } from "../Video/model.js";
+import { resolveRecommendedVideos } from "./recommendedVideos.js";
 
 export const resolveMylist = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   ({
@@ -66,21 +64,7 @@ export const resolveMylist = ({ dataSource, neo4jDriver }: { dataSource: DataSou
         })
         .then((r) => !!r),
 
-    recommendedVideos: async ({ id: videoId }, { input }) => {
-      const recommends = await calcRecommendedVideosByMylist(neo4jDriver)(videoId, { limit: input.limit });
-
-      const items = await dataSource
-        .getRepository(Video)
-        .find({ where: { id: In(recommends.map(({ videoId }) => videoId)) } })
-        .then((vs) =>
-          recommends.map(({ videoId, score }) => {
-            const video = vs.find((v) => v.id === videoId)!; // TODO: 危険
-            return { video: new VideoModel(video), score };
-          })
-        );
-
-      return { items };
-    },
+    recommendedVideos: resolveRecommendedVideos({ neo4jDriver }),
     includeTags: async ({ id: mylistId }, { input: { limit } }) => {
       try {
         const neo4jResults = await calcMylistIncludeTags(neo4jDriver)(mylistId, { limit });
