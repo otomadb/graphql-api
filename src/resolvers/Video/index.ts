@@ -1,20 +1,19 @@
 import { GraphQLError } from "graphql";
 import { Driver as Neo4jDriver } from "neo4j-driver";
-import { DataSource, In } from "typeorm";
+import { DataSource } from "typeorm";
 
 import { NicovideoVideoSource } from "../../db/entities/nicovideo_video_sources.js";
 import { Semitag } from "../../db/entities/semitags.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { VideoThumbnail } from "../../db/entities/video_thumbnails.js";
 import { VideoTitle as VideoTitleEntity } from "../../db/entities/video_titles.js";
-import { Video } from "../../db/entities/videos.js";
 import { Resolvers, VideoResolvers } from "../../graphql.js";
-import { calcVideoSimilarities } from "../../neo4j/video_similarities.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
 import { SemitagModel } from "../Semitag/model.js";
 import { TagModel } from "../Tag/model.js";
 import { VideoModel } from "./model.js";
+import { resolveSimilarVideos } from "./similarVideos.js";
 
 export const resolveId = (({ id }: VideoModel) => addIDPrefix(ObjectType.Video, id)) satisfies VideoResolvers["id"];
 export const resolveHistory = (() => ({ nodes: [] })) satisfies VideoResolvers["history"];
@@ -70,21 +69,7 @@ export const resolveVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSour
 
     history: resolveHistory,
 
-    similarVideos: async ({ id: videoId }, { input }) => {
-      const similarities = await calcVideoSimilarities(neo4jDriver)(videoId, { limit: input.limit });
-
-      const items = await dataSource
-        .getRepository(Video)
-        .find({ where: { id: In(similarities.map(({ videoId }) => videoId)) } })
-        .then((vs) =>
-          similarities.map(({ videoId, score }) => {
-            const video = vs.find((v) => v.id === videoId)!; // TODO: 危険
-            return { video: new VideoModel(video), score };
-          })
-        );
-
-      return { items };
-    },
+    similarVideos: resolveSimilarVideos({ neo4jDriver }),
 
     nicovideoSources: async ({ id: videoId }) =>
       dataSource

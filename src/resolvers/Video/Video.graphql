@@ -8,11 +8,12 @@ type Video implements Node {
   hasTag(id: ID!): Boolean!
   history(input: VideoHistoryInput!): VideoHistoryConnection!
   registeredAt: DateTime!
-  similarVideos(input: VideoSimilarVideosInput!): VideoSimilarVideosPayload!
 
   nicovideoSources: [NicovideoVideoSource!]!
 
   semitags(resolved: Boolean): [Semitag!]!
+
+  similarVideos(input: VideoSimilarVideosInput!): VideoSimilarVideosPayload!
 }
 
 type VideoTitle {
@@ -135,12 +136,7 @@ input VideoSimilarVideosInput {
 }
 
 type VideoSimilarVideosPayload {
-  items: [VideoSimilarVideoItem!]!
-}
-
-type VideoSimilarVideoItem {
-  video: Video!
-  score: Float!
+  items: [VideoSimilarity!]!
 }
 
 type VideoConnection {

@@ -1,0 +1,6 @@
+type VideoSimilarity {
+  score: Float!
+
+  origin: Video!
+  to: Video!
+}

@@ -14,19 +14,21 @@ import { resolveSemitag } from "./Semitag/index.js";
 import { resolveTag } from "./Tag/index.js";
 import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
+import { resolveVideoSimilarity } from "./VideoSimilarity/index.js";
 
 export const resolvers = (deps: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   ({
-    Query: resolveQuery(deps),
     Mutation: resolveMutation(deps),
-    Tag: resolveTag(deps),
-    Video: resolveVideo(deps),
-    User: resolveUser(deps),
     Mylist: resolveMylist(deps),
-    MylistRegistration: resolveMylistRegistration(deps),
     MylistGroup: resolveMylistGroup(deps),
     MylistGroupMylistInclusion: resolveMylistGroupMylistInclusion(deps),
     MylistGroupVideoAggregation: resolveMylistGroupVideoAggregation(deps),
+    MylistRegistration: resolveMylistRegistration(deps),
     NicovideoVideoSource: resolveNicovideoVideoSource(deps),
+    Query: resolveQuery(deps),
     Semitag: resolveSemitag(deps),
+    Tag: resolveTag(deps),
+    User: resolveUser(deps),
+    Video: resolveVideo(deps),
+    VideoSimilarity: resolveVideoSimilarity(deps),
   } satisfies Resolvers);
