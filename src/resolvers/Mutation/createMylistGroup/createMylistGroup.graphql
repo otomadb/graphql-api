@@ -1,0 +1,11 @@
+type Mutation {
+  createMylistGroup(input: CreateMylistGroupInput!): CreateMylistGroupPayload!
+}
+
+input CreateMylistGroupInput {
+  title: String!
+}
+
+type CreateMylistGroupPayload {
+  group: MylistGroup!
+}

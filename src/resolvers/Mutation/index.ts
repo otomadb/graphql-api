@@ -6,6 +6,7 @@ import { addSemitagToVideo } from "./addSemitagToVideo.js";
 import { addTagToVideo } from "./addTagToVideo.js";
 import { addVideoToMylist } from "./addVideoToMylist.js";
 import { createMylist } from "./createMylist.js";
+import { createMylistGroup } from "./createMylistGroup/createMylistGroup.js";
 import { likeVideo } from "./likeVideo.js";
 import { registerTag } from "./registerTag.js";
 import { registerVideo } from "./registerVideo.js";
@@ -27,4 +28,5 @@ export const resolveMutation = (deps: { dataSource: DataSource; neo4jDriver: Neo
     removeVideoFromMylist: removeVideoFromMylist(deps),
     resovleSemitag: resolveSemitag(deps),
     undoLikeVideo: undoLikeVideo(deps),
+    createMylistGroup: createMylistGroup(deps),
   } satisfies Resolvers["Mutation"]);
