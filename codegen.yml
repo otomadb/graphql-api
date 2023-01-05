@@ -20,6 +20,7 @@ generates:
         Mylist: ./resolvers/Mylist/model.js#MylistModel
         MylistRegistration: ./resolvers/MylistRegistration/model.js#MylistRegistrationModel
         MylistGroup: ./resolvers/MylistGroup/model.js#MylistGroupModel
+        MylistGroupMylistInclusion: ./resolvers/MylistGroupMylistInclusion/model.js#MylistGroupMylistInclusionModel
         NicovideoVideoSource: ./resolvers/NicovideoVideoSource/model.js#NicovideoVideoSourceModel
       makeResolverTypeCallable: true
     plugins:

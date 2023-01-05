@@ -29,7 +29,8 @@ export type NodeType =
   | "nicovideoVideoSource"
   | "mylist"
   | "mylistGroup"
-  | "mylistGroupVideoInclusion";
+  | "mylistGroupVideoInclusion"
+  | "MylistGroupMylistInclusion";
 export const buildGqlId = (type: NodeType, dbId: string): string => `${type}:${dbId}`;
 
 export function parseGqlID(type: NodeType, gqlId: string): string {
@@ -51,3 +52,9 @@ export const GraphQLInvalidIdError = (type: NodeType, invalidId: string) =>
 
 export const GraphQLNotFoundError = (type: NodeType, dbId: string) =>
   new GraphQLError(`"${type}" for "${buildGqlId(type, dbId)}" is not found `);
+
+export class GraphQLNotExistsInDBError extends GraphQLError {
+  constructor(type: NodeType, dbId: string) {
+    super(`"${type}" for "${buildGqlId(type, dbId)}" is not found `);
+  }
+}
