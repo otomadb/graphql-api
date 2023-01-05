@@ -24,7 +24,7 @@ export const addVideoToMylist = ({ dataSource, neo4jDriver }: { dataSource: Data
     await dataSource.transaction(async (manager) => {
       const repoVideo = manager.getRepository(Video);
       const repoMylist = manager.getRepository(Mylist);
-      const repoMylistRegistration = manager.getRepository(MylistRegistration);
+      const repoRegistration = manager.getRepository(MylistRegistration);
 
       const video = await repoVideo.findOne({ where: { id: videoId } });
       if (!video) throw GraphQLNotFoundError("video", videoId);
@@ -33,11 +33,14 @@ export const addVideoToMylist = ({ dataSource, neo4jDriver }: { dataSource: Data
       if (!mylist) throw GraphQLNotFoundError("mylist", mylistId);
       if (mylist.holder.id !== user.id) throw new GraphQLError(`mylist "${mylistGqlId}" is not holded by you`);
 
+      if (await repoRegistration.findOneBy({ mylist: { id: mylistId }, video: { id: videoId } }))
+        throw new GraphQLError(`"${videoGqlId}" is already registered in "${mylistGqlId}"`);
+
       registration.video = video;
       registration.mylist = mylist;
       registration.note = note ?? null;
 
-      await repoMylistRegistration.insert(registration);
+      await repoRegistration.insert(registration);
     });
 
     await addMylistRegistrationInNeo4j({ neo4jDriver })(registration);
