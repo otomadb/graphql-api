@@ -1,3 +1,4 @@
+import { MylistGroup, MylistGroupMylistInclusion } from "./mylist_group.js";
 import { MylistRegistration } from "./mylist_registrations.js";
 import { Mylist } from "./mylists.js";
 import { NicovideoVideoSource } from "./nicovideo_video_sources.js";
@@ -14,6 +15,8 @@ import { Video } from "./videos.js";
 
 export const entities = [
   Mylist,
+  MylistGroup,
+  MylistGroupMylistInclusion,
   MylistRegistration,
   NicovideoVideoSource,
   Semitag,

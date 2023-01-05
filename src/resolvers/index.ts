@@ -4,6 +4,9 @@ import { DataSource } from "typeorm";
 import { type Resolvers } from "../graphql.js";
 import { resolveMutation } from "./Mutation/index.js";
 import { resolveMylist } from "./Mylist/index.js";
+import { resolveMylistGroup } from "./MylistGroup/index.js";
+import { resolveMylistGroupMylistInclusion } from "./MylistGroupMylistInclusion/index.js";
+import { resolveMylistGroupVideoAggregation } from "./MylistGroupVideoAggregation/index.js";
 import { resolveMylistRegistration } from "./MylistRegistration/index.js";
 import { resolveNicovideoVideoSource } from "./NicovideoVideoSource/index.js";
 import { resolveQuery } from "./Query/index.js";
@@ -21,6 +24,9 @@ export const resolvers = (deps: { dataSource: DataSource; neo4jDriver: Neo4jDriv
     User: resolveUser(deps),
     Mylist: resolveMylist(deps),
     MylistRegistration: resolveMylistRegistration(deps),
+    MylistGroup: resolveMylistGroup(deps),
+    MylistGroupMylistInclusion: resolveMylistGroupMylistInclusion(deps),
+    MylistGroupVideoAggregation: resolveMylistGroupVideoAggregation(deps),
     NicovideoVideoSource: resolveNicovideoVideoSource(deps),
     Semitag: resolveSemitag(deps),
   } satisfies Resolvers);

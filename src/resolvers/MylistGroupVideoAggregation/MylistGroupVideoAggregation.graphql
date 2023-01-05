@@ -1,0 +1,20 @@
+type MylistGroupVideoAggregation {
+  video: Video!
+
+  "動画を含んでいるマイリスト"
+  mylists(input: MylistGroupVideoAggregationMylistsInput!): [Mylist!]!
+
+  "動画を含んでいるマイリストの数"
+  count: Int!
+}
+
+input MylistGroupVideoAggregationMylistsInput {
+  limit: Int! = 10
+  skip: Int! = 0
+  order: MylistGroupVideoAggregationMylistsInputOrder! = { createdAt: DESC }
+}
+
+input MylistGroupVideoAggregationMylistsInputOrder {
+  createdAt: SortOrder
+  updatedAt: SortOrder
+}
