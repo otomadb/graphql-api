@@ -8,6 +8,5 @@ input addMylistToMylistGroupInput {
 }
 
 type addMylistToMylistGroupPayload {
-  group: MylistGroup!
-  mylist: Mylist!
+  inclusion: MylistGroupMylistInclusion!
 }

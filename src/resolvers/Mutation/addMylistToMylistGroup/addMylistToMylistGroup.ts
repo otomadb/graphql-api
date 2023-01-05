@@ -6,13 +6,12 @@ import { MylistGroup, MylistGroupMylistInclusion } from "../../../db/entities/my
 import { Mylist } from "../../../db/entities/mylists.js";
 import { MutationResolvers } from "../../../graphql.js";
 import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
-import { MylistModel } from "../../Mylist/model.js";
-import { MylistGroupModel } from "../../MylistGroup/model.js";
+import { MylistGroupMylistInclusionModel } from "../../MylistGroupMylistInclusion/model.js";
 
 export const addMylistToMylistGroup = ({ dataSource }: { dataSource: DataSource }) =>
   (async (_parent, { input: { mylistId: mylistGqlId, groupId: groupGqlId } }) => {
     const mylistId = parseGqlID("mylist", mylistGqlId);
-    const groupId = parseGqlID("mylistGroup", groupGqlId);
+    const groupId = parseGqlID("MylistGroup", groupGqlId);
 
     const inclusion = new MylistGroupMylistInclusion();
     inclusion.id = ulid();
@@ -29,7 +28,7 @@ export const addMylistToMylistGroup = ({ dataSource }: { dataSource: DataSource 
         throw new GraphQLNotExistsInDBError("mylist", mylistId);
       });
       const group = await repoGroup.findOneByOrFail({ id: groupId }).catch(() => {
-        throw new GraphQLNotExistsInDBError("mylistGroup", groupId);
+        throw new GraphQLNotExistsInDBError("MylistGroup", groupId);
       });
       inclusion.mylist = mylist;
       inclusion.group = group;
@@ -38,7 +37,6 @@ export const addMylistToMylistGroup = ({ dataSource }: { dataSource: DataSource 
     });
 
     return {
-      group: new MylistGroupModel(inclusion.group),
-      mylist: new MylistModel(inclusion.mylist),
+      inclusion: new MylistGroupMylistInclusionModel(inclusion),
     };
   }) satisfies MutationResolvers["addMylistToMylistGroup"];
