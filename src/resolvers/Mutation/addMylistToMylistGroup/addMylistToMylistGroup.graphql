@@ -1,0 +1,13 @@
+type Mutation {
+  addMylistToMylistGroup(input: addMylistToMylistGroupInput!): addMylistToMylistGroupPayload!
+}
+
+input addMylistToMylistGroupInput {
+  mylistId: ID!
+  groupId: ID!
+}
+
+type addMylistToMylistGroupPayload {
+  group: MylistGroup!
+  mylist: Mylist!
+}

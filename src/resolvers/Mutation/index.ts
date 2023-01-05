@@ -2,6 +2,7 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 
 import { type Resolvers } from "../../graphql.js";
+import { addMylistToMylistGroup } from "./addMylistToMylistGroup/addMylistToMylistGroup.js";
 import { addSemitagToVideo } from "./addSemitagToVideo.js";
 import { addTagToVideo } from "./addTagToVideo.js";
 import { addVideoToMylist } from "./addVideoToMylist.js";
@@ -17,6 +18,7 @@ import { undoLikeVideo } from "./undoLikeVideo.js";
 
 export const resolveMutation = (deps: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   ({
+    addMylistToMylistGroup: addMylistToMylistGroup(deps),
     addTagToVideo: addTagToVideo(deps),
     addSemitagToVideo: addSemitagToVideo(deps),
     addVideoToMylist: addVideoToMylist(deps),
