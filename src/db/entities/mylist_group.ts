@@ -32,9 +32,9 @@ export class MylistGroupMylistInclusion {
   @UpdateDateColumn({ type: "timestamptz" })
   readonly updatedAt!: Date;
 
-  @ManyToOne(() => MylistGroup)
+  @ManyToOne(() => MylistGroup, { nullable: false })
   group!: MylistGroup;
 
-  @ManyToOne(() => Mylist)
+  @ManyToOne(() => Mylist, { nullable: false })
   mylist!: Mylist;
 }
