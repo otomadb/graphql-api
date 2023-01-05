@@ -4,7 +4,7 @@ import { DataSource } from "typeorm";
 import { type Resolvers } from "../../graphql.js";
 import { addSemitagToVideo } from "./addSemitagToVideo.js";
 import { addTagToVideo } from "./addTagToVideo.js";
-import { addVideoToMylist } from "./addVideoToMylist.js";
+import { addVideoToMylist } from "./addViteoToMylist/addVideoToMylist.js";
 import { createMylist } from "./createMylist.js";
 import { likeVideo } from "./likeVideo.js";
 import { registerTag } from "./registerTag.js";
