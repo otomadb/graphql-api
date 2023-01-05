@@ -2,9 +2,9 @@ import { GraphQLError } from "graphql";
 import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
-import { Mylist, MylistShareRange as MylistEntityShareRange } from "../../db/entities/mylists.js";
-import { MutationResolvers, MylistShareRange as MylistGQLShareRange } from "../../graphql.js";
-import { MylistModel } from "../Mylist/model.js";
+import { Mylist, MylistShareRange as MylistEntityShareRange } from "../../../db/entities/mylists.js";
+import { MutationResolvers, MylistShareRange as MylistGQLShareRange } from "../../../graphql.js";
+import { MylistModel } from "../../Mylist/model.js";
 
 export const createMylist = ({ dataSource }: { dataSource: DataSource }) =>
   (async (_parent, { input: { title, range } }, { user }) => {

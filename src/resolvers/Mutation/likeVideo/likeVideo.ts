@@ -3,13 +3,13 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
-import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
-import { Mylist } from "../../db/entities/mylists.js";
-import { Video } from "../../db/entities/videos.js";
-import { MutationResolvers } from "../../graphql.js";
-import { addMylistRegistration as addMylistRegistrationInNeo4j } from "../../neo4j/addMylistRegistration.js";
-import { GraphQLNotFoundError, parseGqlID } from "../../utils/id.js";
-import { MylistRegistrationModel } from "../MylistRegistration/model.js";
+import { MylistRegistration } from "../../../db/entities/mylist_registrations.js";
+import { Mylist } from "../../../db/entities/mylists.js";
+import { Video } from "../../../db/entities/videos.js";
+import { MutationResolvers } from "../../../graphql.js";
+import { addMylistRegistration as addMylistRegistrationInNeo4j } from "../../../neo4j/addMylistRegistration.js";
+import { GraphQLNotFoundError, parseGqlID } from "../../../utils/id.js";
+import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
 
 export const likeVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   (async (_, { input: { videoId: videoGqlId } }, { user }) => {

@@ -2,11 +2,11 @@ import { GraphQLError } from "graphql";
 import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
-import { Semitag } from "../../db/entities/semitags.js";
-import { Video } from "../../db/entities/videos.js";
-import { MutationResolvers } from "../../graphql.js";
-import { GraphQLNotFoundError, parseGqlID } from "../../utils/id.js";
-import { SemitagModel } from "../Semitag/model.js";
+import { Semitag } from "../../../db/entities/semitags.js";
+import { Video } from "../../../db/entities/videos.js";
+import { MutationResolvers } from "../../../graphql.js";
+import { GraphQLNotFoundError, parseGqlID } from "../../../utils/id.js";
+import { SemitagModel } from "../../Semitag/model.js";
 
 export const addSemitagToVideo = ({ dataSource }: { dataSource: DataSource }) =>
   (async (_parent, { input: { videoId: videoGqlId, name: semitagName } }) => {

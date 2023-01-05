@@ -3,14 +3,14 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
-import { Tag } from "../../db/entities/tags.js";
-import { VideoTag } from "../../db/entities/video_tags.js";
-import { Video } from "../../db/entities/videos.js";
-import { MutationResolvers } from "../../graphql.js";
-import { addVideoTag as addVideoTagInNeo4j } from "../../neo4j/addVideoTag.js";
-import { GraphQLNotFoundError, parseGqlID } from "../../utils/id.js";
-import { TagModel } from "../Tag/model.js";
-import { VideoModel } from "../Video/model.js";
+import { Tag } from "../../../db/entities/tags.js";
+import { VideoTag } from "../../../db/entities/video_tags.js";
+import { Video } from "../../../db/entities/videos.js";
+import { MutationResolvers } from "../../../graphql.js";
+import { addVideoTag as addVideoTagInNeo4j } from "../../../neo4j/addVideoTag.js";
+import { GraphQLNotFoundError, parseGqlID } from "../../../utils/id.js";
+import { TagModel } from "../../Tag/model.js";
+import { VideoModel } from "../../Video/model.js";
 
 export const addTagToVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   (async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { user }) => {

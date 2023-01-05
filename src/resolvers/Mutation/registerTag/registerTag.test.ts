@@ -1,13 +1,13 @@
 import neo4j, { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 
-import { entities } from "../../db/entities.js";
-import { TagName } from "../../db/entities/tag_names.js";
-import { TagParent } from "../../db/entities/tag_parents.js";
-import { Tag } from "../../db/entities/tags.js";
-import { User } from "../../db/entities/users.js";
-import { migrations } from "../../db/migrations.js";
-import { TagModel } from "../Tag/model.js";
+import { entities } from "../../../db/entities.js";
+import { TagName } from "../../../db/entities/tag_names.js";
+import { TagParent } from "../../../db/entities/tag_parents.js";
+import { Tag } from "../../../db/entities/tags.js";
+import { User } from "../../../db/entities/users.js";
+import { migrations } from "../../../db/migrations.js";
+import { TagModel } from "../../Tag/model.js";
 import { registerTag } from "./registerTag.js";
 
 describe("Mutation.registerTag", () => {

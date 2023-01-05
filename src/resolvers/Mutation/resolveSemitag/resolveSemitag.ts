@@ -3,12 +3,12 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
-import { Semitag } from "../../db/entities/semitags.js";
-import { Tag } from "../../db/entities/tags.js";
-import { VideoTag } from "../../db/entities/video_tags.js";
-import { MutationResolvers } from "../../graphql.js";
-import { addVideoTag as addVideoTagToNeo4j } from "../../neo4j/addVideoTag.js";
-import { GraphQLNotFoundError, parseGqlID } from "../../utils/id.js";
+import { Semitag } from "../../../db/entities/semitags.js";
+import { Tag } from "../../../db/entities/tags.js";
+import { VideoTag } from "../../../db/entities/video_tags.js";
+import { MutationResolvers } from "../../../graphql.js";
+import { addVideoTag as addVideoTagToNeo4j } from "../../../neo4j/addVideoTag.js";
+import { GraphQLNotFoundError, parseGqlID } from "../../../utils/id.js";
 
 export const resolveSemitag = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   (async (_, { input: { id: semitagGqlId, tagId: tagGqlId } }) => {

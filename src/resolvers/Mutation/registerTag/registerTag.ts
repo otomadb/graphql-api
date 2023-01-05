@@ -3,15 +3,15 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
-import { Semitag } from "../../db/entities/semitags.js";
-import { TagName } from "../../db/entities/tag_names.js";
-import { TagParent } from "../../db/entities/tag_parents.js";
-import { Tag } from "../../db/entities/tags.js";
-import { VideoTag } from "../../db/entities/video_tags.js";
-import { MutationResolvers } from "../../graphql.js";
-import { addVideoTags } from "../../neo4j/addVideoTags.js";
-import { GraphQLNotFoundError, parseGqlID, parseGqlIDs } from "../../utils/id.js";
-import { TagModel } from "../Tag/model.js";
+import { Semitag } from "../../../db/entities/semitags.js";
+import { TagName } from "../../../db/entities/tag_names.js";
+import { TagParent } from "../../../db/entities/tag_parents.js";
+import { Tag } from "../../../db/entities/tags.js";
+import { VideoTag } from "../../../db/entities/video_tags.js";
+import { MutationResolvers } from "../../../graphql.js";
+import { addVideoTags } from "../../../neo4j/addVideoTags.js";
+import { GraphQLNotFoundError, parseGqlID, parseGqlIDs } from "../../../utils/id.js";
+import { TagModel } from "../../Tag/model.js";
 
 export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   (async (_, { input }) => {
