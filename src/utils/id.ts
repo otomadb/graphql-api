@@ -29,7 +29,6 @@ export type NodeType =
   | "nicovideoVideoSource"
   | "mylist"
   | "MylistGroup"
-  | "mylistGroupVideoInclusion"
   | "MylistGroupMylistInclusion";
 export const buildGqlId = (type: NodeType, dbId: string): string => `${type}:${dbId}`;
 

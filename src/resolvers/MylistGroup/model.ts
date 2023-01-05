@@ -1,9 +1,19 @@
-import { MylistGroup } from "../../db/entities/mylist_group.js";
-
 export class MylistGroupModel {
-  public dbId: string;
+  constructor(private readonly entity: { id: string; title: string; createdAt: Date; updatedAt: Date }) {}
 
-  constructor(private readonly group: MylistGroup) {
-    this.dbId = group.id;
+  get id() {
+    return this.entity.id;
+  }
+
+  get title() {
+    return this.entity.title;
+  }
+
+  get createdAt() {
+    return this.entity.createdAt;
+  }
+
+  get updatedAt() {
+    return this.entity.updatedAt;
   }
 }

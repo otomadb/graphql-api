@@ -1,0 +1,13 @@
+type MylistGroupMylistInclusion implements Node {
+  id: ID!
+
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  group: MylistGroup!
+  mylist: Mylist!
+}
+
+type MylistGroupMylistInclusionConnection {
+  nodes: [MylistGroupMylistInclusion!]!
+}
