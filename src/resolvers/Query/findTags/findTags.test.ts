@@ -1,12 +1,12 @@
 import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
-import { entities } from "../../db/entities.js";
-import { TagName } from "../../db/entities/tag_names.js";
-import { TagParent } from "../../db/entities/tag_parents.js";
-import { Tag } from "../../db/entities/tags.js";
-import { migrations } from "../../db/migrations.js";
-import { SortOrder } from "../../graphql.js";
+import { entities } from "../../../db/entities.js";
+import { TagName } from "../../../db/entities/tag_names.js";
+import { TagParent } from "../../../db/entities/tag_parents.js";
+import { Tag } from "../../../db/entities/tags.js";
+import { migrations } from "../../../db/migrations.js";
+import { SortOrder } from "../../../graphql.js";
 import { findTags as findTagsScaffold } from "./findTags.js";
 
 describe("with DB", () => {

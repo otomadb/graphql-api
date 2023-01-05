@@ -1,12 +1,12 @@
 import { GraphQLError } from "graphql";
 import { DataSource } from "typeorm";
 
-import { Tag } from "../../db/entities/tags.js";
-import { QueryResolvers } from "../../graphql.js";
-import { ObjectType, removeIDPrefix } from "../../utils/id.js";
-import { TagModel } from "../Tag/model.js";
+import { Tag } from "../../../db/entities/tags.js";
+import { QueryResolvers } from "../../../graphql.js";
+import { ObjectType, removeIDPrefix } from "../../../utils/id.js";
+import { TagModel } from "../../Tag/model.js";
 
-export const getTag = ({ dataSource }: { dataSource: DataSource }) =>
+export const tag = ({ dataSource }: { dataSource: DataSource }) =>
   (async (_parent, { id }) => {
     const tag = await dataSource.getRepository(Tag).findOne({
       where: { id: removeIDPrefix(ObjectType.Tag, id) },

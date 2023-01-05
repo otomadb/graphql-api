@@ -1,9 +1,9 @@
 import { DataSource, In, Not } from "typeorm";
 
-import { Semitag } from "../../db/entities/semitags.js";
-import { QueryResolvers } from "../../graphql.js";
-import { parseGqlIDs } from "../../utils/id.js";
-import { SemitagModel } from "../Semitag/model.js";
+import { Semitag } from "../../../db/entities/semitags.js";
+import { QueryResolvers } from "../../../graphql.js";
+import { parseGqlIDs } from "../../../utils/id.js";
+import { SemitagModel } from "../../Semitag/model.js";
 
 export const findSemitags = ({ dataSource }: { dataSource: DataSource }) =>
   (async (_parent, { input }) => {

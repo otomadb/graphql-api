@@ -1,10 +1,10 @@
 import { GraphQLError } from "graphql";
 import { DataSource, In, Like } from "typeorm";
 
-import { TagName } from "../../db/entities/tag_names.js";
-import { Tag } from "../../db/entities/tags.js";
-import { QueryResolvers } from "../../graphql.js";
-import { TagModel } from "../Tag/model.js";
+import { TagName } from "../../../db/entities/tag_names.js";
+import { Tag } from "../../../db/entities/tags.js";
+import { QueryResolvers } from "../../../graphql.js";
+import { TagModel } from "../../Tag/model.js";
 
 export const searchTags = ({ dataSource }: { dataSource: DataSource }) =>
   (async (_, { input }) => {

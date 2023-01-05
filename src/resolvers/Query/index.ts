@@ -1,22 +1,22 @@
 import { DataSource } from "typeorm";
 
 import { type Resolvers } from "../../graphql.js";
-import { findMylist } from "./findMylist.js";
-import { findNicovideoVideoSource } from "./findNicovideoVideoSource.js";
-import { findSemitags } from "./findSemitags.js";
-import { findTags } from "./findTags.js";
-import { findUser } from "./findUser.js";
-import { findVideos } from "./findVideos.js";
-import { getMylist } from "./getMylist.js";
-import { getNicovideoVideoSource } from "./getNicovideoVideoSource.js";
-import { getSemitag } from "./getSemitag.js";
-import { getTag } from "./getTag.js";
-import { getUser } from "./getUser.js";
-import { getVideo } from "./getVideo.js";
+import { findMylist } from "./findMylist/findMylist.js";
+import { findNicovideoVideoSource } from "./findNicovideoVideoSource/findNicovideoVideoSource.js";
+import { findSemitags } from "./findSemitags/findSemitags.js";
+import { findTags } from "./findTags/findTags.js";
+import { findUser } from "./findUser/findUser.js";
+import { findVideos } from "./findVideos/findVideos.js";
+import { mylist } from "./mylist/mylist.js";
 import { mylistGroup } from "./mylistGroup/mylistGroup.js";
-import { searchTags } from "./searchTags.js";
-import { searchVideos } from "./searchVideos.js";
-import { whoami } from "./whoami.js";
+import { nicovideoVideoSource } from "./nicovideoVideoSource/nicovideoVideoSource.js";
+import { searchTags } from "./searchTags/searchTags.js";
+import { searchVideos } from "./searchVideos/searchVideos.js";
+import { semitag } from "./semitag/semitag.js";
+import { tag } from "./tag/tag.js";
+import { user } from "./user/user.js";
+import { video } from "./video/video.js";
+import { whoami } from "./whoami/whoami.js";
 
 export const resolveQuery = (deps: { dataSource: DataSource }) =>
   ({
@@ -26,14 +26,14 @@ export const resolveQuery = (deps: { dataSource: DataSource }) =>
     findTags: findTags(deps),
     findUser: findUser(deps),
     findVideos: findVideos(deps),
-    mylist: getMylist(deps),
-    nicovideoVideoSource: getNicovideoVideoSource(deps),
+    mylist: mylist(deps),
+    mylistGroup: mylistGroup(deps),
+    nicovideoVideoSource: nicovideoVideoSource(deps),
     searchTags: searchTags(deps),
     searchVideos: searchVideos(deps),
-    semitag: getSemitag(deps),
-    tag: getTag(deps),
-    user: getUser(deps),
-    video: getVideo(deps),
+    semitag: semitag(deps),
+    tag: tag(deps),
+    user: user(deps),
+    video: video(deps),
     whoami: whoami(),
-    mylistGroup: mylistGroup(deps),
   } satisfies Resolvers["Query"]);

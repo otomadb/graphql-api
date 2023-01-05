@@ -1,10 +1,10 @@
 import { GraphQLError } from "graphql";
 import { DataSource } from "typeorm";
 
-import { Mylist, MylistShareRange as MylistEntityShareRange } from "../../db/entities/mylists.js";
-import { QueryResolvers } from "../../graphql.js";
-import { ObjectType, removeIDPrefix } from "../../utils/id.js";
-import { MylistModel } from "../Mylist/model.js";
+import { Mylist, MylistShareRange as MylistEntityShareRange } from "../../../db/entities/mylists.js";
+import { QueryResolvers } from "../../../graphql.js";
+import { ObjectType, removeIDPrefix } from "../../../utils/id.js";
+import { MylistModel } from "../../Mylist/model.js";
 
 export const MYLIST_NOT_FOUND_OR_PRIVATE_ERROR = "Mylist Not Found or Private";
 export const MYLIST_NOT_HOLDED_BY_YOU = "This mylist is not holded by you";

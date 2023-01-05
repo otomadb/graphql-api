@@ -1,8 +1,8 @@
 import { DataSource, In } from "typeorm";
 
-import { Tag } from "../../db/entities/tags.js";
-import { QueryResolvers } from "../../graphql.js";
-import { TagModel } from "../Tag/model.js";
+import { Tag } from "../../../db/entities/tags.js";
+import { QueryResolvers } from "../../../graphql.js";
+import { TagModel } from "../../Tag/model.js";
 
 export const findTags = ({ dataSource }: { dataSource: DataSource }) =>
   (async (_parent, { input }) => {
