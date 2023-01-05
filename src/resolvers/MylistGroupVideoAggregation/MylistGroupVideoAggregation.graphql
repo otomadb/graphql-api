@@ -11,7 +11,7 @@ type MylistGroupVideoAggregation {
 input MylistGroupVideoAggregationMylistsInput {
   limit: Int! = 10
   skip: Int! = 0
-  order: MylistGroupMylistsInputOrder! = { createdAt: DESC }
+  order: MylistGroupVideoAggregationMylistsInputOrder! = { createdAt: DESC }
 }
 
 input MylistGroupVideoAggregationMylistsInputOrder {

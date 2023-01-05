@@ -16,7 +16,7 @@ export const resolveVideos = ({ dataSource }: { dataSource: DataSource }) =>
       .select("r.video", "videoId")
       .addSelect("COUNT(r.video)", "count")
       .addSelect("array_agg(r.mylistId)", "mylistIds")
-      .orderBy("count", input.order.COUNT)
+      .orderBy("count", input.order.count)
       .addOrderBy("r.video", "ASC")
       .limit(input.limit)
       .skip(input.skip)

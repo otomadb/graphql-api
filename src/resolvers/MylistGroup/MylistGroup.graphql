@@ -25,9 +25,9 @@ input MylistGroupMylistsInputOrder {
 input MylistGroupVideosInput {
   limit: Int! = 10
   skip: Int! = 0
-  order: MylistGroupVideosInputOrder! = { COUNT: DESC }
+  order: MylistGroupVideosInputOrder! = { count: DESC }
 }
 
 input MylistGroupVideosInputOrder {
-  COUNT: SortOrder!
+  count: SortOrder!
 }

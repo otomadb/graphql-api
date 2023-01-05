@@ -1,12 +1,12 @@
 type Mutation {
-  addMylistToMylistGroup(input: addMylistToMylistGroupInput!): addMylistToMylistGroupPayload!
+  addMylistToMylistGroup(input: AddMylistToMylistGroupInput!): AddMylistToMylistGroupPayload!
 }
 
-input addMylistToMylistGroupInput {
+input AddMylistToMylistGroupInput {
   mylistId: ID!
   groupId: ID!
 }
 
-type addMylistToMylistGroupPayload {
+type AddMylistToMylistGroupPayload {
   inclusion: MylistGroupMylistInclusion!
 }
