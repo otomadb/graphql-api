@@ -51,10 +51,7 @@ export const resolveMylist = ({ dataSource, neo4jDriver }: { dataSource: DataSou
         skip: input.skip,
       });
       return {
-        nodes: regs.map(
-          ({ id, note, createdAt, updatedAt, video: { id: videoId }, mylist: { id: mylistId } }) =>
-            new MylistRegistrationModel({ id, note, createdAt, updatedAt, videoId, mylistId })
-        ),
+        nodes: regs.map((reg) => new MylistRegistrationModel(reg)),
       };
     },
 
