@@ -18,7 +18,3 @@ input MylistGroupVideoAggregationMylistsInputOrder {
   createdAt: SortOrder
   updatedAt: SortOrder
 }
-
-type MylistGroupVideoAggregationCollection {
-  nodes: [MylistGroupVideoAggregation!]!
-}

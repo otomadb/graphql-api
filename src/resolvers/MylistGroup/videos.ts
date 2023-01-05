@@ -22,6 +22,5 @@ export const resolveVideos = ({ dataSource }: { dataSource: DataSource }) =>
       .skip(input.skip)
       .getRawMany<{ videoId: string; mylistIds: string[] }>();
 
-    const nodes = aggr.map((v) => new MylistGroupVideoAggregationModel(v));
-    return { nodes };
+    return aggr.map((v) => new MylistGroupVideoAggregationModel(v));
   }) satisfies MylistGroupResolvers["videos"];
