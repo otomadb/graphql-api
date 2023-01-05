@@ -13,6 +13,7 @@ import { getSemitag } from "./getSemitag.js";
 import { getTag } from "./getTag.js";
 import { getUser } from "./getUser.js";
 import { getVideo } from "./getVideo.js";
+import { mylistGroup } from "./mylistGroup/mylistGroup.js";
 import { searchTags } from "./searchTags.js";
 import { searchVideos } from "./searchVideos.js";
 import { whoami } from "./whoami.js";
@@ -34,4 +35,5 @@ export const resolveQuery = (deps: { dataSource: DataSource }) =>
     user: getUser(deps),
     video: getVideo(deps),
     whoami: whoami(),
+    mylistGroup: mylistGroup(deps),
   } satisfies Resolvers["Query"]);
