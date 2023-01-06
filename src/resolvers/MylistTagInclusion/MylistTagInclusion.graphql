@@ -1,0 +1,6 @@
+type MylistTagInclusion {
+  count: Int!
+
+  mylist: Mylist!
+  tag: Tag!
+}

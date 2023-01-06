@@ -11,10 +11,32 @@ import { VideoThumbnail } from "../../../db/entities/video_thumbnails.js";
 import { VideoTitle } from "../../../db/entities/video_titles.js";
 import { Video } from "../../../db/entities/videos.js";
 import { MutationResolvers, RegisterVideoInputSourceType } from "../../../graphql.js";
-import { addVideoTags } from "../../../neo4j/addVideoTags.js";
 import { ObjectType, removeIDPrefix } from "../../../utils/id.js";
 import { isValidNicovideoSourceId } from "../../../utils/isValidNicovideoSourceId.js";
 import { VideoModel } from "../../Video/model.js";
+
+export const registerVideoInNeo4j = async (neo4jDriver: Neo4jDriver, rels: { videoId: string; tagId: string }[]) => {
+  const session = neo4jDriver.session();
+  try {
+    const tx = session.beginTransaction();
+    for (const rel of rels) {
+      const tagId = rel.videoId;
+      const videoId = rel.tagId;
+      tx.run(
+        `
+          MERGE (v:Video {id: $video_id})
+          MERGE (t:Tag {id: $tag_id})
+          MERGE r=(v)-[:TAGGED_BY]->(t)
+          RETURN r
+          `,
+        { tag_id: tagId, video_id: videoId }
+      );
+    }
+    await tx.commit();
+  } finally {
+    await session.close();
+  }
+};
 
 export const registerVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   (async (_parent, { input }) => {
@@ -91,7 +113,10 @@ export const registerVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSou
       await manager.getRepository(Semitag).insert(semitags);
     });
 
-    await addVideoTags({ neo4jDriver })(videoTags);
+    await registerVideoInNeo4j(
+      neo4jDriver,
+      videoTags.map(({ tag, video }) => ({ tagId: tag.id, videoId: video.id }))
+    );
 
     return {
       video: new VideoModel(video),

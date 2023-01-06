@@ -9,9 +9,31 @@ import { TagParent } from "../../../db/entities/tag_parents.js";
 import { Tag } from "../../../db/entities/tags.js";
 import { VideoTag } from "../../../db/entities/video_tags.js";
 import { MutationResolvers } from "../../../graphql.js";
-import { addVideoTags } from "../../../neo4j/addVideoTags.js";
 import { GraphQLNotFoundError, parseGqlID, parseGqlIDs } from "../../../utils/id.js";
 import { TagModel } from "../../Tag/model.js";
+
+export const registerTagInNeo4j = async (neo4jDriver: Neo4jDriver, rels: { videoId: string; tagId: string }[]) => {
+  const session = neo4jDriver.session();
+  try {
+    const tx = session.beginTransaction();
+    for (const rel of rels) {
+      const tagId = rel.videoId;
+      const videoId = rel.tagId;
+      tx.run(
+        `
+          MERGE (v:Video {id: $video_id})
+          MERGE (t:Tag {id: $tag_id})
+          MERGE r=(v)-[:TAGGED_BY]->(t)
+          RETURN r
+          `,
+        { tag_id: tagId, video_id: videoId }
+      );
+    }
+    await tx.commit();
+  } finally {
+    await session.close();
+  }
+};
 
 export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   (async (_, { input }) => {
@@ -142,7 +164,10 @@ export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSourc
       await repoVideoTag.insert(semitagVideoTags);
     });
 
-    await addVideoTags({ neo4jDriver })(semitagVideoTags);
+    await registerTagInNeo4j(
+      neo4jDriver,
+      semitagVideoTags.map(({ tag, video }) => ({ tagId: tag.id, videoId: video.id }))
+    );
 
     return { tag: new TagModel(tag) };
   }) satisfies MutationResolvers["registerTag"];

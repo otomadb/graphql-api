@@ -7,8 +7,27 @@ import { Semitag } from "../../../db/entities/semitags.js";
 import { Tag } from "../../../db/entities/tags.js";
 import { VideoTag } from "../../../db/entities/video_tags.js";
 import { MutationResolvers } from "../../../graphql.js";
-import { addVideoTag as addVideoTagToNeo4j } from "../../../neo4j/addVideoTag.js";
 import { GraphQLNotFoundError, parseGqlID } from "../../../utils/id.js";
+
+export const resolveSemitagInNeo4j = async (
+  neo4jDriver: Neo4jDriver,
+  { videoId, tagId }: { videoId: string; tagId: string }
+) => {
+  const session = neo4jDriver.session();
+  try {
+    await session.run(
+      `
+      MERGE (v:Video {id: $video_id})
+      MERGE (t:Tag {id: $tag_id})
+      MERGE r=(v)-[:TAGGED_BY]->(t)
+      RETURN r
+      `,
+      { tag_id: tagId, video_id: videoId }
+    );
+  } finally {
+    await session.close();
+  }
+};
 
 export const resolveSemitag = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   (async (_, { input: { id: semitagGqlId, tagId: tagGqlId } }) => {
@@ -46,7 +65,12 @@ export const resolveSemitag = ({ dataSource, neo4jDriver }: { dataSource: DataSo
         videoTag.tag = tag;
         await videoTagRepo.insert(videoTag);
       });
-      await addVideoTagToNeo4j({ neo4jDriver })(videoTag);
+
+      await resolveSemitagInNeo4j(neo4jDriver, {
+        tagId: videoTag.tag.id,
+        videoId: videoTag.video.id,
+      });
+
       return { semitag };
     }
   }) satisfies MutationResolvers["resovleSemitag"];

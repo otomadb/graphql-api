@@ -4,10 +4,29 @@ import { DataSource } from "typeorm";
 
 import { MylistRegistration } from "../../../db/entities/mylist_registrations.js";
 import { MutationResolvers } from "../../../graphql.js";
-import { removeMylistRegistration as removeMylistRegistrationInNeo4j } from "../../../neo4j/removeMylistRegistration.js";
 import { parseGqlID } from "../../../utils/id.js";
 import { MylistModel } from "../../Mylist/model.js";
 import { VideoModel } from "../../Video/model.js";
+
+export const removeMylistRegistrationInNeo4j = async (
+  neo4jDriver: Neo4jDriver,
+  { mylistId, videoId }: { mylistId: string; videoId: string }
+) => {
+  const session = neo4jDriver.session();
+  try {
+    await session.run(
+      `
+        MATCH (l:Mylist {id: $mylist_id })
+        MATCH (v:Video {id: $video_id })
+        MATCH (l)-[r:CONTAINS_VIDEO]->(v)
+        DELETE r
+        `,
+      { mylist_id: mylistId, video_id: videoId }
+    );
+  } finally {
+    await session.close();
+  }
+};
 
 export const removeVideoFromMylist = ({
   dataSource: ds,
@@ -32,7 +51,10 @@ export const removeVideoFromMylist = ({
 
     await repoMylistRegistration.remove(registration);
 
-    await removeMylistRegistrationInNeo4j({ neo4jDriver })(registration);
+    await removeMylistRegistrationInNeo4j(neo4jDriver, {
+      mylistId: registration.mylist.id,
+      videoId: registration.video.id,
+    });
 
     return {
       video: new VideoModel(registration.video),

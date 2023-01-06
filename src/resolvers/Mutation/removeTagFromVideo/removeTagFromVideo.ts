@@ -4,10 +4,26 @@ import { DataSource } from "typeorm";
 
 import { VideoTag } from "../../../db/entities/video_tags.js";
 import { MutationResolvers } from "../../../graphql.js";
-import { removeVideoTag as removeVideoTagInNeo4j } from "../../../neo4j/removeVideoTag.js";
 import { parseGqlID } from "../../../utils/id.js";
 import { TagModel } from "../../Tag/model.js";
 import { VideoModel } from "../../Video/model.js";
+
+export const removeInNeo4j = async (driver: Neo4jDriver, { videoId, tagId }: { videoId: string; tagId: string }) => {
+  const session = driver.session();
+  try {
+    await session.run(
+      `
+      MATCH (v:Video {id: $video_id})
+      MATCH (t:Tag {id: $tag_id})
+      MATCH (v)-[r:TAGGED_BY]->(t)
+      DELETE r
+      `,
+      { tag_id: tagId, video_id: videoId }
+    );
+  } finally {
+    await session.close();
+  }
+};
 
 export const removeTagFromVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   (async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { user }) => {
@@ -26,7 +42,10 @@ export const removeTagFromVideo = ({ dataSource, neo4jDriver }: { dataSource: Da
 
     await repoVideoTag.remove(tagging);
 
-    await removeVideoTagInNeo4j({ neo4jDriver })(tagging);
+    await removeInNeo4j(neo4jDriver, {
+      videoId: tagging.video.id,
+      tagId: tagging.tag.id,
+    });
 
     return {
       video: new VideoModel(tagging.video),
