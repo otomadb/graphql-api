@@ -1,0 +1,7 @@
+# test
+*.test.js
+*.test.ts
+
+# codegen
+src/graphql.ts
+src/schema.graphql
