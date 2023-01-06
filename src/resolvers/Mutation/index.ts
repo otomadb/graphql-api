@@ -3,26 +3,27 @@ import { DataSource } from "typeorm";
 
 import { type Resolvers } from "../../graphql.js";
 import { addMylistToMylistGroup } from "./addMylistToMylistGroup/addMylistToMylistGroup.js";
-import { addSemitagToVideo } from "./addSemitagToVideo.js";
-import { addTagToVideo } from "./addTagToVideo.js";
+import { addSemitagToVideo } from "./addSemitagToVideo/addSemitagToVideo.js";
+import { addTagToVideo } from "./addTagToVideo/addTagToVideo.js";
 import { addVideoToMylist } from "./addViteoToMylist/addVideoToMylist.js";
-import { createMylist } from "./createMylist.js";
+import { createMylist } from "./createMylist/createMylist.js";
 import { createMylistGroup } from "./createMylistGroup/createMylistGroup.js";
-import { likeVideo } from "./likeVideo.js";
-import { registerTag } from "./registerTag.js";
-import { registerVideo } from "./registerVideo.js";
-import { removeTagFromVideo } from "./removeTagFromVideo.js";
-import { removeVideoFromMylist } from "./removeVideoFromMylist.js";
-import { resolveSemitag } from "./resolveSemitag.js";
-import { undoLikeVideo } from "./undoLikeVideo.js";
+import { likeVideo } from "./likeVideo/likeVideo.js";
+import { registerTag } from "./registerTag/registerTag.js";
+import { registerVideo } from "./registerVideo/registerVideo.js";
+import { removeTagFromVideo } from "./removeTagFromVideo/removeTagFromVideo.js";
+import { removeVideoFromMylist } from "./removeVideoFromMylist/removeVideoFromMylist.js";
+import { resolveSemitag } from "./resolveSemitag/resolveSemitag.js";
+import { undoLikeVideo } from "./undoLikeVideo/undoLikeVideo.js";
 
 export const resolveMutation = (deps: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   ({
     addMylistToMylistGroup: addMylistToMylistGroup(deps),
-    addTagToVideo: addTagToVideo(deps),
     addSemitagToVideo: addSemitagToVideo(deps),
+    addTagToVideo: addTagToVideo(deps),
     addVideoToMylist: addVideoToMylist(deps),
     createMylist: createMylist(deps),
+    createMylistGroup: createMylistGroup(deps),
     likeVideo: likeVideo(deps),
     registerTag: registerTag(deps),
     registerVideo: registerVideo(deps),
@@ -30,5 +31,4 @@ export const resolveMutation = (deps: { dataSource: DataSource; neo4jDriver: Neo
     removeVideoFromMylist: removeVideoFromMylist(deps),
     resovleSemitag: resolveSemitag(deps),
     undoLikeVideo: undoLikeVideo(deps),
-    createMylistGroup: createMylistGroup(deps),
   } satisfies Resolvers["Mutation"]);
