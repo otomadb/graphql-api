@@ -7,9 +7,28 @@ import { MylistRegistration } from "../../../db/entities/mylist_registrations.js
 import { Mylist } from "../../../db/entities/mylists.js";
 import { Video } from "../../../db/entities/videos.js";
 import { MutationResolvers } from "../../../graphql.js";
-import { addMylistRegistration as addMylistRegistrationInNeo4j } from "../../../neo4j/addMylistRegistration.js";
 import { GraphQLNotFoundError, parseGqlID } from "../../../utils/id.js";
 import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
+
+export const addMylistRegistrationInNeo4j = async (
+  neo4jDriver: Neo4jDriver,
+  { mylistId, videoId }: { videoId: string; mylistId: string }
+) => {
+  const session = neo4jDriver.session();
+  try {
+    await session.run(
+      `
+        MERGE (l:Mylist {id: $mylist_id })
+        MERGE (v:Video {id: $video_id })
+        MERGE (l)-[r:CONTAINS_VIDEO]->(v)
+        RETURN r
+        `,
+      { mylist_id: mylistId, video_id: videoId }
+    );
+  } finally {
+    await session.close();
+  }
+};
 
 export const likeVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   (async (_, { input: { videoId: videoGqlId } }, { user }) => {
@@ -41,7 +60,10 @@ export const likeVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource;
       await repoMylistRegistration.insert(registration);
     });
 
-    await addMylistRegistrationInNeo4j({ neo4jDriver })(registration);
+    await addMylistRegistrationInNeo4j(neo4jDriver, {
+      videoId: registration.video.id,
+      mylistId: registration.mylist.id,
+    });
 
     return {
       registration: new MylistRegistrationModel(registration),

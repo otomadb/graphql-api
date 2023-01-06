@@ -41,7 +41,11 @@ export const removeTagFromVideo = ({ dataSource, neo4jDriver }: { dataSource: Da
     if (!tagging) throw new GraphQLError(`"tag:${tagId}" is not tagged to "video:${videoId}"`);
 
     await repoVideoTag.remove(tagging);
-    await removeInNeo4j(neo4jDriver, { videoId, tagId });
+
+    await removeInNeo4j(neo4jDriver, {
+      videoId: tagging.video.id,
+      tagId: tagging.tag.id,
+    });
 
     return {
       video: new VideoModel(tagging.video),
