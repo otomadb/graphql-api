@@ -34,4 +34,4 @@ jobs:
           context: .
           file: Dockerfile.migration
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:latest
+          tags: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}-migration:latest
