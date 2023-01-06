@@ -8,6 +8,7 @@ import { resolveMylistGroup } from "./MylistGroup/index.js";
 import { resolveMylistGroupMylistInclusion } from "./MylistGroupMylistInclusion/index.js";
 import { resolveMylistGroupVideoAggregation } from "./MylistGroupVideoAggregation/index.js";
 import { resolveMylistRegistration } from "./MylistRegistration/index.js";
+import { resolveMylistTagInclusion } from "./MylistTagInclusion/index.js";
 import { resolveMylistVideoRecommendation } from "./MylistVideoRecommendation/index.js";
 import { resolveNicovideoVideoSource } from "./NicovideoVideoSource/index.js";
 import { resolveQuery } from "./Query/index.js";
@@ -25,6 +26,7 @@ export const resolvers = (deps: { dataSource: DataSource; neo4jDriver: Neo4jDriv
     MylistGroupMylistInclusion: resolveMylistGroupMylistInclusion(deps),
     MylistGroupVideoAggregation: resolveMylistGroupVideoAggregation(deps),
     MylistRegistration: resolveMylistRegistration(deps),
+    MylistTagInclusion: resolveMylistTagInclusion(deps),
     MylistVideoRecommendation: resolveMylistVideoRecommendation(deps),
     NicovideoVideoSource: resolveNicovideoVideoSource(deps),
     Query: resolveQuery(deps),

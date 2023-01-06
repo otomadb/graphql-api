@@ -46,15 +46,16 @@ type MylistRecommendedVideosPayload {
 
 input MylistIncludeTagsInput {
   limit: Int! = 10
+  skip: Int! = 0
+  order: MylistIncludeTagsInputOrder! = { count: DESC }
+}
+
+input MylistIncludeTagsInputOrder {
+  count: SortOrder!
 }
 
 type MylistIncludeTagsPayload {
-  items: [MylistIncludeTagsItem!]!
-}
-
-type MylistIncludeTagsItem {
-  tag: Tag!
-  count: Int!
+  items: [MylistTagInclusion!]!
 }
 
 type MylistConnection {

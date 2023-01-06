@@ -1,17 +1,15 @@
 import { GraphQLError } from "graphql";
-import { Driver as Neo4jDriver, Neo4jError } from "neo4j-driver";
-import { DataSource, In } from "typeorm";
+import { Driver as Neo4jDriver } from "neo4j-driver";
+import { DataSource } from "typeorm";
 
 import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
 import { Mylist, MylistShareRange } from "../../db/entities/mylists.js";
-import { Tag } from "../../db/entities/tags.js";
 import { MylistShareRange as MylistGQLShareRange } from "../../graphql.js";
 import { Resolvers } from "../../graphql.js";
-import { calcMylistIncludeTags } from "../../neo4j/mylist_include_tags.js";
 import { addIDPrefix, ObjectType, removeIDPrefix } from "../../utils/id.js";
 import { MylistRegistrationModel } from "../MylistRegistration/model.js";
-import { TagModel } from "../Tag/model.js";
 import { UserModel } from "../User/model.js";
+import { resolveIncludeTags } from "./includesTags.js";
 import { resolveRecommendedVideos } from "./recommendedVideos.js";
 
 export const resolveMylist = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
@@ -65,25 +63,5 @@ export const resolveMylist = ({ dataSource, neo4jDriver }: { dataSource: DataSou
         .then((r) => !!r),
 
     recommendedVideos: resolveRecommendedVideos({ neo4jDriver }),
-    includeTags: async ({ id: mylistId }, { input: { limit } }) => {
-      try {
-        const neo4jResults = await calcMylistIncludeTags(neo4jDriver)(mylistId, { limit });
-
-        const items = await dataSource
-          .getRepository(Tag)
-          .find({ where: { id: In(neo4jResults.map(({ tagId }) => tagId)) } })
-          .then((ts) =>
-            neo4jResults.map(({ tagId, count }) => {
-              const tag = ts.find((t) => t.id === tagId);
-              if (!tag) throw new GraphQLError(`Data inconcistency is occuring for "tag:${tagId}"`);
-              return { tag: new TagModel(tag), count };
-            })
-          );
-
-        return { items };
-      } catch (e) {
-        if (e instanceof Neo4jError) throw new GraphQLError("Something wrong about Neo4j");
-        throw new GraphQLError("Something wrong");
-      }
-    },
+    includeTags: resolveIncludeTags({ dataSource }),
   } satisfies Resolvers["Mylist"]);
