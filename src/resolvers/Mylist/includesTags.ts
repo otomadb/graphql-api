@@ -3,7 +3,7 @@ import { DataSource } from "typeorm";
 import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { MylistResolvers } from "../../graphql.js";
-import { MylistTagInclusion } from "../MylistTagInclusion/model.js";
+import { MylistTagInclusionModel } from "../MylistTagInclusion/model.js";
 
 export const resolveIncludeTags = ({ dataSource }: { dataSource: DataSource }) =>
   (async ({ id: mylistId }, { input }) => {
@@ -23,7 +23,7 @@ export const resolveIncludeTags = ({ dataSource }: { dataSource: DataSource }) =
 
     const items = result.map(
       ({ count, ...rest }) =>
-        new MylistTagInclusion({
+        new MylistTagInclusionModel({
           ...rest,
           count: parseInt(count, 10),
           mylistId,

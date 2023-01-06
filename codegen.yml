@@ -18,7 +18,7 @@ generates:
         MylistGroupMylistInclusion: ./resolvers/MylistGroupMylistInclusion/model.js#MylistGroupMylistInclusionModel
         MylistGroupVideoAggregation: ./resolvers/MylistGroupVideoAggregation/model.js#MylistGroupVideoAggregationModel
         MylistRegistration: ./resolvers/MylistRegistration/model.js#MylistRegistrationModel
-        MylistTagInclusion: ./resolvers/MylistTagInclusion/model.js#MylistTagInclusion
+        MylistTagInclusion: ./resolvers/MylistTagInclusion/model.js#MylistTagInclusionModel
         MylistVideoRecommendation: ./resolvers/MylistVideoRecommendation/model.js#MylistVideoRecommendationModel
         NicovideoVideoSource: ./resolvers/NicovideoVideoSource/model.js#NicovideoVideoSourceModel
         Semitag: ./resolvers/Semitag/model.js#SemitagModel

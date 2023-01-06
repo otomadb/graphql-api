@@ -1,4 +1,4 @@
-export class MylistTagInclusion {
+export class MylistTagInclusionModel {
   constructor(
     private readonly entity: {
       count: number;
