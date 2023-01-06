@@ -4,7 +4,7 @@ type Video implements Node {
   titles: [VideoTitle!]!
   thumbnailUrl: String!
   thumbnails: [VideoThumbnail!]!
-  tags: [Tag!]!
+  tags(input: VideoTagsInput!): [Tag!]!
   hasTag(id: ID!): Boolean!
   history(input: VideoHistoryInput!): VideoHistoryConnection!
   registeredAt: DateTime!
@@ -24,6 +24,18 @@ type VideoTitle {
 type VideoThumbnail {
   imageUrl: String!
   primary: Boolean!
+}
+
+input VideoTagsInput {
+  "未指定なら全てを取得する"
+  limit: Int
+  skip: Int! = 0
+  order: VideoTagsInputOrder! = { updatedAt: DESC }
+}
+
+input VideoTagsInputOrder {
+  createdAt: SortOrder
+  updatedAt: SortOrder
 }
 
 # History

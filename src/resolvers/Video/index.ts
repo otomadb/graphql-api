@@ -11,9 +11,9 @@ import { Resolvers, VideoResolvers } from "../../graphql.js";
 import { addIDPrefix, ObjectType } from "../../utils/id.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
 import { SemitagModel } from "../Semitag/model.js";
-import { TagModel } from "../Tag/model.js";
 import { VideoModel } from "./model.js";
 import { resolveSimilarVideos } from "./similarVideos.js";
+import { resolveTags } from "./tags.js";
 
 export const resolveId = (({ id }: VideoModel) => addIDPrefix(ObjectType.Video, id)) satisfies VideoResolvers["id"];
 export const resolveHistory = (() => ({ nodes: [] })) satisfies VideoResolvers["history"];
@@ -51,15 +51,7 @@ export const resolveVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSour
       return thumbnail.imageUrl;
     },
 
-    tags: async ({ id: videoId }) => {
-      const tags = await dataSource.getRepository(VideoTag).find({
-        where: { video: { id: videoId } },
-        relations: {
-          tag: true,
-        },
-      });
-      return tags.map(({ tag }) => new TagModel(tag));
-    },
+    tags: resolveTags({ dataSource }),
     hasTag: async ({ id: videoId }, { id: tagId }) => {
       return await dataSource
         .getRepository(VideoTag)
