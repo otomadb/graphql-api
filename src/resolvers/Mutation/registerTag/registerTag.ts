@@ -9,7 +9,7 @@ import { TagParent } from "../../../db/entities/tag_parents.js";
 import { Tag } from "../../../db/entities/tags.js";
 import { VideoTag } from "../../../db/entities/video_tags.js";
 import { MutationResolvers } from "../../../graphql.js";
-import { GraphQLNotFoundError, parseGqlID, parseGqlIDs } from "../../../utils/id.js";
+import { GraphQLNotExistsInDBError, parseGqlID, parseGqlIDs } from "../../../utils/id.js";
 import { TagModel } from "../../Tag/model.js";
 
 export const registerTagInNeo4j = async (neo4jDriver: Neo4jDriver, rels: { videoId: string; tagId: string }[]) => {
@@ -46,10 +46,10 @@ export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSourc
     if (duplicatedImplicitParentGqlId)
       throw new GraphQLError(`"${duplicatedImplicitParentGqlId}" is duplicated in implicitParents`);
 
-    const explicitParentId = input.explicitParent ? parseGqlID("tag", input.explicitParent) : null;
-    const implicitParentIds = parseGqlIDs("tag", input.implicitParents);
+    const explicitParentId = input.explicitParent ? parseGqlID("Tag", input.explicitParent) : null;
+    const implicitParentIds = parseGqlIDs("Tag", input.implicitParents);
 
-    const semitagIds = parseGqlIDs("semitag", input.resolveSemitags);
+    const semitagIds = parseGqlIDs("Semitag", input.resolveSemitags);
 
     const tag = new Tag();
     tag.id = ulid();
@@ -91,7 +91,7 @@ export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSourc
 
       if (explicitParentId) {
         const explicitParent = await repoTag.findOne({ where: { id: explicitParentId } });
-        if (!explicitParent) throw GraphQLNotFoundError("tag", explicitParentId);
+        if (!explicitParent) throw new GraphQLNotExistsInDBError("Tag", explicitParentId);
 
         for (const name of [primaryName, ...extraNames]) {
           const already = await repoTag.findOne({
@@ -105,7 +105,7 @@ export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSourc
               `"tag:${already.id}" is already registered for "${name}" with parent "tag:${explicitParentId}"`
             );
         }
-
+        GraphQLNotExistsInDBError;
         const explicitTagParent = new TagParent();
         explicitTagParent.id = ulid();
         explicitTagParent.explicit = true;
@@ -116,7 +116,7 @@ export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSourc
 
       for (const implicitParentId of implicitParentIds) {
         const implicitParent = await repoTag.findOne({ where: { id: implicitParentId } });
-        if (!implicitParent) throw GraphQLNotFoundError("tag", implicitParentId);
+        if (!implicitParent) throw new GraphQLNotExistsInDBError("Tag", implicitParentId);
 
         for (const name of [primaryName, ...extraNames]) {
           const already = await repoTag.findOne({
@@ -146,7 +146,7 @@ export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSourc
             relations: { video: true },
           })
           .catch(() => {
-            throw GraphQLNotFoundError("semitag", semitagId);
+            throw new GraphQLNotExistsInDBError("Semitag", semitagId);
           });
 
         await repoSemitag.update({ id: semitag.id }, { resolved: true, tag });

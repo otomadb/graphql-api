@@ -7,7 +7,7 @@ import { MylistRegistration } from "../../../db/entities/mylist_registrations.js
 import { Mylist } from "../../../db/entities/mylists.js";
 import { Video } from "../../../db/entities/videos.js";
 import { MutationResolvers } from "../../../graphql.js";
-import { GraphQLNotFoundError, parseGqlID } from "../../../utils/id.js";
+import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
 import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
 
 export const addMylistRegistrationInNeo4j = async (
@@ -34,7 +34,7 @@ export const likeVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource;
   (async (_, { input: { videoId: videoGqlId } }, { user }) => {
     if (!user) throw new GraphQLError("need to authenticate");
 
-    const videoId = parseGqlID("video", videoGqlId);
+    const videoId = parseGqlID("Video", videoGqlId);
 
     const registration = new MylistRegistration();
     registration.id = ulid();
@@ -46,7 +46,7 @@ export const likeVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource;
       const repoMylistRegistration = manager.getRepository(MylistRegistration);
 
       const video = await repoVideo.findOne({ where: { id: videoId } });
-      if (!video) throw GraphQLNotFoundError("video", videoId);
+      if (!video) throw new GraphQLNotExistsInDBError("Video", videoId);
 
       const mylist = await repoMylist.findOne({
         where: { holder: { id: user.id }, isLikeList: true },

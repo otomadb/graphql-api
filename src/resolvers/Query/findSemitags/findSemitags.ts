@@ -7,7 +7,7 @@ import { SemitagModel } from "../../Semitag/model.js";
 
 export const findSemitags = ({ dataSource }: { dataSource: DataSource }) =>
   (async (_parent, { input }) => {
-    const execptIds = parseGqlIDs("semitag", input.except);
+    const execptIds = parseGqlIDs("Semitag", input.except);
 
     const semitags = await dataSource.getRepository(Semitag).find({
       take: input.limit,

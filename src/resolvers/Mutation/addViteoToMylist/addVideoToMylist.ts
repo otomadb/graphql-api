@@ -7,7 +7,7 @@ import { MylistRegistration } from "../../../db/entities/mylist_registrations.js
 import { Mylist } from "../../../db/entities/mylists.js";
 import { Video } from "../../../db/entities/videos.js";
 import { MutationResolvers } from "../../../graphql.js";
-import { GraphQLNotFoundError, parseGqlID } from "../../../utils/id.js";
+import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
 import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
 
 export const addMylistRegistrationInNeo4j = async (
@@ -34,8 +34,8 @@ export const addVideoToMylist = ({ dataSource, neo4jDriver }: { dataSource: Data
   (async (_parent, { input: { mylistId: mylistGqlId, note, videoId: videoGqlId } }, { user }) => {
     if (!user) throw new GraphQLError("need to authenticate");
 
-    const mylistId = parseGqlID("mylist", mylistGqlId);
-    const videoId = parseGqlID("video", videoGqlId);
+    const mylistId = parseGqlID("Mylist", mylistGqlId);
+    const videoId = parseGqlID("Video", videoGqlId);
 
     const registration = new MylistRegistration();
     registration.id = ulid();
@@ -46,10 +46,10 @@ export const addVideoToMylist = ({ dataSource, neo4jDriver }: { dataSource: Data
       const repoRegistration = manager.getRepository(MylistRegistration);
 
       const video = await repoVideo.findOne({ where: { id: videoId } });
-      if (!video) throw GraphQLNotFoundError("video", videoId);
+      if (!video) throw new GraphQLNotExistsInDBError("Video", videoId);
 
       const mylist = await repoMylist.findOne({ where: { id: mylistId }, relations: { holder: true } });
-      if (!mylist) throw GraphQLNotFoundError("mylist", mylistId);
+      if (!mylist) throw new GraphQLNotExistsInDBError("Mylist", mylistId);
       if (mylist.holder.id !== user.id) throw new GraphQLError(`mylist "${mylistGqlId}" is not holded by you`);
 
       if (await repoRegistration.findOneBy({ mylist: { id: mylistId }, video: { id: videoId } }))

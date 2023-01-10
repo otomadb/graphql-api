@@ -6,7 +6,7 @@ import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
 import { Mylist, MylistShareRange } from "../../db/entities/mylists.js";
 import { MylistShareRange as MylistGQLShareRange } from "../../graphql.js";
 import { Resolvers } from "../../graphql.js";
-import { addIDPrefix, ObjectType, removeIDPrefix } from "../../utils/id.js";
+import { buildGqlId, parseGqlID } from "../../utils/id.js";
 import { MylistRegistrationModel } from "../MylistRegistration/model.js";
 import { UserModel } from "../User/model.js";
 import { resolveIncludeTags } from "./includesTags.js";
@@ -14,7 +14,7 @@ import { resolveRecommendedVideos } from "./recommendedVideos.js";
 
 export const resolveMylist = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   ({
-    id: ({ id }) => addIDPrefix(ObjectType.Mylist, id),
+    id: ({ id }) => buildGqlId("Mylist", id),
     range: ({ range }) => {
       switch (range) {
         case MylistShareRange.PUBLIC:
@@ -57,7 +57,7 @@ export const resolveMylist = ({ dataSource, neo4jDriver }: { dataSource: DataSou
         .findOne({
           where: {
             mylist: { id: mylistId },
-            video: { id: removeIDPrefix(ObjectType.Video, videoId) },
+            video: { id: parseGqlID("Video", videoId) },
           },
         })
         .then((r) => !!r),

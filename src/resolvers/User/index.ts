@@ -2,8 +2,8 @@ import { GraphQLError } from "graphql";
 import { DataSource, In } from "typeorm";
 
 import { Mylist, MylistShareRange } from "../../db/entities/mylists.js";
-import { MylistShareRange as GraphQLMylistShareRange, Resolvers, UserResolvers } from "../../graphql.js";
-import { addIDPrefix, buildGqlId, ObjectType, parseGqlID } from "../../utils/id.js";
+import { MylistShareRange as GraphQLMylistShareRange, Resolvers } from "../../graphql.js";
+import { buildGqlId, parseGqlID } from "../../utils/id.js";
 import { MylistModel } from "../Mylist/model.js";
 import { resolveUserLikes } from "./likes.js";
 
@@ -19,15 +19,13 @@ export const convertMylistShareRange = (ranges: GraphQLMylistShareRange[]) =>
     }
   });
 
-export const resolveId = (({ id }) => addIDPrefix(ObjectType.User, id)) satisfies UserResolvers["id"];
-
 export const resolveUser = ({ dataSource: ds }: { dataSource: DataSource }) =>
   ({
-    id: resolveId,
+    id: ({ id }): string => buildGqlId("Video", id),
     likes: resolveUserLikes({ dataSource: ds }),
 
     mylist: async ({ id: userId }, { id: gqlMylistId }, { user: authuser }) => {
-      const mylist = await ds.getRepository(Mylist).findOne({ where: { id: parseGqlID("mylist", gqlMylistId) } });
+      const mylist = await ds.getRepository(Mylist).findOne({ where: { id: parseGqlID("Mylist", gqlMylistId) } });
 
       if (!mylist) return null;
       if (mylist.range === MylistShareRange.PRIVATE && authuser?.id !== userId) return null;
@@ -38,11 +36,11 @@ export const resolveUser = ({ dataSource: ds }: { dataSource: DataSource }) =>
     mylists: async ({ id: userId }, { input }, { user: authuser }) => {
       if (input.range.includes(GraphQLMylistShareRange.Private) && userId !== authuser?.id)
         throw new GraphQLError(
-          `Cannot list "${GraphQLMylistShareRange.Private}" mylists for "${buildGqlId("user", userId)}"`
+          `Cannot list "${GraphQLMylistShareRange.Private}" mylists for "${buildGqlId("Video", userId)}"`
         );
       if (input.range.includes(GraphQLMylistShareRange.KnowLink) && userId !== authuser?.id)
         throw new GraphQLError(
-          `Cannot list "${GraphQLMylistShareRange.KnowLink}" mylists for "${buildGqlId("user", userId)}"`
+          `Cannot list "${GraphQLMylistShareRange.KnowLink}" mylists for "${buildGqlId("Video", userId)}"`
         );
 
       const nodes = await ds

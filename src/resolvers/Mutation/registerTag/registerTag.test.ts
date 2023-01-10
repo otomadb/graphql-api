@@ -7,6 +7,7 @@ import { TagParent } from "../../../db/entities/tag_parents.js";
 import { Tag } from "../../../db/entities/tags.js";
 import { User } from "../../../db/entities/users.js";
 import { migrations } from "../../../db/migrations.js";
+import { buildGqlId, GraphQLNotExistsInDBError } from "../../../utils/id.js";
 import { TagModel } from "../../Tag/model.js";
 import { registerTag } from "./registerTag.js";
 
@@ -333,7 +334,7 @@ describe("Mutation.registerTag", () => {
           {
             input: {
               primaryName: "a",
-              explicitParent: "tag:p",
+              explicitParent: buildGqlId("Tag", "p"),
               extraNames: [],
               implicitParents: [],
               meaningless: false,
@@ -341,7 +342,7 @@ describe("Mutation.registerTag", () => {
             },
           }
         )
-      ).rejects.toThrowError('"tag" for "tag:p" is not found');
+      ).rejects.toThrowError(new GraphQLNotExistsInDBError("Tag", "p"));
     });
 
     test("explicitParentだけを入れて登録する", async () => {
@@ -365,7 +366,7 @@ describe("Mutation.registerTag", () => {
         {
           input: {
             primaryName: "a",
-            explicitParent: `tag:${parentTag.id}`,
+            explicitParent: buildGqlId("Tag", parentTag.id),
             extraNames: [],
             implicitParents: [],
             meaningless: false,
@@ -429,14 +430,14 @@ describe("Mutation.registerTag", () => {
           {
             input: {
               primaryName: "a",
-              implicitParents: ["tag:p"],
+              implicitParents: [buildGqlId("Tag", "p")],
               extraNames: [],
               meaningless: false,
               resolveSemitags: [],
             },
           }
         )
-      ).rejects.toThrowError('"tag" for "tag:p" is not found');
+      ).rejects.toThrowError(new GraphQLNotExistsInDBError("Tag", "p"));
     });
 
     test("implicitParentsだけを入れて登録する", async () => {
@@ -460,7 +461,7 @@ describe("Mutation.registerTag", () => {
         {
           input: {
             primaryName: "a",
-            implicitParents: [`tag:${parentTag.id}`],
+            implicitParents: [buildGqlId("Tag", parentTag.id)],
             extraNames: [],
             meaningless: false,
             resolveSemitags: [],
@@ -587,8 +588,8 @@ describe("Mutation.registerTag", () => {
         {
           input: {
             primaryName: "a",
-            explicitParent: `tag:${parentTag1.id}`,
-            implicitParents: [`tag:${parentTag2.id}`],
+            explicitParent: buildGqlId("Tag", parentTag1.id),
+            implicitParents: [buildGqlId("Tag", parentTag2.id)],
             extraNames: [],
             meaningless: false,
             resolveSemitags: [],
@@ -694,7 +695,7 @@ describe("Mutation.registerTag", () => {
         {
           input: {
             primaryName: "b",
-            explicitParent: `tag:${tagA.id}`,
+            explicitParent: buildGqlId("Tag", tagA.id),
             extraNames: [],
             implicitParents: [],
             meaningless: false,
@@ -763,7 +764,7 @@ describe("Mutation.registerTag", () => {
         {
           input: {
             primaryName: "b",
-            explicitParent: `tag:${tagA.id}`,
+            explicitParent: buildGqlId("Tag", tagA.id),
             extraNames: [],
             implicitParents: [],
             meaningless: false,
@@ -812,7 +813,7 @@ describe("Mutation.registerTag", () => {
         {
           input: {
             primaryName: "b",
-            explicitParent: `tag:${tagA.id}`,
+            explicitParent: buildGqlId("Tag", tagA.id),
             extraNames: [],
             implicitParents: [],
             meaningless: false,
@@ -829,7 +830,7 @@ describe("Mutation.registerTag", () => {
           {
             input: {
               primaryName: "b",
-              explicitParent: `tag:${tagA.id}`,
+              explicitParent: buildGqlId("Tag", tagA.id),
               extraNames: [],
               implicitParents: [],
               meaningless: false,
@@ -863,7 +864,7 @@ describe("Mutation.registerTag", () => {
         {
           input: {
             primaryName: "b",
-            implicitParents: [`tag:${tagA.id}`],
+            implicitParents: [buildGqlId("Tag", tagA.id)],
             extraNames: [],
             meaningless: false,
             resolveSemitags: [],
@@ -879,7 +880,7 @@ describe("Mutation.registerTag", () => {
           {
             input: {
               primaryName: "b",
-              explicitParent: `tag:${tagA.id}`,
+              explicitParent: buildGqlId("Tag", tagA.id),
               extraNames: [],
               implicitParents: [],
               meaningless: false,
@@ -913,7 +914,7 @@ describe("Mutation.registerTag", () => {
         {
           input: {
             primaryName: "b",
-            implicitParents: [`tag:${tagA.id}`],
+            implicitParents: [buildGqlId("Tag", tagA.id)],
             extraNames: [],
             meaningless: false,
             resolveSemitags: [],
@@ -929,7 +930,7 @@ describe("Mutation.registerTag", () => {
           {
             input: {
               primaryName: "b",
-              implicitParents: [`tag:${tagA.id}`],
+              implicitParents: [buildGqlId("Tag", tagA.id)],
               extraNames: [],
               meaningless: false,
               resolveSemitags: [],

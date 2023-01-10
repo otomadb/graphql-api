@@ -15,7 +15,7 @@ export const resolveMylistGroupMylistInclusion = ({ dataSource }: { dataSource: 
         .findOneOrFail({ where: { id }, relations: { mylist: true } })
         .then((v) => new MylistModel(v.mylist))
         .catch(() => {
-          throw new GraphQLNotExistsInDBError("mylist", id);
+          throw new GraphQLNotExistsInDBError("Mylist", id);
         }),
     group: async ({ id }) =>
       dataSource

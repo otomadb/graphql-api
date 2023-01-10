@@ -8,19 +8,17 @@ import { VideoTag } from "../../db/entities/video_tags.js";
 import { VideoThumbnail } from "../../db/entities/video_thumbnails.js";
 import { VideoTitle as VideoTitleEntity } from "../../db/entities/video_titles.js";
 import { Resolvers, VideoResolvers } from "../../graphql.js";
-import { addIDPrefix, ObjectType } from "../../utils/id.js";
+import { buildGqlId } from "../../utils/id.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
 import { SemitagModel } from "../Semitag/model.js";
-import { VideoModel } from "./model.js";
 import { resolveSimilarVideos } from "./similarVideos.js";
 import { resolveTags } from "./tags.js";
 
-export const resolveId = (({ id }: VideoModel) => addIDPrefix(ObjectType.Video, id)) satisfies VideoResolvers["id"];
 export const resolveHistory = (() => ({ nodes: [] })) satisfies VideoResolvers["history"];
 
 export const resolveVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   ({
-    id: resolveId,
+    id: ({ id }): string => buildGqlId("Video", id),
 
     title: async ({ id: videoId }) => {
       const title = await dataSource

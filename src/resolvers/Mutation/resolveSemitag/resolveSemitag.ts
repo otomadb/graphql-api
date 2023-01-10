@@ -7,7 +7,7 @@ import { Semitag } from "../../../db/entities/semitags.js";
 import { Tag } from "../../../db/entities/tags.js";
 import { VideoTag } from "../../../db/entities/video_tags.js";
 import { MutationResolvers } from "../../../graphql.js";
-import { GraphQLNotFoundError, parseGqlID } from "../../../utils/id.js";
+import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
 
 export const resolveSemitagInNeo4j = async (
   neo4jDriver: Neo4jDriver,
@@ -33,14 +33,14 @@ export const resolveSemitag = ({ dataSource, neo4jDriver }: { dataSource: DataSo
   (async (_, { input: { id: semitagGqlId, tagId: tagGqlId } }) => {
     // TODO: auth
 
-    const semitagId = parseGqlID("semitag", semitagGqlId);
-    const tagId = tagGqlId ? parseGqlID("tag", tagGqlId) : null;
+    const semitagId = parseGqlID("Semitag", semitagGqlId);
+    const tagId = tagGqlId ? parseGqlID("Tag", tagGqlId) : null;
 
     const semitag = await dataSource
       .getRepository(Semitag)
       .findOne({ where: { id: semitagId }, relations: { video: true } });
 
-    if (!semitag) throw GraphQLNotFoundError("semitag", semitagId);
+    if (!semitag) throw new GraphQLNotExistsInDBError("Semitag", semitagId);
     if (semitag.resolved) throw new GraphQLError(`"semitag:${semitagId}" was already resolved`);
 
     if (!tagId) {
@@ -58,7 +58,7 @@ export const resolveSemitag = ({ dataSource, neo4jDriver }: { dataSource: DataSo
         const videoTagRepo = manager.getRepository(VideoTag);
 
         const tag = await tagRepo.findOne({ where: { id: tagId } });
-        if (!tag) throw GraphQLNotFoundError("tag", tagId);
+        if (!tag) throw new GraphQLNotExistsInDBError("Tag", tagId);
 
         await repoSemitag.update({ id: semitag.id }, { resolved: true, tag });
 

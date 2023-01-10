@@ -38,8 +38,8 @@ export const removeVideoFromMylist = ({
   (async (_, { input: { mylistId: mylistGqlId, videoId: videoGqlId } }, { user }) => {
     if (!user) throw new GraphQLError("required to sign in");
 
-    const videoId = parseGqlID("video", videoGqlId);
-    const mylistId = parseGqlID("mylist", mylistGqlId);
+    const videoId = parseGqlID("Video", videoGqlId);
+    const mylistId = parseGqlID("Mylist", mylistGqlId);
 
     const repoMylistRegistration = ds.getRepository(MylistRegistration);
 

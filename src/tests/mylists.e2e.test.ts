@@ -10,7 +10,7 @@ import { Mylist } from "../db/entities/mylists.js";
 import { User } from "../db/entities/users.js";
 import { typeDefs } from "../graphql.js";
 import { resolvers } from "../resolvers/index.js";
-import { ObjectType, removeIDPrefix } from "../utils/id.js";
+import { parseGqlID } from "../utils/id.js";
 
 describe("マイリスト関連のE2Eテスト", () => {
   let ds: DataSource;
@@ -716,7 +716,7 @@ describe("マイリスト関連のE2Eテスト", () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       mylistId = (createMylistResult.data as any).createMylist.mylist.id as string;
 
-      await ds.getRepository(Mylist).update({ id: removeIDPrefix(ObjectType.Mylist, mylistId) }, { isLikeList: true });
+      await ds.getRepository(Mylist).update({ id: parseGqlID("Mylist", mylistId) }, { isLikeList: true });
 
       const mutationRegisterVideo = `
       mutation ($input: RegisterVideoInput!) {

@@ -3,7 +3,7 @@ import { DataSource } from "typeorm";
 
 import { Mylist, MylistShareRange as MylistEntityShareRange } from "../../../db/entities/mylists.js";
 import { QueryResolvers } from "../../../graphql.js";
-import { ObjectType, removeIDPrefix } from "../../../utils/id.js";
+import { parseGqlID } from "../../../utils/id.js";
 import { MylistModel } from "../../Mylist/model.js";
 
 export const MYLIST_NOT_FOUND_OR_PRIVATE_ERROR = "Mylist Not Found or Private";
@@ -14,7 +14,7 @@ export const findMylist = ({ dataSource }: { dataSource: DataSource }) =>
     if (!id) throw new GraphQLError("id must be provided"); // TODO: error messsage
 
     const mylist = await dataSource.getRepository(Mylist).findOne({
-      where: { id: removeIDPrefix(ObjectType.Mylist, id) },
+      where: { id: parseGqlID("Mylist", id) },
       relations: {
         holder: true,
       },
