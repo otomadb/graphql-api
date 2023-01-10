@@ -29,8 +29,8 @@ export const removeTagFromVideo = ({ dataSource, neo4jDriver }: { dataSource: Da
   (async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { user }) => {
     if (!user) throw new GraphQLError("required to sign in");
 
-    const videoId = parseGqlID("video", videoGqlId);
-    const tagId = parseGqlID("tag", tagGqlId);
+    const videoId = parseGqlID("Video", videoGqlId);
+    const tagId = parseGqlID("Tag", tagGqlId);
 
     const repoVideoTag = dataSource.getRepository(VideoTag);
 

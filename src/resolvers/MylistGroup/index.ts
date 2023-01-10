@@ -16,7 +16,7 @@ export const resolveMylistGroup = ({ dataSource }: { dataSource: DataSource }) =
         .findOneOrFail({ where: { id }, relations: { holder: true } })
         .then((v) => new UserModel(v.holder))
         .catch(() => {
-          throw new GraphQLNotExistsInDBError("mylist", id);
+          throw new GraphQLNotExistsInDBError("Mylist", id);
         }),
 
     mylists: resolveMylists({ dataSource }),

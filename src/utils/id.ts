@@ -1,12 +1,12 @@
 import { GraphQLError } from "graphql";
 
 export type NodeType =
-  | "user"
-  | "video"
-  | "tag"
-  | "semitag"
-  | "nicovideoVideoSource"
-  | "mylist"
+  | "User"
+  | "Video"
+  | "Tag"
+  | "Semitag"
+  | "NicovideoVideoSource"
+  | "Mylist"
   | "MylistGroup"
   | "MylistGroupMylistInclusion"
   | "MylistRegistration";
@@ -27,12 +27,6 @@ export function parseGqlID(type: NodeType, gqlId: string): string {
 export function parseGqlIDs(type: NodeType, gqlIds: string[]): string[] {
   return gqlIds.map((gqlId) => parseGqlID(type, gqlId));
 }
-
-export const GraphQLInvalidIdError = (type: NodeType, invalidId: string) =>
-  new GraphQLError(`"${invalidId}" is invalid id for "${type}"`);
-
-export const GraphQLNotFoundError = (type: NodeType, dbId: string) =>
-  new GraphQLError(`"${type}" for "${buildGqlId(type, dbId)}" is not found `);
 
 export class GraphQLInvalidIDError extends GraphQLError {
   constructor(type: NodeType, invalidId: string) {

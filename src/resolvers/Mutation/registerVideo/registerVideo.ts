@@ -74,7 +74,7 @@ export const registerVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSou
     primaryThumbnail.video = video;
     primaryThumbnail.primary = true;
 
-    const tags = await dataSource.getRepository(Tag).findBy({ id: In(parseGqlIDs("tag", input.tags)) });
+    const tags = await dataSource.getRepository(Tag).findBy({ id: In(parseGqlIDs("Tag", input.tags)) });
     if (tags.length !== input.tags.length) {
       throw new GraphQLError("Some of tag IDs are wrong");
     }

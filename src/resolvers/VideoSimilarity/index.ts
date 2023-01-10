@@ -13,7 +13,7 @@ export const resolveVideoSimilarity = ({ dataSource }: { dataSource: DataSource 
         .findOneByOrFail({ id: originId })
         .then((v) => new VideoModel(v))
         .catch(() => {
-          throw new GraphQLNotExistsInDBError("video", originId);
+          throw new GraphQLNotExistsInDBError("Video", originId);
         }),
     to: ({ toId }) =>
       dataSource
@@ -21,6 +21,6 @@ export const resolveVideoSimilarity = ({ dataSource }: { dataSource: DataSource 
         .findOneByOrFail({ id: toId })
         .then((v) => new VideoModel(v))
         .catch(() => {
-          throw new GraphQLNotExistsInDBError("video", toId);
+          throw new GraphQLNotExistsInDBError("Video", toId);
         }),
   } satisfies Resolvers["VideoSimilarity"]);

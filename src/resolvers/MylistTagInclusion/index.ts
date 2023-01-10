@@ -15,7 +15,7 @@ export const resolveMylistTagInclusion = ({ dataSource }: { dataSource: DataSour
         .findOneByOrFail({ id: mylistId })
         .then((v) => new MylistModel(v))
         .catch(() => {
-          throw new GraphQLNotExistsInDBError("mylist", mylistId);
+          throw new GraphQLNotExistsInDBError("Mylist", mylistId);
         }),
     tag: ({ tagId }) =>
       dataSource
@@ -23,6 +23,6 @@ export const resolveMylistTagInclusion = ({ dataSource }: { dataSource: DataSour
         .findOneByOrFail({ id: tagId })
         .then((v) => new TagModel(v))
         .catch(() => {
-          throw new GraphQLNotExistsInDBError("tag", tagId);
+          throw new GraphQLNotExistsInDBError("Tag", tagId);
         }),
   } satisfies Resolvers["MylistTagInclusion"]);

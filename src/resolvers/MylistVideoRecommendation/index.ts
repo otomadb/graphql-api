@@ -15,7 +15,7 @@ export const resolveMylistVideoRecommendation = ({ dataSource }: { dataSource: D
         .findOneByOrFail({ id: originId })
         .then((v) => new MylistModel(v))
         .catch(() => {
-          throw new GraphQLNotExistsInDBError("mylist", originId);
+          throw new GraphQLNotExistsInDBError("Mylist", originId);
         }),
     to: ({ toId }) =>
       dataSource
@@ -23,6 +23,6 @@ export const resolveMylistVideoRecommendation = ({ dataSource }: { dataSource: D
         .findOneByOrFail({ id: toId })
         .then((v) => new VideoModel(v))
         .catch(() => {
-          throw new GraphQLNotExistsInDBError("video", toId);
+          throw new GraphQLNotExistsInDBError("Video", toId);
         }),
   } satisfies Resolvers["MylistVideoRecommendation"]);

@@ -9,7 +9,7 @@ import { VideoModel } from "../../Video/model.js";
 export const video = ({ dataSource }: { dataSource: DataSource }) =>
   (async (_parent, { id }) => {
     const video = await dataSource.getRepository(Video).findOne({
-      where: { id: parseGqlID("video", id) },
+      where: { id: parseGqlID("Video", id) },
     });
     if (!video) throw new GraphQLError("Not Found");
 

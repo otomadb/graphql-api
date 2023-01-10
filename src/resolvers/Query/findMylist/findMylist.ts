@@ -14,7 +14,7 @@ export const findMylist = ({ dataSource }: { dataSource: DataSource }) =>
     if (!id) throw new GraphQLError("id must be provided"); // TODO: error messsage
 
     const mylist = await dataSource.getRepository(Mylist).findOne({
-      where: { id: parseGqlID("mylist", id) },
+      where: { id: parseGqlID("Mylist", id) },
       relations: {
         holder: true,
       },

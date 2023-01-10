@@ -12,7 +12,7 @@ export const MYLIST_NOT_HOLDED_BY_YOU = "This mylist is not holded by you";
 export const mylist = ({ dataSource }: { dataSource: DataSource }) =>
   (async (_parent, { id }, { user }) => {
     const mylist = await dataSource.getRepository(Mylist).findOne({
-      where: { id: parseGqlID("mylist", id) },
+      where: { id: parseGqlID("Mylist", id) },
       relations: {
         holder: true,
       },

@@ -716,7 +716,7 @@ describe("マイリスト関連のE2Eテスト", () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       mylistId = (createMylistResult.data as any).createMylist.mylist.id as string;
 
-      await ds.getRepository(Mylist).update({ id: parseGqlID("mylist", mylistId) }, { isLikeList: true });
+      await ds.getRepository(Mylist).update({ id: parseGqlID("Mylist", mylistId) }, { isLikeList: true });
 
       const mutationRegisterVideo = `
       mutation ($input: RegisterVideoInput!) {

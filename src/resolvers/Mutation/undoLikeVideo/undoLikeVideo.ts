@@ -33,7 +33,7 @@ export const undoLikeVideo = ({ dataSource: ds, neo4jDriver }: { dataSource: Dat
   (async (_, { input: { videoId: videoGqlId } }, { user }) => {
     if (!user) throw new GraphQLError("required to sign in");
 
-    const videoId = parseGqlID("video", videoGqlId);
+    const videoId = parseGqlID("Video", videoGqlId);
 
     const repoMylist = ds.getRepository(Mylist);
     const repoMylistRegistration = ds.getRepository(MylistRegistration);

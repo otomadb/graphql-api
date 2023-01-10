@@ -14,7 +14,7 @@ export const resolveHistory = (() => ({ nodes: [] })) satisfies TagResolvers["hi
 
 export const resolveTag = ({ dataSource }: { dataSource: DataSource }) =>
   ({
-    id: ({ id }): string => buildGqlId("tag", id),
+    id: ({ id }): string => buildGqlId("Tag", id),
     type: () => TagType.Material,
     pseudoType: resolvePseudoType({ dataSource }),
 
@@ -68,7 +68,7 @@ export const resolveTag = ({ dataSource }: { dataSource: DataSource }) =>
     history: resolveHistory,
 
     canTagTo: async ({ id: tagId }, { videoId: videoGqlId }) => {
-      const videoId = parseGqlID("video", videoGqlId);
+      const videoId = parseGqlID("Video", videoGqlId);
 
       return dataSource
         .getRepository(VideoTag)

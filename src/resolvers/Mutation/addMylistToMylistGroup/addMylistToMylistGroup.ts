@@ -10,7 +10,7 @@ import { MylistGroupMylistInclusionModel } from "../../MylistGroupMylistInclusio
 
 export const addMylistToMylistGroup = ({ dataSource }: { dataSource: DataSource }) =>
   (async (_parent, { input: { mylistId: mylistGqlId, groupId: groupGqlId } }) => {
-    const mylistId = parseGqlID("mylist", mylistGqlId);
+    const mylistId = parseGqlID("Mylist", mylistGqlId);
     const groupId = parseGqlID("MylistGroup", groupGqlId);
 
     const inclusion = new MylistGroupMylistInclusion();
@@ -25,7 +25,7 @@ export const addMylistToMylistGroup = ({ dataSource }: { dataSource: DataSource 
         throw new GraphQLError(`"${mylistGqlId}" is already included in "${groupGqlId}"`);
 
       const mylist = await repoMylist.findOneByOrFail({ id: mylistId }).catch(() => {
-        throw new GraphQLNotExistsInDBError("mylist", mylistId);
+        throw new GraphQLNotExistsInDBError("Mylist", mylistId);
       });
       const group = await repoGroup.findOneByOrFail({ id: groupId }).catch(() => {
         throw new GraphQLNotExistsInDBError("MylistGroup", groupId);

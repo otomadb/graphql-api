@@ -9,7 +9,7 @@ import { TagModel } from "../../Tag/model.js";
 export const tag = ({ dataSource }: { dataSource: DataSource }) =>
   (async (_parent, { id }) => {
     const tag = await dataSource.getRepository(Tag).findOne({
-      where: { id: parseGqlID("tag", id) },
+      where: { id: parseGqlID("Tag", id) },
     });
     if (!tag) throw new GraphQLError("Not Found");
 

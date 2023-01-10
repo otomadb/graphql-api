@@ -1,16 +1,4 @@
-import { resolveHistory, resolveId } from "./index.js";
-import { VideoModel } from "./model.js";
-
-describe("resolver Video.id", () => {
-  it("実装されているか", () => {
-    expect(resolveId).toBeDefined();
-  });
-
-  it("prefixを付ける", () => {
-    const actual = resolveId({ id: "1" } as VideoModel);
-    expect(actual).toBe("video:1");
-  });
-});
+import { resolveHistory } from "./index.js";
 
 describe("resolver Video.history", () => {
   it("実装されているか", () => {

@@ -7,7 +7,7 @@ import { buildGqlId } from "../../utils/id.js";
 
 export const resolveSemitag = ({ dataSource }: { dataSource: DataSource }) =>
   ({
-    id: ({ id }): string => buildGqlId("semitag", id),
+    id: ({ id }): string => buildGqlId("Semitag", id),
     async video({ id }) {
       const semitag = await dataSource.getRepository(Semitag).findOne({
         where: { id },

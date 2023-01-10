@@ -15,7 +15,7 @@ export const resolveMylistGroupVideoAggregation = ({ dataSource }: { dataSource:
         .findOneOrFail({ where: { id: videoId } })
         .then((v) => new VideoModel(v))
         .catch(() => {
-          throw new GraphQLNotExistsInDBError("video", videoId);
+          throw new GraphQLNotExistsInDBError("Video", videoId);
         }),
     mylists: ({ mylistIds }, { input }) =>
       dataSource

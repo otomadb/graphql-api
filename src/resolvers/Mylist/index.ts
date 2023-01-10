@@ -14,7 +14,7 @@ import { resolveRecommendedVideos } from "./recommendedVideos.js";
 
 export const resolveMylist = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   ({
-    id: ({ id }) => buildGqlId("mylist", id),
+    id: ({ id }) => buildGqlId("Mylist", id),
     range: ({ range }) => {
       switch (range) {
         case MylistShareRange.PUBLIC:
@@ -57,7 +57,7 @@ export const resolveMylist = ({ dataSource, neo4jDriver }: { dataSource: DataSou
         .findOne({
           where: {
             mylist: { id: mylistId },
-            video: { id: parseGqlID("video", videoId) },
+            video: { id: parseGqlID("Video", videoId) },
           },
         })
         .then((r) => !!r),

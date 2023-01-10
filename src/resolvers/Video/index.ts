@@ -18,7 +18,7 @@ export const resolveHistory = (() => ({ nodes: [] })) satisfies VideoResolvers["
 
 export const resolveVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
   ({
-    id: ({ id }): string => buildGqlId("video", id),
+    id: ({ id }): string => buildGqlId("Video", id),
 
     title: async ({ id: videoId }) => {
       const title = await dataSource
