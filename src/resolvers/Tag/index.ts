@@ -5,17 +5,16 @@ import { TagName } from "../../db/entities/tag_names.js";
 import { TagParent } from "../../db/entities/tag_parents.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { Resolvers, TagResolvers, TagType } from "../../graphql.js";
-import { addIDPrefix, ObjectType, parseGqlID } from "../../utils/id.js";
+import { buildGqlId, parseGqlID } from "../../utils/id.js";
 import { VideoModel } from "../Video/model.js";
 import { TagModel } from "./model.js";
 import { resolvePseudoType } from "./pseudoType.js";
 
-export const resolveId = (({ id }): string => addIDPrefix(ObjectType.Tag, id)) satisfies TagResolvers["id"];
 export const resolveHistory = (() => ({ nodes: [] })) satisfies TagResolvers["history"];
 
 export const resolveTag = ({ dataSource }: { dataSource: DataSource }) =>
   ({
-    id: resolveId,
+    id: ({ id }): string => buildGqlId("tag", id),
     type: () => TagType.Material,
     pseudoType: resolvePseudoType({ dataSource }),
 

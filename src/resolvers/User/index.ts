@@ -2,8 +2,8 @@ import { GraphQLError } from "graphql";
 import { DataSource, In } from "typeorm";
 
 import { Mylist, MylistShareRange } from "../../db/entities/mylists.js";
-import { MylistShareRange as GraphQLMylistShareRange, Resolvers, UserResolvers } from "../../graphql.js";
-import { addIDPrefix, buildGqlId, ObjectType, parseGqlID } from "../../utils/id.js";
+import { MylistShareRange as GraphQLMylistShareRange, Resolvers } from "../../graphql.js";
+import { buildGqlId, parseGqlID } from "../../utils/id.js";
 import { MylistModel } from "../Mylist/model.js";
 import { resolveUserLikes } from "./likes.js";
 
@@ -19,11 +19,9 @@ export const convertMylistShareRange = (ranges: GraphQLMylistShareRange[]) =>
     }
   });
 
-export const resolveId = (({ id }) => addIDPrefix(ObjectType.User, id)) satisfies UserResolvers["id"];
-
 export const resolveUser = ({ dataSource: ds }: { dataSource: DataSource }) =>
   ({
-    id: resolveId,
+    id: ({ id }): string => buildGqlId("user", id),
     likes: resolveUserLikes({ dataSource: ds }),
 
     mylist: async ({ id: userId }, { id: gqlMylistId }, { user: authuser }) => {

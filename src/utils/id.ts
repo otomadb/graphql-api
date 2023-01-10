@@ -1,26 +1,5 @@
 import { GraphQLError } from "graphql";
 
-export const ObjectType = {
-  Tag: "tag",
-  User: "user",
-  Video: "video",
-  VideoTag: "videoTag",
-  Mylist: "mylist",
-  MylistRegistration: "mylistRegistration",
-} as const;
-export type ObjectType = typeof ObjectType[keyof typeof ObjectType];
-
-export function addIDPrefix(type: ObjectType, id: string): string {
-  return [type, id].join(":");
-}
-
-export function removeIDPrefix(type: ObjectType, id: string): string {
-  const splitted = id.split(":");
-  if (splitted.length !== 2) throw new GraphQLError("Invalid ID Format");
-  if (splitted[0] !== type) throw new GraphQLError(`Passing Wrong Type ID (expected ${type})`);
-  return splitted[1];
-}
-
 export type NodeType =
   | "user"
   | "video"
@@ -29,15 +8,18 @@ export type NodeType =
   | "nicovideoVideoSource"
   | "mylist"
   | "MylistGroup"
-  | "MylistGroupMylistInclusion";
-export const buildGqlId = (type: NodeType, dbId: string): string => `${type}:${dbId}`;
+  | "MylistGroupMylistInclusion"
+  | "MylistRegistration";
+
+export const buildGqlId = (type: NodeType, dbId: string): string =>
+  Buffer.from(`${type}:${dbId}`).toString("base64url");
 
 export function parseGqlID(type: NodeType, gqlId: string): string {
-  const separated = gqlId.split(":");
-  if (separated.length !== 2) throw GraphQLInvalidIdError(type, gqlId);
+  const split = Buffer.from(gqlId, "base64url").toString().split(":");
+  if (split.length !== 2) throw new GraphQLInvalidIDError(type, gqlId);
 
-  const [t, i] = separated;
-  if (t !== type) throw GraphQLInvalidIdError(type, gqlId);
+  const [t, i] = split;
+  if (t !== type) throw new GraphQLInvalidIDError(type, gqlId);
 
   return i;
 }
@@ -51,6 +33,12 @@ export const GraphQLInvalidIdError = (type: NodeType, invalidId: string) =>
 
 export const GraphQLNotFoundError = (type: NodeType, dbId: string) =>
   new GraphQLError(`"${type}" for "${buildGqlId(type, dbId)}" is not found `);
+
+export class GraphQLInvalidIDError extends GraphQLError {
+  constructor(type: NodeType, invalidId: string) {
+    super(`"${invalidId}" is invalid id for "${type}"`);
+  }
+}
 
 export class GraphQLNotExistsInDBError extends GraphQLError {
   constructor(type: NodeType, dbId: string) {
