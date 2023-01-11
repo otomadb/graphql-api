@@ -55,7 +55,7 @@ export const handlerSignup =
     user.name = name;
     user.displayName = displayName;
     user.email = email;
-    user.icon = "";
+    user.icon = null;
     user.emailConfirmed = true; // FIXME: あとでなおす
     user.password = passwordHash;
 
