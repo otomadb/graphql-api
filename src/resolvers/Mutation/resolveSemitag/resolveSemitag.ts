@@ -3,8 +3,10 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
+import { checkAuth } from "../../../auth/checkAuth.js";
 import { Semitag } from "../../../db/entities/semitags.js";
 import { Tag } from "../../../db/entities/tags.js";
+import { UserRole } from "../../../db/entities/users.js";
 import { VideoTag } from "../../../db/entities/video_tags.js";
 import { MutationResolvers } from "../../../graphql.js";
 import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
@@ -30,9 +32,7 @@ export const resolveSemitagInNeo4j = async (
 };
 
 export const resolveSemitag = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
-  (async (_, { input: { id: semitagGqlId, tagId: tagGqlId } }) => {
-    // TODO: auth
-
+  checkAuth(UserRole.EDITOR, async (_, { input: { id: semitagGqlId, tagId: tagGqlId } }) => {
     const semitagId = parseGqlID("Semitag", semitagGqlId);
     const tagId = tagGqlId ? parseGqlID("Tag", tagGqlId) : null;
 
