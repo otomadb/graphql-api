@@ -35,6 +35,7 @@
             dprint
             act
             actionlint
+            hadolint
           ];
           devshell.startup.yarn_install.text = "pnpm install";
           env = [
