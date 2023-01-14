@@ -1,7 +1,7 @@
 // https://github.com/dotansimha/graphql-code-generator/issues/3899#issuecomment-797670712
 
-import { stripIgnoredCharacters } from "graphql";
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
+import { stripIgnoredCharacters } from "graphql";
 
 const print = (schema) => `
   import { gql } from "graphql-tag"

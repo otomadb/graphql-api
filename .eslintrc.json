@@ -18,6 +18,17 @@
   },
   "overrides": [
     {
+      "files": ["codegen-plugins/*.mjs"],
+      "extends": ["plugin:n/recommended"],
+      "parserOptions": {
+        "sourceType": "module",
+        "ecmaVersion": "latest"
+      },
+      "rules": {
+        "n/no-unpublished-import": [2, { "allowModules": ["@graphql-tools/utils"] }]
+      }
+    },
+    {
       "files": ["*.ts", "*.tsx"],
       "extends": ["plugin:@typescript-eslint/recommended"],
       "plugins": ["@typescript-eslint"],
