@@ -5,7 +5,7 @@ import { ulid } from "ulid";
 import { z } from "zod";
 
 import { Mylist, MylistShareRange } from "../db/entities/mylists.js";
-import { User } from "../db/entities/users.js";
+import { User, UserRole } from "../db/entities/users.js";
 import { createSession } from "./createSession.js";
 
 export const handlerSignup =
@@ -58,6 +58,7 @@ export const handlerSignup =
     user.icon = "";
     user.emailConfirmed = true; // FIXME: あとでなおす
     user.password = passwordHash;
+    user.role = UserRole.NORMAL;
 
     const userRepository = dataSource.getRepository(User);
     await userRepository.insert(user);
