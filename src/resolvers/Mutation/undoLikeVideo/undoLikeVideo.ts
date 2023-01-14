@@ -2,8 +2,10 @@ import { GraphQLError } from "graphql";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 
+import { checkAuth } from "../../../auth/checkAuth.js";
 import { MylistRegistration } from "../../../db/entities/mylist_registrations.js";
 import { Mylist } from "../../../db/entities/mylists.js";
+import { UserRole } from "../../../db/entities/users.js";
 import { MutationResolvers } from "../../../graphql.js";
 import { parseGqlID } from "../../../utils/id.js";
 import { MylistModel } from "../../Mylist/model.js";
@@ -30,7 +32,7 @@ export const undoLikeVideoInNeo4j = async (
 };
 
 export const undoLikeVideo = ({ dataSource: ds, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
-  (async (_, { input: { videoId: videoGqlId } }, { user }) => {
+  checkAuth(UserRole.NORMAL, async (_, { input: { videoId: videoGqlId } }, { user }) => {
     if (!user) throw new GraphQLError("required to sign in");
 
     const videoId = parseGqlID("Video", videoGqlId);

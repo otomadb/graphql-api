@@ -3,12 +3,14 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
+import { checkAuth } from "../../../auth/checkAuth.js";
 import { Semitag } from "../../../db/entities/semitags.js";
 import { TagName } from "../../../db/entities/tag_names.js";
 import { TagParent } from "../../../db/entities/tag_parents.js";
 import { Tag } from "../../../db/entities/tags.js";
+import { UserRole } from "../../../db/entities/users.js";
 import { VideoTag } from "../../../db/entities/video_tags.js";
-import { MutationResolvers } from "../../../graphql.js";
+import { MutationRegisterTagArgs, MutationResolvers } from "../../../graphql.js";
 import { GraphQLNotExistsInDBError, parseGqlID, parseGqlIDs } from "../../../utils/id.js";
 import { TagModel } from "../../Tag/model.js";
 
@@ -35,8 +37,9 @@ export const registerTagInNeo4j = async (neo4jDriver: Neo4jDriver, rels: { video
   }
 };
 
-export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
-  (async (_, { input }) => {
+export const registerTagScaffold =
+  ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+  async (_: unknown, { input }: MutationRegisterTagArgs) => {
     const { primaryName, extraNames, meaningless } = input;
 
     if (input.explicitParent && input.implicitParents.includes(input.explicitParent))
@@ -170,4 +173,7 @@ export const registerTag = ({ dataSource, neo4jDriver }: { dataSource: DataSourc
     );
 
     return { tag: new TagModel(tag) };
-  }) satisfies MutationResolvers["registerTag"];
+  };
+
+export const registerTag = (inject: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+  checkAuth(UserRole.EDITOR, registerTagScaffold(inject)) satisfies MutationResolvers["registerTag"];

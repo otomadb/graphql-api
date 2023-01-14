@@ -6,7 +6,7 @@ import neo4j, { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 
 import { entities } from "../db/entities/index.js";
-import { User } from "../db/entities/users.js";
+import { User, UserRole } from "../db/entities/users.js";
 import { typeDefs } from "../graphql.js";
 import { resolvers } from "../resolvers/index.js";
 
@@ -21,7 +21,8 @@ describe("basic e2e", () => {
   testuser.displayName = "Test User 1";
   testuser.email = `testuser1@example.com`;
   testuser.password = "password";
-  testuser.icon = "";
+  testuser.icon = null;
+  testuser.role = UserRole.EDITOR;
 
   beforeAll(async () => {
     ds = new DataSource({

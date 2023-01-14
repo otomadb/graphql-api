@@ -7,7 +7,7 @@ import { DataSource } from "typeorm";
 
 import { entities } from "../db/entities/index.js";
 import { Mylist } from "../db/entities/mylists.js";
-import { User } from "../db/entities/users.js";
+import { User, UserRole } from "../db/entities/users.js";
 import { typeDefs } from "../graphql.js";
 import { resolvers } from "../resolvers/index.js";
 import { parseGqlID } from "../utils/id.js";
@@ -51,7 +51,9 @@ describe("マイリスト関連のE2Eテスト", () => {
     testuser.displayName = "Test User 1";
     testuser.email = `testuser1@example.com`;
     testuser.password = "password";
-    testuser.icon = "";
+    testuser.icon = null;
+    testuser.role = UserRole.EDITOR;
+
     await ds.getRepository(User).insert(testuser);
 
     const neo4jSession = neo4jDriver.session();
