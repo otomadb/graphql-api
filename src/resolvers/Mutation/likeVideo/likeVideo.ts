@@ -3,10 +3,12 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
+import { checkAuth } from "../../../auth/checkAuth.js";
 import { MylistRegistration } from "../../../db/entities/mylist_registrations.js";
 import { Mylist } from "../../../db/entities/mylists.js";
+import { User, UserRole } from "../../../db/entities/users.js";
 import { Video } from "../../../db/entities/videos.js";
-import { MutationResolvers } from "../../../graphql.js";
+import { MutationLikeVideoArgs, MutationResolvers } from "../../../graphql.js";
 import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
 import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
 
@@ -30,8 +32,9 @@ export const addMylistRegistrationInNeo4j = async (
   }
 };
 
-export const likeVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
-  (async (_, { input: { videoId: videoGqlId } }, { user }) => {
+export const likeVideoScaffold =
+  ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+  async (_parent: unknown, { input: { videoId: videoGqlId } }: MutationLikeVideoArgs, { user }: { user: User }) => {
     if (!user) throw new GraphQLError("need to authenticate");
 
     const videoId = parseGqlID("Video", videoGqlId);
@@ -68,4 +71,7 @@ export const likeVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource;
     return {
       registration: new MylistRegistrationModel(registration),
     };
-  }) satisfies MutationResolvers["likeVideo"];
+  };
+
+export const likeVideo = (inject: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+  checkAuth(UserRole.NORMAL, likeVideoScaffold(inject)) satisfies MutationResolvers["likeVideo"];

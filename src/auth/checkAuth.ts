@@ -4,7 +4,7 @@ import { Context } from "../context.js";
 import { UserRole } from "../db/entities/users.js";
 
 export const checkAuth =
-  <TParent, TArgs, TResult>(
+  <TResult, TParent, TArgs>(
     requestRole: UserRole,
     resolver: (
       parent: TParent,
@@ -18,8 +18,8 @@ export const checkAuth =
     const { role } = user;
 
     if (
-      (requestRole === UserRole.EDITOR && role !== UserRole.EDITOR && role !== UserRole.ADMINISTRATOR) ||
-      (requestRole === UserRole.ADMINISTRATOR && role !== UserRole.ADMINISTRATOR)
+      (requestRole === UserRole.EDITOR && role !== UserRole.EDITOR && role !== UserRole.ADMINISTRATOR) || // Require EDITOR role
+      (requestRole === UserRole.ADMINISTRATOR && role !== UserRole.ADMINISTRATOR) // Require ADMINISTRATOR role
     )
       throw new GraphQLError(`"${op.fieldName}" needs ${requestRole} role but your role is ${role}`);
 

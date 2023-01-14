@@ -9,11 +9,11 @@ import { User } from "../../../db/entities/users.js";
 import { migrations } from "../../../db/migrations.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../../../utils/id.js";
 import { TagModel } from "../../Tag/model.js";
-import { registerTag } from "./registerTag.js";
+import { registerTagScaffold } from "./registerTag.js";
 
 describe("Mutation.registerTag", () => {
   test("is defined", () => {
-    expect(registerTag({} as { dataSource: DataSource; neo4jDriver: Neo4jDriver })).toBeDefined();
+    expect(registerTagScaffold({} as { dataSource: DataSource; neo4jDriver: Neo4jDriver })).toBeDefined();
   });
 
   test.todo("contextにuserがない場合は認証エラー");
@@ -68,7 +68,7 @@ describe("Mutation.registerTag", () => {
     });
 
     test("primaryNameだけでタグを登録する", async () => {
-      const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const registerResult = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -114,7 +114,7 @@ describe("Mutation.registerTag", () => {
     test.todo("meaninglessフラグには権限が必要");
 
     test("meaninglessフラグを立てて登録する", async () => {
-      const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const registerResult = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -138,7 +138,7 @@ describe("Mutation.registerTag", () => {
     });
 
     test("primaryNameとextraNamesで登録", async () => {
-      const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const registerResult = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -197,7 +197,7 @@ describe("Mutation.registerTag", () => {
 
     test("primaryNameが既存のprimaryNameと重複してエラー", async () => {
       /* already */
-      const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const already = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -213,7 +213,7 @@ describe("Mutation.registerTag", () => {
       const { tag: alreadyTag } = already as { tag: Tag };
 
       await expect(
-        registerTag({ dataSource: ds, neo4jDriver })?.(
+        registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
           {},
           {
             input: {
@@ -230,7 +230,7 @@ describe("Mutation.registerTag", () => {
 
     test("primaryNameが既存のextraNamesと重複してエラー", async () => {
       /* already */
-      const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const already = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -246,7 +246,7 @@ describe("Mutation.registerTag", () => {
       const { tag: alreadyTag } = already as { tag: Tag };
 
       await expect(
-        registerTag({ dataSource: ds, neo4jDriver })?.(
+        registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
           {},
           {
             input: {
@@ -263,7 +263,7 @@ describe("Mutation.registerTag", () => {
 
     test("extraNamesが既存のprimaryNameと重複してエラー", async () => {
       /* already */
-      const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const already = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -279,7 +279,7 @@ describe("Mutation.registerTag", () => {
       const { tag: alreadyTag } = already as { tag: Tag };
 
       await expect(
-        registerTag({ dataSource: ds, neo4jDriver })?.(
+        registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
           {},
           {
             input: {
@@ -296,7 +296,7 @@ describe("Mutation.registerTag", () => {
 
     test("extraNamesが既存のextraNamesと重複してエラー", async () => {
       /* already */
-      const already = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const already = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -312,7 +312,7 @@ describe("Mutation.registerTag", () => {
       const { tag: alreadyTag } = already as { tag: Tag };
 
       await expect(
-        registerTag({ dataSource: ds, neo4jDriver })?.(
+        registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
           {},
           {
             input: {
@@ -329,7 +329,7 @@ describe("Mutation.registerTag", () => {
 
     test("存在しないタグをexplicitParentとして指定するとエラー", async () => {
       await expect(
-        registerTag({ dataSource: ds, neo4jDriver })?.(
+        registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
           {},
           {
             input: {
@@ -346,7 +346,7 @@ describe("Mutation.registerTag", () => {
     });
 
     test("explicitParentだけを入れて登録する", async () => {
-      const parentResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const parentResult = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -361,7 +361,7 @@ describe("Mutation.registerTag", () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const { tag: parentTag } = parentResult! as { tag: Tag };
 
-      const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const registerResult = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -425,7 +425,7 @@ describe("Mutation.registerTag", () => {
 
     test("存在しないタグをimplicitParentsとして指定するとエラー", async () => {
       await expect(
-        registerTag({ dataSource: ds, neo4jDriver })?.(
+        registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
           {},
           {
             input: {
@@ -441,7 +441,7 @@ describe("Mutation.registerTag", () => {
     });
 
     test("implicitParentsだけを入れて登録する", async () => {
-      const parentResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const parentResult = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -456,7 +456,7 @@ describe("Mutation.registerTag", () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const { tag: parentTag } = parentResult! as { tag: Tag };
 
-      const registerResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const registerResult = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -519,7 +519,7 @@ describe("Mutation.registerTag", () => {
 
     test("explicitParentとimplicitParentsに同じIDを入れるとエラー", async () => {
       await expect(
-        registerTag({ dataSource: ds, neo4jDriver })?.(
+        registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
           {},
           {
             input: {
@@ -537,7 +537,7 @@ describe("Mutation.registerTag", () => {
 
     test("implicitParentsに同じタグを複数回入れるとエラー", async () => {
       await expect(
-        registerTag({ dataSource: ds, neo4jDriver })?.(
+        registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
           {},
           {
             input: {
@@ -553,7 +553,7 @@ describe("Mutation.registerTag", () => {
     });
 
     test("explicitParentとimplicitParentsを入れて登録する", async () => {
-      const parentRegisterResult1 = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const parentRegisterResult1 = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -568,7 +568,7 @@ describe("Mutation.registerTag", () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const { tag: parentTag1 } = parentRegisterResult1! as { tag: Tag };
 
-      const parentRegisterResult2 = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const parentRegisterResult2 = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -583,7 +583,7 @@ describe("Mutation.registerTag", () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const { tag: parentTag2 } = parentRegisterResult2! as { tag: Tag };
 
-      const actualRegisterResult = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const actualRegisterResult = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -657,7 +657,7 @@ describe("Mutation.registerTag", () => {
 
     test("bが既に存在して，b(a)を登録することは出来る", async () => {
       /* a */
-      const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const resultTagA = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -674,7 +674,7 @@ describe("Mutation.registerTag", () => {
       const { tag: tagA } = resultTagA as { tag: Tag };
 
       /* b */
-      const resultTagB = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const resultTagB = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -690,7 +690,7 @@ describe("Mutation.registerTag", () => {
       const { tag: tagB } = resultTagB as { tag: Tag };
 
       /* b(a) */
-      const resultTagB_A = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const resultTagB_A = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -743,7 +743,7 @@ describe("Mutation.registerTag", () => {
 
     test("b(a)が既に存在するなら，bを登録することは出来ない", async () => {
       /* a */
-      const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const resultTagA = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -759,7 +759,7 @@ describe("Mutation.registerTag", () => {
       const { tag: tagA } = resultTagA as { tag: Tag };
 
       /* b(a) */
-      const resultTagB_A = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const resultTagB_A = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -776,7 +776,7 @@ describe("Mutation.registerTag", () => {
       const { tag: tagB_A } = resultTagB_A as { tag: Tag };
 
       await expect(
-        registerTag({ dataSource: ds, neo4jDriver })?.(
+        registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
           {},
           {
             input: {
@@ -793,7 +793,7 @@ describe("Mutation.registerTag", () => {
 
     test("b(a)が既に存在するなら，b(a)を登録することは出来ない", async () => {
       /* a */
-      const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const resultTagA = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -808,7 +808,7 @@ describe("Mutation.registerTag", () => {
       const { tag: tagA } = resultTagA;
 
       /* b(a) */
-      const resultTagB_A = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const resultTagB_A = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -825,7 +825,7 @@ describe("Mutation.registerTag", () => {
       const { tag: tagB_A } = resultTagB_A;
 
       await expect(
-        registerTag({ dataSource: ds, neo4jDriver })?.(
+        registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
           {},
           {
             input: {
@@ -843,7 +843,7 @@ describe("Mutation.registerTag", () => {
 
     test("aを非明示的に親に持つb{a}が既に存在するなら，b(a)を登録することは出来ない", async () => {
       /* a/A */
-      const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const resultTagA = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -859,7 +859,7 @@ describe("Mutation.registerTag", () => {
       const { tag: tagA } = resultTagA as { tag: Tag };
 
       /* b{A} */
-      const resultTagB_A = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const resultTagB_A = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -875,7 +875,7 @@ describe("Mutation.registerTag", () => {
       const { tag: tagB_A } = resultTagB_A as { tag: Tag };
 
       await expect(
-        registerTag({ dataSource: ds, neo4jDriver })?.(
+        registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
           {},
           {
             input: {
@@ -893,7 +893,7 @@ describe("Mutation.registerTag", () => {
 
     test("aを非明示的に親に持つb{a}が既に存在するなら，b{a}を登録することは出来ない", async () => {
       /* a/A */
-      const resultTagA = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const resultTagA = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -909,7 +909,7 @@ describe("Mutation.registerTag", () => {
       const { tag: tagA } = resultTagA as { tag: Tag };
 
       /* b{A} */
-      const resultTagB_A = await registerTag({ dataSource: ds, neo4jDriver })?.(
+      const resultTagB_A = await registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
         {},
         {
           input: {
@@ -925,7 +925,7 @@ describe("Mutation.registerTag", () => {
       const { tag: tagB_A } = resultTagB_A as { tag: Tag };
 
       await expect(
-        registerTag({ dataSource: ds, neo4jDriver })?.(
+        registerTagScaffold({ dataSource: ds, neo4jDriver })?.(
           {},
           {
             input: {

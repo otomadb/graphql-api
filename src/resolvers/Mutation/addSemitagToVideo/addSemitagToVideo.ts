@@ -2,14 +2,16 @@ import { GraphQLError } from "graphql";
 import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
+import { checkAuth } from "../../../auth/checkAuth.js";
 import { Semitag } from "../../../db/entities/semitags.js";
+import { UserRole } from "../../../db/entities/users.js";
 import { Video } from "../../../db/entities/videos.js";
 import { MutationResolvers } from "../../../graphql.js";
 import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
 import { SemitagModel } from "../../Semitag/model.js";
 
 export const addSemitagToVideo = ({ dataSource }: { dataSource: DataSource }) =>
-  (async (_parent, { input: { videoId: videoGqlId, name: semitagName } }) => {
+  checkAuth(UserRole.NORMAL, async (_parent, { input: { videoId: videoGqlId, name: semitagName } }) => {
     // TODO: auth
     const videoId = parseGqlID("Video", videoGqlId);
 
