@@ -47,7 +47,6 @@ specifiers:
   reflect-metadata: ^0.1.13
   ts-jest: ^29.0.3
   ts-node: ^10.9.1
-  tslib: ^2.4.1
   typeorm: ^0.3.10
   typescript: ^4.9.4
   ulid: ^2.3.0
@@ -105,7 +104,6 @@ devDependencies:
   prettier: 2.8.0
   ts-jest: 29.0.3_kjdey37lxqxe7ozae6r7p5lhii
   ts-node: 10.9.1_74r3og6sjxwg5g6jjzaj7cnnfi
-  tslib: 2.4.1
   typescript: 4.9.4
 
 packages:
