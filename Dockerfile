@@ -17,8 +17,8 @@ RUN pnpm install -r --offline
 COPY ./codegen.yml ./tsconfig.json ./
 COPY src ./src
 COPY codegen-plugins ./codegen-plugins
-RUN pnpm run codegen
-RUN pnpm run build
+RUN pnpm run codegen && \
+  pnpm run build
 
 # Runner
 FROM node:18-slim AS runner
