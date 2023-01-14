@@ -1,9 +1,8 @@
-import { checkAuth } from "../../../auth/checkAuth.js";
-import { UserRole } from "../../../db/entities/users.js";
 import { QueryResolvers } from "../../../graphql.js";
 import { UserModel } from "../../User/model.js";
 
 export const whoami = () =>
-  checkAuth(UserRole.NORMAL, (p, a, { user }) => {
+  ((_parent, _args, { user }) => {
+    if (!user) return null;
     return new UserModel(user);
   }) satisfies QueryResolvers["whoami"];
