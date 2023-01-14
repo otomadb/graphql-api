@@ -2,10 +2,6 @@
   "root": true,
   "extends": ["eslint:recommended", "plugin:eslint-comments/recommended", "prettier"],
   "plugins": ["unused-imports", "simple-import-sort"],
-  "parserOptions": {
-    "sourceType": "module",
-    "ecmaVersion": "latest"
-  },
   "rules": {
     "prefer-spread": 2,
     "prefer-template": 2,

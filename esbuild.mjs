@@ -1,5 +1,6 @@
 import { commonjs } from "@hyrious/esbuild-plugin-commonjs";
 import { build } from "esbuild";
+// eslint-disable-next-line n/no-unsupported-features/node-builtins
 import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
