@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "jest.config.ts",
+    "codegen-plugins/",
+    "dist",
+    "src/db/migrations.ts",
+    "src/db/migrations",
+    "src/**/*.test.ts"
+  ]
+}
