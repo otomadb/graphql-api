@@ -13,7 +13,7 @@ COPY package.json ./
 RUN pnpm install -r --offline
 
 ## build
-COPY ./codegen.yml ./tsconfig.json ./
+COPY ./codegen.yml ./tsconfig.json ./tsconfig.prod.json ./
 COPY src ./src
 COPY codegen-plugins ./codegen-plugins
 RUN pnpm run codegen && \
