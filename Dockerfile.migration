@@ -11,6 +11,7 @@ RUN chmod +x /bin/pnpm
 
 ## install all node.js dependencies
 COPY pnpm-lock.yaml ./
+COPY patches ./patches
 RUN pnpm fetch
 COPY package.json ./
 RUN pnpm install -r --offline

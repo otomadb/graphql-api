@@ -8,6 +8,7 @@ RUN chmod +x /bin/pnpm
 
 ## install all node.js dependencies
 COPY pnpm-lock.yaml ./
+COPY patches ./patches
 RUN pnpm fetch
 COPY package.json ./
 RUN pnpm install -r --offline
@@ -34,6 +35,7 @@ RUN chmod +x /bin/pnpm
 ## install production-only node.js dependencies
 ENV NODE_ENV production
 COPY pnpm-lock.yaml ./
+COPY patches ./patches
 RUN pnpm fetch --prod
 COPY package.json ./
 RUN pnpm install -r --offline --prod

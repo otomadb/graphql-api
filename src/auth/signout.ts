@@ -1,14 +1,17 @@
-import { Middleware } from "@koa/router";
+import { RouteHandlerMethod } from "fastify";
 
-export const handlerSignout = (): Middleware => async (ctx) => {
-  const sessionId = ctx.cookies.get("otmd-session")?.split("-").at(0);
-  if (sessionId) {
-    // TODO: session expire
-  }
-  ctx.cookies.set("otmd-session", "", {
-    httpOnly: true,
-    secure: ctx.secure,
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-  });
-  ctx.body = {};
-};
+export const handlerSignout = () =>
+  (async (req, res) => {
+    const sessionId = req.cookies["otmd-session"]?.split("-").at(0);
+    if (sessionId) {
+      // TODO: session expire
+    }
+
+    res.setCookie("otmd-session", "", {
+      httpOnly: true,
+      secure: "auto",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+      path: "/",
+    });
+    res.send({});
+  }) satisfies RouteHandlerMethod;
