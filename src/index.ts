@@ -5,7 +5,7 @@ import { createSchema, createYoga } from "graphql-yoga";
 import neo4j from "neo4j-driver";
 import { DataSource } from "typeorm";
 
-import { getUserFromSession } from "./auth/getUserFromSession.js";
+import { findUserFromAuthToken, findUserFromCookie } from "./auth/getUserFromSession.js";
 import { handlerSignin } from "./auth/signin.js";
 import { handlerSignout } from "./auth/signout.js";
 import { handlerSignup } from "./auth/signup.js";
@@ -42,16 +42,20 @@ const yoga = createYoga<{ req: FastifyRequest; reply: FastifyReply }>({
     typeDefs,
     resolvers: makeResolvers({ dataSource, neo4jDriver }),
   }),
-  async context({ req, reply }) {
-    const sessionToken = req.cookies["otmd-session"];
-
-    if (sessionToken) {
-      const user = await getUserFromSession({ dataSource })(sessionToken);
+  async context({ req }) {
+    const cookie = req.cookies["otmd-session"];
+    if (cookie) {
+      const user = await findUserFromCookie({ dataSource })(cookie);
       if (user) return { user };
-    } else {
-      reply.clearCookie("otmd-session");
-      return {};
     }
+
+    const authToken = req.headers["authorization"]?.split(" ").at(1);
+    if (authToken) {
+      const user = await findUserFromAuthToken({ dataSource })(authToken);
+      if (user) return { user };
+    }
+
+    return {};
   },
   logging: {
     debug: (...args) => args.forEach((arg) => app.log.debug(arg)),

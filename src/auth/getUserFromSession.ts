@@ -5,20 +5,21 @@ import { DataSource } from "typeorm";
 import { Session } from "../db/entities/sessions.js";
 import { User } from "../db/entities/users.js";
 
-export const getUserFromSession =
+export const findUserFromCookie =
   ({ dataSource }: { dataSource: DataSource }) =>
-  async (cookieValue: string | undefined): Promise<User | null> => {
-    if (!cookieValue) return null;
-    const [sessionId, secret] = cookieValue.split("-");
+  async (cookie: string): Promise<User | null> => {
+    const [sessionId, secret] = cookie.split("-");
+
     const session = await dataSource.getRepository(Session).findOne({
-      where: {
-        id: sessionId,
-      },
+      where: { id: sessionId },
       relations: ["user"],
     });
-    if (!session) return null; // TODO: clear session cookie
+    if (!session) return null;
+
     const hashedSecret = createHash("sha256").update(secret).digest("hex");
-    if (hashedSecret === session.secret) return session.user;
-    // TODO: clear session cookie
-    return null;
+    if (hashedSecret !== session.secret) return null;
+
+    return session.user;
   };
+
+export const findUserFromAuthToken = findUserFromCookie;
