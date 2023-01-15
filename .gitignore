@@ -19,4 +19,3 @@ src/schema.graphql
 
 # tsc
 dist/
-output/
