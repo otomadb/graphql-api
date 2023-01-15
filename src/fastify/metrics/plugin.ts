@@ -1,21 +1,25 @@
-import { FastifyInstance, FastifyRequest, RouteHandlerMethod } from "fastify";
+import { FastifyInstance, RouteHandlerMethod } from "fastify";
 import fastifyPlugin from "fastify-plugin";
-import promClient, { type Histogram, LabelValues, Summary } from "prom-client";
+import promClient from "prom-client";
 
+/*
 type Label = "method" | "status_code" | "route";
 type ReqMetrics = {
   history(labels: LabelValues<Label>): number;
   summary(labels: LabelValues<Label>): number;
 };
+*/
 
 export class FastifyMetrics {
   private fastify: FastifyInstance;
   private client: typeof promClient;
 
+  /*
   private metricsStorage: WeakMap<FastifyRequest, ReqMetrics>;
 
   private histogram: Histogram<Label>;
   private summary: Summary<Label>;
+  */
 
   constructor(
     fastify: FastifyInstance,
@@ -27,10 +31,11 @@ export class FastifyMetrics {
     this.fastify = fastify;
     this.client = client;
 
-    this.metricsStorage = new WeakMap();
+    // this.metricsStorage = new WeakMap();
 
     if (option.clearRegisterOnInit) this.client.register.clear();
 
+    /*
     this.histogram = new this.client.Histogram({
       name: "http_request_duration_seconds",
       help: "request duration in seconds",
@@ -41,8 +46,9 @@ export class FastifyMetrics {
       help: "request duration in seconds summary",
       labelNames: ["method", "status_code", "route"],
     }) satisfies Summary<Label>;
+    */
 
-    this.collect();
+    // this.collect();
     this.expose();
   }
 
@@ -52,7 +58,6 @@ export class FastifyMetrics {
     const handler: RouteHandlerMethod = async (_req, reply) => {
       const merged = globalRegistry;
       const metrics = await globalRegistry.metrics();
-
       reply.type(merged.contentType).send(metrics);
     };
 
@@ -63,6 +68,7 @@ export class FastifyMetrics {
     });
   }
 
+  /*
   private async collect() {
     this.fastify
       .addHook("onRequest", (req, reply, done) => {
@@ -92,6 +98,7 @@ export class FastifyMetrics {
         done();
       });
   }
+  */
 }
 
 export type FastifyMetricsOptions = {

@@ -1,3 +1,4 @@
+import { usePrometheus } from "@envelop/prometheus";
 import cookie, { FastifyCookieOptions } from "@fastify/cookie";
 import cors, { FastifyCorsOptions } from "@fastify/cors";
 import { fastify, FastifyReply, FastifyRequest } from "fastify";
@@ -66,6 +67,15 @@ const yoga = createYoga<{ req: FastifyRequest; reply: FastifyReply }>({
     warn: (...args) => args.forEach((arg) => app.log.warn(arg)),
     error: (...args) => args.forEach((arg) => app.log.error(arg)),
   },
+  plugins: [
+    usePrometheus({
+      execute: true,
+      errors: true,
+      requestCount: true,
+      requestSummary: true,
+      resolvers: true,
+    }),
+  ],
 });
 app.route({
   url: "/graphql",

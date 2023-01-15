@@ -28,6 +28,7 @@
   "repository": "https://github.com/otomad-database/api",
   "license": "MIT",
   "dependencies": {
+    "@envelop/prometheus": "^7.0.4",
     "@fastify/cookie": "^8.3.0",
     "@fastify/cors": "^8.2.0",
     "@graphql-tools/schema": "^9.0.10",

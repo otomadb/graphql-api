@@ -7,6 +7,7 @@ patchedDependencies:
 
 specifiers:
   '@babel/core': ^7.20.12
+  '@envelop/prometheus': ^7.0.4
   '@fastify/cookie': ^8.3.0
   '@fastify/cors': ^8.2.0
   '@graphql-codegen/cli': ^2.14.1
@@ -54,6 +55,7 @@ specifiers:
   zod: ^3.19.1
 
 dependencies:
+  '@envelop/prometheus': 7.0.4_flq6ud6rc4b2yi7d56lilwnacy
   '@fastify/cookie': 8.3.0
   '@fastify/cors': 8.2.0
   '@graphql-tools/schema': 9.0.10_graphql@16.6.0
@@ -836,6 +838,15 @@ packages:
       tslib: 2.4.0
     dev: false
 
+  /@envelop/on-resolve/2.0.4_graphql@16.6.0:
+    resolution: {integrity: sha512-1Yi+AkB8K0VmS6qh6jyTWdJbcRofTCtEY0esdF/y2Q1rVe+1z6CxBHj+f2dRhJVixSxmjemBZR9iqfEpg9oRIQ==}
+    peerDependencies:
+      '@envelop/core': ^3.0.4
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      graphql: 16.6.0
+    dev: false
+
   /@envelop/parser-cache/5.0.4_a6sekiasy2tqr6d5gj7n2wtjli:
     resolution: {integrity: sha512-+kp6nzCVLYI2WQExQcE3FSy6n9ZGB5GYi+ntyjYdxaXU41U1f8RVwiLdyh0Ewn5D/s/zaLin09xkFKITVSAKDw==}
     peerDependencies:
@@ -845,6 +856,19 @@ packages:
       '@envelop/core': 3.0.4
       graphql: 16.6.0
       lru-cache: 6.0.0
+      tslib: 2.4.1
+    dev: false
+
+  /@envelop/prometheus/7.0.4_flq6ud6rc4b2yi7d56lilwnacy:
+    resolution: {integrity: sha512-gtyOGs6X7uGXUg5IJ+nIi4prW2bMHSmzEzlkKmqvhFHFsMigzHcy+IEb+1PuY/Eml3VqRkccmMj/WXjatpHYHg==}
+    peerDependencies:
+      '@envelop/core': ^3.0.4
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+      prom-client: ^13 || ^14.0.0
+    dependencies:
+      '@envelop/on-resolve': 2.0.4_graphql@16.6.0
+      graphql: 16.6.0
+      prom-client: 14.1.1
       tslib: 2.4.1
     dev: false
 
