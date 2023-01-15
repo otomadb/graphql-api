@@ -10,6 +10,7 @@ import { handlerSignin } from "./auth/signin.js";
 import { handlerSignout } from "./auth/signout.js";
 import { handlerSignup } from "./auth/signup.js";
 import { entities } from "./db/entities/index.js";
+import metrics, { type FastifyMetricsOptions } from "./fastify/metrics/plugin.js";
 import { typeDefs } from "./graphql.js";
 import { handlerRemoteNicovideo } from "./remote/nicovideo.js";
 import { resolvers as makeResolvers } from "./resolvers/index.js";
@@ -28,14 +29,16 @@ const neo4jDriver = neo4j.driver(
 
 const app = fastify({
   logger: {
+    enabled: true,
     transport: {
       target: "pino-pretty",
     },
   },
 });
 
-await app.register(cors, { credentials: true, origin: true } as FastifyCorsOptions);
-await app.register(cookie, {} as FastifyCookieOptions);
+await app.register(cors, { credentials: true, origin: true } satisfies FastifyCorsOptions);
+await app.register(cookie, {} satisfies FastifyCookieOptions);
+await app.register(metrics, { endpoint: "/metrics" } as FastifyMetricsOptions);
 
 const yoga = createYoga<{ req: FastifyRequest; reply: FastifyReply }>({
   schema: createSchema<{ req: FastifyRequest; reply: FastifyReply }>({

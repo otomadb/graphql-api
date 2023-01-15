@@ -31,6 +31,7 @@ specifiers:
   eslint-plugin-simple-import-sort: 8.0.0
   eslint-plugin-unused-imports: 2.0.0
   fastify: ^4.11.0
+  fastify-plugin: ^4.5.0
   graphql: ^16.6.0
   graphql-schema-linter: ^3.0.1
   graphql-tag: ^2.12.6
@@ -42,6 +43,7 @@ specifiers:
   pg: ^8.8.0
   pino-pretty: ^9.1.1
   prettier: ^2.8.0
+  prom-client: ^14.1.1
   reflect-metadata: ^0.1.13
   ts-jest: ^29.0.3
   ts-node: ^10.9.1
@@ -58,12 +60,14 @@ dependencies:
   '@whatwg-node/server': 0.4.17_nlq3sddwjbqhx4pnna5vr5bk2y_@types+node@18.11.9
   argon2: 0.30.2
   fastify: 4.11.0
+  fastify-plugin: 4.5.0
   graphql: 16.6.0
   graphql-tag: 2.12.6_graphql@16.6.0
   graphql-yoga: 3.3.0_xfoe4adolgvm4tvnio5xigcr6e
   neo4j-driver: 5.3.0
   pg: 8.8.0
   pino-pretty: 9.1.1
+  prom-client: 14.1.1
   reflect-metadata: 0.1.13
   typeorm: 0.3.10_pg@8.8.0+ts-node@10.9.1
   ulid: 2.3.0
@@ -2689,6 +2693,10 @@ packages:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
     engines: {node: '>=8'}
     dev: true
+
+  /bintrees/1.0.2:
+    resolution: {integrity: sha512-VOMgTMwjAaUG580SXn3LacVgjurrbMme7ZZNYGSSV7mmtY6QQRh0Eg3pwIcntQ77DErK1L0NxkbetjcoXzVwKw==}
+    dev: false
 
   /bl/4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
@@ -6264,6 +6272,13 @@ packages:
     engines: {node: '>= 0.6.0'}
     dev: false
 
+  /prom-client/14.1.1:
+    resolution: {integrity: sha512-hFU32q7UZQ59bVJQGUtm3I2PrJ3gWvoCkilX9sF165ks1qflhugVCeK+S1JjJYHvyt3o5kj68+q3bchormjnzw==}
+    engines: {node: '>=10'}
+    dependencies:
+      tdigest: 0.1.2
+    dev: false
+
   /promise/7.3.1:
     resolution: {integrity: sha512-nolQXZ/4L+bP/UGlkfaIujX9BKxGwmQ9OT4mOt5yvy8iK1h3wqTEJCijzGANTCCl9nWjY41juyAn2K3Q1hLLTg==}
     dependencies:
@@ -6875,6 +6890,12 @@ packages:
       minizlib: 2.1.2
       mkdirp: 1.0.4
       yallist: 4.0.0
+    dev: false
+
+  /tdigest/0.1.2:
+    resolution: {integrity: sha512-+G0LLgjjo9BZX2MfdvPfH+MKLCrxlXSYec5DaPYP1fe6Iyhf0/fSmJ0bFiZ1F8BT6cGXl2LpltQptzjXKWEkKA==}
+    dependencies:
+      bintrees: 1.0.2
     dev: false
 
   /test-exclude/6.0.0:
