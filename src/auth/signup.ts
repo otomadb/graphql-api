@@ -1,5 +1,5 @@
-import { Middleware } from "@koa/router";
 import * as argon2 from "argon2";
+import { RouteHandlerMethod } from "fastify";
 import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 import { z } from "zod";
@@ -8,16 +8,15 @@ import { Mylist, MylistShareRange } from "../db/entities/mylists.js";
 import { User, UserRole } from "../db/entities/users.js";
 import { createSession } from "./createSession.js";
 
-export const handlerSignup =
-  ({ dataSource }: { dataSource: DataSource }): Middleware =>
-  async (ctx) => {
+export const handlerSignup = ({ dataSource }: { dataSource: DataSource }) =>
+  (async (req, reply) => {
     const parseRequest = z
       .object({ name: z.string(), displayName: z.string(), email: z.string(), password: z.string() })
-      .safeParse(ctx.request.body);
+      .safeParse(req.body);
 
     if (!parseRequest.success) {
-      ctx.status = 400;
-      ctx.body = { code: "INVALID_REQUEST" };
+      reply.status(400);
+      reply.send({ code: "INVALID_REQUEST" });
       return;
     }
     const { name, displayName, email, password } = parseRequest.data;
@@ -28,8 +27,8 @@ export const handlerSignup =
         .findOne({ where: { name } })
         .then((v) => !!v)
     ) {
-      ctx.status = 400;
-      ctx.body = { code: "USER_NAME_ALREADY_REGISTERED" };
+      reply.status(400);
+      reply.send({ code: "USER_NAME_ALREADY_REGISTERED" });
       return;
     }
 
@@ -39,8 +38,8 @@ export const handlerSignup =
         .findOne({ where: { email } })
         .then((v) => !!v)
     ) {
-      ctx.status = 400;
-      ctx.body = { code: "EMAIL_ALREADY_REGISTERED" };
+      reply.status(400);
+      reply.send({ code: "EMAIL_ALREADY_REGISTERED" });
       return;
     }
 
@@ -72,10 +71,11 @@ export const handlerSignup =
     });
 
     const session = await createSession(dataSource, user);
-    ctx.cookies.set("otmd-session", `${session.id}-${session.secret}`, {
+    reply.setCookie("otmd-session", session, {
       httpOnly: true,
-      secure: ctx.secure,
+      secure: "auto",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+      path: "/",
     });
-    ctx.body = { id: user.id };
-  };
+    reply.send({ id: user.id });
+  }) satisfies RouteHandlerMethod;

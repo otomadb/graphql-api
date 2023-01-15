@@ -1,4 +1,4 @@
-import { Middleware } from "@koa/router";
+import { RawReplyDefaultExpression, RawRequestDefaultExpression, RawServerDefault, RouteHandlerMethod } from "fastify";
 import { z } from "zod";
 
 import { isValidNicovideoSourceId } from "../utils/isValidNicovideoSourceId.js";
@@ -33,10 +33,10 @@ const apiResponse = z.object({
   }),
 });
 
-export const handlerRemoteNicovideo: Middleware = async (ctx) => {
-  const sourceId = ctx.query["id"];
+export const handlerRemoteNicovideo = (async (req, reply) => {
+  const sourceId = req.query["id"];
   if (typeof sourceId !== "string" || !isValidNicovideoSourceId(sourceId)) {
-    ctx.status = 400;
+    reply.status(400);
     return;
   }
 
@@ -51,8 +51,8 @@ export const handlerRemoteNicovideo: Middleware = async (ctx) => {
 
   const parsed = apiResponse.safeParse(json);
   if (!parsed.success) {
-    ctx.status = 404;
-    ctx.body = parsed.error;
+    reply.status(400);
+    reply.send(parsed.error);
     return;
   }
 
@@ -60,7 +60,7 @@ export const handlerRemoteNicovideo: Middleware = async (ctx) => {
     data: { tag, video },
   } = parsed.data;
 
-  ctx.body = {
+  reply.send({
     sourceId: video.id,
     title: video.title,
     duration: video.duration,
@@ -75,5 +75,10 @@ export const handlerRemoteNicovideo: Middleware = async (ctx) => {
       ogp: video.thumbnail.ogp,
     },
     tags: tag.items.map(({ name }) => ({ name })),
-  };
-};
+  });
+}) satisfies RouteHandlerMethod<
+  RawServerDefault,
+  RawRequestDefaultExpression,
+  RawReplyDefaultExpression,
+  { Querystring: { id: string } }
+>;
