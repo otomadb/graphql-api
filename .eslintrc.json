@@ -18,14 +18,14 @@
   },
   "overrides": [
     {
-      "files": ["codegen-plugins/*.mjs"],
+      "files": ["codegen-plugins/*.mjs", "esbuild.mjs"],
       "extends": ["plugin:n/recommended"],
       "parserOptions": {
         "sourceType": "module",
         "ecmaVersion": "latest"
       },
       "rules": {
-        "n/no-unpublished-import": [2, { "allowModules": ["@graphql-tools/utils"] }]
+        "n/no-unpublished-import": 0
       }
     },
     {
