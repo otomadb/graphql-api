@@ -46,23 +46,7 @@ services:
     environment:
       NEO4J_AUTH: neo4j/password
 
-  prometheus:
-    image: prom/prometheus:v2.4.0
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    ports:
-      - target: 9090
-        published: 9090
-    volumes:
-      - type: bind
-        source: ./prometheus/prometheus.yml
-        target: /etc/prometheus/prometheus.yml
-      - type: volume
-        source: prometheus_data
-        target: /prometheus
-
 volumes:
   postgres_data:
   neo4j_data:
   neo4j_logs:
-  prometheus_data:
