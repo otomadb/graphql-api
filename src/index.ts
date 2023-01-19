@@ -89,8 +89,17 @@ app.post("/auth/logout", handlerSignout());
 
 app.get<{ Querystring: { id: string } }>("/remote/nicovideo", handlerRemoteNicovideo);
 
+const port = process.env.PORT ? parseInt(process.env.PORT) : 8080;
+const host = process.env.HOST || "localhost";
+
+if (isNaN(port)) {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  app.log.error(`"${process.env.PORT!}" was specified as "PORT" but it cannot be parsed to port number`);
+  process.exit(1);
+}
+
 app
-  .listen({ port: 8080 })
+  .listen({ port, host })
   .then((serverUrl) => {
     app.log.info(`server listening at ${serverUrl}`);
   })
