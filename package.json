@@ -28,6 +28,7 @@
   "repository": "https://github.com/otomad-database/api",
   "license": "MIT",
   "dependencies": {
+    "@envelop/prometheus": "^7.0.4",
     "@fastify/cookie": "^8.3.0",
     "@fastify/cors": "^8.2.0",
     "@graphql-tools/schema": "^9.0.10",
@@ -40,6 +41,7 @@
     "neo4j-driver": "^5.3.0",
     "pg": "^8.8.0",
     "pino-pretty": "^9.1.1",
+    "prom-client": "^14.1.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.10",
     "ulid": "^2.3.0",
