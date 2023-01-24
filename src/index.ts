@@ -18,7 +18,12 @@ import { resolvers as makeResolvers } from "./resolvers/index.js";
 
 const dataSource = new DataSource({
   type: "postgres",
-  url: process.env.DATABASE_URL,
+  url: process.env.POSTGRES_URL,
+  host: process.env.POSTGRES_HOST,
+  port: parseInt(process.env.POSTGRES_PORT, 10),
+  username: process.env.POSTGRES_USERNAME,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DATABASE,
   entities,
 });
 await dataSource.initialize();

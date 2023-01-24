@@ -7,7 +7,12 @@ declare namespace NodeJS {
 
     readonly NODE_ENV: "development" | "production";
 
-    readonly DATABASE_URL: string;
+    readonly POSTGRES_HOST: string;
+    readonly POSTGRES_PORT: string;
+    readonly POSTGRES_USERNAME: string;
+    readonly POSTGRES_PASSWORD: string;
+    readonly POSTGRES_DATABASE: string;
+
     readonly NEO4J_URL: string;
     readonly NEO4J_USERNAME: string;
     readonly NEO4J_PASSWORD: string;
