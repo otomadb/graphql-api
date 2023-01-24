@@ -6,7 +6,7 @@ import { z } from "zod";
 
 import { Mylist, MylistShareRange } from "../db/entities/mylists.js";
 import { User, UserRole } from "../db/entities/users.js";
-import { Result } from "../utils/Result";
+import { Result } from "../utils/Result.js";
 import { createSession } from "./createSession.js";
 
 const reqBodySchema = z.object({
