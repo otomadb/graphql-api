@@ -16,7 +16,13 @@ services:
     environment:
       PORT: 4000
       HOST: "0.0.0.0"
-      DATABASE_URL: "postgres://user:pass@postgres:5432/test"
+
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_USERNAME: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DATABASE: test
+
       NEO4J_URL: "bolt://neo4j:7687"
       NEO4J_USERNAME: "neo4j"
       NEO4J_PASSWORD: "password"
