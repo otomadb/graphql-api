@@ -41,6 +41,8 @@ export const registerUser = async (
   });
   user.icon = null;
   user.emailConfirmed = true; // FIXME: あとでなおす
+  if (await dataSource.getRepository(User).findOneBy({ role: UserRole.ADMINISTRATOR })) user.role = UserRole.NORMAL;
+  else user.role = UserRole.ADMINISTRATOR;
 
   // Add user likes
   const userLikes = new Mylist();
@@ -51,14 +53,8 @@ export const registerUser = async (
   userLikes.holder = user;
 
   await dataSource.transaction(async (e) => {
-    const repoUsers = e.getRepository(User);
-    const repoMylists = e.getRepository(Mylist);
-
-    if (!(await repoUsers.findOneBy({ role: UserRole.ADMINISTRATOR }))) user.role = UserRole.ADMINISTRATOR;
-    else user.role = UserRole.NORMAL;
-
-    await repoUsers.insert(user);
-    await repoMylists.insert(userLikes);
+    await e.getRepository(User).insert(user);
+    await e.getRepository(Mylist).insert(userLikes);
   });
 
   return { status: "ok", data: { user } };
