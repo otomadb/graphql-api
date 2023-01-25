@@ -1,35 +1,23 @@
+import { MylistShareRange } from "@prisma/client";
 import { GraphQLError } from "graphql";
-import { DataSource, In } from "typeorm";
 
-import { Mylist, MylistShareRange } from "../../db/entities/mylists.js";
 import { UserRole } from "../../db/entities/users.js";
 import { MylistShareRange as GraphQLMylistShareRange, Resolvers } from "../../graphql.js";
 import { buildGqlId, parseGqlID } from "../../utils/id.js";
+import { ResolverDeps } from "../index.js";
 import { MylistModel } from "../Mylist/model.js";
 import { resolveUserLikes } from "./likes.js";
 
-export const convertMylistShareRange = (ranges: GraphQLMylistShareRange[]) =>
-  ranges.map((r) => {
-    switch (r) {
-      case GraphQLMylistShareRange.Public:
-        return MylistShareRange.PUBLIC;
-      case GraphQLMylistShareRange.KnowLink:
-        return MylistShareRange.KNOW_LINK;
-      case GraphQLMylistShareRange.Private:
-        return MylistShareRange.PRIVATE;
-    }
-  });
-
-export const resolveUser = ({ dataSource: ds }: { dataSource: DataSource }) =>
+export const resolveUser = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
     id: ({ id }): string => buildGqlId("Video", id),
-    likes: resolveUserLikes({ dataSource: ds }),
+    likes: resolveUserLikes({ prisma }),
 
     mylist: async ({ id: userId }, { id: gqlMylistId }, { user: authuser }) => {
-      const mylist = await ds.getRepository(Mylist).findOne({ where: { id: parseGqlID("Mylist", gqlMylistId) } });
+      const mylist = await prisma.mylist.findFirst({ where: { id: parseGqlID("Mylist", gqlMylistId) } });
 
       if (!mylist) return null;
-      if (mylist.range === MylistShareRange.PRIVATE && authuser?.id !== userId) return null;
+      if (mylist.shareRange === MylistShareRange.PRIVATE && authuser?.id !== userId) return null; // TODO: 現状ではnullを返すが何らかのエラー型のunionにしても良い気がする
 
       return new MylistModel(mylist);
     },
@@ -44,25 +32,26 @@ export const resolveUser = ({ dataSource: ds }: { dataSource: DataSource }) =>
           `Cannot list "${GraphQLMylistShareRange.KnowLink}" mylists for "${buildGqlId("Video", userId)}"`
         );
 
-      const nodes = await ds
-        .getRepository(Mylist)
-        .find({
+      const nodes = await prisma.mylist
+        .findMany({
           where: {
             holder: { id: userId },
-            range: In(convertMylistShareRange(input.range)),
+            shareRange: { in: input.range },
           },
           take: input.limit,
           skip: input.skip,
-          order: {
+          orderBy: {
+            // TODO: for Prisma
+            createdAt: "asc",
+            /*
             createdAt: input.order.createdAt || undefined,
             updatedAt: input.order.updatedAt || undefined,
+            */
           },
         })
         .then((ms) => ms.map((m) => new MylistModel(m)));
 
-      return {
-        nodes,
-      };
+      return { nodes };
     },
 
     isEditor: ({ role }) => role === UserRole.EDITOR || role === UserRole.ADMINISTRATOR,

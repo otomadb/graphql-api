@@ -1,4 +1,4 @@
-import { Mylist } from "../../db/entities/mylists.js";
+import { Mylist } from "@prisma/client";
 
 export class MylistModel {
   public id;
@@ -8,10 +8,10 @@ export class MylistModel {
   public createdAt: Date;
   public updatedAt: Date;
 
-  constructor({ id, range, title, createdAt, updatedAt, isLikeList }: Mylist) {
+  constructor({ id, shareRange, title, createdAt, updatedAt, isLikeList }: Mylist) {
     this.id = id;
     this.title = title;
-    this.range = range;
+    this.range = shareRange;
     this.isLikeList = isLikeList;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
