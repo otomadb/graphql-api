@@ -1,20 +1,12 @@
 import { GraphQLError } from "graphql";
 import { Driver as Neo4jDriver } from "neo4j-driver";
-import { DataSource, In } from "typeorm";
 import { ulid } from "ulid";
 
 import { checkAuth } from "../../../auth/checkAuth.js";
-import { NicovideoVideoSource } from "../../../db/entities/nicovideo_video_sources.js";
-import { Semitag } from "../../../db/entities/semitags.js";
-import { Tag } from "../../../db/entities/tags.js";
-import { UserRole } from "../../../db/entities/users.js";
-import { VideoTag } from "../../../db/entities/video_tags.js";
-import { VideoThumbnail } from "../../../db/entities/video_thumbnails.js";
-import { VideoTitle } from "../../../db/entities/video_titles.js";
-import { Video } from "../../../db/entities/videos.js";
 import { MutationRegisterVideoArgs, MutationResolvers, RegisterVideoInputSourceType } from "../../../graphql.js";
 import { parseGqlIDs } from "../../../utils/id.js";
 import { isValidNicovideoSourceId } from "../../../utils/isValidNicovideoSourceId.js";
+import { ResolverDeps } from "../../index.js";
 import { VideoModel } from "../../Video/model.js";
 
 export const registerVideoInNeo4j = async (neo4jDriver: Neo4jDriver, rels: { videoId: string; tagId: string }[]) => {
@@ -41,7 +33,7 @@ export const registerVideoInNeo4j = async (neo4jDriver: Neo4jDriver, rels: { vid
 };
 
 export const registerVideoScaffold =
-  ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+  ({ prisma, neo4jDriver }: Pick<ResolverDeps, "prisma" | "neo4jDriver">) =>
   async (_parent: unknown, { input }: MutationRegisterVideoArgs) => {
     // validity check
     const nicovideoSourceIds = input.sources

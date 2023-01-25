@@ -1,15 +1,12 @@
 import { GraphQLError } from "graphql";
 import { Driver as Neo4jDriver } from "neo4j-driver";
-import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
 import { checkAuth } from "../../../auth/checkAuth.js";
-import { Semitag } from "../../../db/entities/semitags.js";
-import { Tag } from "../../../db/entities/tags.js";
-import { UserRole } from "../../../db/entities/users.js";
-import { VideoTag } from "../../../db/entities/video_tags.js";
 import { MutationResolvers } from "../../../graphql.js";
 import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
+import { ResolverDeps } from "../../index.js";
+import { UserRole } from ".prisma/client";
 
 export const resolveSemitagInNeo4j = async (
   neo4jDriver: Neo4jDriver,
@@ -31,7 +28,7 @@ export const resolveSemitagInNeo4j = async (
   }
 };
 
-export const resolveSemitag = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+export const resolveSemitag = ({ dataSource, neo4jDriver }: Pick<ResolverDeps, "prisma" | "neo4jDriver">) =>
   checkAuth(UserRole.EDITOR, async (_, { input: { id: semitagGqlId, tagId: tagGqlId } }) => {
     const semitagId = parseGqlID("Semitag", semitagGqlId);
     const tagId = tagGqlId ? parseGqlID("Tag", tagGqlId) : null;

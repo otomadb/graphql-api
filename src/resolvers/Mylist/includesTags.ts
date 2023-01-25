@@ -1,11 +1,10 @@
-import { DataSource } from "typeorm";
-
 import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
 import { VideoTag } from "../../db/entities/video_tags.js";
 import { MylistResolvers } from "../../graphql.js";
+import { ResolverDeps } from "../index.js";
 import { MylistTagInclusionModel } from "../MylistTagInclusion/model.js";
 
-export const resolveIncludeTags = ({ dataSource }: { dataSource: DataSource }) =>
+export const resolveIncludeTags = ({ prisma, neo4jDriver }: Pick<ResolverDeps, "prisma" | "neo4jDriver">) =>
   (async ({ id: mylistId }, { input }) => {
     const result = await dataSource
       .getRepository(MylistRegistration)

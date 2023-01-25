@@ -1,14 +1,12 @@
 import { GraphQLError } from "graphql";
-import { DataSource, In, Like } from "typeorm";
 
-import { VideoTitle } from "../../../db/entities/video_titles.js";
-import { Video } from "../../../db/entities/videos.js";
 import { QueryResolvers } from "../../../graphql.js";
+import { ResolverDeps } from "../../index.js";
 import { VideoModel } from "../../Video/model.js";
 
-export const searchVideos = ({ dataSource }: { dataSource: DataSource }) =>
+export const searchVideos = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async (_, { input }) => {
-    const videoTitles = await dataSource
+    const videoTitles = await dataSourcs
       .getRepository(VideoTitle)
       .createQueryBuilder("videoTitle")
       .where({ title: Like(`%${input.query}%`) })

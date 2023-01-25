@@ -1,24 +1,21 @@
-import { DataSource } from "typeorm";
-
-import { MylistGroup } from "../../db/entities/mylist_group.js";
 import { Resolvers } from "../../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../../utils/id.js";
+import { ResolverDeps } from "../index.js";
 import { UserModel } from "../User/model.js";
 import { resolveMylists } from "./mylists.js";
 import { resolveVideos } from "./videos.js";
 
-export const resolveMylistGroup = ({ dataSource }: { dataSource: DataSource }) =>
+export const resolveMylistGroup = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
     id: ({ id }) => buildGqlId("MylistGroup", id),
-    holder: ({ id }) =>
-      dataSource
-        .getRepository(MylistGroup)
-        .findOneOrFail({ where: { id }, relations: { holder: true } })
-        .then((v) => new UserModel(v.holder))
+    holder: ({ holderId }) =>
+      prisma.user
+        .findUniqueOrThrow({ where: { id: holderId } })
+        .then((v) => new UserModel(v))
         .catch(() => {
-          throw new GraphQLNotExistsInDBError("Mylist", id);
+          throw new GraphQLNotExistsInDBError("User", holderId);
         }),
 
-    mylists: resolveMylists({ dataSource }),
-    videos: resolveVideos({ dataSource }),
+    mylists: resolveMylists({ prisma }),
+    videos: resolveVideos({ prisma }),
   } satisfies Resolvers["MylistGroup"]);

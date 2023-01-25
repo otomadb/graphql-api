@@ -1,11 +1,9 @@
+import { PrismaClient, UserRole } from "@prisma/client";
 import * as argon2 from "argon2";
 import { RouteHandlerMethod } from "fastify";
-import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 import { z } from "zod";
 
-import { Mylist, MylistShareRange } from "../db/entities/mylists.js";
-import { User, UserRole } from "../db/entities/users.js";
 import { Result } from "../utils/Result.js";
 import { createSession } from "./createSession.js";
 
@@ -17,12 +15,12 @@ const reqBodySchema = z.object({
 });
 
 export const registerUser = async (
-  dataSource: DataSource,
+  prisma: PrismaClient,
   input: z.infer<typeof reqBodySchema>
 ): Promise<Result<{ message: "USER_NAME_ALREADY_REGISTERED" }, { user: User }>> => {
   const { name, displayName, email, password: rawPassword } = input;
 
-  if (await dataSource.getRepository(User).findOneBy({ name }))
+  if (await prisma.user.findUnique({ where: { name } }))
     return {
       status: "error",
       error: { message: "USER_NAME_ALREADY_REGISTERED" },
@@ -41,7 +39,7 @@ export const registerUser = async (
   });
   user.icon = null;
   user.emailConfirmed = true; // FIXME: あとでなおす
-  if (await dataSource.getRepository(User).findOneBy({ role: UserRole.ADMINISTRATOR })) user.role = UserRole.NORMAL;
+  if (await prisma.user.findFirstOrThrow({ where: { role: UserRole.ADMINISTRATOR } })) user.role = UserRole.NORMAL;
   else user.role = UserRole.ADMINISTRATOR;
 
   // Add user likes
@@ -60,13 +58,13 @@ export const registerUser = async (
   return { status: "ok", data: { user } };
 };
 
-export const handlerSignup = ({ dataSource }: { dataSource: DataSource }) =>
+export const handlerSignup = (prisma: PrismaClient) =>
   (async (req, reply) => {
     const parsedReqBody = reqBodySchema.safeParse(req.body);
 
     if (!parsedReqBody.success) return reply.status(400).send({ code: "INVALID_REQUEST" });
 
-    const result = await registerUser(dataSource, parsedReqBody.data);
+    const result = await registerUser(prisma, parsedReqBody.data);
     if (result.status === "error") {
       switch (result.error.message) {
         case "USER_NAME_ALREADY_REGISTERED":

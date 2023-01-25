@@ -1,16 +1,13 @@
 import { GraphQLError } from "graphql";
-import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
 import { checkAuth } from "../../../auth/checkAuth.js";
-import { MylistGroup, MylistGroupMylistInclusion } from "../../../db/entities/mylist_group.js";
-import { Mylist } from "../../../db/entities/mylists.js";
-import { UserRole } from "../../../db/entities/users.js";
 import { MutationResolvers } from "../../../graphql.js";
 import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
+import { ResolverDeps } from "../../index.js";
 import { MylistGroupMylistInclusionModel } from "../../MylistGroupMylistInclusion/model.js";
 
-export const addMylistToMylistGroup = ({ dataSource }: { dataSource: DataSource }) =>
+export const addMylistToMylistGroup = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   checkAuth(UserRole.NORMAL, async (_parent, { input: { mylistId: mylistGqlId, groupId: groupGqlId } }) => {
     const mylistId = parseGqlID("Mylist", mylistGqlId);
     const groupId = parseGqlID("MylistGroup", groupGqlId);

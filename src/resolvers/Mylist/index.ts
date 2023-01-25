@@ -1,18 +1,15 @@
 import { GraphQLError } from "graphql";
-import { Driver as Neo4jDriver } from "neo4j-driver";
-import { DataSource } from "typeorm";
 
-import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
-import { Mylist, MylistShareRange } from "../../db/entities/mylists.js";
 import { MylistShareRange as MylistGQLShareRange } from "../../graphql.js";
 import { Resolvers } from "../../graphql.js";
 import { buildGqlId, parseGqlID } from "../../utils/id.js";
+import { ResolverDeps } from "../index.js";
 import { MylistRegistrationModel } from "../MylistRegistration/model.js";
 import { UserModel } from "../User/model.js";
 import { resolveIncludeTags } from "./includesTags.js";
 import { resolveRecommendedVideos } from "./recommendedVideos.js";
 
-export const resolveMylist = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+export const resolveMylist = ({ dataSource, neo4jDriver }: Pick<ResolverDeps, "prisma" | "neo4jDriver">) =>
   ({
     id: ({ id }) => buildGqlId("Mylist", id),
     range: ({ range }) => {

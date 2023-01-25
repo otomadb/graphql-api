@@ -1,23 +1,22 @@
-import { DataSource } from "typeorm";
-
-import { MylistGroupMylistInclusion } from "../../db/entities/mylist_group.js";
 import { MylistGroupResolvers } from "../../graphql.js";
+import { ResolverDeps } from "../index.js";
 import { MylistGroupMylistInclusionModel } from "../MylistGroupMylistInclusion/model.js";
 
-export const resolveMylists = ({ dataSource }: { dataSource: DataSource }) =>
+export const resolveMylists = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async ({ id }, { input }) => {
-    const inclusions = await dataSource.getRepository(MylistGroupMylistInclusion).find({
+    const inclusions = await prisma.mylistGroupMylistInclsion.findMany({
       where: { group: { id } },
-      relations: { mylist: true },
       take: input.limit,
       skip: input.skip,
-      order: {
+      orderBy: {
+        // TODO: Prisma
+        createdAt: "asc",
+        /*
         createdAt: input.order.createdAt || undefined,
         updatedAt: input.order.updatedAt || undefined,
+        */
       },
     });
-
     const nodes = inclusions.map((i) => new MylistGroupMylistInclusionModel(i));
-
     return { nodes };
   }) satisfies MylistGroupResolvers["mylists"];

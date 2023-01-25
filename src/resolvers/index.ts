@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { Driver as Neo4jDriver } from "neo4j-driver";
-import { DataSource } from "typeorm";
 
 import { type Resolvers } from "../graphql.js";
 import { resolveMutation } from "./Mutation/index.js";
@@ -21,7 +20,7 @@ import { resolveVideoSimilarity } from "./VideoSimilarity/index.js";
 
 export type ResolverDeps = {
   prisma: PrismaClient;
-  dataSource: DataSource;
+  // dataSource: DataSource;
   neo4jDriver: Neo4jDriver;
 };
 

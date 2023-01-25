@@ -1,13 +1,12 @@
-import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
 import { checkAuth } from "../../../auth/checkAuth.js";
-import { MylistGroup } from "../../../db/entities/mylist_group.js";
-import { UserRole } from "../../../db/entities/users.js";
 import { MutationResolvers } from "../../../graphql.js";
+import { ResolverDeps } from "../../index.js";
 import { MylistGroupModel } from "../../MylistGroup/model.js";
+import { UserRole } from ".prisma/client";
 
-export const createMylistGroup = ({ dataSource }: { dataSource: DataSource }) =>
+export const createMylistGroup = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   checkAuth(UserRole.NORMAL, async (_parent, { input }, { user }) => {
     const group = new MylistGroup();
 

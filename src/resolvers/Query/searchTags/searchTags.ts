@@ -1,12 +1,10 @@
 import { GraphQLError } from "graphql";
-import { DataSource, In, Like } from "typeorm";
 
-import { TagName } from "../../../db/entities/tag_names.js";
-import { Tag } from "../../../db/entities/tags.js";
 import { QueryResolvers } from "../../../graphql.js";
+import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 
-export const searchTags = ({ dataSource }: { dataSource: DataSource }) =>
+export const searchTags = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async (_, { input }) => {
     const tagNames = await dataSource
       .getRepository(TagName)

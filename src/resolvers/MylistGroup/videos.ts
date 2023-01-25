@@ -1,11 +1,10 @@
-import { DataSource } from "typeorm";
-
 import { MylistGroupMylistInclusion } from "../../db/entities/mylist_group.js";
 import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
 import { MylistGroupResolvers } from "../../graphql.js";
+import { ResolverDeps } from "../index.js";
 import { MylistGroupVideoAggregationModel } from "../MylistGroupVideoAggregation/model.js";
 
-export const resolveVideos = ({ dataSource }: { dataSource: DataSource }) =>
+export const resolveVideos = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async ({ id }, { input }) => {
     const aggr = await dataSource
       .getRepository(MylistGroupMylistInclusion)

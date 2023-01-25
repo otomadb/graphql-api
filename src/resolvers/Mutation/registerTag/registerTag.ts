@@ -1,17 +1,11 @@
 import { GraphQLError } from "graphql";
 import { Driver as Neo4jDriver } from "neo4j-driver";
-import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
 import { checkAuth } from "../../../auth/checkAuth.js";
-import { Semitag } from "../../../db/entities/semitags.js";
-import { TagName } from "../../../db/entities/tag_names.js";
-import { TagParent } from "../../../db/entities/tag_parents.js";
-import { Tag } from "../../../db/entities/tags.js";
-import { UserRole } from "../../../db/entities/users.js";
-import { VideoTag } from "../../../db/entities/video_tags.js";
 import { MutationRegisterTagArgs, MutationResolvers } from "../../../graphql.js";
 import { GraphQLNotExistsInDBError, parseGqlID, parseGqlIDs } from "../../../utils/id.js";
+import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 
 export const registerTagInNeo4j = async (neo4jDriver: Neo4jDriver, rels: { videoId: string; tagId: string }[]) => {
@@ -38,7 +32,7 @@ export const registerTagInNeo4j = async (neo4jDriver: Neo4jDriver, rels: { video
 };
 
 export const registerTagScaffold =
-  ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+  ({ prisma, neo4jDriver }: Pick<ResolverDeps, "prisma" | "neo4jDriver">) =>
   async (_: unknown, { input }: MutationRegisterTagArgs) => {
     const { primaryName, extraNames, meaningless } = input;
 

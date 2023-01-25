@@ -1,21 +1,27 @@
-import { DataSource, In } from "typeorm";
-
-import { Tag } from "../../../db/entities/tags.js";
 import { QueryResolvers } from "../../../graphql.js";
+import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 
-export const findTags = ({ dataSource }: { dataSource: DataSource }) =>
+export const findTags = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async (_parent, { input }) => {
-    const tags = await dataSource.getRepository(Tag).find({
+    const tags = await prisma.tag.findMany({
       take: input.limit,
       skip: input.skip,
-      order: {
+      orderBy: {
+        // TODO: Prsima
+        createdAt: "asc",
+        /*
         createdAt: input.order?.createdAt || undefined,
         updatedAt: input.order?.updatedAt || undefined,
+        */
       },
       where: {
+        ...(input.name && { names: { some: { name: input.name } } }),
+        ...(input.parents && { parents: { some: { name: input.name } } }),
+        /*
         ...(input.name ? { tagNames: { name: input.name } } : {}),
         ...(input.parents ? { tagParents: { parent: In(input.parents) } } : {}),
+        */
       },
     });
 
