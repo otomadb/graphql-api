@@ -104,7 +104,7 @@ model NicovideoVideoSource {
 }
 
 model Semitag {
-  id String @id @db.VarChar(26)
+  id String @id @default(cuid())
 
   name String
 
