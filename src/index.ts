@@ -6,28 +6,14 @@ import { fastify, FastifyReply, FastifyRequest } from "fastify";
 import { createSchema, createYoga } from "graphql-yoga";
 import neo4j from "neo4j-driver";
 import prometheusClient from "prom-client";
-import { DataSource } from "typeorm";
 
 import { findUserFromAuthToken, findUserFromCookie } from "./auth/getUserFromSession.js";
 import { handlerSignin } from "./auth/signin.js";
 import { handlerSignout } from "./auth/signout.js";
 import { handlerSignup } from "./auth/signup.js";
-import { entities } from "./db/entities/index.js";
 import { typeDefs } from "./graphql.js";
 import { handlerRemoteNicovideo } from "./remote/nicovideo.js";
 import { resolvers as makeResolvers } from "./resolvers/index.js";
-
-const dataSource = new DataSource({
-  type: "postgres",
-  url: process.env.POSTGRES_URL,
-  host: process.env.POSTGRES_HOST,
-  port: parseInt(process.env.POSTGRES_PORT, 10),
-  username: process.env.POSTGRES_USERNAME,
-  password: process.env.POSTGRES_PASSWORD,
-  database: process.env.POSTGRES_DATABASE,
-  entities,
-});
-await dataSource.initialize();
 
 const prismaClient = new PrismaClient();
 
