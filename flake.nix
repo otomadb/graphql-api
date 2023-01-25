@@ -46,10 +46,31 @@
             hadolint
           ];
           devshell.startup.yarn_install.text = "pnpm install";
+
           env = [
             {
               name = "PATH";
               prefix = "$PRJ_ROOT/node_modules/.bin";
+            }
+            {
+              name = "PRISMA_MIGRATION_ENGINE_BINARY";
+              value = "${pkgs.prisma-engines}/bin/migration-engine";
+            }
+            {
+              name = "PRISMA_QUERY_ENGINE_BINARY";
+              value = "${pkgs.prisma-engines}/bin/query-engine";
+            }
+            {
+              name = "PRISMA_QUERY_ENGINE_LIBRARY";
+              value = "${pkgs.prisma-engines}/lib/libquery_engine.node";
+            }
+            {
+              name = "PRISMA_INTROSPECTION_ENGINE_BINARY";
+              value = "${pkgs.prisma-engines}/bin/introspection-engine";
+            }
+            {
+              name = "PRISMA_FMT_BINARY";
+              value = "${pkgs.prisma-engines}/bin/prisma-fmt";
             }
           ];
         };
