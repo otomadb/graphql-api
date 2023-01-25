@@ -1,72 +1,86 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [citext]
 }
 
-model migrations {
-  id        Int    @id(map: "PK_8c82d7f526340ab734260ea46be") @default(autoincrement())
-  timestamp BigInt
-  name      String @db.VarChar
-}
-
-model mylist_group_mylist_inclusions {
-  id            String        @id(map: "PK_e0d0b6a037fdb9633296d165914") @db.VarChar(26)
-  createdAt     DateTime      @default(now()) @db.Timestamptz(6)
-  updatedAt     DateTime      @default(now()) @db.Timestamptz(6)
-  groupId       String        @db.VarChar(26)
-  mylistId      String        @db.VarChar(26)
-  mylists       mylists       @relation(fields: [mylistId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_105128216044972f3ad4b507d03")
-  mylist_groups mylist_groups @relation(fields: [groupId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_9e69a6b42c71dfae6fb726a73ac")
-}
-
-model mylist_groups {
-  id                             String                           @id(map: "PK_283e995beb055f327e92afeb787") @db.VarChar(26)
-  createdAt                      DateTime                         @default(now()) @db.Timestamptz(6)
-  updatedAt                      DateTime                         @default(now()) @db.Timestamptz(6)
+model MylistGroup {
+  id                             String                      @id(map: "PK_283e995beb055f327e92afeb787") @db.VarChar(26)
+  createdAt                      DateTime                    @default(now()) @db.Timestamptz(6)
+  updatedAt                      DateTime                    @default(now()) @db.Timestamptz(6)
   title                          String
-  holderId                       String                           @db.VarChar(26)
-  mylist_group_mylist_inclusions mylist_group_mylist_inclusions[]
-  users                          users                            @relation(fields: [holderId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_715f1efaef409a44ec479f0e84f")
+  holderId                       String                      @db.VarChar(26)
+  mylist_group_mylist_inclusions MylistGroupMylistInclsion[]
+  users                          User                        @relation(fields: [holderId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_715f1efaef409a44ec479f0e84f")
+
+  @@map("mylist_groups")
 }
 
-model mylist_registrations {
+model MylistGroupMylistInclsion {
+  id            String      @id(map: "PK_e0d0b6a037fdb9633296d165914") @db.VarChar(26)
+  createdAt     DateTime    @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime    @default(now()) @db.Timestamptz(6)
+  groupId       String      @db.VarChar(26)
+  mylistId      String      @db.VarChar(26)
+  mylists       Mylist      @relation(fields: [mylistId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_105128216044972f3ad4b507d03")
+  mylist_groups MylistGroup @relation(fields: [groupId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_9e69a6b42c71dfae6fb726a73ac")
+
+  @@map("mylist_group_mylist_inclusions")
+}
+
+model Mylist {
+  id                             String                      @id(map: "PK_2d3fcd4c9328d290bd0268dc1c8") @db.VarChar(26)
+  createdAt                      DateTime                    @default(now()) @db.Timestamptz(6)
+  updatedAt                      DateTime                    @default(now()) @db.Timestamptz(6)
+  title                          String
+  range                          MylistRange
+  isLikeList                     Boolean
+  holderId                       String                      @db.VarChar(26)
+  mylist_group_mylist_inclusions MylistGroupMylistInclsion[]
+  mylist_registrations           MylistRegistration[]
+  users                          User                        @relation(fields: [holderId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_a6e470bf3e6bbfb270f9295cb2e")
+
+  @@map("mylists")
+}
+
+enum MylistRange {
+  PUBLIC
+  KNOW_LINK
+  PRIVATE
+
+  @@map("mylists_range_enum")
+}
+
+model MylistRegistration {
   id        String   @id(map: "PK_7f7232b504749e2c3d916353e89") @db.VarChar(26)
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @db.Timestamptz(6)
   note      String?
   videoId   String?  @db.VarChar(26)
   mylistId  String?  @db.VarChar(26)
-  videos    videos?  @relation(fields: [videoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_30b4c5755140583330020e4639e")
-  mylists   mylists? @relation(fields: [mylistId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_abda40557147e25d8cb95fee078")
+  videos    Video?   @relation(fields: [videoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_30b4c5755140583330020e4639e")
+  mylists   Mylist?  @relation(fields: [mylistId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_abda40557147e25d8cb95fee078")
+
+  @@map("mylist_registrations")
 }
 
-model mylists {
-  id                             String                           @id(map: "PK_2d3fcd4c9328d290bd0268dc1c8") @db.VarChar(26)
-  createdAt                      DateTime                         @default(now()) @db.Timestamptz(6)
-  updatedAt                      DateTime                         @default(now()) @db.Timestamptz(6)
-  title                          String
-  range                          mylists_range_enum
-  isLikeList                     Boolean
-  holderId                       String                           @db.VarChar(26)
-  mylist_group_mylist_inclusions mylist_group_mylist_inclusions[]
-  mylist_registrations           mylist_registrations[]
-  users                          users                            @relation(fields: [holderId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_a6e470bf3e6bbfb270f9295cb2e")
-}
-
-model nicovideo_video_sources {
+model NicovideoVideoSource {
   id        String   @id(map: "PK_7acd648a4ecaada5bbeec79fe5c") @db.VarChar(26)
   sourceId  String   @unique(map: "UQ_208e64d42387623cad7f2e4fb6b") @db.Citext
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @db.Timestamptz(6)
   videoId   String   @unique(map: "UQ_76e7668f8eb32271df39070d2ca") @db.VarChar(26)
-  videos    videos   @relation(fields: [videoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_2d2697091069023ae1fffac0ea8")
+  videos    Video    @relation(fields: [videoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_2d2697091069023ae1fffac0ea8")
+
+  @@map("nicovideo_video_sources")
 }
 
-model semitags {
+model Semitag {
   id        String   @id(map: "PK_27c9b8f9e08f86a3576c300b2e1") @db.VarChar(26)
   name      String
   createdAt DateTime @default(now()) @db.Timestamptz(6)
@@ -74,132 +88,149 @@ model semitags {
   resolved  Boolean  @default(false)
   videoId   String?  @db.VarChar(26)
   tagId     String?  @db.VarChar(26)
-  videos    videos?  @relation(fields: [videoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_037d6465fa7dd9a195533416f63")
-  tags      tags?    @relation(fields: [tagId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_3e324d47c1a1d957e2e6f2d9afc")
+  videos    Video?   @relation(fields: [videoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_037d6465fa7dd9a195533416f63")
+  tags      Tag?     @relation(fields: [tagId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_3e324d47c1a1d957e2e6f2d9afc")
+
+  @@map("semitags")
 }
 
-model sessions {
+model Session {
   id        String   @id(map: "PK_3238ef96f18b355b671619111bc") @db.VarChar(26)
   secret    String   @db.VarChar(64)
   expiredAt DateTime @db.Timestamptz(6)
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @db.Timestamptz(6)
   userId    String   @db.VarChar(26)
-  users     users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_57de40bc620f456c7311aa3a1e6")
+  users     User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_57de40bc620f456c7311aa3a1e6")
+
+  @@map("sessions")
 }
 
-model tag_names {
+model TagName {
   id        String   @id(map: "PK_844280ab35721a1e89497db5617") @db.VarChar(26)
   name      String
   primary   Boolean  @default(false)
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @db.Timestamptz(6)
   tagId     String?  @db.VarChar(26)
-  tags      tags?    @relation(fields: [tagId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_551baf525c6a275793afce4125e")
+  tags      Tag?     @relation(fields: [tagId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_551baf525c6a275793afce4125e")
+
+  @@map("tag_names")
 }
 
-model tag_parents {
+model TagParent {
   id                              String   @id(map: "PK_cc4322310226e2a49d6edc80d71") @db.VarChar(26)
   explicit                        Boolean  @default(false)
   createdAt                       DateTime @default(now()) @db.Timestamptz(6)
   updatedAt                       DateTime @default(now()) @db.Timestamptz(6)
   parentId                        String?  @db.VarChar(26)
   childId                         String?  @db.VarChar(26)
-  tags_tag_parents_childIdTotags  tags?    @relation("tag_parents_childIdTotags", fields: [childId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ce25fe074ec6e65ce7e8f078a00")
-  tags_tag_parents_parentIdTotags tags?    @relation("tag_parents_parentIdTotags", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_f22a29123c357c414694215e018")
+  tags_tag_parents_childIdTotags  Tag?     @relation("tag_parents_childIdTotags", fields: [childId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ce25fe074ec6e65ce7e8f078a00")
+  tags_tag_parents_parentIdTotags Tag?     @relation("tag_parents_parentIdTotags", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_f22a29123c357c414694215e018")
+
+  @@map("tag_parents")
 }
 
-model tags {
-  id                                     String        @id(map: "PK_e7dc17249a1148a1970748eda99") @db.VarChar(26)
-  createdAt                              DateTime      @default(now()) @db.Timestamptz(6)
-  updatedAt                              DateTime      @default(now()) @db.Timestamptz(6)
-  meaningless                            Boolean       @default(false)
-  semitags                               semitags[]
-  tag_names                              tag_names[]
-  tag_parents_tag_parents_childIdTotags  tag_parents[] @relation("tag_parents_childIdTotags")
-  tag_parents_tag_parents_parentIdTotags tag_parents[] @relation("tag_parents_parentIdTotags")
-  video_tags                             video_tags[]
+model Tag {
+  id                                     String      @id(map: "PK_e7dc17249a1148a1970748eda99") @db.VarChar(26)
+  createdAt                              DateTime    @default(now()) @db.Timestamptz(6)
+  updatedAt                              DateTime    @default(now()) @db.Timestamptz(6)
+  meaningless                            Boolean     @default(false)
+  semitags                               Semitag[]
+  tag_names                              TagName[]
+  tag_parents_tag_parents_childIdTotags  TagParent[] @relation("tag_parents_childIdTotags")
+  tag_parents_tag_parents_parentIdTotags TagParent[] @relation("tag_parents_parentIdTotags")
+  video_tags                             VideoTag[]
+
+  @@map("tags")
 }
 
-model users {
-  id             String          @id(map: "PK_a3ffb1c0c8416b9fc6f907b7433") @db.VarChar(26)
-  name           String          @unique(map: "UQ_51b8b26ac168fbe7d6f5653e6cf") @db.Citext
+model User {
+  id             String        @id(map: "PK_a3ffb1c0c8416b9fc6f907b7433") @db.VarChar(26)
+  name           String        @unique(map: "UQ_51b8b26ac168fbe7d6f5653e6cf") @db.Citext
   displayName    String
   icon           String?
   email          String
-  emailConfirmed Boolean         @default(false)
+  emailConfirmed Boolean       @default(false)
   password       String
-  createdAt      DateTime        @default(now()) @db.Timestamptz(6)
-  updatedAt      DateTime        @default(now()) @db.Timestamptz(6)
-  role           users_role_enum @default(NORMAL)
-  mylist_groups  mylist_groups[]
-  mylists        mylists[]
-  sessions       sessions[]
+  createdAt      DateTime      @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime      @default(now()) @db.Timestamptz(6)
+  role           UserRole      @default(NORMAL)
+  mylist_groups  MylistGroup[]
+  mylists        Mylist[]
+  sessions       Session[]
+
+  @@map("users")
 }
 
-model video_sources {
+enum UserRole {
+  NORMAL
+  EDITOR
+  ADMINISTRATOR
+
+  @@map("users_role_enum")
+}
+
+model VideoSource {
   id            String   @id(map: "PK_2b4ff25794018ffbe9afdd25e95") @db.VarChar(26)
   createdAt     DateTime @default(now()) @db.Timestamptz(6)
   updatedAt     DateTime @default(now()) @db.Timestamptz(6)
   source        String
   sourceVideoId String
   videoId       String   @db.VarChar(26)
-  videos        videos   @relation(fields: [videoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_bbae903425b10f56551dc60148c")
+  videos        Video    @relation(fields: [videoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_bbae903425b10f56551dc60148c")
+
+  @@map("video_sources")
 }
 
-model video_tags {
+model VideoTag {
   id        String   @id(map: "PK_46a3780fea7f7e85204356a3b4b") @db.VarChar(26)
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @db.Timestamptz(6)
   tagId     String   @db.VarChar(26)
   videoId   String   @db.VarChar(26)
-  tags      tags     @relation(fields: [tagId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_6f9964c104164fb5eed88b52f4a")
-  videos    videos   @relation(fields: [videoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_92a248c1d263a8eddb8ef92d750")
+  tags      Tag      @relation(fields: [tagId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_6f9964c104164fb5eed88b52f4a")
+  videos    Video    @relation(fields: [videoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_92a248c1d263a8eddb8ef92d750")
 
   @@unique([tagId, videoId], map: "UQ_7995bc8220363477e15fff8bcdc")
+  @@map("video_tags")
 }
 
-model video_thumbnails {
+model VideoThumbnail {
   id        String   @id(map: "PK_9540a7e1a10bcaad41085ca7dca") @db.VarChar(26)
   imageUrl  String
   primary   Boolean  @default(false)
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @db.Timestamptz(6)
   videoId   String   @db.VarChar(26)
-  videos    videos   @relation(fields: [videoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_91f45ae79e0bf6f2dea2696112d")
+  videos    Video    @relation(fields: [videoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_91f45ae79e0bf6f2dea2696112d")
+
+  @@map("video_thumbnails")
 }
 
-model video_titles {
+model VideoTitle {
   id        String   @id(map: "PK_1eb43f207970e996784be5ff478") @db.VarChar(26)
   title     String
   isPrimary Boolean  @default(false)
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @db.Timestamptz(6)
   videoId   String   @db.VarChar(26)
-  videos    videos   @relation(fields: [videoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_d69ac721691fba16dc5f08f0658")
+  videos    Video    @relation(fields: [videoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_d69ac721691fba16dc5f08f0658")
+
+  @@map("video_titles")
 }
 
-model videos {
-  id                      String                   @id(map: "PK_e4c86c0cf95aff16e9fb8220f6b") @db.VarChar(26)
-  createdAt               DateTime                 @default(now()) @db.Timestamptz(6)
-  updatedAt               DateTime                 @default(now()) @db.Timestamptz(6)
-  mylist_registrations    mylist_registrations[]
-  nicovideo_video_sources nicovideo_video_sources?
-  semitags                semitags[]
-  video_sources           video_sources[]
-  video_tags              video_tags[]
-  video_thumbnails        video_thumbnails[]
-  video_titles            video_titles[]
-}
+model Video {
+  id                      String                @id(map: "PK_e4c86c0cf95aff16e9fb8220f6b") @db.VarChar(26)
+  createdAt               DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt               DateTime              @default(now()) @db.Timestamptz(6)
+  mylist_registrations    MylistRegistration[]
+  nicovideo_video_sources NicovideoVideoSource?
+  semitags                Semitag[]
+  video_sources           VideoSource[]
+  video_tags              VideoTag[]
+  video_thumbnails        VideoThumbnail[]
+  video_titles            VideoTitle[]
 
-enum mylists_range_enum {
-  PUBLIC
-  KNOW_LINK
-  PRIVATE
-}
-
-enum users_role_enum {
-  NORMAL
-  EDITOR
-  ADMINISTRATOR
+  @@map("videos")
 }
