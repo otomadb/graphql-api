@@ -22,7 +22,6 @@
           inherit system;
           overlays = with inputs; [
             devshell.overlay
-            corepack.overlays.default
           ];
         };
       in {
