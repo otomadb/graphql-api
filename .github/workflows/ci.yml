@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: 16
           cache: npm
-      - run: npm install
+      - run: npm ci
       - run: npm run codegen
       - run: npm run lint:schema
       - run: npm run lint:eslint
@@ -29,7 +29,7 @@ jobs:
         with:
           node-version: 16
           cache: npm
-      - run: npm install
+      - run: npm ci
       - run: npm run codegen
       - run: npm run typecheck
 
@@ -60,6 +60,6 @@ jobs:
         with:
           node-version: 16
           cache: nnpm
-      - run: npm install
+      - run: npm ci
       - run: npm run codegen
       - run: npm run test
