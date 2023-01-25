@@ -111,19 +111,18 @@ model Semitag {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  isResolved Boolean @default(false) @map("resolved")
-
   videoId String
   video   Video  @relation(fields: [videoId], references: [id])
 
-  tagId String
-  tag   Tag    @relation(fields: [tagId], references: [id])
+  isResolved Boolean @default(false) @map("resolved")
+  tagId      String?
+  tag        Tag?    @relation(fields: [tagId], references: [id])
 
   @@map("semitags")
 }
 
 model Session {
-  id String @id @db.VarChar(26)
+  id String @id @default(cuid())
 
   secret String @db.VarChar(64)
 
@@ -180,12 +179,12 @@ model Tag {
   meaningless Boolean   @default(false)
   semitags    Semitag[]
 
-  tag_names TagName[]
+  names TagName[]
 
   parents  TagParent[] @relation("tag_parents_childIdTotags")
   children TagParent[] @relation("tag_parents_parentIdTotags")
 
-  video_tags VideoTag[]
+  videos VideoTag[]
 
   @@map("tags")
 }
