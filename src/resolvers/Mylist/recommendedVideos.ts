@@ -39,8 +39,8 @@ export const resolveRecommendedVideos = ({ neo4jDriver }: { neo4jDriver: Driver 
       const items = result.records.map(
         (rec) =>
           new MylistVideoRecommendationModel({
-            originId: rec.get("origin_id"),
-            toId: rec.get("to_id"),
+            originMylistId: rec.get("origin_id"),
+            toVideoId: rec.get("to_id"),
             score: rec.get("r"),
           })
       );
