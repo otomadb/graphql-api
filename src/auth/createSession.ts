@@ -1,20 +1,15 @@
+import { PrismaClient } from "@prisma/client";
 import { createHash, randomBytes } from "crypto";
-import { DataSource } from "typeorm";
-import { ulid } from "ulid";
 
-import { Session } from "../db/entities/sessions.js";
-import { User } from "../db/entities/users.js";
-
-export const createSession = async (ds: DataSource, user: User) => {
-  const id = ulid();
+export const createSession = async (prisma: PrismaClient, userId: string) => {
   const secret = randomBytes(32).toString("hex");
 
-  const session = new Session();
-  session.id = id;
-  session.user = user;
-  session.secret = createHash("sha256").update(secret).digest("hex");
-  session.expiredAt = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000 /* 10 days */);
-
-  await ds.getRepository(Session).insert(session);
+  const { id } = await prisma.session.create({
+    data: {
+      userId,
+      secret: createHash("sha256").update(secret).digest("hex"),
+      expiredAt: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000 /* 10 days */),
+    },
+  });
   return `${id}-${secret}`;
 };

@@ -1,12 +1,11 @@
+import { PrismaClient } from "@prisma/client";
 import * as argon2 from "argon2";
 import { RouteHandlerMethod } from "fastify";
-import { DataSource } from "typeorm";
 import { z } from "zod";
 
-import { User } from "../db/entities/users.js";
 import { createSession } from "./createSession.js";
 
-export const handlerSignin = ({ dataSource }: { dataSource: DataSource }) =>
+export const handlerSignin = (prisma: PrismaClient) =>
   (async (req, reply) => {
     const { name, password } = z
       .object({
@@ -15,9 +14,7 @@ export const handlerSignin = ({ dataSource }: { dataSource: DataSource }) =>
       })
       .parse(req.body);
 
-    const userRepository = dataSource.getRepository(User);
-
-    const user = await userRepository.findOne({ where: { name } });
+    const user = await prisma.user.findFirst({ where: { name } });
     if (!user) {
       reply.status(400);
       reply.send({ error: "user not found" });
@@ -30,7 +27,7 @@ export const handlerSignin = ({ dataSource }: { dataSource: DataSource }) =>
       return;
     }
 
-    const session = await createSession(dataSource, user);
+    const session = await createSession(prisma, user.id);
     reply.setCookie("otmd-session", session, {
       httpOnly: true,
       secure: "auto",
