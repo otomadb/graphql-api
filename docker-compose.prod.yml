@@ -17,7 +17,7 @@ services:
       PORT: 4000
       HOST: "0.0.0.0"
 
-      POSTGRES_HOST: localhost
+      POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_USERNAME: user
       POSTGRES_PASSWORD: pass
@@ -54,7 +54,11 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: "postgres://user:pass@postgres:5432/test"
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USERNAME: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DATABASE: test
 
   neo4j:
     image: neo4j:5.2
