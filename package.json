@@ -18,10 +18,7 @@
     "lint:schema": "graphql-schema-linter ./src/schema.graphql",
     "lintfix": "run-s 'lintfix:*' 'fmt'",
     "lintfix:eslint": "npm run lint:eslint --fix",
-    "fmt": "npm run lint:prettier --write",
-    "typeorm": "typeorm-ts-node-esm -d ./src/db/data-source.ts",
-    "migration:run": "npm run typeorm migration:run",
-    "migration:generate": "run(){ npm run typeorm migration:generate -p \"src/db/migrations/$1\"; }; run"
+    "fmt": "npm run lint:prettier --write"
   },
   "repository": "https://github.com/otomad-database/api",
   "license": "MIT",
@@ -41,8 +38,6 @@
     "pg": "^8.8.0",
     "pino-pretty": "^9.1.1",
     "prom-client": "^14.1.1",
-    "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.3.10",
     "ulid": "^2.3.0",
     "zod": "^3.19.1"
   },
