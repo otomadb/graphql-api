@@ -2,11 +2,6 @@
   # main
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    corepack = {
-      url = "github:SnO2WMaN/corepack-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
     devshell = {
       url = "github:numtide/devshell";
       inputs.nixpkgs.follows = "nixpkgs";

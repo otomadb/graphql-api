@@ -1,28 +1,5 @@
 {
   "nodes": {
-    "corepack": {
-      "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1667721335,
-        "narHash": "sha256-qx1f3IOSntgHHJ0W/YR1pxSokQKPDN16kud9Am782l0=",
-        "owner": "SnO2WMaN",
-        "repo": "corepack-flake",
-        "rev": "27e48017612380c0e7c2834f8e6924aadca88f6c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "SnO2WMaN",
-        "repo": "corepack-flake",
-        "type": "github"
-      }
-    },
     "devshell": {
       "inputs": {
         "flake-utils": [
@@ -79,7 +56,6 @@
     },
     "root": {
       "inputs": {
-        "corepack": "corepack",
         "devshell": "devshell",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs"
