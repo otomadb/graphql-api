@@ -1,27 +1,26 @@
-import { GraphQLError } from "graphql";
-import { DataSource } from "typeorm";
-
-import { Semitag } from "../../db/entities/semitags.js";
 import { Resolvers } from "../../graphql.js";
-import { buildGqlId } from "../../utils/id.js";
+import { buildGqlId, GraphQLNotExistsInDBError } from "../../utils/id.js";
+import { ResolverDeps } from "../index.js";
+import { TagModel } from "../Tag/model.js";
+import { VideoModel } from "../Video/model.js";
 
-export const resolveSemitag = ({ dataSource }: { dataSource: DataSource }) =>
+export const resolveSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
     id: ({ id }): string => buildGqlId("Semitag", id),
-    async video({ id }) {
-      const semitag = await dataSource.getRepository(Semitag).findOne({
-        where: { id },
-        relations: { video: true },
-      });
-      if (!semitag) throw new GraphQLError(`"video" for "semitag:${id}" is not found`);
-      return semitag.video;
-    },
-    async resolvedTag({ id }) {
-      const semitag = await dataSource.getRepository(Semitag).findOne({
-        where: { id },
-        relations: { tag: true },
-      });
-      if (!semitag) throw new GraphQLError(`"video" for "semitag:${id}" is not found`);
-      return semitag.tag;
+    video: ({ videoId }) =>
+      prisma.video
+        .findFirstOrThrow({ where: { id: videoId } })
+        .then((v) => new VideoModel(v))
+        .catch(() => {
+          throw new GraphQLNotExistsInDBError("Video", videoId);
+        }),
+    async resolvedTag({ tagId }) {
+      if (!tagId) return null;
+      return prisma.tag
+        .findFirstOrThrow({ where: { id: tagId } })
+        .then((v) => new TagModel(v))
+        .catch(() => {
+          throw new GraphQLNotExistsInDBError("Tag", tagId);
+        });
     },
   } satisfies Resolvers["Semitag"]);
