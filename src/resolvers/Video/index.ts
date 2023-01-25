@@ -50,7 +50,7 @@ export const resolveVideo = ({ prisma, neo4jDriver }: Pick<ResolverDeps, "prisma
     nicovideoSources: async ({ id: videoId }) =>
       prisma.nicovideoVideoSource
         .findMany({ where: { videoId } })
-        .then((ss) => ss.map(({ id, sourceId, videoId }) => new NicovideoVideoSourceModel({ id, sourceId, videoId }))),
+        .then((ss) => ss.map((s) => new NicovideoVideoSourceModel(s))),
 
     semitags: ({ id: videoId }, { resolved }) =>
       prisma.semitag

@@ -1,11 +1,9 @@
 import { Video } from "@prisma/client";
 
 export class VideoModel {
-  public id;
-  public createdAt;
+  constructor(private readonly video: Video) {}
 
-  constructor(video: Video) {
-    this.id = video.id;
-    this.createdAt = video.createdAt;
+  get id() {
+    return this.video.id;
   }
 }
