@@ -41,6 +41,7 @@
             actionlint
             hadolint
           ];
+          devshell.startup.npm_install.text = "npm install";
           env = [
             {
               name = "PATH";

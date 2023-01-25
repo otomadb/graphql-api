@@ -11,33 +11,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 7
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: pnpm
-      - run: pnpm install
-      - run: pnpm run codegen
-      - run: pnpm run lint:schema
-      - run: pnpm run lint:eslint
-      - run: pnpm run lint:prettier
+          cache: npm
+      - run: npm ci
+      - run: npm run codegen
+      - run: npm run lint:schema
+      - run: npm run lint:eslint
+      - run: npm run lint:prettier
 
   typecheck:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 7
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: pnpm
-      - run: pnpm install
-      - run: pnpm run codegen
-      - run: pnpm run typecheck
+          cache: npm
+      - run: npm ci
+      - run: npm run codegen
+      - run: npm run typecheck
 
   test:
     runs-on: ubuntu-latest
@@ -62,13 +56,10 @@ jobs:
           NEO4J_AUTH: neo4j/password
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 7
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: pnpm
-      - run: pnpm install
-      - run: pnpm run codegen
-      - run: pnpm run test
+          cache: npm
+      - run: npm ci
+      - run: npm run codegen
+      - run: npm run test
