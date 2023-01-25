@@ -36,16 +36,11 @@
             alejandra
             treefmt
             nodejs
-            (mkCorepack {
-              nodejs = nodejs;
-              pm = "pnpm";
-            })
             dprint
             act
             actionlint
             hadolint
           ];
-          devshell.startup.yarn_install.text = "pnpm install";
           env = [
             {
               name = "PATH";
