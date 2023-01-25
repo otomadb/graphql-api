@@ -1,11 +1,13 @@
+import { Semitag } from "@prisma/client";
+
 export class SemitagModel {
   public id;
   public name;
   public resolved;
 
-  constructor({ id, name, resolved }: { id: string; name: string; resolved: boolean }) {
+  constructor({ id, name, isResolved }: Semitag) {
     this.id = id;
     this.name = name;
-    this.resolved = resolved;
+    this.resolved = isResolved;
   }
 }

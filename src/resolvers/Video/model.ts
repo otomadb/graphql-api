@@ -1,4 +1,4 @@
-import { Video } from "../../db/entities/videos.js";
+import { Video } from "@prisma/client";
 
 export class VideoModel {
   public id;
