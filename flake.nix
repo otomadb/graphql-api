@@ -8,6 +8,11 @@
       inputs.flake-utils.follows = "flake-utils";
     };
     flake-utils.url = "github:numtide/flake-utils";
+    prisma-engines = {
+      url = "github:prisma/prisma-engines/4.9.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
   };
 
   outputs = {
@@ -24,6 +29,7 @@
             devshell.overlay
           ];
         };
+        prisma-engines = inputs.prisma-engines.packages.${system}.prisma-engines;
       in {
         devShells.default = pkgs.devshell.mkShell {
           packages = with pkgs; [
@@ -42,23 +48,23 @@
             }
             {
               name = "PRISMA_MIGRATION_ENGINE_BINARY";
-              value = "${pkgs.prisma-engines}/bin/migration-engine";
+              value = "${prisma-engines}/bin/migration-engine";
             }
             {
               name = "PRISMA_QUERY_ENGINE_BINARY";
-              value = "${pkgs.prisma-engines}/bin/query-engine";
+              value = "${prisma-engines}/bin/query-engine";
             }
             {
               name = "PRISMA_QUERY_ENGINE_LIBRARY";
-              value = "${pkgs.prisma-engines}/lib/libquery_engine.node";
+              value = "${prisma-engines}/lib/libquery_engine.node";
             }
             {
               name = "PRISMA_INTROSPECTION_ENGINE_BINARY";
-              value = "${pkgs.prisma-engines}/bin/introspection-engine";
+              value = "${prisma-engines}/bin/introspection-engine";
             }
             {
               name = "PRISMA_FMT_BINARY";
-              value = "${pkgs.prisma-engines}/bin/prisma-fmt";
+              value = "${prisma-engines}/bin/prisma-fmt";
             }
           ];
         };
