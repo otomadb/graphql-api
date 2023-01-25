@@ -20,8 +20,8 @@
     "lintfix:eslint": "npm run lint:eslint --fix",
     "fmt": "npm run lint:prettier --write",
     "typeorm": "typeorm-ts-node-esm -d ./src/db/data-source.ts",
-    "migration:run": "pnpm run typeorm migration:run",
-    "migration:generate": "run(){ pnpm run typeorm migration:generate -p \"src/db/migrations/$1\"; }; run"
+    "migration:run": "npm run typeorm migration:run",
+    "migration:generate": "run(){ npm run typeorm migration:generate -p \"src/db/migrations/$1\"; }; run"
   },
   "repository": "https://github.com/otomad-database/api",
   "license": "MIT",
