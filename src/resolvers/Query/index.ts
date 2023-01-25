@@ -1,6 +1,5 @@
-import { DataSource } from "typeorm";
-
 import { type Resolvers } from "../../graphql.js";
+import { ResolverDeps } from "../index.js";
 import { findMylist } from "./findMylist/findMylist.js";
 import { findNicovideoVideoSource } from "./findNicovideoVideoSource/findNicovideoVideoSource.js";
 import { findSemitags } from "./findSemitags/findSemitags.js";
@@ -18,7 +17,7 @@ import { user } from "./user/user.js";
 import { video } from "./video/video.js";
 import { whoami } from "./whoami/whoami.js";
 
-export const resolveQuery = (deps: { dataSource: DataSource }) =>
+export const resolveQuery = (deps: Pick<ResolverDeps, "prisma">) =>
   ({
     findMylist: findMylist(deps),
     findNicovideoVideoSource: findNicovideoVideoSource(deps),

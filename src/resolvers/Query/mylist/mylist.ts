@@ -1,26 +1,18 @@
 import { GraphQLError } from "graphql";
-import { DataSource } from "typeorm";
 
-import { Mylist, MylistShareRange as MylistEntityShareRange } from "../../../db/entities/mylists.js";
+import { MylistShareRange as MylistEntityShareRange } from "../../../db/entities/mylists.js";
 import { QueryResolvers } from "../../../graphql.js";
 import { parseGqlID } from "../../../utils/id.js";
+import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
 
-export const MYLIST_NOT_FOUND_OR_PRIVATE_ERROR = "Mylist Not Found or Private";
-export const MYLIST_NOT_HOLDED_BY_YOU = "This mylist is not holded by you";
-
-export const mylist = ({ dataSource }: { dataSource: DataSource }) =>
+export const mylist = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async (_parent, { id }, { user }) => {
-    const mylist = await dataSource.getRepository(Mylist).findOne({
-      where: { id: parseGqlID("Mylist", id) },
-      relations: {
-        holder: true,
-      },
-    });
+    const mylist = await prisma.mylist.findFirst({ where: { id: parseGqlID("Mylist", id) } });
 
-    if (!mylist) throw new GraphQLError(MYLIST_NOT_FOUND_OR_PRIVATE_ERROR);
-    if (mylist.holder.id !== user?.id && mylist.range === MylistEntityShareRange.PRIVATE) {
-      throw new GraphQLError(MYLIST_NOT_FOUND_OR_PRIVATE_ERROR);
+    if (!mylist) throw new GraphQLError("Mylist Not Found or Private");
+    if (mylist.shareRange === MylistEntityShareRange.PRIVATE && mylist.holderId !== user?.id) {
+      throw new GraphQLError("This mylist is not holded by you");
     }
 
     return new MylistModel(mylist);

@@ -1,16 +1,13 @@
-import { GraphQLError } from "graphql";
-import { DataSource } from "typeorm";
-
-import { Semitag } from "../../../db/entities/semitags.js";
 import { QueryResolvers } from "../../../graphql.js";
-import { parseGqlID } from "../../../utils/id.js";
+import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
+import { ResolverDeps } from "../../index.js";
 import { SemitagModel } from "../../Semitag/model.js";
 
-export const semitag = ({ dataSource }: { dataSource: DataSource }) =>
-  (async (_parent, { id: gqlId }) => {
-    const id = parseGqlID("Semitag", gqlId);
-
-    const semitag = await dataSource.getRepository(Semitag).findOne({ where: { id } });
-    if (!semitag) throw new GraphQLError(`No semitag found for "${gqlId}"`);
-    return new SemitagModel(semitag);
-  }) satisfies QueryResolvers["semitag"];
+export const semitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+  (async (_parent, { id }) =>
+    prisma.semitag
+      .findUniqueOrThrow({ where: { id: parseGqlID("Semitag", id) } })
+      .then((v) => new SemitagModel(v))
+      .catch(() => {
+        throw new GraphQLNotExistsInDBError("Semitag", id);
+      })) satisfies QueryResolvers["semitag"];

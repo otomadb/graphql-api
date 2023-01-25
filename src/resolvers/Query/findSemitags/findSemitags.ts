@@ -1,24 +1,26 @@
-import { DataSource, In, Not } from "typeorm";
-
-import { Semitag } from "../../../db/entities/semitags.js";
 import { QueryResolvers } from "../../../graphql.js";
 import { parseGqlIDs } from "../../../utils/id.js";
+import { ResolverDeps } from "../../index.js";
 import { SemitagModel } from "../../Semitag/model.js";
 
-export const findSemitags = ({ dataSource }: { dataSource: DataSource }) =>
+export const findSemitags = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async (_parent, { input }) => {
     const execptIds = parseGqlIDs("Semitag", input.except);
 
-    const semitags = await dataSource.getRepository(Semitag).find({
+    const semitags = await prisma.semitag.findMany({
       take: input.limit,
       skip: input.skip,
-      order: {
+      orderBy: {
+        // TODO: Prisma
+        createdAt: "asc",
+        /*
         createdAt: input.order?.createdAt || undefined,
         updatedAt: input.order?.updatedAt || undefined,
+        */
       },
       where: {
-        id: Not(In(execptIds)),
-        resolved: input.resolved?.valueOf(),
+        id: { notIn: execptIds },
+        isResolved: input.resolved || undefined,
       },
     });
     return { nodes: semitags.map((t) => new SemitagModel(t)) };

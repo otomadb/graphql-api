@@ -1,17 +1,19 @@
-import { DataSource } from "typeorm";
-
-import { Video } from "../../../db/entities/videos.js";
 import { QueryResolvers } from "../../../graphql.js";
+import { ResolverDeps } from "../../index.js";
 import { VideoModel } from "../../Video/model.js";
 
-export const findVideos = ({ dataSource }: { dataSource: DataSource }) =>
+export const findVideos = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async (_parent, { input }) => {
-    const videos = await dataSource.getRepository(Video).find({
+    const videos = await prisma.video.findMany({
       take: input.limit,
       skip: input.skip,
-      order: {
+      orderBy: {
+        // TODO: PRISMA
+        createdAt: "asc",
+        /*
         createdAt: input.order?.createdAt || undefined,
         updatedAt: input.order?.updatedAt || undefined,
+        */
       },
     });
 
