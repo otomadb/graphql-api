@@ -15,8 +15,8 @@ docker-compose up -d
 環境変数`DATABASE_URL`に postgres の接続先を入れておく．(`.env.example`参照．)
 
 ```bash
-pnpm i
-pnpm run typeorm migration:run
+npm i
+npm run typeorm migration:run
 ```
 
 ## 簡易的な本番環境
