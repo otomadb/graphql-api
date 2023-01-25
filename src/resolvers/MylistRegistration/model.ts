@@ -1,12 +1,7 @@
+import { MylistRegistration } from "@prisma/client";
+
 export class MylistRegistrationModel {
-  constructor(
-    private readonly entity: {
-      id: string;
-      note: string | null;
-      createdAt: Date;
-      updatedAt: Date;
-    }
-  ) {}
+  constructor(private readonly entity: MylistRegistration) {}
 
   get id() {
     return this.entity.id;
@@ -22,5 +17,13 @@ export class MylistRegistrationModel {
 
   get updatedAt() {
     return this.entity.updatedAt;
+  }
+
+  get mylistId() {
+    return this.entity.mylistId;
+  }
+
+  get videoId() {
+    return this.entity.videoId;
   }
 }
