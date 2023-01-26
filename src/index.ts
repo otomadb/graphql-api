@@ -91,7 +91,7 @@ app
 const yoga = createYoga<{ req: FastifyRequest; reply: FastifyReply }>({
   schema: createSchema<{ req: FastifyRequest; reply: FastifyReply }>({
     typeDefs,
-    resolvers: makeResolvers({ neo4jDriver, prisma: prismaClient }),
+    resolvers: makeResolvers({ neo4j: neo4jDriver, prisma: prismaClient }),
   }),
   async context({ req }) {
     const cookie = req.cookies["otmd-session"];
