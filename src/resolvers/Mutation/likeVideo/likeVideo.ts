@@ -1,18 +1,18 @@
+import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
-import { Driver as Neo4jDriver } from "neo4j-driver";
-import { ulid } from "ulid";
 
 import { checkAuth } from "../../../auth/checkAuth.js";
+import { ContextUser } from "../../../context.js";
 import { MutationLikeVideoArgs, MutationResolvers } from "../../../graphql.js";
-import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
+import { parseGqlID } from "../../../utils/id.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
 
 export const addMylistRegistrationInNeo4j = async (
-  neo4jDriver: Neo4jDriver,
+  neo4j: ResolverDeps["neo4j"],
   { mylistId, videoId }: { videoId: string; mylistId: string }
 ) => {
-  const session = neo4jDriver.session();
+  const session = neo4j.session();
   try {
     await session.run(
       `
@@ -29,45 +29,26 @@ export const addMylistRegistrationInNeo4j = async (
 };
 
 export const likeVideoScaffold =
-  ({ dataSource, neo4jDriver }: Pick<ResolverDeps, "prisma" | "neo4jDriver">) =>
-  async (_parent: unknown, { input: { videoId: videoGqlId } }: MutationLikeVideoArgs, { user }: { user: User }) => {
-    if (!user) throw new GraphQLError("need to authenticate");
-
+  ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
+  async (
+    _parent: unknown,
+    { input: { videoId: videoGqlId } }: MutationLikeVideoArgs,
+    { user }: { user: ContextUser }
+  ) => {
     const videoId = parseGqlID("Video", videoGqlId);
 
-    const registration = new MylistRegistration();
-    registration.id = ulid();
-    registration.note = null;
-
-    await dataSource.transaction(async (manager) => {
-      const repoVideo = manager.getRepository(Video);
-      const repoMylist = manager.getRepository(Mylist);
-      const repoMylistRegistration = manager.getRepository(MylistRegistration);
-
-      const video = await repoVideo.findOne({ where: { id: videoId } });
-      if (!video) throw new GraphQLNotExistsInDBError("Video", videoId);
-
-      const mylist = await repoMylist.findOne({
-        where: { holder: { id: user.id }, isLikeList: true },
-        relations: { holder: true },
+    const likelist = await prisma.mylist
+      .findFirstOrThrow({ where: { holder: { id: user.id }, isLikeList: true } })
+      .catch(() => {
+        throw new GraphQLError(`like list for "${user.id}" is not found`);
       });
-      if (!mylist) throw new GraphQLError(`like list for "${user.id}" is not found`); // TODO:
-
-      registration.video = video;
-      registration.mylist = mylist;
-
-      await repoMylistRegistration.insert(registration);
+    const registration = await prisma.mylistRegistration.create({
+      data: { note: null, videoId, mylistId: likelist.id },
     });
+    await addMylistRegistrationInNeo4j(neo4j, { videoId: registration.videoId, mylistId: registration.mylistId });
 
-    await addMylistRegistrationInNeo4j(neo4jDriver, {
-      videoId: registration.video.id,
-      mylistId: registration.mylist.id,
-    });
-
-    return {
-      registration: new MylistRegistrationModel(registration),
-    };
+    return { registration: new MylistRegistrationModel(registration) };
   };
 
-export const likeVideo = (inject: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+export const likeVideo = (inject: Pick<ResolverDeps, "prisma" | "neo4j">) =>
   checkAuth(UserRole.NORMAL, likeVideoScaffold(inject)) satisfies MutationResolvers["likeVideo"];
