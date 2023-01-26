@@ -10,18 +10,10 @@ export const findTags = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       orderBy: {
         // TODO: Prsima
         createdAt: "asc",
-        /*
-        createdAt: input.order?.createdAt || undefined,
-        updatedAt: input.order?.updatedAt || undefined,
-        */
       },
       where: {
         ...(input.name && { names: { some: { name: input.name } } }),
-        ...(input.parents && { parents: { some: { name: input.name } } }),
-        /*
-        ...(input.name ? { tagNames: { name: input.name } } : {}),
-        ...(input.parents ? { tagParents: { parent: In(input.parents) } } : {}),
-        */
+        ...(input.parents && { parents: { some: { id: { in: input.parents } } } }),
       },
     });
 
