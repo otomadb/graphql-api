@@ -1,3 +1,4 @@
+import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 
@@ -28,22 +29,20 @@ export const removeMylistRegistrationInNeo4j = async (
   }
 };
 
-export const removeVideoFromMylist = ({ prisma, neo4jDriver }: Pick<ResolverDeps, "prisma" | "neo4jDriver">) =>
+export const removeVideoFromMylist = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
   checkAuth(UserRole.NORMAL, async (_, { input: { mylistId: mylistGqlId, videoId: videoGqlId } }, { user }) => {
     const videoId = parseGqlID("Video", videoGqlId);
     const mylistId = parseGqlID("Mylist", mylistGqlId);
 
-    const repoMylistRegistration = ds.getRepository(MylistRegistration);
+    if ((await prisma.mylist.findUniqueOrThrow({ where: { id: mylistId } })).holderId !== user.id)
+      throw new GraphQLError("This mylist is not yours");
 
-    const registration = await repoMylistRegistration.findOne({
-      where: { video: { id: videoId }, mylist: { id: mylistId } },
-      relations: { video: true, mylist: true },
+    const registration = await prisma.mylistRegistration.delete({
+      where: { mylistId_videoId: { videoId, mylistId } },
+      include: { video: true, mylist: true },
     });
-    if (!registration) throw new GraphQLError(`"video:${videoId}" is not registered in "mylist:${mylistId}"`);
 
-    await repoMylistRegistration.remove(registration);
-
-    await removeMylistRegistrationInNeo4j(neo4jDriver, {
+    await removeMylistRegistrationInNeo4j(neo4j, {
       mylistId: registration.mylist.id,
       videoId: registration.video.id,
     });
