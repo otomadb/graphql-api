@@ -72,7 +72,7 @@ CREATE TABLE "semitags" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "videoId" TEXT NOT NULL,
-    "resolved" BOOLEAN NOT NULL DEFAULT false,
+    "resolved" BOOLEAN NOT NULL,
     "tagId" TEXT,
 
     CONSTRAINT "semitags_pkey" PRIMARY KEY ("id")
@@ -94,7 +94,7 @@ CREATE TABLE "sessions" (
 CREATE TABLE "tag_names" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "primary" BOOLEAN NOT NULL DEFAULT false,
+    "primary" BOOLEAN NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "tagId" TEXT NOT NULL,
@@ -105,7 +105,7 @@ CREATE TABLE "tag_names" (
 -- CreateTable
 CREATE TABLE "tag_parents" (
     "id" TEXT NOT NULL,
-    "explicit" BOOLEAN NOT NULL DEFAULT false,
+    "explicit" BOOLEAN NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "childId" TEXT NOT NULL,
@@ -119,7 +119,7 @@ CREATE TABLE "tags" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "meaningless" BOOLEAN NOT NULL DEFAULT false,
+    "meaningless" BOOLEAN NOT NULL,
 
     CONSTRAINT "tags_pkey" PRIMARY KEY ("id")
 );
@@ -129,7 +129,7 @@ CREATE TABLE "users" (
     "id" TEXT NOT NULL,
     "name" CITEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "emailConfirmed" BOOLEAN NOT NULL DEFAULT false,
+    "emailConfirmed" BOOLEAN NOT NULL,
     "role" "users_role_enum" NOT NULL DEFAULT 'NORMAL',
     "displayName" TEXT NOT NULL,
     "icon" TEXT,
@@ -155,7 +155,7 @@ CREATE TABLE "video_tags" (
 CREATE TABLE "video_thumbnails" (
     "id" TEXT NOT NULL,
     "imageUrl" TEXT NOT NULL,
-    "primary" BOOLEAN NOT NULL DEFAULT false,
+    "isPrimary" BOOLEAN NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "videoId" TEXT NOT NULL,
@@ -167,7 +167,7 @@ CREATE TABLE "video_thumbnails" (
 CREATE TABLE "video_titles" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "isPrimary" BOOLEAN NOT NULL DEFAULT false,
+    "isPrimary" BOOLEAN NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "videoId" TEXT NOT NULL,
@@ -178,6 +178,7 @@ CREATE TABLE "video_titles" (
 -- CreateTable
 CREATE TABLE "videos" (
     "id" TEXT NOT NULL,
+    "serial" SERIAL NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -194,7 +195,10 @@ CREATE UNIQUE INDEX "mylist_registrations_mylistId_videoId_key" ON "mylist_regis
 CREATE UNIQUE INDEX "nicovideo_video_sources_sourceId_key" ON "nicovideo_video_sources"("sourceId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "nicovideo_video_sources_videoId_key" ON "nicovideo_video_sources"("videoId");
+CREATE UNIQUE INDEX "nicovideo_video_sources_sourceId_videoId_key" ON "nicovideo_video_sources"("sourceId", "videoId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "tag_names_name_tagId_key" ON "tag_names"("name", "tagId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "tag_parents_parentId_childId_key" ON "tag_parents"("parentId", "childId");
@@ -207,6 +211,9 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "video_tags_tagId_videoId_key" ON "video_tags"("tagId", "videoId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "videos_serial_key" ON "videos"("serial");
 
 -- AddForeignKey
 ALTER TABLE "mylist_groups" ADD CONSTRAINT "mylist_groups_holderId_fkey" FOREIGN KEY ("holderId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
