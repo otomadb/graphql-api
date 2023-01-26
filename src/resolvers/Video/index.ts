@@ -10,7 +10,7 @@ import { resolveTags } from "./tags.js";
 
 export const resolveHistory = (() => ({ nodes: [] })) satisfies VideoResolvers["history"];
 
-export const resolveVideo = ({ prisma, neo4jDriver }: Pick<ResolverDeps, "prisma" | "neo4jDriver">) =>
+export const resolveVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
   ({
     id: ({ id }): string => buildGqlId("Video", id),
 
@@ -45,7 +45,7 @@ export const resolveVideo = ({ prisma, neo4jDriver }: Pick<ResolverDeps, "prisma
 
     history: resolveHistory,
 
-    similarVideos: resolveSimilarVideos({ neo4jDriver }),
+    similarVideos: resolveSimilarVideos({ neo4j }),
 
     nicovideoSources: async ({ id: videoId }) =>
       prisma.nicovideoVideoSource
