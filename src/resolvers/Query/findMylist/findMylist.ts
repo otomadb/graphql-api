@@ -1,6 +1,6 @@
+import { MylistShareRange } from "@prisma/client";
 import { GraphQLError } from "graphql";
 
-import { MylistShareRange as MylistEntityShareRange } from "../../../db/entities/mylists.js";
 import { QueryResolvers } from "../../../graphql.js";
 import { parseGqlID } from "../../../utils/id.js";
 import { ResolverDeps } from "../../index.js";
@@ -16,7 +16,7 @@ export const findMylist = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
     const mylist = await prisma.mylist.findFirst({ where: { id: parseGqlID("Mylist", id) } });
 
     if (!mylist) return null;
-    if (mylist.shareRange === MylistEntityShareRange.PRIVATE && mylist.holderId !== user?.id) return null;
+    if (mylist.shareRange === MylistShareRange.PRIVATE && mylist.holderId !== user?.id) return null;
 
     return new MylistModel(mylist);
   }) satisfies QueryResolvers["findMylist"];

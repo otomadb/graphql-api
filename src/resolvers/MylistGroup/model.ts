@@ -1,4 +1,4 @@
-import { MylistGroup } from ".prisma/client";
+import { MylistGroup } from "@prisma/client";
 
 export class MylistGroupModel {
   constructor(private readonly entity: MylistGroup) {}

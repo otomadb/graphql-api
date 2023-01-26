@@ -1,3 +1,4 @@
+import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
 
 import { checkAuth } from "../../../auth/checkAuth.js";
@@ -5,7 +6,6 @@ import { MutationResolvers } from "../../../graphql.js";
 import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
 import { ResolverDeps } from "../../index.js";
 import { SemitagModel } from "../../Semitag/model.js";
-import { UserRole } from ".prisma/client";
 
 export const addSemitagToVideo = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   checkAuth(UserRole.NORMAL, async (_parent, { input: { videoId: videoGqlId, name: semitagName } }) => {

@@ -1,4 +1,4 @@
-import { MylistGroupMylistInclsion } from ".prisma/client";
+import { MylistGroupMylistInclsion } from "@prisma/client";
 
 export class MylistGroupMylistInclusionModel {
   constructor(private readonly entity: MylistGroupMylistInclsion) {}
