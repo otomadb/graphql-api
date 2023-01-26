@@ -1,7 +1,6 @@
-import { PrismaClient, UserRole } from "@prisma/client";
+import { MylistShareRange, PrismaClient, User, UserRole } from "@prisma/client";
 import * as argon2 from "argon2";
 import { RouteHandlerMethod } from "fastify";
-import { ulid } from "ulid";
 import { z } from "zod";
 
 import { Result } from "../utils/Result.js";
@@ -26,33 +25,32 @@ export const registerUser = async (
       error: { message: "USER_NAME_ALREADY_REGISTERED" },
     };
 
-  const user = new User();
-  user.id = ulid();
-  user.name = name;
-  user.displayName = displayName;
-  user.email = email;
-  user.password = await argon2.hash(rawPassword, {
+  const isExistAdmin = !!(await prisma.user.findFirst({ where: { role: UserRole.ADMINISTRATOR } }));
+
+  const hashedPassword = await argon2.hash(rawPassword, {
     type: 2,
     memoryCost: 15 * 1024,
     timeCost: 2,
     parallelism: 1,
   });
-  user.icon = null;
-  user.emailConfirmed = true; // FIXME: あとでなおす
-  if (await prisma.user.findFirstOrThrow({ where: { role: UserRole.ADMINISTRATOR } })) user.role = UserRole.NORMAL;
-  else user.role = UserRole.ADMINISTRATOR;
 
-  // Add user likes
-  const userLikes = new Mylist();
-  userLikes.id = ulid();
-  userLikes.isLikeList = true;
-  userLikes.title = `favorites for ${user.displayName}`;
-  userLikes.range = MylistShareRange.PRIVATE;
-  userLikes.holder = user;
-
-  await dataSource.transaction(async (e) => {
-    await e.getRepository(User).insert(user);
-    await e.getRepository(Mylist).insert(userLikes);
+  const user = await prisma.user.create({
+    data: {
+      name,
+      displayName,
+      email,
+      password: hashedPassword,
+      icon: null,
+      isEmailConfirmed: true, // TODO: fix
+      role: isExistAdmin ? UserRole.NORMAL : UserRole.ADMINISTRATOR,
+      mylists: {
+        create: {
+          isLikeList: true,
+          title: `Favlist for ${name}`,
+          shareRange: MylistShareRange.PRIVATE,
+        },
+      },
+    },
   });
 
   return { status: "ok", data: { user } };
@@ -75,7 +73,7 @@ export const handlerSignup = (prisma: PrismaClient) =>
       data: { user },
     } = result;
 
-    const session = await createSession(dataSource, user);
+    const session = await createSession(prisma, user.id);
     return reply
       .setCookie("otmd-session", session, {
         httpOnly: true,
