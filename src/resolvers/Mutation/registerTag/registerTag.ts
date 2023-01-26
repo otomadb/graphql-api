@@ -1,15 +1,14 @@
+import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
-import { Driver as Neo4jDriver } from "neo4j-driver";
-import { ulid } from "ulid";
 
 import { checkAuth } from "../../../auth/checkAuth.js";
 import { MutationRegisterTagArgs, MutationResolvers } from "../../../graphql.js";
-import { GraphQLNotExistsInDBError, parseGqlID, parseGqlIDs } from "../../../utils/id.js";
+import { parseGqlID, parseGqlIDs } from "../../../utils/id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 
-export const registerTagInNeo4j = async (neo4jDriver: Neo4jDriver, rels: { videoId: string; tagId: string }[]) => {
-  const session = neo4jDriver.session();
+export const registerTagInNeo4j = async (neo4j: ResolverDeps["neo4j"], rels: { videoId: string; tagId: string }[]) => {
+  const session = neo4j.session();
   try {
     const tx = session.beginTransaction();
     for (const rel of rels) {
@@ -32,41 +31,52 @@ export const registerTagInNeo4j = async (neo4jDriver: Neo4jDriver, rels: { video
 };
 
 export const registerTagScaffold =
-  ({ prisma, neo4jDriver }: Pick<ResolverDeps, "prisma" | "neo4jDriver">) =>
+  ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
   async (_: unknown, { input }: MutationRegisterTagArgs) => {
     const { primaryName, extraNames, meaningless } = input;
 
+    // implicitParentsの中にexplicitParentが存在すればエラー
     if (input.explicitParent && input.implicitParents.includes(input.explicitParent))
       throw new GraphQLError(`"${input.explicitParent}" is specified as explicitParent and also implicitParents`);
 
+    // implicitParentsの中で重複チェック
     const duplicatedImplicitParentGqlId = input.implicitParents.find((id, i, arr) => arr.indexOf(id) !== i);
     if (duplicatedImplicitParentGqlId)
       throw new GraphQLError(`"${duplicatedImplicitParentGqlId}" is duplicated in implicitParents`);
 
     const explicitParentId = input.explicitParent ? parseGqlID("Tag", input.explicitParent) : null;
     const implicitParentIds = parseGqlIDs("Tag", input.implicitParents);
-
     const semitagIds = parseGqlIDs("Semitag", input.resolveSemitags);
 
-    const tag = new Tag();
-    tag.id = ulid();
-    tag.meaningless = meaningless;
-
-    const primaryTagName = new TagName();
-    primaryTagName.id = ulid();
-    primaryTagName.name = primaryName;
-    primaryTagName.primary = true;
-    primaryTagName.tag = tag;
-
-    const extraTagNames = extraNames.map((extraName) => {
-      const extraTagName = new TagName();
-      extraTagName.id = ulid();
-      extraTagName.name = extraName;
-      extraTagName.primary = false;
-      extraTagName.tag = tag;
-      return extraTagName;
+    // TODO: makes transactionize
+    const tag = await prisma.tag.create({
+      data: {
+        meaningless,
+        names: {
+          createMany: {
+            data: [
+              { name: primaryName, isPrimary: true },
+              ...extraNames.map((extraName) => ({ name: extraName, isPrimary: false })),
+            ],
+          },
+        },
+        parents: {
+          createMany: {
+            data: [
+              ...(explicitParentId ? [{ parentId: explicitParentId, isExplicit: true }] : []),
+              ...implicitParentIds.map((implicitParentId) => ({ parentId: implicitParentId, isExplicit: false })),
+            ],
+          },
+        },
+      },
     });
+    await prisma.semitag.updateMany({
+      where: { tagId: { in: semitagIds } },
+      data: { isResolved: true, tagId: tag.id },
+    });
+    return { tag: new TagModel(tag) };
 
+    /*
     const tagParents: TagParent[] = [];
     const semitagVideoTags: VideoTag[] = [];
 
@@ -162,12 +172,11 @@ export const registerTagScaffold =
     });
 
     await registerTagInNeo4j(
-      neo4jDriver,
+      neo4j,
       semitagVideoTags.map(({ tag, video }) => ({ tagId: tag.id, videoId: video.id }))
     );
-
-    return { tag: new TagModel(tag) };
+    */
   };
 
-export const registerTag = (inject: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
-  checkAuth(UserRole.EDITOR, registerTagScaffold(inject)) satisfies MutationResolvers["registerTag"];
+export const registerTag = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
+  checkAuth(UserRole.EDITOR, registerTagScaffold({ prisma, neo4j })) satisfies MutationResolvers["registerTag"];
