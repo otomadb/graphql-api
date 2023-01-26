@@ -37,9 +37,22 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+      - run: npm ci
+      - run: npm run codegen
+      - run: npm run prisma:client
+      - run: npm run test
+
+  e2e-test:
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      TEST_DATABASE_URL: postgres://postgres:pass@localhost/postgres
+      TEST_PRISMA_DATABASE_URL: postgres://user:pass@localhost:5432/test
       TEST_NEO4J_URL: bolt://localhost:7687
       TEST_NEO4J_USERNAME: neo4j
       TEST_NEO4J_PASSWORD: password
@@ -49,7 +62,9 @@ jobs:
         ports:
           - 5432:5432
         env:
+          POSTGRES_USER: user
           POSTGRES_PASSWORD: pass
+          POSTGRES_DB: test
       neo4j:
         image: neo4j:5.2
         ports:
@@ -65,4 +80,4 @@ jobs:
       - run: npm ci
       - run: npm run codegen
       - run: npm run prisma:client
-      - run: npm run test
+      - run: npm run e2e-test
