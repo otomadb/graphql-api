@@ -13,7 +13,8 @@ export const findTags = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       },
       where: {
         ...(input.name && { names: { some: { name: input.name } } }),
-        ...(input.parents && { parents: { some: { id: { in: input.parents } } } }),
+        ...(input.parents && { parents: { some: { parentId: { in: input.parents } } } }),
+        // ...(input.parents && { parents: { some: { id: { in: input.parents } } } }),
       },
     });
 
