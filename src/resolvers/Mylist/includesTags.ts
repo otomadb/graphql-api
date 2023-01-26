@@ -1,11 +1,10 @@
-import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
-import { VideoTag } from "../../db/entities/video_tags.js";
 import { MylistResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../index.js";
 import { MylistTagInclusionModel } from "../MylistTagInclusion/model.js";
 
-export const resolveIncludeTags = ({ prisma, neo4jDriver }: Pick<ResolverDeps, "prisma" | "neo4jDriver">) =>
+export const resolveIncludeTags = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async ({ id: mylistId }, { input }) => {
+    /*
     const result = await dataSource
       .getRepository(MylistRegistration)
       .createQueryBuilder("r")
@@ -30,4 +29,23 @@ export const resolveIncludeTags = ({ prisma, neo4jDriver }: Pick<ResolverDeps, "
     );
 
     return { items };
+    */
+    const tags = await prisma.videoTag.groupBy({
+      by: ["tagId"],
+      where: { video: { mylists: { some: { mylistId } } } },
+      _count: { tagId: true },
+      orderBy: { _count: { tagId: "asc" } },
+      skip: input.skip,
+      take: input.limit,
+    });
+    return {
+      items: tags.map(
+        ({ _count, tagId }) =>
+          new MylistTagInclusionModel({
+            count: _count.tagId,
+            mylistId,
+            tagId,
+          })
+      ),
+    };
   }) satisfies MylistResolvers["includeTags"];
