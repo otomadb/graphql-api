@@ -10,7 +10,7 @@ datasource db {
 }
 
 model MylistGroup {
-  id String @id @db.VarChar(26)
+  id String @id @default(cuid())
 
   title String
 
@@ -26,7 +26,7 @@ model MylistGroup {
 }
 
 model MylistGroupMylistInclsion {
-  id String @id @db.VarChar(26)
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -42,7 +42,7 @@ model MylistGroupMylistInclsion {
 }
 
 model Mylist {
-  id String @id @db.VarChar(26)
+  id String @id @default(cuid())
 
   title String
 
@@ -90,7 +90,7 @@ model MylistRegistration {
 }
 
 model NicovideoVideoSource {
-  id String @id @db.VarChar(26)
+  id String @id @default(cuid())
 
   sourceId String @unique @db.Citext
 
@@ -138,7 +138,7 @@ model Session {
 }
 
 model TagName {
-  id String @id @db.VarChar(26)
+  id String @id @default(cuid())
 
   name String
 
@@ -154,7 +154,7 @@ model TagName {
 }
 
 model TagParent {
-  id String @id @db.VarChar(26)
+  id String @id @default(cuid())
 
   isExplicit Boolean @default(false) @map("explicit")
 
@@ -172,7 +172,7 @@ model TagParent {
 }
 
 model Tag {
-  id String @id @db.VarChar(26)
+  id String @id @default(cuid())
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now())
@@ -190,7 +190,7 @@ model Tag {
 }
 
 model User {
-  id   String @id @db.VarChar(26)
+  id   String @id @default(cuid())
   name String @unique @db.Citext
 
   email            String  @unique()
@@ -225,7 +225,7 @@ enum UserRole {
 }
 
 model VideoTag {
-  id        String   @id @db.VarChar(26)
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
@@ -240,7 +240,7 @@ model VideoTag {
 }
 
 model VideoThumbnail {
-  id        String   @id @db.VarChar(26)
+  id        String   @id @default(cuid())
   imageUrl  String
   isPrimary Boolean  @default(false) @map("primary")
   createdAt DateTime @default(now())
@@ -253,20 +253,20 @@ model VideoThumbnail {
 }
 
 model VideoTitle {
-  id        String   @id @db.VarChar(26)
+  id        String   @id @default(cuid())
   title     String
   isPrimary Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  videoId String @db.VarChar(26)
+  videoId String
   video   Video  @relation(fields: [videoId], references: [id])
 
   @@map("video_titles")
 }
 
 model Video {
-  id        String   @id @db.VarChar(26)
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
