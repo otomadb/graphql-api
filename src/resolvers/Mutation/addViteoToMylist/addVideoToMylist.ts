@@ -1,10 +1,10 @@
+import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
 import { Driver as Neo4jDriver } from "neo4j-driver";
-import { ulid } from "ulid";
 
 import { checkAuth } from "../../../auth/checkAuth.js";
 import { MutationResolvers } from "../../../graphql.js";
-import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
+import { parseGqlID } from "../../../utils/id.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
 
@@ -28,41 +28,22 @@ export const addMylistRegistrationInNeo4j = async (
   }
 };
 
-export const addVideoToMylist = ({ prisma, neo4jDriver }: Pick<ResolverDeps, "prisma" | "neo4jDriver">) =>
+export const addVideoToMylist = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
   checkAuth(
     UserRole.NORMAL,
     async (_parent, { input: { mylistId: mylistGqlId, note, videoId: videoGqlId } }, { user }) => {
-      if (!user) throw new GraphQLError("need to authenticate");
-
       const mylistId = parseGqlID("Mylist", mylistGqlId);
       const videoId = parseGqlID("Video", videoGqlId);
 
-      const registration = new MylistRegistration();
-      registration.id = ulid();
+      if ((await prisma.mylist.findUniqueOrThrow({ where: { id: mylistId } })).holderId !== user.id)
+        throw new GraphQLError(`mylist "${mylistGqlId}" is not holded by you`);
 
-      await dataSource.transaction(async (manager) => {
-        const repoVideo = manager.getRepository(Video);
-        const repoMylist = manager.getRepository(Mylist);
-        const repoRegistration = manager.getRepository(MylistRegistration);
-
-        const video = await repoVideo.findOne({ where: { id: videoId } });
-        if (!video) throw new GraphQLNotExistsInDBError("Video", videoId);
-
-        const mylist = await repoMylist.findOne({ where: { id: mylistId }, relations: { holder: true } });
-        if (!mylist) throw new GraphQLNotExistsInDBError("Mylist", mylistId);
-        if (mylist.holder.id !== user.id) throw new GraphQLError(`mylist "${mylistGqlId}" is not holded by you`);
-
-        if (await repoRegistration.findOneBy({ mylist: { id: mylistId }, video: { id: videoId } }))
-          throw new GraphQLError(`"${videoGqlId}" is already registered in "${mylistGqlId}"`);
-
-        registration.video = video;
-        registration.mylist = mylist;
-        registration.note = note ?? null;
-
-        await repoRegistration.insert(registration);
+      const registration = await prisma.mylistRegistration.create({
+        data: { videoId, mylistId, note },
+        include: { video: true, mylist: true },
       });
 
-      await addMylistRegistrationInNeo4j(neo4jDriver, {
+      await addMylistRegistrationInNeo4j(neo4j, {
         videoId: registration.video.id,
         mylistId: registration.mylist.id,
       });
