@@ -14,7 +14,7 @@ import { removeVideoFromMylist } from "./removeVideoFromMylist/removeVideoFromMy
 import { resolveSemitag } from "./resolveSemitag/resolveSemitag.js";
 import { undoLikeVideo } from "./undoLikeVideo/undoLikeVideo.js";
 
-export const resolveMutation = (deps: Pick<ResolverDeps, "prisma">) =>
+export const resolveMutation = (deps: Pick<ResolverDeps, "prisma" | "neo4j">) =>
   ({
     addMylistToMylistGroup: addMylistToMylistGroup(deps),
     addSemitagToVideo: addSemitagToVideo(deps),
