@@ -115,7 +115,7 @@ model Semitag {
   videoId String
   video   Video  @relation(fields: [videoId], references: [id])
 
-  isResolved Boolean @default(false) @map("resolved")
+  isResolved Boolean @map("resolved")
   tagId      String?
   tag        Tag?    @relation(fields: [tagId], references: [id])
 
@@ -143,7 +143,7 @@ model TagName {
 
   name String
 
-  isPrimary Boolean @default(false) @map("primary")
+  isPrimary Boolean @map("primary")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -151,13 +151,14 @@ model TagName {
   tagId String
   tag   Tag    @relation(fields: [tagId], references: [id])
 
+  @@unique([name, tagId])
   @@map("tag_names")
 }
 
 model TagParent {
   id String @id @default(cuid())
 
-  isExplicit Boolean @default(false) @map("explicit")
+  isExplicit Boolean @map("explicit")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -177,7 +178,7 @@ model Tag {
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now())
-  meaningless Boolean   @default(false)
+  meaningless Boolean
   semitags    Semitag[]
 
   names TagName[]
@@ -195,7 +196,7 @@ model User {
   name String @unique @db.Citext
 
   email            String  @unique()
-  isEmailConfirmed Boolean @default(false) @map("emailConfirmed")
+  isEmailConfirmed Boolean @map("emailConfirmed")
 
   role UserRole @default(NORMAL)
 
