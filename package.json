@@ -10,7 +10,7 @@
     "dev:nodemon": "nodemon -w dist/index.js dist/index.js",
     "prebuild": "run-p 'prebuild:*'",
     "prebuild:codegen": "npm run codegen",
-    "prebuild:prisma": "npm run prisma:generate-client",
+    "prebuild:prisma": "npm run prisma:client",
     "build": "tsup",
     "codegen": "graphql-codegen-esm",
     "prisma:client": "prisma generate",
