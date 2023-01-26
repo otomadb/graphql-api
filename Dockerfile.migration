@@ -10,7 +10,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY ./tsconfig.json ./
-COPY ./src/db ./src/db
+COPY ./prisma ./prisma
 
 ENTRYPOINT ["tini", "--"]
-CMD ["npm", "run", "migration:run"]
+CMD ["./node_modules/.bin/prisma", "migrate", "deploy"]

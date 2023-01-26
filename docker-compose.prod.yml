@@ -17,11 +17,7 @@ services:
       PORT: 4000
       HOST: "0.0.0.0"
 
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
-      POSTGRES_USERNAME: user
-      POSTGRES_PASSWORD: pass
-      POSTGRES_DATABASE: test
+      PRISMA_DATABASE_URL: "postgres://user:pass@postgres:5432/test"
 
       NEO4J_URL: "bolt://neo4j:7687"
       NEO4J_USERNAME: "neo4j"
@@ -54,11 +50,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
-      POSTGRES_USERNAME: user
-      POSTGRES_PASSWORD: pass
-      POSTGRES_DATABASE: test
+      PRISMA_DATABASE_URL: "postgres://user:pass@postgres:5432/test"
 
   neo4j:
     image: neo4j:5.2

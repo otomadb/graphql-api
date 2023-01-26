@@ -7,10 +7,10 @@ RUN npm ci
 
 ## build
 COPY ./codegen.yml ./tsconfig.json tsup.config.ts ./
-COPY src ./src
-COPY codegen-plugins ./codegen-plugins
-RUN npm run codegen && \
-  npm run build
+COPY ./src ./src
+COPY ./prisma/schema.prisma ./prisma/schema.prisma
+COPY ./codegen-plugins ./codegen-plugins
+RUN npm run build
 
 # Runner
 FROM node:18-slim AS runner
@@ -27,6 +27,7 @@ RUN npm ci --omit=dev
 
 ## copy build dist
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules/.prisma/client ./node_modules/.prisma/client
 
 ENTRYPOINT ["tini", "--"]
 CMD ["node", "dist/index.js"]
