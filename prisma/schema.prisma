@@ -97,9 +97,10 @@ model NicovideoVideoSource {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  videoId String @unique
+  videoId String
   video   Video  @relation(fields: [videoId], references: [id])
 
+  @@unique([sourceId, videoId])
   @@map("nicovideo_video_sources")
 }
 
@@ -240,9 +241,11 @@ model VideoTag {
 }
 
 model VideoThumbnail {
-  id        String   @id @default(cuid())
+  id String @id @default(cuid())
+
   imageUrl  String
-  isPrimary Boolean  @default(false) @map("primary")
+  isPrimary Boolean
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
@@ -253,9 +256,11 @@ model VideoThumbnail {
 }
 
 model VideoTitle {
-  id        String   @id @default(cuid())
+  id String @id @default(cuid())
+
   title     String
-  isPrimary Boolean  @default(false)
+  isPrimary Boolean
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
@@ -266,7 +271,9 @@ model VideoTitle {
 }
 
 model Video {
-  id        String   @id @default(cuid())
+  id     String @id @default(cuid())
+  serial Int    @unique @default(autoincrement())
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
