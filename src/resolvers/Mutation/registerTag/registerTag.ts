@@ -1,5 +1,6 @@
 import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
+import { ulid } from "ulid";
 
 import { checkAuth } from "../../../auth/checkAuth.js";
 import { MutationRegisterTagArgs, MutationResolvers } from "../../../graphql.js";
@@ -31,7 +32,7 @@ export const registerTagInNeo4j = async (neo4j: ResolverDeps["neo4j"], rels: { v
 };
 
 export const registerTagScaffold =
-  ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
+  ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   async (_: unknown, { input }: MutationRegisterTagArgs) => {
     const { primaryName, extraNames, meaningless } = input;
 
@@ -48,32 +49,38 @@ export const registerTagScaffold =
     const implicitParentIds = parseGqlIDs("Tag", input.implicitParents);
     const semitagIds = parseGqlIDs("Semitag", input.resolveSemitags);
 
+    console.dir(semitagIds);
+
     // TODO: makes transactionize
-    const tag = await prisma.tag.create({
-      data: {
-        meaningless,
-        names: {
-          createMany: {
-            data: [
-              { name: primaryName, isPrimary: true },
-              ...extraNames.map((extraName) => ({ name: extraName, isPrimary: false })),
-            ],
+    const tagId = ulid();
+    const [tag] = await prisma.$transaction([
+      prisma.tag.create({
+        data: {
+          id: tagId,
+          meaningless,
+          names: {
+            createMany: {
+              data: [
+                { name: primaryName, isPrimary: true },
+                ...extraNames.map((extraName) => ({ name: extraName, isPrimary: false })),
+              ],
+            },
+          },
+          parents: {
+            createMany: {
+              data: [
+                ...(explicitParentId ? [{ parentId: explicitParentId, isExplicit: true }] : []),
+                ...implicitParentIds.map((implicitParentId) => ({ parentId: implicitParentId, isExplicit: false })),
+              ],
+            },
           },
         },
-        parents: {
-          createMany: {
-            data: [
-              ...(explicitParentId ? [{ parentId: explicitParentId, isExplicit: true }] : []),
-              ...implicitParentIds.map((implicitParentId) => ({ parentId: implicitParentId, isExplicit: false })),
-            ],
-          },
-        },
-      },
-    });
-    await prisma.semitag.updateMany({
-      where: { tagId: { in: semitagIds } },
-      data: { isResolved: true, tagId: tag.id },
-    });
+      }),
+      prisma.semitag.updateMany({
+        where: { id: { in: semitagIds } },
+        data: { isResolved: true, tagId },
+      }),
+    ]);
     return { tag: new TagModel(tag) };
 
     /*
@@ -178,5 +185,5 @@ export const registerTagScaffold =
     */
   };
 
-export const registerTag = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  checkAuth(UserRole.EDITOR, registerTagScaffold({ prisma, neo4j })) satisfies MutationResolvers["registerTag"];
+export const registerTag = ({ prisma }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
+  checkAuth(UserRole.EDITOR, registerTagScaffold({ prisma })) satisfies MutationResolvers["registerTag"];

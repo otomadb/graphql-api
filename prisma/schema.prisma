@@ -174,7 +174,7 @@ model TagParent {
 }
 
 model Tag {
-  id String @id @default(cuid())
+  id String @id
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now())
