@@ -83,6 +83,7 @@ export const registerVideoScaffold =
           createMany: {
             data: input.semitags.map((name) => ({
               name,
+              isResolved: false,
             })),
           },
         },
