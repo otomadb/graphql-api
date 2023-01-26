@@ -1,11 +1,12 @@
-import { Driver, Integer } from "neo4j-driver";
+import { Integer } from "neo4j-driver";
 
 import { MylistResolvers } from "../../graphql.js";
+import { ResolverDeps } from "../index.js";
 import { MylistVideoRecommendationModel } from "../MylistVideoRecommendation/model.js";
 
-export const resolveRecommendedVideos = ({ neo4jDriver }: { neo4jDriver: Driver }) =>
+export const resolveRecommendedVideos = ({ neo4j }: Pick<ResolverDeps, "neo4j">) =>
   (async ({ id: mylistId }, { input }) => {
-    const session = neo4jDriver.session();
+    const session = neo4j.session();
 
     try {
       const result = await session.run(

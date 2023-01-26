@@ -1,19 +1,33 @@
 import { Mylist } from "@prisma/client";
 
 export class MylistModel {
-  public id;
-  public range;
-  public title;
-  public isLikeList: boolean;
-  public createdAt: Date;
-  public updatedAt: Date;
+  constructor(private readonly mylist: Mylist) {}
 
-  constructor({ id, shareRange, title, createdAt, updatedAt, isLikeList }: Mylist) {
-    this.id = id;
-    this.title = title;
-    this.range = shareRange;
-    this.isLikeList = isLikeList;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
+  public get id() {
+    return this.mylist.id;
+  }
+
+  public get shareRange() {
+    return this.mylist.shareRange;
+  }
+
+  public get title() {
+    return this.mylist.title;
+  }
+
+  public get isLikeList() {
+    return this.mylist.isLikeList;
+  }
+
+  public get createdAt() {
+    return this.mylist.createdAt;
+  }
+
+  public get updatedAt() {
+    return this.mylist.updatedAt;
+  }
+
+  public get holderId() {
+    return this.mylist.holderId;
   }
 }
