@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "run-p 'dev:*'",
-    "dev:build": "npm run build --watch",
-    "dev:codegen": "npm run codegen --watch",
+    "dev:build": "npm run build -- --watch",
+    "dev:codegen": "npm run codegen -- --watch",
     "dev:nodemon": "nodemon -w dist/index.js dist/index.js",
     "build": "tsup",
     "codegen": "graphql-codegen-esm",
