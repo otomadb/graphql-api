@@ -20,8 +20,7 @@ import { resolveVideoSimilarity } from "./VideoSimilarity/index.js";
 
 export type ResolverDeps = {
   prisma: PrismaClient;
-  // dataSource: DataSource;
-  neo4jDriver: Neo4jDriver;
+  neo4j: Neo4jDriver;
 };
 
 export const resolvers = (deps: ResolverDeps) =>
