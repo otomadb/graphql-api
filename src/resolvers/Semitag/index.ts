@@ -6,7 +6,7 @@ import { VideoModel } from "../Video/model.js";
 
 export const resolveSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
-    id: ({ id }): string => buildGqlId("Semitag", id),
+    id: ({ dbId }): string => buildGqlId("Semitag", dbId),
     video: ({ videoId }) =>
       prisma.video
         .findFirstOrThrow({ where: { id: videoId } })

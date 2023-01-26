@@ -20,7 +20,7 @@ export const findSemitags = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       },
       where: {
         id: { notIn: execptIds },
-        isResolved: input.resolved || undefined,
+        isResolved: input.resolved?.valueOf(),
       },
     });
     return { nodes: semitags.map((t) => new SemitagModel(t)) };

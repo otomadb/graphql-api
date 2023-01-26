@@ -3,7 +3,7 @@ import { Semitag } from "@prisma/client";
 export class SemitagModel {
   constructor(private readonly entity: Semitag) {}
 
-  get id() {
+  get dbId() {
     return this.entity.id;
   }
 
@@ -11,7 +11,7 @@ export class SemitagModel {
     return this.entity.name;
   }
 
-  get isResolved() {
+  get resolved() {
     return this.entity.isResolved;
   }
 

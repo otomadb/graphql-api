@@ -226,53 +226,8 @@ enum UserRole {
   @@map("users_role_enum")
 }
 
-model VideoTag {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  tagId String
-  tag   Tag    @relation(fields: [tagId], references: [id])
-
-  videoId String
-  video   Video  @relation(fields: [videoId], references: [id])
-
-  @@unique([tagId, videoId])
-  @@map("video_tags")
-}
-
-model VideoThumbnail {
-  id String @id @default(cuid())
-
-  imageUrl  String
-  isPrimary Boolean
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  videoId String
-  video   Video  @relation(fields: [videoId], references: [id])
-
-  @@map("video_thumbnails")
-}
-
-model VideoTitle {
-  id String @id @default(cuid())
-
-  title     String
-  isPrimary Boolean
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  videoId String
-  video   Video  @relation(fields: [videoId], references: [id])
-
-  @@map("video_titles")
-}
-
 model Video {
-  id     String @id @default(cuid())
+  id     String @id
   serial Int    @unique @default(autoincrement())
 
   createdAt DateTime @default(now())
@@ -289,4 +244,51 @@ model Video {
   mylists MylistRegistration[]
 
   @@map("videos")
+}
+
+model VideoTitle {
+  id String @id @default(cuid())
+
+  title     String
+  isPrimary Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  @@unique([videoId, title])
+  @@map("video_titles")
+}
+
+model VideoTag {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  tagId String
+  tag   Tag    @relation(fields: [tagId], references: [id])
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  @@unique([videoId, tagId])
+  @@map("video_tags")
+}
+
+model VideoThumbnail {
+  id String @id @default(cuid())
+
+  imageUrl  String
+  isPrimary Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  @@map("video_thumbnails")
 }

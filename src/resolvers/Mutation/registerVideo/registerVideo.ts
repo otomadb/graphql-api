@@ -1,8 +1,10 @@
 import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
+import { ulid } from "ulid";
 
 import { checkAuth } from "../../../auth/checkAuth.js";
 import { MutationRegisterVideoArgs, MutationResolvers, RegisterVideoInputSourceType } from "../../../graphql.js";
+import { parseGqlIDs } from "../../../utils/id.js";
 import { isValidNicovideoSourceId } from "../../../utils/isValidNicovideoSourceId.js";
 import { ResolverDeps } from "../../index.js";
 import { VideoModel } from "../../Video/model.js";
@@ -44,13 +46,12 @@ export const registerVideoScaffold =
       if (!isValidNicovideoSourceId(id)) throw new GraphQLError(`"${id}" is invalid source id for niconico source`);
     }
 
+    const tagIds = parseGqlIDs("Tag", input.tags);
+    const videoId = ulid();
+
     const video = await prisma.video.create({
       data: {
-        thumbnails: {
-          createMany: {
-            data: [{ imageUrl: input.primaryThumbnail, isPrimary: true }],
-          },
-        },
+        id: videoId,
         titles: {
           createMany: {
             data: [
@@ -65,18 +66,19 @@ export const registerVideoScaffold =
             ],
           },
         },
-        nicovideoSources: {
+        thumbnails: {
           createMany: {
-            data: nicovideoSourceIds.map((sourceId) => ({
-              sourceId: sourceId.toLowerCase(),
-            })),
+            data: [
+              {
+                imageUrl: input.primaryThumbnail,
+                isPrimary: true,
+              },
+            ],
           },
         },
         tags: {
           createMany: {
-            data: input.tags.map((tagId) => ({
-              tagId,
-            })),
+            data: tagIds.map((tagId) => ({ tagId })),
           },
         },
         semitags: {
@@ -87,16 +89,22 @@ export const registerVideoScaffold =
             })),
           },
         },
-      },
-      include: {
-        tags: true,
+        nicovideoSources: {
+          createMany: {
+            data: nicovideoSourceIds.map((sourceId) => ({
+              sourceId: sourceId.toLowerCase(),
+            })),
+          },
+        },
       },
     });
 
+    /*
     await registerVideoInNeo4j(
       neo4j,
       video.tags.map(({ tagId, videoId }) => ({ tagId, videoId }))
     );
+    */
 
     return {
       video: new VideoModel(video),

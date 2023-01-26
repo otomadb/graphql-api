@@ -49,9 +49,11 @@ export const registerTagScaffold =
     const implicitParentIds = parseGqlIDs("Tag", input.implicitParents);
     const semitagIds = parseGqlIDs("Semitag", input.resolveSemitags);
 
-    console.dir(semitagIds);
+    const semitagVideos = await prisma.video.findMany({
+      where: { semitags: { some: { id: { in: semitagIds } } } },
+      select: { id: true },
+    });
 
-    // TODO: makes transactionize
     const tagId = ulid();
     const [tag] = await prisma.$transaction([
       prisma.tag.create({
@@ -79,6 +81,9 @@ export const registerTagScaffold =
       prisma.semitag.updateMany({
         where: { id: { in: semitagIds } },
         data: { isResolved: true, tagId },
+      }),
+      prisma.videoTag.createMany({
+        data: semitagVideos.map(({ id: videoId }) => ({ tagId, videoId })),
       }),
     ]);
     return { tag: new TagModel(tag) };
