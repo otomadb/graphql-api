@@ -1,14 +1,12 @@
-import { GraphQLError } from "graphql";
+import { UserRole } from "@prisma/client";
 import { Driver as Neo4jDriver } from "neo4j-driver";
-import { ulid } from "ulid";
 
 import { checkAuth } from "../../../auth/checkAuth.js";
 import { MutationResolvers } from "../../../graphql.js";
-import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
+import { parseGqlID } from "../../../utils/id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 import { VideoModel } from "../../Video/model.js";
-import { UserRole } from ".prisma/client";
 
 export const addTagToVideoInNeo4j = async (
   neo4jDriver: Neo4jDriver,
@@ -30,39 +28,23 @@ export const addTagToVideoInNeo4j = async (
   }
 };
 
-export const addTagToVideo = ({ neo4jDriver, prisma }: Pick<ResolverDeps, "prisma" | "neo4jDriver">) =>
+export const addTagToVideo = ({ neo4j, prisma }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
   checkAuth(UserRole.NORMAL, async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { user }) => {
-    if (!user) throw new GraphQLError("required to sign in");
-
     const videoId = parseGqlID("Video", videoGqlId);
     const tagId = parseGqlID("Tag", tagGqlId);
 
-    const videoTag = new VideoTag();
-    videoTag.id = ulid();
-
-    await dataSource.transaction(async (manager) => {
-      const repoVideo = manager.getRepository(Video);
-      const repoTag = manager.getRepository(Tag);
-      const repoVideoTag = manager.getRepository(VideoTag);
-
-      const video = await repoVideo.findOne({ where: { id: videoId } });
-      if (!video) throw new GraphQLNotExistsInDBError("Video", videoId);
-
-      const tag = await repoTag.findOne({ where: { id: tagId } });
-      if (!tag) throw new GraphQLNotExistsInDBError("Tag", tagId);
-
-      videoTag.video = video;
-      videoTag.tag = tag;
-      await repoVideoTag.insert(videoTag);
+    const tagging = await prisma.videoTag.create({
+      data: { videoId, tagId },
+      include: { video: true, tag: true },
     });
 
-    await addTagToVideoInNeo4j(neo4jDriver, {
-      tagId: videoTag.tag.id,
-      videoId: videoTag.video.id,
+    await addTagToVideoInNeo4j(neo4j, {
+      tagId: tagging.tag.id,
+      videoId: tagging.video.id,
     });
 
     return {
-      video: new VideoModel(videoTag.video),
-      tag: new TagModel(videoTag.tag),
+      video: new VideoModel(tagging.video),
+      tag: new TagModel(tagging.tag),
     };
   }) satisfies MutationResolvers["addTagToVideo"];
