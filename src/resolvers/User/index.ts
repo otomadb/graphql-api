@@ -1,7 +1,6 @@
-import { MylistShareRange } from "@prisma/client";
+import { MylistShareRange, UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
 
-import { UserRole } from "../../db/entities/users.js";
 import { MylistShareRange as GraphQLMylistShareRange, Resolvers } from "../../graphql.js";
 import { buildGqlId, parseGqlID } from "../../utils/id.js";
 import { ResolverDeps } from "../index.js";
