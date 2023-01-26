@@ -80,10 +80,10 @@ model MylistRegistration {
   note String?
 
   videoId String
-  videos  Video  @relation(fields: [videoId], references: [id])
+  video   Video  @relation(fields: [videoId], references: [id])
 
   mylistId String
-  mylists  Mylist @relation(fields: [mylistId], references: [id])
+  mylist   Mylist @relation(fields: [mylistId], references: [id])
 
   @@unique([mylistId, videoId])
   @@map("mylist_registrations")
