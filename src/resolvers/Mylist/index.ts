@@ -3,6 +3,7 @@ import { MylistShareRange } from "@prisma/client";
 import { MylistShareRange as GQLMylistShareRange } from "../../graphql.js";
 import { Resolvers } from "../../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError, parseGqlID } from "../../utils/id.js";
+import { parsePrismaOrder } from "../../utils/parsePrismaOrder.js";
 import { ResolverDeps } from "../index.js";
 import { MylistRegistrationModel } from "../MylistRegistration/model.js";
 import { UserModel } from "../User/model.js";
@@ -36,12 +37,8 @@ export const resolveMylist = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "
       const regs = await prisma.mylistRegistration.findMany({
         where: { id: mylistId },
         orderBy: {
-          // TODO: Prisma
-          createdAt: "asc",
-          /*
-          createdAt: input.order?.createdAt || undefined,
-          updatedAt: input.order?.updatedAt || undefined,
-          */
+          createdAt: parsePrismaOrder(input.order?.createdAt),
+          updatedAt: parsePrismaOrder(input.order?.updatedAt),
         },
         take: input.limit,
         skip: input.skip,

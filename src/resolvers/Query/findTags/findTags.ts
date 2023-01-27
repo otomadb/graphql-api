@@ -1,4 +1,5 @@
 import { QueryResolvers } from "../../../graphql.js";
+import { parsePrismaOrder } from "../../../utils/parsePrismaOrder.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 
@@ -8,8 +9,8 @@ export const findTags = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       take: input.limit,
       skip: input.skip,
       orderBy: {
-        // TODO: Prsima
-        createdAt: "asc",
+        createdAt: parsePrismaOrder(input.order?.createdAt),
+        updatedAt: parsePrismaOrder(input.order?.updatedAt),
       },
       where: {
         ...(input.name && { names: { some: { name: input.name } } }),

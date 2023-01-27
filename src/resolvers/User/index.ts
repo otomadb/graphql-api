@@ -3,6 +3,7 @@ import { GraphQLError } from "graphql";
 
 import { MylistShareRange as GraphQLMylistShareRange, Resolvers } from "../../graphql.js";
 import { buildGqlId, parseGqlID } from "../../utils/id.js";
+import { parsePrismaOrder } from "../../utils/parsePrismaOrder.js";
 import { ResolverDeps } from "../index.js";
 import { MylistModel } from "../Mylist/model.js";
 import { resolveUserLikes } from "./likes.js";
@@ -40,12 +41,8 @@ export const resolveUser = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
           take: input.limit,
           skip: input.skip,
           orderBy: {
-            // TODO: for Prisma
-            createdAt: "asc",
-            /*
-            createdAt: input.order.createdAt || undefined,
-            updatedAt: input.order.updatedAt || undefined,
-            */
+            createdAt: parsePrismaOrder(input.order?.createdAt),
+            updatedAt: parsePrismaOrder(input.order?.updatedAt),
           },
         })
         .then((ms) => ms.map((m) => new MylistModel(m)));

@@ -1,4 +1,5 @@
 import { QueryResolvers } from "../../../graphql.js";
+import { parsePrismaOrder } from "../../../utils/parsePrismaOrder.js";
 import { ResolverDeps } from "../../index.js";
 import { VideoModel } from "../../Video/model.js";
 
@@ -8,12 +9,8 @@ export const findVideos = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       take: input.limit,
       skip: input.skip,
       orderBy: {
-        // TODO: PRISMA
-        createdAt: "asc",
-        /*
-        createdAt: input.order?.createdAt || undefined,
-        updatedAt: input.order?.updatedAt || undefined,
-        */
+        createdAt: parsePrismaOrder(input.order?.createdAt),
+        updatedAt: parsePrismaOrder(input.order?.updatedAt),
       },
     });
 

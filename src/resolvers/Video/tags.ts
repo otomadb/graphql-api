@@ -1,4 +1,5 @@
 import { VideoResolvers } from "../../graphql.js";
+import { parsePrismaOrder } from "../../utils/parsePrismaOrder.js";
 import { ResolverDeps } from "../index.js";
 import { TagModel } from "../Tag/model.js";
 
@@ -11,11 +12,8 @@ export const resolveTags = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
         skip: input.skip.valueOf(),
         include: { tag: true },
         orderBy: {
-          // TODO: fix for Prisma
-          createdAt: "asc",
-          // createdAt: input.order.createdAt || undefined,
-          // createdAt: input.order.createdAt || undefined,
-          // updatedAt: input.order.updatedAt || undefined,
+          createdAt: parsePrismaOrder(input.order?.createdAt),
+          updatedAt: parsePrismaOrder(input.order?.updatedAt),
         },
       })
       .then((ts) => ts.map(({ tag }) => new TagModel(tag)))) satisfies VideoResolvers["tags"];
