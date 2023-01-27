@@ -21,8 +21,6 @@ model MylistGroup {
   holder   User   @relation(fields: [holderId], references: [id])
 
   mylists MylistGroupMylistInclsion[]
-
-  @@map("mylist_groups")
 }
 
 model MylistGroupMylistInclsion {
@@ -38,7 +36,6 @@ model MylistGroupMylistInclsion {
   group   MylistGroup @relation(fields: [groupId], references: [id])
 
   @@unique([mylistId, groupId])
-  @@map("mylist_group_mylist_inclusions")
 }
 
 model Mylist {
@@ -56,19 +53,15 @@ model Mylist {
   holderId String
   holder   User   @relation(fields: [holderId], references: [id])
 
-  mylist_registrations MylistRegistration[]
+  registrations MylistRegistration[]
 
   includedGroups MylistGroupMylistInclsion[]
-
-  @@map("mylists")
 }
 
 enum MylistShareRange {
   PUBLIC
   KNOW_LINK
   PRIVATE
-
-  @@map("mylists_range_enum")
 }
 
 model MylistRegistration {
@@ -86,7 +79,6 @@ model MylistRegistration {
   mylist   Mylist @relation(fields: [mylistId], references: [id])
 
   @@unique([mylistId, videoId])
-  @@map("mylist_registrations")
 }
 
 model NicovideoVideoSource {
@@ -101,7 +93,6 @@ model NicovideoVideoSource {
   video   Video  @relation(fields: [videoId], references: [id])
 
   @@unique([sourceId, videoId])
-  @@map("nicovideo_video_sources")
 }
 
 model Semitag {
@@ -115,11 +106,9 @@ model Semitag {
   videoId String
   video   Video  @relation(fields: [videoId], references: [id])
 
-  isResolved Boolean @map("resolved")
+  isResolved Boolean
   tagId      String?
   tag        Tag?    @relation(fields: [tagId], references: [id])
-
-  @@map("semitags")
 }
 
 model Session {
@@ -134,8 +123,6 @@ model Session {
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
-
-  @@map("sessions")
 }
 
 model TagName {
@@ -143,7 +130,7 @@ model TagName {
 
   name String
 
-  isPrimary Boolean @map("primary")
+  isPrimary Boolean
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -152,13 +139,12 @@ model TagName {
   tag   Tag    @relation(fields: [tagId], references: [id])
 
   @@unique([name, tagId])
-  @@map("tag_names")
 }
 
 model TagParent {
   id String @id @default(cuid())
 
-  isExplicit Boolean @map("explicit")
+  isExplicit Boolean
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -170,7 +156,6 @@ model TagParent {
   parent   Tag    @relation("tag_parents_parentIdTotags", fields: [parentId], references: [id])
 
   @@unique([parentId, childId])
-  @@map("tag_parents")
 }
 
 model Tag {
@@ -187,8 +172,6 @@ model Tag {
   children TagParent[] @relation("tag_parents_parentIdTotags")
 
   videos VideoTag[]
-
-  @@map("tags")
 }
 
 model User {
@@ -196,7 +179,7 @@ model User {
   name String @unique @db.Citext
 
   email            String  @unique()
-  isEmailConfirmed Boolean @map("emailConfirmed")
+  isEmailConfirmed Boolean
 
   role UserRole @default(NORMAL)
 
@@ -214,16 +197,12 @@ model User {
   mylistGroups MylistGroup[]
 
   sessions Session[]
-
-  @@map("users")
 }
 
 enum UserRole {
   NORMAL
   EDITOR
   ADMINISTRATOR
-
-  @@map("users_role_enum")
 }
 
 model Video {
@@ -242,8 +221,6 @@ model Video {
   nicovideoSources NicovideoVideoSource[]
 
   mylists MylistRegistration[]
-
-  @@map("videos")
 }
 
 model VideoTitle {
@@ -259,7 +236,6 @@ model VideoTitle {
   video   Video  @relation(fields: [videoId], references: [id])
 
   @@unique([videoId, title])
-  @@map("video_titles")
 }
 
 model VideoTag {
@@ -275,7 +251,6 @@ model VideoTag {
   video   Video  @relation(fields: [videoId], references: [id])
 
   @@unique([videoId, tagId])
-  @@map("video_tags")
 }
 
 model VideoThumbnail {
@@ -289,6 +264,4 @@ model VideoThumbnail {
 
   videoId String
   video   Video  @relation(fields: [videoId], references: [id])
-
-  @@map("video_thumbnails")
 }
