@@ -1,13 +1,13 @@
-import { GraphQLError } from "graphql";
-import { DataSource } from "typeorm";
-
-import { NicovideoVideoSource } from "../../../db/entities/nicovideo_video_sources.js";
 import { QueryResolvers } from "../../../graphql.js";
+import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
+import { ResolverDeps } from "../../index.js";
 import { NicovideoVideoSourceModel } from "../../NicovideoVideoSource/model.js";
 
-export const nicovideoVideoSource = ({ dataSource: ds }: { dataSource: DataSource }) =>
-  (async (_, { id }) => {
-    const s = await ds.getRepository(NicovideoVideoSource).findOne({ where: { id }, relations: { video: true } });
-    if (!s) throw new GraphQLError(`NicovideoVideoSource cannot find with id "${id}"`);
-    return new NicovideoVideoSourceModel({ id: s.id, sourceId: s.sourceId, videoId: s.video.id });
-  }) satisfies QueryResolvers["nicovideoVideoSource"];
+export const nicovideoVideoSource = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+  (async (_parent, { id }) =>
+    prisma.nicovideoVideoSource
+      .findUniqueOrThrow({ where: { id: parseGqlID("NicovideoVideoSource", id) } })
+      .then((v) => new NicovideoVideoSourceModel(v))
+      .catch(() => {
+        throw new GraphQLNotExistsInDBError("NicovideoVideoSource", id);
+      })) satisfies QueryResolvers["nicovideoVideoSource"];

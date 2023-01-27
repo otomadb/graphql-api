@@ -1,12 +1,10 @@
-import { GraphQLError } from "graphql";
+import { UserRole } from "@prisma/client";
 import { Driver as Neo4jDriver } from "neo4j-driver";
-import { DataSource } from "typeorm";
 
 import { checkAuth } from "../../../auth/checkAuth.js";
-import { UserRole } from "../../../db/entities/users.js";
-import { VideoTag } from "../../../db/entities/video_tags.js";
 import { MutationResolvers } from "../../../graphql.js";
 import { parseGqlID } from "../../../utils/id.js";
+import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 import { VideoModel } from "../../Video/model.js";
 
@@ -27,24 +25,17 @@ export const removeInNeo4j = async (driver: Neo4jDriver, { videoId, tagId }: { v
   }
 };
 
-export const removeTagFromVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
-  checkAuth(UserRole.NORMAL, async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { user }) => {
-    if (!user) throw new GraphQLError("required to sign in");
-
+export const removeTagFromVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
+  checkAuth(UserRole.NORMAL, async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }) => {
     const videoId = parseGqlID("Video", videoGqlId);
     const tagId = parseGqlID("Tag", tagGqlId);
 
-    const repoVideoTag = dataSource.getRepository(VideoTag);
-
-    const tagging = await repoVideoTag.findOne({
-      where: { video: { id: videoId }, tag: { id: tagId } },
-      relations: { tag: true, video: true },
+    const tagging = await prisma.videoTag.delete({
+      where: { videoId_tagId: { tagId, videoId } },
+      include: { tag: true, video: true },
     });
-    if (!tagging) throw new GraphQLError(`"tag:${tagId}" is not tagged to "video:${videoId}"`);
 
-    await repoVideoTag.remove(tagging);
-
-    await removeInNeo4j(neo4jDriver, {
+    await removeInNeo4j(neo4j, {
       videoId: tagging.video.id,
       tagId: tagging.tag.id,
     });

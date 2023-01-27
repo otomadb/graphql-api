@@ -1,34 +1,21 @@
-import { GraphQLError } from "graphql";
-import { DataSource, In, Like } from "typeorm";
-
-import { VideoTitle } from "../../../db/entities/video_titles.js";
-import { Video } from "../../../db/entities/videos.js";
 import { QueryResolvers } from "../../../graphql.js";
+import { ResolverDeps } from "../../index.js";
 import { VideoModel } from "../../Video/model.js";
 
-export const searchVideos = ({ dataSource }: { dataSource: DataSource }) =>
+export const searchVideos = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async (_, { input }) => {
-    const videoTitles = await dataSource
-      .getRepository(VideoTitle)
-      .createQueryBuilder("videoTitle")
-      .where({ title: Like(`%${input.query}%`) })
-      .leftJoinAndSelect("videoTitle.video", "videos")
-      .distinctOn(["videoTitle.video.id"])
-      .skip(input.skip)
-      .limit(input.limit)
-      .getMany();
-
-    const videos = await dataSource.getRepository(Video).find({
-      where: { id: In(videoTitles.map((t) => t.video.id)) },
+    const videos = await prisma.videoTitle.findMany({
+      where: { title: { contains: input.query } },
+      distinct: "videoId",
+      include: { video: true },
+      skip: input.skip || undefined,
+      take: input.limit || undefined,
     });
-
     return {
-      items: videoTitles.map((t) => {
-        const video = videos.find((v) => v.id === t.video.id);
-        if (!video) throw new GraphQLError(`Data inconcistency is occuring for "video:${t.video.id}"`);
+      items: videos.map((t) => {
         return {
           matchedTitle: t.title,
-          video: new VideoModel(video),
+          video: new VideoModel(t.video),
         };
       }),
     };

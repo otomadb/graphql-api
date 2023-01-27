@@ -1,32 +1,21 @@
 import { usePrometheus } from "@envelop/prometheus";
 import cookie, { FastifyCookieOptions } from "@fastify/cookie";
 import cors, { FastifyCorsOptions } from "@fastify/cors";
+import { PrismaClient } from "@prisma/client";
 import { fastify, FastifyReply, FastifyRequest } from "fastify";
 import { createSchema, createYoga } from "graphql-yoga";
 import neo4j from "neo4j-driver";
 import prometheusClient from "prom-client";
-import { DataSource } from "typeorm";
 
 import { findUserFromAuthToken, findUserFromCookie } from "./auth/getUserFromSession.js";
 import { handlerSignin } from "./auth/signin.js";
 import { handlerSignout } from "./auth/signout.js";
 import { handlerSignup } from "./auth/signup.js";
-import { entities } from "./db/entities/index.js";
 import { typeDefs } from "./graphql.js";
 import { handlerRemoteNicovideo } from "./remote/nicovideo.js";
 import { resolvers as makeResolvers } from "./resolvers/index.js";
 
-const dataSource = new DataSource({
-  type: "postgres",
-  url: process.env.POSTGRES_URL,
-  host: process.env.POSTGRES_HOST,
-  port: parseInt(process.env.POSTGRES_PORT, 10),
-  username: process.env.POSTGRES_USERNAME,
-  password: process.env.POSTGRES_PASSWORD,
-  database: process.env.POSTGRES_DATABASE,
-  entities,
-});
-await dataSource.initialize();
+const prismaClient = new PrismaClient();
 
 const neo4jDriver = neo4j.driver(
   process.env.NEO4J_URL,
@@ -102,18 +91,18 @@ app
 const yoga = createYoga<{ req: FastifyRequest; reply: FastifyReply }>({
   schema: createSchema<{ req: FastifyRequest; reply: FastifyReply }>({
     typeDefs,
-    resolvers: makeResolvers({ dataSource, neo4jDriver }),
+    resolvers: makeResolvers({ neo4j: neo4jDriver, prisma: prismaClient }),
   }),
   async context({ req }) {
     const cookie = req.cookies["otmd-session"];
     if (cookie) {
-      const user = await findUserFromCookie({ dataSource })(cookie);
+      const user = await findUserFromCookie(prismaClient, cookie);
       if (user) return { user };
     }
 
     const authToken = req.headers["authorization"]?.split(" ").at(1);
     if (authToken) {
-      const user = await findUserFromAuthToken({ dataSource })(authToken);
+      const user = await findUserFromAuthToken(prismaClient, authToken);
       if (user) return { user };
     }
 
@@ -151,11 +140,11 @@ app.route({
   },
 });
 
-app.post("/auth/signin", { config: { collectMetrics: true } }, handlerSignin({ dataSource }));
-app.post("/auth/signup", { config: { collectMetrics: true } }, handlerSignup({ dataSource }));
+app.post("/auth/signin", { config: { collectMetrics: true } }, handlerSignin(prismaClient));
+app.post("/auth/signup", { config: { collectMetrics: true } }, handlerSignup(prismaClient));
 app.post("/auth/signout", { config: { collectMetrics: true } }, handlerSignout());
 
-app.post("/auth/login", { config: { collectMetrics: true } }, handlerSignin({ dataSource }));
+app.post("/auth/login", { config: { collectMetrics: true } }, handlerSignin(prismaClient));
 app.post("/auth/logout", { config: { collectMetrics: true } }, handlerSignout());
 
 app.get<{ Querystring: { id: string } }>(

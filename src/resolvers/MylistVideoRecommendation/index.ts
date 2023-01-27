@@ -1,28 +1,23 @@
-import { DataSource } from "typeorm";
-
-import { Mylist } from "../../db/entities/mylists.js";
-import { Video } from "../../db/entities/videos.js";
 import { Resolvers } from "../../graphql.js";
 import { GraphQLNotExistsInDBError } from "../../utils/id.js";
+import { ResolverDeps } from "../index.js";
 import { MylistModel } from "../Mylist/model.js";
 import { VideoModel } from "../Video/model.js";
 
-export const resolveMylistVideoRecommendation = ({ dataSource }: { dataSource: DataSource }) =>
+export const resolveMylistVideoRecommendation = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
-    origin: ({ originId }) =>
-      dataSource
-        .getRepository(Mylist)
-        .findOneByOrFail({ id: originId })
+    origin: ({ originMylistId }) =>
+      prisma.mylist
+        .findUniqueOrThrow({ where: { id: originMylistId } })
         .then((v) => new MylistModel(v))
         .catch(() => {
-          throw new GraphQLNotExistsInDBError("Mylist", originId);
+          throw new GraphQLNotExistsInDBError("Mylist", originMylistId);
         }),
-    to: ({ toId }) =>
-      dataSource
-        .getRepository(Video)
-        .findOneByOrFail({ id: toId })
+    to: ({ toVideoId }) =>
+      prisma.video
+        .findUniqueOrThrow({ where: { id: toVideoId } })
         .then((v) => new VideoModel(v))
         .catch(() => {
-          throw new GraphQLNotExistsInDBError("Video", toId);
+          throw new GraphQLNotExistsInDBError("Video", toVideoId);
         }),
   } satisfies Resolvers["MylistVideoRecommendation"]);

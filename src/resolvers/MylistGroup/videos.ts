@@ -1,12 +1,10 @@
-import { DataSource } from "typeorm";
-
-import { MylistGroupMylistInclusion } from "../../db/entities/mylist_group.js";
-import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
 import { MylistGroupResolvers } from "../../graphql.js";
+import { ResolverDeps } from "../index.js";
 import { MylistGroupVideoAggregationModel } from "../MylistGroupVideoAggregation/model.js";
 
-export const resolveVideos = ({ dataSource }: { dataSource: DataSource }) =>
-  (async ({ id }, { input }) => {
+export const resolveVideos = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+  (async ({ id: groupId }, { input }) => {
+    /*
     const aggr = await dataSource
       .getRepository(MylistGroupMylistInclusion)
       .createQueryBuilder("i")
@@ -21,6 +19,20 @@ export const resolveVideos = ({ dataSource }: { dataSource: DataSource }) =>
       .limit(input.limit)
       .skip(input.skip)
       .getRawMany<{ videoId: string; mylistIds: string[] }>();
-
-    return aggr.map((v) => new MylistGroupVideoAggregationModel(v));
+    */
+    const videos = await prisma.mylistRegistration.groupBy({
+      by: ["videoId"],
+      where: { mylist: { includedGroups: { some: { groupId } } } },
+      _count: { videoId: true },
+      orderBy: { _count: { videoId: "asc" } },
+      skip: input.skip,
+      take: input.limit,
+    });
+    return videos.map(
+      ({ _count, videoId }) =>
+        new MylistGroupVideoAggregationModel({
+          count: _count.videoId,
+          videoId,
+        })
+    );
   }) satisfies MylistGroupResolvers["videos"];

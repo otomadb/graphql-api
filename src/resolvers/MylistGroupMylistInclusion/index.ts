@@ -1,28 +1,24 @@
-import { DataSource } from "typeorm";
-
-import { MylistGroupMylistInclusion } from "../../db/entities/mylist_group.js";
 import { Resolvers } from "../../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../../utils/id.js";
+import { ResolverDeps } from "../index.js";
 import { MylistModel } from "../Mylist/model.js";
 import { MylistGroupModel } from "../MylistGroup/model.js";
 
-export const resolveMylistGroupMylistInclusion = ({ dataSource }: { dataSource: DataSource }) =>
+export const resolveMylistGroupMylistInclusion = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
     id: ({ id }) => buildGqlId("MylistGroupMylistInclusion", id),
-    mylist: async ({ id }) =>
-      dataSource
-        .getRepository(MylistGroupMylistInclusion)
-        .findOneOrFail({ where: { id }, relations: { mylist: true } })
-        .then((v) => new MylistModel(v.mylist))
+    mylist: async ({ mylistId }) =>
+      prisma.mylist
+        .findUniqueOrThrow({ where: { id: mylistId } })
+        .then((v) => new MylistModel(v))
         .catch(() => {
-          throw new GraphQLNotExistsInDBError("Mylist", id);
+          throw new GraphQLNotExistsInDBError("Mylist", mylistId);
         }),
-    group: async ({ id }) =>
-      dataSource
-        .getRepository(MylistGroupMylistInclusion)
-        .findOneOrFail({ where: { id }, relations: { group: true } })
-        .then((v) => new MylistGroupModel(v.group))
+    group: async ({ groupId }) =>
+      prisma.mylistGroup
+        .findUniqueOrThrow({ where: { id: groupId } })
+        .then((v) => new MylistGroupModel(v))
         .catch(() => {
-          throw new GraphQLNotExistsInDBError("MylistGroup", id);
+          throw new GraphQLNotExistsInDBError("MylistGroup", groupId);
         }),
   } satisfies Resolvers["MylistGroupMylistInclusion"]);

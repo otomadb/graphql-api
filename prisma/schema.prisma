@@ -1,0 +1,267 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("PRISMA_DATABASE_URL")
+  extensions = [citext]
+}
+
+model MylistGroup {
+  id String @id @default(cuid())
+
+  title String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  holderId String
+  holder   User   @relation(fields: [holderId], references: [id])
+
+  mylists MylistGroupMylistInclsion[]
+}
+
+model MylistGroupMylistInclsion {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  mylistId String
+  mylist   Mylist @relation(fields: [mylistId], references: [id])
+
+  groupId String
+  group   MylistGroup @relation(fields: [groupId], references: [id])
+
+  @@unique([mylistId, groupId])
+}
+
+model Mylist {
+  id String @id @default(cuid())
+
+  title String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  shareRange MylistShareRange
+
+  isLikeList Boolean
+
+  holderId String
+  holder   User   @relation(fields: [holderId], references: [id])
+
+  registrations MylistRegistration[]
+
+  includedGroups MylistGroupMylistInclsion[]
+}
+
+enum MylistShareRange {
+  PUBLIC
+  KNOW_LINK
+  PRIVATE
+}
+
+model MylistRegistration {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  note String?
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  mylistId String
+  mylist   Mylist @relation(fields: [mylistId], references: [id])
+
+  @@unique([mylistId, videoId])
+}
+
+model NicovideoVideoSource {
+  id String @id @default(cuid())
+
+  sourceId String @unique @db.Citext
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  @@unique([sourceId, videoId])
+}
+
+model Semitag {
+  id String @id @default(cuid())
+
+  name String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  isResolved Boolean
+  tagId      String?
+  tag        Tag?    @relation(fields: [tagId], references: [id])
+}
+
+model Session {
+  id String @id @default(cuid())
+
+  secret String @db.VarChar(64)
+
+  expiredAt DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model TagName {
+  id String @id @default(cuid())
+
+  name String
+
+  isPrimary Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  tagId String
+  tag   Tag    @relation(fields: [tagId], references: [id])
+
+  @@unique([name, tagId])
+}
+
+model TagParent {
+  id String @id @default(cuid())
+
+  isExplicit Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  childId String
+  child   Tag    @relation("tag_parents_childIdTotags", fields: [childId], references: [id])
+
+  parentId String
+  parent   Tag    @relation("tag_parents_parentIdTotags", fields: [parentId], references: [id])
+
+  @@unique([parentId, childId])
+}
+
+model Tag {
+  id String @id
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
+  meaningless Boolean
+  semitags    Semitag[]
+
+  names TagName[]
+
+  parents  TagParent[] @relation("tag_parents_childIdTotags")
+  children TagParent[] @relation("tag_parents_parentIdTotags")
+
+  videos VideoTag[]
+}
+
+model User {
+  id   String @id @default(cuid())
+  name String @unique @db.Citext
+
+  email            String  @unique()
+  isEmailConfirmed Boolean
+
+  role UserRole @default(NORMAL)
+
+  displayName String
+
+  icon String?
+
+  password String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  mylists Mylist[]
+
+  mylistGroups MylistGroup[]
+
+  sessions Session[]
+}
+
+enum UserRole {
+  NORMAL
+  EDITOR
+  ADMINISTRATOR
+}
+
+model Video {
+  id     String @id
+  serial Int    @unique @default(autoincrement())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  titles     VideoTitle[]
+  thumbnails VideoThumbnail[]
+
+  tags     VideoTag[]
+  semitags Semitag[]
+
+  nicovideoSources NicovideoVideoSource[]
+
+  mylists MylistRegistration[]
+}
+
+model VideoTitle {
+  id String @id @default(cuid())
+
+  title     String
+  isPrimary Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  @@unique([videoId, title])
+}
+
+model VideoTag {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  tagId String
+  tag   Tag    @relation(fields: [tagId], references: [id])
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  @@unique([videoId, tagId])
+}
+
+model VideoThumbnail {
+  id String @id @default(cuid())
+
+  imageUrl  String
+  isPrimary Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+}

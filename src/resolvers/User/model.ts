@@ -1,15 +1,7 @@
-import { UserRole } from "../../db/entities/users.js";
+import { User } from "@prisma/client";
 
 export class UserModel {
-  constructor(
-    private readonly entity: {
-      id: string;
-      name: string;
-      displayName: string;
-      icon: string | null;
-      role: UserRole;
-    }
-  ) {}
+  constructor(private readonly entity: User) {}
 
   get id() {
     return this.entity.id;

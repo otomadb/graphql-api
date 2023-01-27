@@ -1,28 +1,24 @@
-import { DataSource } from "typeorm";
-
-import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
 import { Resolvers } from "../../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../../utils/id.js";
+import { ResolverDeps } from "../index.js";
 import { MylistModel } from "../Mylist/model.js";
 import { VideoModel } from "../Video/model.js";
 
-export const resolveMylistRegistration = ({ dataSource }: { dataSource: DataSource }) =>
+export const resolveMylistRegistration = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
     id: ({ id }) => buildGqlId("MylistRegistration", id),
-    mylist: async ({ id }) =>
-      dataSource
-        .getRepository(MylistRegistration)
-        .findOneOrFail({ where: { id }, relations: { mylist: true } })
-        .then((v) => new MylistModel(v.mylist))
+    mylist: async ({ mylistId }) =>
+      prisma.mylist
+        .findUniqueOrThrow({ where: { id: mylistId } })
+        .then((v) => new MylistModel(v))
         .catch(() => {
-          throw new GraphQLNotExistsInDBError("MylistGroupMylistInclusion", id);
+          throw new GraphQLNotExistsInDBError("Mylist", mylistId);
         }),
-    video: async ({ id }) =>
-      dataSource
-        .getRepository(MylistRegistration)
-        .findOneOrFail({ where: { id }, relations: { video: true } })
-        .then((v) => new VideoModel(v.video))
+    video: async ({ videoId }) =>
+      prisma.video
+        .findUniqueOrThrow({ where: { id: videoId } })
+        .then((v) => new VideoModel(v))
         .catch(() => {
-          throw new GraphQLNotExistsInDBError("MylistGroupMylistInclusion", id);
+          throw new GraphQLNotExistsInDBError("Video", videoId);
         }),
   } satisfies Resolvers["MylistRegistration"]);

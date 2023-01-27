@@ -1,32 +1,28 @@
-import { DataSource } from "typeorm";
-
-import { TagParent } from "../../db/entities/tag_parents.js";
 import { PseudoTagType, TagResolvers } from "../../graphql.js";
+import { ResolverDeps } from "../index.js";
 
-export const calcType = (names: string[]): PseudoTagType => {
-  const type: PseudoTagType[] = [];
-  if (names.includes("COPYRIGHT")) type.push(PseudoTagType.Copyright);
-  if (names.includes("CHARACTER")) type.push(PseudoTagType.Character);
-  if (names.includes("SERIES")) type.push(PseudoTagType.Series);
-  if (names.includes("MUSIC")) type.push(PseudoTagType.Music);
-  if (names.includes("TACTICS")) type.push(PseudoTagType.Tactics);
-  if (names.includes("EVENT")) type.push(PseudoTagType.Event);
-  if (names.includes("PHRASE")) type.push(PseudoTagType.Phrase);
-  if (names.includes("STYLE")) type.push(PseudoTagType.Style);
+export const resolvePseudoType = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+  (async ({ id: tagId }) => {
+    const parents = await prisma.tagParent.findMany({
+      where: { childId: tagId, parent: { meaningless: true } },
+      include: { parent: { include: { names: true } } },
+    });
+    const parentNames = parents.reduce(
+      (p, { parent }) => [...p, ...parent.names.map(({ name }) => name)],
+      [] as string[]
+    );
 
-  if (type.length === 1) return type[0];
-  else if (type.length === 0) return PseudoTagType.Unknown;
-  else return PseudoTagType.Subtle;
-};
+    const est: PseudoTagType[] = [];
+    if (parentNames.includes("COPYRIGHT")) est.push(PseudoTagType.Copyright);
+    if (parentNames.includes("CHARACTER")) est.push(PseudoTagType.Character);
+    if (parentNames.includes("SERIES")) est.push(PseudoTagType.Series);
+    if (parentNames.includes("MUSIC")) est.push(PseudoTagType.Music);
+    if (parentNames.includes("TACTICS")) est.push(PseudoTagType.Tactics);
+    if (parentNames.includes("EVENT")) est.push(PseudoTagType.Event);
+    if (parentNames.includes("PHRASE")) est.push(PseudoTagType.Phrase);
+    if (parentNames.includes("STYLE")) est.push(PseudoTagType.Style);
 
-export const resolvePseudoType = ({ dataSource }: { dataSource: DataSource }) =>
-  (async ({ id: tagId }) =>
-    dataSource
-      .getRepository(TagParent)
-      .find({ where: { child: { id: tagId } }, relations: ["parent.tagNames"] })
-      .then((ps) =>
-        ps
-          .filter((p) => p.parent.meaningless) // TODO: なぜか`{where:{child:{meaningless:true}}}`で動かなかったので
-          .reduce((p, { parent }) => [...p, ...parent.tagNames.map(({ name }) => name)], [] as string[])
-      )
-      .then((names) => calcType(names))) satisfies TagResolvers["pseudoType"];
+    if (est.length === 0) return PseudoTagType.Unknown;
+    else if (1 < est.length) return PseudoTagType.Subtle;
+    else return est[0];
+  }) satisfies TagResolvers["pseudoType"];

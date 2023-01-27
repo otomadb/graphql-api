@@ -1,21 +1,15 @@
+import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
-import { Driver as Neo4jDriver } from "neo4j-driver";
-import { DataSource } from "typeorm";
 import { ulid } from "ulid";
 
 import { checkAuth } from "../../../auth/checkAuth.js";
-import { Semitag } from "../../../db/entities/semitags.js";
-import { TagName } from "../../../db/entities/tag_names.js";
-import { TagParent } from "../../../db/entities/tag_parents.js";
-import { Tag } from "../../../db/entities/tags.js";
-import { UserRole } from "../../../db/entities/users.js";
-import { VideoTag } from "../../../db/entities/video_tags.js";
 import { MutationRegisterTagArgs, MutationResolvers } from "../../../graphql.js";
-import { GraphQLNotExistsInDBError, parseGqlID, parseGqlIDs } from "../../../utils/id.js";
+import { parseGqlID, parseGqlIDs } from "../../../utils/id.js";
+import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 
-export const registerTagInNeo4j = async (neo4jDriver: Neo4jDriver, rels: { videoId: string; tagId: string }[]) => {
-  const session = neo4jDriver.session();
+export const registerTagInNeo4j = async (neo4j: ResolverDeps["neo4j"], rels: { videoId: string; tagId: string }[]) => {
+  const session = neo4j.session();
   try {
     const tx = session.beginTransaction();
     for (const rel of rels) {
@@ -38,41 +32,63 @@ export const registerTagInNeo4j = async (neo4jDriver: Neo4jDriver, rels: { video
 };
 
 export const registerTagScaffold =
-  ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+  ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   async (_: unknown, { input }: MutationRegisterTagArgs) => {
     const { primaryName, extraNames, meaningless } = input;
 
+    // implicitParentsの中にexplicitParentが存在すればエラー
     if (input.explicitParent && input.implicitParents.includes(input.explicitParent))
       throw new GraphQLError(`"${input.explicitParent}" is specified as explicitParent and also implicitParents`);
 
+    // implicitParentsの中で重複チェック
     const duplicatedImplicitParentGqlId = input.implicitParents.find((id, i, arr) => arr.indexOf(id) !== i);
     if (duplicatedImplicitParentGqlId)
       throw new GraphQLError(`"${duplicatedImplicitParentGqlId}" is duplicated in implicitParents`);
 
     const explicitParentId = input.explicitParent ? parseGqlID("Tag", input.explicitParent) : null;
     const implicitParentIds = parseGqlIDs("Tag", input.implicitParents);
-
     const semitagIds = parseGqlIDs("Semitag", input.resolveSemitags);
 
-    const tag = new Tag();
-    tag.id = ulid();
-    tag.meaningless = meaningless;
-
-    const primaryTagName = new TagName();
-    primaryTagName.id = ulid();
-    primaryTagName.name = primaryName;
-    primaryTagName.primary = true;
-    primaryTagName.tag = tag;
-
-    const extraTagNames = extraNames.map((extraName) => {
-      const extraTagName = new TagName();
-      extraTagName.id = ulid();
-      extraTagName.name = extraName;
-      extraTagName.primary = false;
-      extraTagName.tag = tag;
-      return extraTagName;
+    const semitagVideos = await prisma.video.findMany({
+      where: { semitags: { some: { id: { in: semitagIds } } } },
+      select: { id: true },
     });
 
+    const tagId = ulid();
+    const [tag] = await prisma.$transaction([
+      prisma.tag.create({
+        data: {
+          id: tagId,
+          meaningless,
+          names: {
+            createMany: {
+              data: [
+                { name: primaryName, isPrimary: true },
+                ...extraNames.map((extraName) => ({ name: extraName, isPrimary: false })),
+              ],
+            },
+          },
+          parents: {
+            createMany: {
+              data: [
+                ...(explicitParentId ? [{ parentId: explicitParentId, isExplicit: true }] : []),
+                ...implicitParentIds.map((implicitParentId) => ({ parentId: implicitParentId, isExplicit: false })),
+              ],
+            },
+          },
+        },
+      }),
+      prisma.semitag.updateMany({
+        where: { id: { in: semitagIds } },
+        data: { isResolved: true, tagId },
+      }),
+      prisma.videoTag.createMany({
+        data: semitagVideos.map(({ id: videoId }) => ({ tagId, videoId })),
+      }),
+    ]);
+    return { tag: new TagModel(tag) };
+
+    /*
     const tagParents: TagParent[] = [];
     const semitagVideoTags: VideoTag[] = [];
 
@@ -168,12 +184,11 @@ export const registerTagScaffold =
     });
 
     await registerTagInNeo4j(
-      neo4jDriver,
+      neo4j,
       semitagVideoTags.map(({ tag, video }) => ({ tagId: tag.id, videoId: video.id }))
     );
-
-    return { tag: new TagModel(tag) };
+    */
   };
 
-export const registerTag = (inject: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
-  checkAuth(UserRole.EDITOR, registerTagScaffold(inject)) satisfies MutationResolvers["registerTag"];
+export const registerTag = ({ prisma }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
+  checkAuth(UserRole.EDITOR, registerTagScaffold({ prisma })) satisfies MutationResolvers["registerTag"];

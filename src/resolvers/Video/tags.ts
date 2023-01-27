@@ -1,21 +1,19 @@
-import { DataSource } from "typeorm";
-
-import { VideoTag } from "../../db/entities/video_tags.js";
 import { VideoResolvers } from "../../graphql.js";
+import { parsePrismaOrder } from "../../utils/parsePrismaOrder.js";
+import { ResolverDeps } from "../index.js";
 import { TagModel } from "../Tag/model.js";
 
-export const resolveTags = ({ dataSource }: { dataSource: DataSource }) =>
+export const resolveTags = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (({ id: videoId }, { input }) =>
-    dataSource
-      .getRepository(VideoTag)
-      .find({
-        where: { video: { id: videoId } },
-        relations: { tag: true },
+    prisma.videoTag
+      .findMany({
+        where: { videoId },
         take: input.limit?.valueOf(),
         skip: input.skip.valueOf(),
-        order: {
-          createdAt: input.order.createdAt || undefined,
-          updatedAt: input.order.updatedAt || undefined,
+        include: { tag: true },
+        orderBy: {
+          createdAt: parsePrismaOrder(input.order?.createdAt),
+          updatedAt: parsePrismaOrder(input.order?.updatedAt),
         },
       })
       .then((ts) => ts.map(({ tag }) => new TagModel(tag)))) satisfies VideoResolvers["tags"];

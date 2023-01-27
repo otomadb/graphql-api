@@ -1,9 +1,13 @@
-export class TagModel {
-  public id;
-  public meaningless;
+import { Tag } from "@prisma/client";
 
-  constructor(tag: { id: string; meaningless: boolean }) {
-    this.id = tag.id;
-    this.meaningless = tag.meaningless;
+export class TagModel {
+  constructor(private readonly tag: Tag) {}
+
+  get id() {
+    return this.tag.id;
+  }
+
+  get meaningless() {
+    return this.tag.meaningless;
   }
 }

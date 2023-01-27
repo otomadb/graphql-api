@@ -26,3 +26,9 @@ docker compose -f docker-compose.prod.yml up -d
 ```
 
 `4000`番ポートに API が立ち上がる．
+
+## dump
+
+```
+dc exec postgres pg_dump --username=user --dbname=test > dump/$(date +"%s").sql
+```

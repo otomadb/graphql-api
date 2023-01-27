@@ -1,18 +1,14 @@
+import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
-import { Driver as Neo4jDriver } from "neo4j-driver";
-import { DataSource } from "typeorm";
-import { ulid } from "ulid";
 
 import { checkAuth } from "../../../auth/checkAuth.js";
-import { Semitag } from "../../../db/entities/semitags.js";
-import { Tag } from "../../../db/entities/tags.js";
-import { UserRole } from "../../../db/entities/users.js";
-import { VideoTag } from "../../../db/entities/video_tags.js";
 import { MutationResolvers } from "../../../graphql.js";
 import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
+import { ResolverDeps } from "../../index.js";
+import { SemitagModel } from "../../Semitag/model.js";
 
 export const resolveSemitagInNeo4j = async (
-  neo4jDriver: Neo4jDriver,
+  neo4jDriver: ResolverDeps["neo4j"],
   { videoId, tagId }: { videoId: string; tagId: string }
 ) => {
   const session = neo4jDriver.session();
@@ -31,46 +27,51 @@ export const resolveSemitagInNeo4j = async (
   }
 };
 
-export const resolveSemitag = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+export const resolveSemitag = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
   checkAuth(UserRole.EDITOR, async (_, { input: { id: semitagGqlId, tagId: tagGqlId } }) => {
     const semitagId = parseGqlID("Semitag", semitagGqlId);
     const tagId = tagGqlId ? parseGqlID("Tag", tagGqlId) : null;
 
-    const semitag = await dataSource
-      .getRepository(Semitag)
-      .findOne({ where: { id: semitagId }, relations: { video: true } });
-
-    if (!semitag) throw new GraphQLNotExistsInDBError("Semitag", semitagId);
-    if (semitag.resolved) throw new GraphQLError(`"semitag:${semitagId}" was already resolved`);
+    const semitag = await prisma.semitag.findUniqueOrThrow({ where: { id: semitagId } }).catch(() => {
+      throw new GraphQLNotExistsInDBError("Semitag", semitagId);
+    });
+    if (semitag.isResolved) throw new GraphQLError(`"semitag:${semitagId}" was already resolved`);
 
     if (!tagId) {
-      await dataSource.getRepository(Semitag).update({ id: semitag.id }, { resolved: true, tag: null });
-
-      return { semitag };
+      const updated = await prisma.semitag.update({
+        where: { id: semitag.id },
+        data: { isResolved: true, tagId: null },
+      });
+      return { semitag: new SemitagModel(updated) };
     } else {
-      const videoTag = new VideoTag();
-      videoTag.id = ulid();
-      videoTag.video = semitag.video;
-
-      await dataSource.transaction(async (manager) => {
-        const tagRepo = manager.getRepository(Tag);
-        const repoSemitag = manager.getRepository(Semitag);
-        const videoTagRepo = manager.getRepository(VideoTag);
-
-        const tag = await tagRepo.findOne({ where: { id: tagId } });
-        if (!tag) throw new GraphQLNotExistsInDBError("Tag", tagId);
-
-        await repoSemitag.update({ id: semitag.id }, { resolved: true, tag });
-
-        videoTag.tag = tag;
-        await videoTagRepo.insert(videoTag);
+      const updated = await prisma.semitag.update({
+        where: { id: semitag.id },
+        data: {
+          isResolved: true,
+          tag: {
+            connect: { id: tagId },
+            update: {
+              videos: {
+                connectOrCreate: {
+                  where: {
+                    videoId_tagId: { tagId, videoId: semitag.videoId },
+                  },
+                  create: {
+                    videoId: semitag.videoId,
+                  },
+                },
+              },
+            },
+          },
+        },
       });
-
-      await resolveSemitagInNeo4j(neo4jDriver, {
-        tagId: videoTag.tag.id,
-        videoId: videoTag.video.id,
+      // TODO: tagIdがnullableになってしまうので
+      /*
+      await resolveSemitagInNeo4j(neo4j, {
+        tagId: updated.tagId,
+        videoId: updated.videoId,
       });
-
-      return { semitag };
+      */
+      return { semitag: new SemitagModel(updated) };
     }
   }) satisfies MutationResolvers["resovleSemitag"];

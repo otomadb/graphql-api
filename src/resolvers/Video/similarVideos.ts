@@ -1,11 +1,12 @@
-import { Driver, Integer } from "neo4j-driver";
+import { Integer } from "neo4j-driver";
 
 import { VideoResolvers } from "../../graphql.js";
+import { ResolverDeps } from "../index.js";
 import { VideoSimilarityModel } from "../VideoSimilarity/model.js";
 
-export const resolveSimilarVideos = ({ neo4jDriver }: { neo4jDriver: Driver }) =>
+export const resolveSimilarVideos = ({ neo4j }: Pick<ResolverDeps, "neo4j">) =>
   (async ({ id: videoId }, { input }) => {
-    const session = neo4jDriver.session();
+    const session = neo4j.session();
 
     try {
       const result = await session.run(

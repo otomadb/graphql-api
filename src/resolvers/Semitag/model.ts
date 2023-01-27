@@ -1,11 +1,25 @@
-export class SemitagModel {
-  public id;
-  public name;
-  public resolved;
+import { Semitag } from "@prisma/client";
 
-  constructor({ id, name, resolved }: { id: string; name: string; resolved: boolean }) {
-    this.id = id;
-    this.name = name;
-    this.resolved = resolved;
+export class SemitagModel {
+  constructor(private readonly entity: Semitag) {}
+
+  get dbId() {
+    return this.entity.id;
+  }
+
+  get name() {
+    return this.entity.name;
+  }
+
+  get resolved() {
+    return this.entity.isResolved;
+  }
+
+  get tagId() {
+    return this.entity.tagId;
+  }
+
+  get videoId() {
+    return this.entity.videoId;
   }
 }

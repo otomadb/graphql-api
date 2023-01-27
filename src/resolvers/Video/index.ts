@@ -1,14 +1,8 @@
 import { GraphQLError } from "graphql";
-import { Driver as Neo4jDriver } from "neo4j-driver";
-import { DataSource } from "typeorm";
 
-import { NicovideoVideoSource } from "../../db/entities/nicovideo_video_sources.js";
-import { Semitag } from "../../db/entities/semitags.js";
-import { VideoTag } from "../../db/entities/video_tags.js";
-import { VideoThumbnail } from "../../db/entities/video_thumbnails.js";
-import { VideoTitle as VideoTitleEntity } from "../../db/entities/video_titles.js";
 import { Resolvers, VideoResolvers } from "../../graphql.js";
 import { buildGqlId } from "../../utils/id.js";
+import { ResolverDeps } from "../index.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
 import { SemitagModel } from "../Semitag/model.js";
 import { resolveSimilarVideos } from "./similarVideos.js";
@@ -16,67 +10,50 @@ import { resolveTags } from "./tags.js";
 
 export const resolveHistory = (() => ({ nodes: [] })) satisfies VideoResolvers["history"];
 
-export const resolveVideo = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+export const resolveVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
   ({
     id: ({ id }): string => buildGqlId("Video", id),
 
     title: async ({ id: videoId }) => {
-      const title = await dataSource
-        .getRepository(VideoTitleEntity)
-        .findOne({ where: { video: { id: videoId }, isPrimary: true } });
+      const title = await prisma.videoTitle.findFirst({ where: { videoId, isPrimary: true } });
       if (!title) throw new GraphQLError(`primary title for video ${videoId} is not found`);
 
       return title.title;
     },
     titles: async ({ id: videoId }) => {
-      const titles = await dataSource.getRepository(VideoTitleEntity).find({ where: { video: { id: videoId } } });
-      return titles.map((t) => ({
-        title: t.title,
-        primary: t.isPrimary,
+      const titles = await prisma.videoTitle.findMany({ where: { videoId } });
+      return titles.map(({ title, isPrimary }) => ({
+        title,
+        primary: isPrimary,
       }));
     },
 
-    thumbnails: async ({ id: videoId }) => {
-      const thumbnails = await dataSource.getRepository(VideoThumbnail).find({ where: { video: { id: videoId } } });
-      return thumbnails.map((t) => ({ imageUrl: t.imageUrl, primary: t.primary }));
-    },
     thumbnailUrl: async ({ id: videoId }) => {
-      const thumbnail = await dataSource
-        .getRepository(VideoThumbnail)
-        .findOne({ where: { video: { id: videoId }, primary: true } });
+      const thumbnail = await prisma.videoThumbnail.findFirst({ where: { videoId, isPrimary: true } });
 
       if (!thumbnail) throw new GraphQLError(`primary thumbnail for video ${videoId} is not found`);
       return thumbnail.imageUrl;
     },
-
-    tags: resolveTags({ dataSource }),
-    hasTag: async ({ id: videoId }, { id: tagId }) => {
-      return await dataSource
-        .getRepository(VideoTag)
-        .findOne({ where: { video: { id: videoId }, tag: { id: tagId } } })
-        .then((v) => !!v);
+    thumbnails: async ({ id: videoId }) => {
+      const thumbnails = await prisma.videoThumbnail.findMany({ where: { videoId } });
+      return thumbnails.map((t) => ({ imageUrl: t.imageUrl, primary: t.isPrimary }));
     },
+
+    tags: resolveTags({ prisma }),
+    hasTag: async ({ id: videoId }, { id: tagId }) =>
+      prisma.videoTag.findFirst({ where: { videoId, tagId } }).then((v) => !!v),
 
     history: resolveHistory,
 
-    similarVideos: resolveSimilarVideos({ neo4jDriver }),
+    similarVideos: resolveSimilarVideos({ neo4j }),
 
     nicovideoSources: async ({ id: videoId }) =>
-      dataSource
-        .getRepository(NicovideoVideoSource)
-        .find({ where: { video: { id: videoId } }, relations: { video: true } })
-        .then((ss) =>
-          ss.map(({ id, sourceId, video }) => new NicovideoVideoSourceModel({ id, sourceId, videoId: video.id }))
-        ),
+      prisma.nicovideoVideoSource
+        .findMany({ where: { videoId } })
+        .then((ss) => ss.map((s) => new NicovideoVideoSourceModel(s))),
 
     semitags: ({ id: videoId }, { resolved }) =>
-      dataSource
-        .getRepository(Semitag)
-        .find({
-          where: {
-            video: { id: videoId },
-            resolved: resolved?.valueOf(),
-          },
-        })
+      prisma.semitag
+        .findMany({ where: { videoId, isResolved: resolved?.valueOf() } })
         .then((semitags) => semitags.map((semitag) => new SemitagModel(semitag))),
   } satisfies Resolvers["Video"]);

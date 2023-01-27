@@ -1,5 +1,7 @@
+import { MylistGroup } from "@prisma/client";
+
 export class MylistGroupModel {
-  constructor(private readonly entity: { id: string; title: string; createdAt: Date; updatedAt: Date }) {}
+  constructor(private readonly entity: MylistGroup) {}
 
   get id() {
     return this.entity.id;
@@ -15,5 +17,9 @@ export class MylistGroupModel {
 
   get updatedAt() {
     return this.entity.updatedAt;
+  }
+
+  get holderId() {
+    return this.entity.holderId;
   }
 }

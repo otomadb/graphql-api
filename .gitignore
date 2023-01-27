@@ -13,6 +13,9 @@ node_modules
 # log
 *.log
 
+# dumps
+dumps
+
 # codegen
 src/graphql.ts
 src/schema.graphql

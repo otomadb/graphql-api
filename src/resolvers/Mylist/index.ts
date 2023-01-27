@@ -1,47 +1,44 @@
-import { GraphQLError } from "graphql";
-import { Driver as Neo4jDriver } from "neo4j-driver";
-import { DataSource } from "typeorm";
+import { MylistShareRange } from "@prisma/client";
 
-import { MylistRegistration } from "../../db/entities/mylist_registrations.js";
-import { Mylist, MylistShareRange } from "../../db/entities/mylists.js";
-import { MylistShareRange as MylistGQLShareRange } from "../../graphql.js";
+import { MylistShareRange as GQLMylistShareRange } from "../../graphql.js";
 import { Resolvers } from "../../graphql.js";
-import { buildGqlId, parseGqlID } from "../../utils/id.js";
+import { buildGqlId, GraphQLNotExistsInDBError, parseGqlID } from "../../utils/id.js";
+import { parsePrismaOrder } from "../../utils/parsePrismaOrder.js";
+import { ResolverDeps } from "../index.js";
 import { MylistRegistrationModel } from "../MylistRegistration/model.js";
 import { UserModel } from "../User/model.js";
 import { resolveIncludeTags } from "./includesTags.js";
 import { resolveRecommendedVideos } from "./recommendedVideos.js";
 
-export const resolveMylist = ({ dataSource, neo4jDriver }: { dataSource: DataSource; neo4jDriver: Neo4jDriver }) =>
+export const resolveMylist = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
   ({
     id: ({ id }) => buildGqlId("Mylist", id),
-    range: ({ range }) => {
-      switch (range) {
+    range: ({ shareRange }) => {
+      switch (shareRange) {
         case MylistShareRange.PUBLIC:
-          return MylistGQLShareRange.Public;
+          return GQLMylistShareRange.Public;
         case MylistShareRange.KNOW_LINK:
-          return MylistGQLShareRange.KnowLink;
+          return GQLMylistShareRange.KnowLink;
         case MylistShareRange.PRIVATE:
-          return MylistGQLShareRange.Private;
+          return GQLMylistShareRange.Private;
         default:
           throw new Error("Unknown Mylist Range");
       }
     },
-    holder: async ({ id: mylistId }) => {
-      const mylist = await dataSource.getRepository(Mylist).findOne({
-        where: { id: mylistId },
-        relations: { holder: true },
-      });
-      if (!mylist) throw new GraphQLError(`holder for mylist ${mylistId} is not found`);
-      return new UserModel(mylist.holder);
-    },
+    holder: async ({ holderId }) =>
+      prisma.user
+        .findUniqueOrThrow({ where: { id: holderId } })
+        .then((v) => new UserModel(v))
+        .catch(() => {
+          throw new GraphQLNotExistsInDBError("User", holderId);
+        }),
+
     registrations: async ({ id: mylistId }, { input }) => {
-      const regs = await dataSource.getRepository(MylistRegistration).find({
-        where: { mylist: { id: mylistId } },
-        relations: { mylist: true, video: true },
-        order: {
-          createdAt: input.order?.createdAt || undefined,
-          updatedAt: input.order?.updatedAt || undefined,
+      const regs = await prisma.mylistRegistration.findMany({
+        where: { id: mylistId },
+        orderBy: {
+          createdAt: parsePrismaOrder(input.order?.createdAt),
+          updatedAt: parsePrismaOrder(input.order?.updatedAt),
         },
         take: input.limit,
         skip: input.skip,
@@ -52,16 +49,15 @@ export const resolveMylist = ({ dataSource, neo4jDriver }: { dataSource: DataSou
     },
 
     isIncludesVideo: async ({ id: mylistId }, { id: videoId }) =>
-      dataSource
-        .getRepository(MylistRegistration)
-        .findOne({
+      prisma.mylistRegistration
+        .findFirst({
           where: {
-            mylist: { id: mylistId },
-            video: { id: parseGqlID("Video", videoId) },
+            mylistId,
+            videoId: parseGqlID("Video", videoId),
           },
         })
         .then((r) => !!r),
 
-    recommendedVideos: resolveRecommendedVideos({ neo4jDriver }),
-    includeTags: resolveIncludeTags({ dataSource }),
+    recommendedVideos: resolveRecommendedVideos({ neo4j }),
+    includeTags: resolveIncludeTags({ prisma }),
   } satisfies Resolvers["Mylist"]);

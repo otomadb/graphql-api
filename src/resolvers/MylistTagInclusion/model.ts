@@ -2,8 +2,8 @@ export class MylistTagInclusionModel {
   constructor(
     private readonly entity: {
       count: number;
-      mylistId: string;
       tagId: string;
+      mylistId: string;
     }
   ) {}
 

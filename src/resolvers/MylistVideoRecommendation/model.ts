@@ -2,8 +2,8 @@ export class MylistVideoRecommendationModel {
   constructor(
     private readonly entity: {
       score: number;
-      originId: string;
-      toId: string;
+      originMylistId: string;
+      toVideoId: string;
     }
   ) {}
 
@@ -11,11 +11,11 @@ export class MylistVideoRecommendationModel {
     return this.entity.score;
   }
 
-  get originId() {
-    return this.entity.originId;
+  get originMylistId() {
+    return this.entity.originMylistId;
   }
 
-  get toId() {
-    return this.entity.toId;
+  get toVideoId() {
+    return this.entity.toVideoId;
   }
 }

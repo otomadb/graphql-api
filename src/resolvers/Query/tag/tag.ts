@@ -1,17 +1,13 @@
-import { GraphQLError } from "graphql";
-import { DataSource } from "typeorm";
-
-import { Tag } from "../../../db/entities/tags.js";
 import { QueryResolvers } from "../../../graphql.js";
-import { parseGqlID } from "../../../utils/id.js";
+import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
+import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 
-export const tag = ({ dataSource }: { dataSource: DataSource }) =>
-  (async (_parent, { id }) => {
-    const tag = await dataSource.getRepository(Tag).findOne({
-      where: { id: parseGqlID("Tag", id) },
-    });
-    if (!tag) throw new GraphQLError("Not Found");
-
-    return new TagModel(tag);
-  }) satisfies QueryResolvers["tag"];
+export const tag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+  (async (_parent, { id }) =>
+    prisma.tag
+      .findUniqueOrThrow({ where: { id: parseGqlID("Tag", id) } })
+      .then((v) => new TagModel(v))
+      .catch(() => {
+        throw new GraphQLNotExistsInDBError("Tag", id);
+      })) satisfies QueryResolvers["tag"];
