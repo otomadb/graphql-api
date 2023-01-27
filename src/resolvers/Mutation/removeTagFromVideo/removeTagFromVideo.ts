@@ -31,7 +31,7 @@ export const removeTagFromVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma
     const tagId = parseGqlID("Tag", tagGqlId);
 
     const tagging = await prisma.videoTag.delete({
-      where: { tagId_videoId: { tagId, videoId } },
+      where: { videoId_tagId: { tagId, videoId } },
       include: { tag: true, video: true },
     });
 

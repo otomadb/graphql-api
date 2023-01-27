@@ -54,7 +54,7 @@ export const resolveSemitag = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | 
               videos: {
                 connectOrCreate: {
                   where: {
-                    tagId_videoId: { tagId, videoId: semitag.videoId },
+                    videoId_tagId: { tagId, videoId: semitag.videoId },
                   },
                   create: {
                     videoId: semitag.videoId,
