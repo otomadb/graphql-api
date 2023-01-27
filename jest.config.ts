@@ -2,7 +2,7 @@ import type { JestConfigWithTsJest } from "ts-jest";
 
 const jestConfig: JestConfigWithTsJest = {
   testEnvironment: "node",
-  testMatch: ["**/*!(.e2e).test.[jt]s?(x)"],
+  testMatch: ["**/*.test.[jt]s?(x)", "!**/*.e2e.test.[jt]s?(x)"],
   testPathIgnorePatterns: ["<rootDir>/dist/"],
   extensionsToTreatAsEsm: [".ts", ".tsx"],
   moduleNameMapper: {
