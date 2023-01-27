@@ -8,6 +8,7 @@ on:
 
 jobs:
   lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -23,6 +24,7 @@ jobs:
       - run: npm run lint:prettier
 
   typecheck:
+    name: Type Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -36,6 +38,7 @@ jobs:
       - run: npm run typecheck
 
   test:
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -49,6 +52,7 @@ jobs:
       - run: npm run test
 
   e2e-test:
+    name: E2E Test
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
