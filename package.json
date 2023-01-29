@@ -15,7 +15,7 @@
     "codegen": "graphql-codegen-esm",
     "prisma:client": "prisma generate",
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
-    "test:watch": "npm run test --watch",
+    "test:watch": "npm run test -- --watch",
     "e2e-test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --config ./jest.e2e.config.ts --runInBand",
     "e2e-test:migration": "export PRISMA_DATABASE_URL=$TEST_PRISMA_DATABASE_URL && prisma migrate reset --force",
     "typecheck": "tsc --noEmit",
@@ -23,8 +23,8 @@
     "lint:prettier": "prettier --check ./**/*.{js,mjs,ts,json,yml,md,graphql}",
     "lint:schema": "graphql-schema-linter ./src/schema.graphql",
     "lintfix": "run-s 'lintfix:*' 'fmt'",
-    "lintfix:eslint": "npm run lint:eslint --fix",
-    "fmt": "npm run lint:prettier --write"
+    "lintfix:eslint": "npm run lint:eslint -- --fix",
+    "fmt": "npm run lint:prettier -- --write"
   },
   "repository": "https://github.com/otomad-database/api",
   "license": "MIT",
