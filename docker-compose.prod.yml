@@ -83,7 +83,7 @@ services:
         target: /prometheus
 
   grafana:
-    image: grafana/grafana:9.3.2
+    image: grafana/grafana:9.3.6
     ports:
       - target: 3000
         published: 9000
