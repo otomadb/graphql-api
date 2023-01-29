@@ -1,5 +1,5 @@
-import { QueryResolvers } from "../../graphql.js";
 import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
+import { QueryResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { NicovideoVideoSourceModel } from "../../NicovideoVideoSource/model.js";
 

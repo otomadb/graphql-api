@@ -1,5 +1,5 @@
-import { VideoResolvers } from "../graphql.js";
 import { parsePrismaOrder } from "../../utils/parsePrismaOrder.js";
+import { VideoResolvers } from "../graphql.js";
 import { ResolverDeps } from "../index.js";
 import { TagModel } from "../Tag/model.js";
 

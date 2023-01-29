@@ -1,5 +1,5 @@
-import { QueryResolvers } from "../../graphql.js";
 import { parsePrismaOrder } from "../../../utils/parsePrismaOrder.js";
+import { QueryResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { VideoModel } from "../../Video/model.js";
 

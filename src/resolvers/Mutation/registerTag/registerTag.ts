@@ -3,8 +3,8 @@ import { GraphQLError } from "graphql";
 import { ulid } from "ulid";
 
 import { checkAuth } from "../../../auth/checkAuth.js";
-import { MutationRegisterTagArgs, MutationResolvers } from "../../graphql.js";
 import { parseGqlID, parseGqlIDs } from "../../../utils/id.js";
+import { MutationRegisterTagArgs, MutationResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 
