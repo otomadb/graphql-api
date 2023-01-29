@@ -1,9 +1,9 @@
 import { UserRole } from "@prisma/client";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 
-import { parseGqlID } from "../../../utils/id.js";
 import { ensureContextUser } from "../../ensureContextUser.js";
 import { MutationResolvers } from "../../graphql.js";
+import { parseGqlID } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 import { VideoModel } from "../../Video/model.js";

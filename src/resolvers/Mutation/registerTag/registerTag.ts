@@ -2,9 +2,9 @@ import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
 import { ulid } from "ulid";
 
-import { parseGqlID, parseGqlIDs } from "../../../utils/id.js";
 import { ensureContextUser } from "../../ensureContextUser.js";
 import { MutationRegisterTagArgs, MutationResolvers } from "../../graphql.js";
+import { parseGqlID, parseGqlIDs } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 

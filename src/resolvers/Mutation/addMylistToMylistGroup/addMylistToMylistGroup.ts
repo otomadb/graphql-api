@@ -1,8 +1,8 @@
 import { UserRole } from "@prisma/client";
 
-import { parseGqlID } from "../../../utils/id.js";
 import { ensureContextUser } from "../../ensureContextUser.js";
 import { MutationResolvers } from "../../graphql.js";
+import { parseGqlID } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistGroupMylistInclusionModel } from "../../MylistGroupMylistInclusion/model.js";
 

@@ -1,6 +1,6 @@
-import { parseGqlIDs } from "../../../utils/id.js";
 import { parsePrismaOrder } from "../../../utils/parsePrismaOrder.js";
 import { QueryResolvers } from "../../graphql.js";
+import { parseGqlIDs } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { SemitagModel } from "../../Semitag/model.js";
 

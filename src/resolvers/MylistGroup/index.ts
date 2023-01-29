@@ -1,5 +1,5 @@
-import { buildGqlId, GraphQLNotExistsInDBError } from "../../utils/id.js";
 import { Resolvers } from "../graphql.js";
+import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
 import { ResolverDeps } from "../index.js";
 import { UserModel } from "../User/model.js";
 import { resolveMylists } from "./mylists.js";
