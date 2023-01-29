@@ -17,7 +17,7 @@
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
     "test:watch": "npm run test --watch",
     "e2e-test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --config ./jest.e2e.config.ts --runInBand",
-    "e2e-test:migration": "export PRISMA_DATABASE_URL=$TEST_PRISMA_DATABASE_URL && prisma migrate deploy",
+    "e2e-test:migration": "export PRISMA_DATABASE_URL=$TEST_PRISMA_DATABASE_URL && prisma migrate reset",
     "typecheck": "tsc --noEmit",
     "lint:eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:prettier": "prettier --check ./**/*.{js,mjs,ts,json,yml,md,graphql}",
