@@ -1,6 +1,6 @@
 import { Integer } from "neo4j-driver";
 
-import { VideoResolvers } from "../../graphql.js";
+import { VideoResolvers } from "../graphql.js";
 import { ResolverDeps } from "../index.js";
 import { VideoSimilarityModel } from "../VideoSimilarity/model.js";
 

@@ -1,7 +1,7 @@
 import { MylistShareRange } from "@prisma/client";
 import { GraphQLError } from "graphql";
 
-import { QueryResolvers } from "../../../graphql.js";
+import { QueryResolvers } from "../../graphql.js";
 import { parseGqlID } from "../../../utils/id.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";

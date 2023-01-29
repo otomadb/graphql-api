@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { ulid } from "ulid";
 
-import { SortOrder } from "../../../graphql.js";
+import { SortOrder } from "../../graphql.js";
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import { ResolverDeps } from "../../index.js";
 import { findTags as findTagsScaffold } from "./findTags.js";

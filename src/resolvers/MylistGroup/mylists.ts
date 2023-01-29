@@ -1,4 +1,4 @@
-import { MylistGroupResolvers } from "../../graphql.js";
+import { MylistGroupResolvers } from "../graphql.js";
 import { parsePrismaOrder } from "../../utils/parsePrismaOrder.js";
 import { ResolverDeps } from "../index.js";
 import { MylistGroupMylistInclusionModel } from "../MylistGroupMylistInclusion/model.js";

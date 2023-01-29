@@ -1,4 +1,4 @@
-import { MylistGroupResolvers } from "../../graphql.js";
+import { MylistGroupResolvers } from "../graphql.js";
 import { ResolverDeps } from "../index.js";
 import { MylistGroupVideoAggregationModel } from "../MylistGroupVideoAggregation/model.js";
 

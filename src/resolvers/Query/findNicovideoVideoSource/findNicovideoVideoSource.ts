@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
 
-import { QueryResolvers } from "../../../graphql.js";
+import { QueryResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { NicovideoVideoSourceModel } from "../../NicovideoVideoSource/model.js";
 

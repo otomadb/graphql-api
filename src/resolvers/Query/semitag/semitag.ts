@@ -1,4 +1,4 @@
-import { QueryResolvers } from "../../../graphql.js";
+import { QueryResolvers } from "../../graphql.js";
 import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
 import { ResolverDeps } from "../../index.js";
 import { SemitagModel } from "../../Semitag/model.js";

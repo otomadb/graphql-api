@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
 
-import { Resolvers, VideoResolvers } from "../../graphql.js";
+import { Resolvers, VideoResolvers } from "../graphql.js";
 import { buildGqlId } from "../../utils/id.js";
 import { ResolverDeps } from "../index.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";

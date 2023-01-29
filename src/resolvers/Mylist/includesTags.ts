@@ -1,4 +1,4 @@
-import { MylistResolvers } from "../../graphql.js";
+import { MylistResolvers } from "../graphql.js";
 import { ResolverDeps } from "../index.js";
 import { MylistTagInclusionModel } from "../MylistTagInclusion/model.js";
 

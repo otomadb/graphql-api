@@ -2,7 +2,7 @@ import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
 
 import { checkAuth } from "../../../auth/checkAuth.js";
-import { MutationResolvers } from "../../../graphql.js";
+import { MutationResolvers } from "../../graphql.js";
 import { parseGqlID } from "../../../utils/id.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";

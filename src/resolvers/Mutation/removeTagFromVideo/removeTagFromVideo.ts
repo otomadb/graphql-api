@@ -2,7 +2,7 @@ import { UserRole } from "@prisma/client";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 
 import { checkAuth } from "../../../auth/checkAuth.js";
-import { MutationResolvers } from "../../../graphql.js";
+import { MutationResolvers } from "../../graphql.js";
 import { parseGqlID } from "../../../utils/id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";

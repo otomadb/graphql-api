@@ -1,4 +1,4 @@
-import { Resolvers } from "../../graphql.js";
+import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../../utils/id.js";
 import { ResolverDeps } from "../index.js";
 import { TagModel } from "../Tag/model.js";

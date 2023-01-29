@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 
-import { InputMaybe, SortOrder } from "../graphql.js";
+import { InputMaybe, SortOrder } from "../resolvers/graphql.js";
 
 export const parsePrismaOrder = (v: InputMaybe<SortOrder> | undefined): Prisma.SortOrder | undefined => {
   if (!v) return undefined;

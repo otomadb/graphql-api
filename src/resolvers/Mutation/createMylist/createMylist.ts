@@ -1,7 +1,7 @@
 import { UserRole } from "@prisma/client";
 
 import { checkAuth } from "../../../auth/checkAuth.js";
-import { MutationResolvers } from "../../../graphql.js";
+import { MutationResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
 

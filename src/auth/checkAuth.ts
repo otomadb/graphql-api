@@ -1,7 +1,7 @@
 import { UserRole } from "@prisma/client";
 import { GraphQLError, GraphQLResolveInfo } from "graphql";
 
-import { Context } from "../context.js";
+import { Context } from "../resolvers/context.js";
 
 export const checkAuth =
   <TResult, TParent, TArgs>(
