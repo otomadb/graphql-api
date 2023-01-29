@@ -1,7 +1,7 @@
-import { parsePrismaOrder } from "../../../utils/parsePrismaOrder.js";
 import { QueryResolvers } from "../../graphql.js";
 import { parseGqlIDs } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
+import { parseSortOrder } from "../../parseSortOrder.js";
 import { SemitagModel } from "../../Semitag/model.js";
 
 export const findSemitags = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
@@ -12,8 +12,8 @@ export const findSemitags = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       take: input.limit,
       skip: input.skip,
       orderBy: {
-        createdAt: parsePrismaOrder(input.order?.createdAt),
-        updatedAt: parsePrismaOrder(input.order?.updatedAt),
+        createdAt: parseSortOrder(input.order?.createdAt),
+        updatedAt: parseSortOrder(input.order?.updatedAt),
       },
       where: {
         id: { notIn: execptIds },

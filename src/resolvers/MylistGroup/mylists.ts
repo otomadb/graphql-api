@@ -1,7 +1,7 @@
-import { parsePrismaOrder } from "../../utils/parsePrismaOrder.js";
 import { MylistGroupResolvers } from "../graphql.js";
 import { ResolverDeps } from "../index.js";
 import { MylistGroupMylistInclusionModel } from "../MylistGroupMylistInclusion/model.js";
+import { parseSortOrder } from "../parseSortOrder.js";
 
 export const resolveMylists = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async ({ id }, { input }) => {
@@ -10,8 +10,8 @@ export const resolveMylists = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       take: input.limit,
       skip: input.skip,
       orderBy: {
-        createdAt: parsePrismaOrder(input.order?.createdAt),
-        updatedAt: parsePrismaOrder(input.order?.updatedAt),
+        createdAt: parseSortOrder(input.order?.createdAt),
+        updatedAt: parseSortOrder(input.order?.updatedAt),
       },
     });
     const nodes = inclusions.map((i) => new MylistGroupMylistInclusionModel(i));
