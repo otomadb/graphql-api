@@ -23,7 +23,7 @@ services:
   #     PRISMA_DATABASE_URL: "postgres://user:pass@postgres:5432/test"
 
   neo4j:
-    image: neo4j:5.2
+    image: neo4j:5.4
     ports:
       - target: 7687
         published: 7688
