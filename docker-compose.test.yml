@@ -12,15 +12,15 @@ services:
       POSTGRES_PASSWORD: pass
       POSTGRES_DB: test
 
-  postgres-migration:
-    build:
-      context: ./.
-      dockerfile: Dockerfile.migration
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      PRISMA_DATABASE_URL: "postgres://user:pass@postgres:5432/test"
+  # postgres-migration:
+  #   build:
+  #     context: ./.
+  #     dockerfile: Dockerfile.migration
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   environment:
+  #     PRISMA_DATABASE_URL: "postgres://user:pass@postgres:5432/test"
 
   neo4j:
     image: neo4j:5.2
