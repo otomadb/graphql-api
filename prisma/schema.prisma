@@ -46,9 +46,9 @@ model Mylist {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  shareRange MylistShareRange
+  shareRange MylistShareRange @default(PRIVATE)
 
-  isLikeList Boolean
+  isLikeList Boolean @default(false)
 
   holderId String
   holder   User   @relation(fields: [holderId], references: [id])
@@ -179,7 +179,7 @@ model User {
   name String @unique @db.Citext
 
   email            String  @unique()
-  isEmailConfirmed Boolean
+  isEmailConfirmed Boolean @default(false)
 
   role UserRole @default(NORMAL)
 
