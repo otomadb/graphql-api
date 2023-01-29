@@ -1,8 +1,8 @@
 import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
 
-import { checkAuth } from "../../../auth/checkAuth.js";
 import { GraphQLNotExistsInDBError, parseGqlID } from "../../../utils/id.js";
+import { ensureContextUser } from "../../ensureContextUser.js";
 import { MutationResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { SemitagModel } from "../../Semitag/model.js";
@@ -28,7 +28,7 @@ export const resolveSemitagInNeo4j = async (
 };
 
 export const resolveSemitag = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  checkAuth(UserRole.EDITOR, async (_, { input: { id: semitagGqlId, tagId: tagGqlId } }) => {
+  ensureContextUser(UserRole.EDITOR, async (_, { input: { id: semitagGqlId, tagId: tagGqlId } }) => {
     const semitagId = parseGqlID("Semitag", semitagGqlId);
     const tagId = tagGqlId ? parseGqlID("Tag", tagGqlId) : null;
 

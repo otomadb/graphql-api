@@ -1,8 +1,8 @@
 import { UserRole } from "@prisma/client";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 
-import { checkAuth } from "../../../auth/checkAuth.js";
 import { parseGqlID } from "../../../utils/id.js";
+import { ensureContextUser } from "../../ensureContextUser.js";
 import { MutationResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
@@ -26,7 +26,7 @@ export const removeInNeo4j = async (driver: Neo4jDriver, { videoId, tagId }: { v
 };
 
 export const removeTagFromVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  checkAuth(UserRole.NORMAL, async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }) => {
+  ensureContextUser(UserRole.NORMAL, async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }) => {
     const videoId = parseGqlID("Video", videoGqlId);
     const tagId = parseGqlID("Tag", tagGqlId);
 

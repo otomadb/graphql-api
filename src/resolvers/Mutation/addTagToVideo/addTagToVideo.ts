@@ -1,8 +1,8 @@
 import { UserRole } from "@prisma/client";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 
-import { checkAuth } from "../../../auth/checkAuth.js";
 import { parseGqlID } from "../../../utils/id.js";
+import { ensureContextUser } from "../../ensureContextUser.js";
 import { MutationResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
@@ -29,7 +29,7 @@ export const addTagToVideoInNeo4j = async (
 };
 
 export const addTagToVideo = ({ neo4j, prisma }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  checkAuth(UserRole.NORMAL, async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { user }) => {
+  ensureContextUser(UserRole.NORMAL, async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { user }) => {
     const videoId = parseGqlID("Video", videoGqlId);
     const tagId = parseGqlID("Tag", tagGqlId);
 

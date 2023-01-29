@@ -2,8 +2,8 @@ import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 
-import { checkAuth } from "../../../auth/checkAuth.js";
 import { parseGqlID } from "../../../utils/id.js";
+import { ensureContextUser } from "../../ensureContextUser.js";
 import { MutationResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
@@ -29,7 +29,7 @@ export const addMylistRegistrationInNeo4j = async (
 };
 
 export const addVideoToMylist = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  checkAuth(
+  ensureContextUser(
     UserRole.NORMAL,
     async (_parent, { input: { mylistId: mylistGqlId, note, videoId: videoGqlId } }, { user }) => {
       const mylistId = parseGqlID("Mylist", mylistGqlId);

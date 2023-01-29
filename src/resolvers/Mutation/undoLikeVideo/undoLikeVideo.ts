@@ -1,8 +1,8 @@
 import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
 
-import { checkAuth } from "../../../auth/checkAuth.js";
 import { parseGqlID } from "../../../utils/id.js";
+import { ensureContextUser } from "../../ensureContextUser.js";
 import { MutationResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
@@ -29,7 +29,7 @@ export const undoLikeVideoInNeo4j = async (
 };
 
 export const undoLikeVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  checkAuth(UserRole.NORMAL, async (_, { input: { videoId: videoGqlId } }, { user }) => {
+  ensureContextUser(UserRole.NORMAL, async (_, { input: { videoId: videoGqlId } }, { user }) => {
     if (!user) throw new GraphQLError("required to sign in");
 
     const videoId = parseGqlID("Video", videoGqlId);

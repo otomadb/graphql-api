@@ -2,8 +2,8 @@ import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
 import { ulid } from "ulid";
 
-import { checkAuth } from "../../../auth/checkAuth.js";
 import { parseGqlID, parseGqlIDs } from "../../../utils/id.js";
+import { ensureContextUser } from "../../ensureContextUser.js";
 import { MutationRegisterTagArgs, MutationResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
@@ -191,4 +191,4 @@ export const registerTagScaffold =
   };
 
 export const registerTag = ({ prisma }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  checkAuth(UserRole.EDITOR, registerTagScaffold({ prisma })) satisfies MutationResolvers["registerTag"];
+  ensureContextUser(UserRole.EDITOR, registerTagScaffold({ prisma })) satisfies MutationResolvers["registerTag"];
