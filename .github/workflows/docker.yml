@@ -32,7 +32,7 @@ jobs:
             if (context.eventName === "push") return process.env.GITHUB_REF_NAME
             else return `build-${process.env.GITHUB_RUN_NUMBER}`
 
-      - uses: docker/build-push-action@v3
+      - uses: docker/build-push-action@v4
         with:
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -64,7 +64,7 @@ jobs:
             if (context.eventName === "push") return process.env.GITHUB_REF_NAME
             else return `build-${process.env.GITHUB_RUN_NUMBER}`
 
-      - uses: docker/build-push-action@v3
+      - uses: docker/build-push-action@v4
         with:
           cache-from: type=gha
           cache-to: type=gha,mode=max
