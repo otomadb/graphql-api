@@ -15,7 +15,7 @@ import { typeDefs } from "./graphql.js";
 import { handlerRemoteNicovideo } from "./remote/nicovideo.js";
 import { resolvers as makeResolvers } from "./resolvers/index.js";
 
-const prismaClient = new PrismaClient();
+const prismaClient = new PrismaClient({ datasources: { db: { url: process.env.PRISMA_DATABASE_URL } } });
 
 const neo4jDriver = neo4j.driver(
   process.env.NEO4J_URL,
@@ -153,17 +153,13 @@ app.get<{ Querystring: { id: string } }>(
   handlerRemoteNicovideo
 );
 
-const port = process.env.PORT ? parseInt(process.env.PORT) : 8080;
-const host = process.env.HOST || "localhost";
-
-if (isNaN(port)) {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  app.log.error(`"${process.env.PORT!}" was specified as "PORT" but it cannot be parsed to port number`);
-  process.exit(1);
-}
+console.log(process.env.NODE_ENV);
 
 app
-  .listen({ port, host })
+  .listen({
+    host: process.env.NODE_ENV === "production" ? "0.0.0.0" : "localhost",
+    port: 8080,
+  })
   .then((serverUrl) => {
     app.log.info(`server listening at ${serverUrl}`);
   })
