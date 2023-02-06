@@ -28,7 +28,7 @@ services:
         published: 8081
 
   neo4j:
-    image: neo4j:5.2
+    image: neo4j:5.4
     ports:
       # http
       - target: 7474
