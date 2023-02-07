@@ -33,13 +33,14 @@
       in {
         devShells.default = pkgs.devshell.mkShell {
           packages = with pkgs; [
-            alejandra
-            treefmt
-            nodejs
-            dprint
             act
             actionlint
+            alejandra
+            dprint
             hadolint
+            nodejs
+            openssl
+            treefmt
           ];
           devshell.startup.npm_install.text = "npm install";
           env = [
