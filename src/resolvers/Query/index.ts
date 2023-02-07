@@ -3,6 +3,7 @@ import { ResolverDeps } from "../index.js";
 import { findMylist } from "./findMylist/findMylist.js";
 import { findNicovideoVideoSource } from "./findNicovideoVideoSource/findNicovideoVideoSource.js";
 import { findSemitags } from "./findSemitags/findSemitags.js";
+import { findTag } from "./findTag/findTag.js";
 import { findTags } from "./findTags/findTags.js";
 import { findUser } from "./findUser/findUser.js";
 import { findVideo } from "./findVideo/findVideos.js";
@@ -23,6 +24,7 @@ export const resolveQuery = (deps: Pick<ResolverDeps, "prisma">) =>
     findMylist: findMylist(deps),
     findNicovideoVideoSource: findNicovideoVideoSource(deps),
     findSemitags: findSemitags(deps),
+    findTag: findTag(deps),
     findTags: findTags(deps),
     findUser: findUser(deps),
     findVideo: findVideo(deps),

@@ -1,0 +1,8 @@
+type Query {
+  findTag(input: FindTagInput!): Tag
+}
+
+input FindTagInput {
+  id: ID
+  serial: Int
+}
