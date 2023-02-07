@@ -1,0 +1,8 @@
+type Query {
+  findVideo(input: FindVideoInput!): Video
+}
+
+input FindVideoInput {
+  id: ID
+  serial: Int
+}
