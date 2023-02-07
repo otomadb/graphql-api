@@ -1,4 +1,4 @@
-import { PseudoTagType, TagResolvers } from "../../graphql.js";
+import { PseudoTagType, TagResolvers } from "../graphql.js";
 import { ResolverDeps } from "../index.js";
 
 export const resolvePseudoType = ({ prisma }: Pick<ResolverDeps, "prisma">) =>

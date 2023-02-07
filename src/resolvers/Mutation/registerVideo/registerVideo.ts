@@ -2,10 +2,10 @@ import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
 import { ulid } from "ulid";
 
-import { checkAuth } from "../../../auth/checkAuth.js";
-import { MutationRegisterVideoArgs, MutationResolvers, RegisterVideoInputSourceType } from "../../../graphql.js";
-import { parseGqlIDs } from "../../../utils/id.js";
 import { isValidNicovideoSourceId } from "../../../utils/isValidNicovideoSourceId.js";
+import { ensureContextUser } from "../../ensureContextUser.js";
+import { MutationRegisterVideoArgs, MutationResolvers, RegisterVideoInputSourceType } from "../../graphql.js";
+import { parseGqlIDs } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { VideoModel } from "../../Video/model.js";
 
@@ -112,4 +112,4 @@ export const registerVideoScaffold =
   };
 
 export const registerVideo = (deps: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  checkAuth(UserRole.EDITOR, registerVideoScaffold(deps)) satisfies MutationResolvers["registerVideo"];
+  ensureContextUser(UserRole.EDITOR, registerVideoScaffold(deps)) satisfies MutationResolvers["registerVideo"];

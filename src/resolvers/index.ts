@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 
-import { type Resolvers } from "../graphql.js";
+import { type Resolvers } from "./graphql.js";
 import { resolveMutation } from "./Mutation/index.js";
 import { resolveMylist } from "./Mylist/index.js";
 import { resolveMylistGroup } from "./MylistGroup/index.js";

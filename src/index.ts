@@ -11,8 +11,8 @@ import { findUserFromAuthToken, findUserFromCookie } from "./auth/getUserFromSes
 import { handlerSignin } from "./auth/signin.js";
 import { handlerSignout } from "./auth/signout.js";
 import { handlerSignup } from "./auth/signup.js";
-import { typeDefs } from "./graphql.js";
 import { handlerRemoteNicovideo } from "./remote/nicovideo.js";
+import { typeDefs } from "./resolvers/graphql.js";
 import { resolvers as makeResolvers } from "./resolvers/index.js";
 
 const prismaClient = new PrismaClient({ datasources: { db: { url: process.env.PRISMA_DATABASE_URL } } });

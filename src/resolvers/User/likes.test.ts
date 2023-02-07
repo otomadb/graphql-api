@@ -2,7 +2,7 @@ import { describe } from "@jest/globals";
 import { Mylist, MylistShareRange, PrismaClient } from "@prisma/client";
 import { DeepMockProxy, mockDeep } from "jest-mock-extended";
 
-import { ContextUser } from "../../context.js";
+import { ContextUser } from "../context.js";
 import { resolveUserLikes } from "./likes.js";
 import { UserModel } from "./model.js";
 

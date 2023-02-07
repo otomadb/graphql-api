@@ -1,11 +1,11 @@
 import { MylistShareRange, UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
 
-import { MylistShareRange as GraphQLMylistShareRange, Resolvers } from "../../graphql.js";
-import { buildGqlId, parseGqlID } from "../../utils/id.js";
-import { parsePrismaOrder } from "../../utils/parsePrismaOrder.js";
+import { MylistShareRange as GraphQLMylistShareRange, Resolvers } from "../graphql.js";
+import { buildGqlId, parseGqlID } from "../id.js";
 import { ResolverDeps } from "../index.js";
 import { MylistModel } from "../Mylist/model.js";
+import { parseSortOrder } from "../parseSortOrder.js";
 import { resolveUserLikes } from "./likes.js";
 
 export const resolveUser = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
@@ -41,8 +41,8 @@ export const resolveUser = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
           take: input.limit,
           skip: input.skip,
           orderBy: {
-            createdAt: parsePrismaOrder(input.order?.createdAt),
-            updatedAt: parsePrismaOrder(input.order?.updatedAt),
+            createdAt: parseSortOrder(input.order?.createdAt),
+            updatedAt: parseSortOrder(input.order?.updatedAt),
           },
         })
         .then((ms) => ms.map((m) => new MylistModel(m)));

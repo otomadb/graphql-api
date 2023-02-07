@@ -1,6 +1,6 @@
 import { Integer } from "neo4j-driver";
 
-import { MylistResolvers } from "../../graphql.js";
+import { MylistResolvers } from "../graphql.js";
 import { ResolverDeps } from "../index.js";
 import { MylistVideoRecommendationModel } from "../MylistVideoRecommendation/model.js";
 

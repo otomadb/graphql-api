@@ -9,5 +9,5 @@ dist/
 src/db/migrations/
 
 # codegen
-src/graphql.ts
-src/schema.graphql
+schema.graphql
+src/resolvers/graphql.ts

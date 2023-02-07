@@ -1,10 +1,10 @@
 import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
 
-import { checkAuth } from "../../../auth/checkAuth.js";
-import { ContextUser } from "../../../context.js";
-import { MutationLikeVideoArgs, MutationResolvers } from "../../../graphql.js";
-import { parseGqlID } from "../../../utils/id.js";
+import { ContextUser } from "../../context.js";
+import { ensureContextUser } from "../../ensureContextUser.js";
+import { MutationLikeVideoArgs, MutationResolvers } from "../../graphql.js";
+import { parseGqlID } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
 
@@ -51,4 +51,4 @@ export const likeVideoScaffold =
   };
 
 export const likeVideo = (inject: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  checkAuth(UserRole.NORMAL, likeVideoScaffold(inject)) satisfies MutationResolvers["likeVideo"];
+  ensureContextUser(UserRole.NORMAL, likeVideoScaffold(inject)) satisfies MutationResolvers["likeVideo"];

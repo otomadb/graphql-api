@@ -3,5 +3,5 @@
 *.test.ts
 
 # codegen
-src/graphql.ts
-src/schema.graphql
+src/resolvers/graphql.ts
+src/resolvers/schema.graphql

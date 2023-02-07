@@ -1,4 +1,4 @@
-import { type Resolvers } from "../../graphql.js";
+import { type Resolvers } from "../graphql.js";
 import { ResolverDeps } from "../index.js";
 import { addMylistToMylistGroup } from "./addMylistToMylistGroup/addMylistToMylistGroup.js";
 import { addSemitagToVideo } from "./addSemitagToVideo/addSemitagToVideo.js";

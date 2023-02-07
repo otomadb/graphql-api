@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
 
-import { Resolvers, TagResolvers, TagType } from "../../graphql.js";
-import { buildGqlId, parseGqlID } from "../../utils/id.js";
+import { Resolvers, TagResolvers, TagType } from "../graphql.js";
+import { buildGqlId, parseGqlID } from "../id.js";
 import { ResolverDeps } from "../index.js";
 import { VideoModel } from "../Video/model.js";
 import { TagModel } from "./model.js";
