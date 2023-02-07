@@ -6,4 +6,8 @@ export class VideoModel {
   get id() {
     return this.video.id;
   }
+
+  get serial() {
+    return this.video.serial;
+  }
 }

@@ -1,5 +1,7 @@
 type Video implements Node {
   id: ID!
+  serial: Int!
+
   title: String!
   titles: [VideoTitle!]!
   thumbnailUrl: String!
