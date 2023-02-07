@@ -5,8 +5,10 @@ generator client {
 
 datasource db {
   provider   = "postgresql"
-  url        = env("PRISMA_DATABASE_URL")
   extensions = [citext]
+
+  url               = env("PRISMA_DATABASE_URL")
+  shadowDatabaseUrl = env("PRISMA_SHADOW_DATABASE_URL")
 }
 
 model MylistGroup {
@@ -159,7 +161,8 @@ model TagParent {
 }
 
 model Tag {
-  id String @id
+  id     String @id
+  serial Int    @unique @default(autoincrement())
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now())
