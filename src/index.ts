@@ -89,6 +89,7 @@ app
 
 // graphql
 const yoga = createYoga<{ req: FastifyRequest; reply: FastifyReply }>({
+  graphiql: process.env.ENABLE_GRAPHIQL === "true",
   schema: createSchema<{ req: FastifyRequest; reply: FastifyReply }>({
     typeDefs,
     resolvers: makeResolvers({ neo4j: neo4jDriver, prisma: prismaClient }),
