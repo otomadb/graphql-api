@@ -5,6 +5,7 @@ import { findNicovideoVideoSource } from "./findNicovideoVideoSource/findNicovid
 import { findSemitags } from "./findSemitags/findSemitags.js";
 import { findTags } from "./findTags/findTags.js";
 import { findUser } from "./findUser/findUser.js";
+import { findVideo } from "./findVideo/findVideos.js";
 import { findVideos } from "./findVideos/findVideos.js";
 import { mylist } from "./mylist/mylist.js";
 import { mylistGroup } from "./mylistGroup/mylistGroup.js";
@@ -24,6 +25,7 @@ export const resolveQuery = (deps: Pick<ResolverDeps, "prisma">) =>
     findSemitags: findSemitags(deps),
     findTags: findTags(deps),
     findUser: findUser(deps),
+    findVideo: findVideo(deps),
     findVideos: findVideos(deps),
     mylist: mylist(deps),
     mylistGroup: mylistGroup(deps),
