@@ -3,6 +3,7 @@
   "extends": ["eslint:recommended", "plugin:eslint-comments/recommended", "prettier"],
   "plugins": ["unused-imports", "simple-import-sort"],
   "rules": {
+    "no-console": 1,
     "prefer-spread": 2,
     "prefer-template": 2,
     "no-useless-rename": [2],
