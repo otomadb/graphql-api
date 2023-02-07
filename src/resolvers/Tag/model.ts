@@ -7,6 +7,10 @@ export class TagModel {
     return this.tag.id;
   }
 
+  get serial() {
+    return this.tag.serial;
+  }
+
   get meaningless() {
     return this.tag.meaningless;
   }
