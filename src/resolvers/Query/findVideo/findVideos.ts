@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
 import z from "zod";
 
-import { QueryResolvers } from "../../../graphql.js";
+import { QueryResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { VideoModel } from "../../Video/model.js";
 
