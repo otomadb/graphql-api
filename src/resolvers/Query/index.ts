@@ -1,3 +1,5 @@
+/* eslint sort-keys: 2 */
+
 import { type Resolvers } from "../graphql.js";
 import { ResolverDeps } from "../index.js";
 import { findMylist } from "./findMylist/findMylist.js";
