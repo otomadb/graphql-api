@@ -1,5 +1,6 @@
 type Tag implements Node {
   id: ID!
+  serial: Int!
 
   type: TagType! @deprecated
   pseudoType: PseudoTagType!
