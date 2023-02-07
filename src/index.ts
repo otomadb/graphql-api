@@ -153,8 +153,6 @@ app.get<{ Querystring: { id: string } }>(
   handlerRemoteNicovideo
 );
 
-console.log(process.env.NODE_ENV);
-
 app
   .listen({
     host: process.env.NODE_ENV === "production" ? "0.0.0.0" : "localhost",
