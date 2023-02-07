@@ -1,3 +1,5 @@
+/* eslint sort-keys: 2 */
+
 import { PrismaClient } from "@prisma/client";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 
