@@ -162,7 +162,3 @@ input VideoEventsInput {
   skip: Int! = 0
   limit: Int! = 10
 }
-
-input VideoEventsInputOrder {
-  createdAt: SortOrder!
-}
