@@ -8,6 +8,13 @@ import { MutationResolvers, RegisterVideoInputSourceType } from "../../graphql.j
 import { parseGqlIDs } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { VideoModel } from "../../Video/model.js";
+import { VideoAddNicovideoSourceEventPayload } from "../../VideoAddNicovideoSourceEvent/model.js";
+import { VideoAddSemitagEventPayload } from "../../VideoAddSemitagEvent/model.js";
+import { VideoAddTagEventModelPayload as VideoAddTagEventPayload } from "../../VideoAddTagEvent/model.js";
+import { VideoAddThumbnailEventPayload } from "../../VideoAddThumbnailEvent/model.js";
+import { VideoAddTitleEventPayload } from "../../VideoAddTitleEvent/model.js";
+import { VideoSetPrimaryThumbnailEventPayload } from "../../VideoSetPrimaryThumbnailEvent/model.js";
+import { VideoSetPrimaryTitleEventPayload } from "../../VideoSetPrimaryTitleEvent/model.js";
 
 export const registerVideoInNeo4j = async (
   neo4j: ResolverDeps["neo4j"],
@@ -112,43 +119,43 @@ export const register = async (
           userId: authUserId,
           videoId,
           type: "ADD_TITLE" as const,
-          payload: { id },
+          payload: { id } satisfies VideoAddTitleEventPayload,
         })),
         {
           userId: authUserId,
           videoId,
           type: "SET_PRIMARY_TITLE",
-          payload: { id: dataTitles[0].id },
+          payload: { id: dataTitles[0].id } satisfies VideoSetPrimaryTitleEventPayload,
         },
         ...dataThumbnails.map(({ id }) => ({
           userId: authUserId,
           videoId,
           type: "ADD_THUMBNAIL" as const,
-          payload: { id },
+          payload: { id } satisfies VideoAddThumbnailEventPayload,
         })),
         {
           userId: authUserId,
           videoId,
           type: "SET_PRIMARY_THUMBNAIL",
-          payload: { id: dataThumbnails[0].id },
+          payload: { id: dataThumbnails[0].id } satisfies VideoSetPrimaryThumbnailEventPayload,
         },
         ...dataTags.map(({ id }) => ({
           userId: authUserId,
           videoId,
           type: "ADD_TAG" as const,
-          payload: { id },
+          payload: { id } satisfies VideoAddTagEventPayload,
         })),
         ...dataSemitags.map(({ id }) => ({
           userId: authUserId,
           videoId,
           type: "ADD_SEMITAG" as const,
-          payload: { id },
+          payload: { id } satisfies VideoAddSemitagEventPayload,
         })),
         ...dataNicovideoSources.map(({ id }) => ({
           userId: authUserId,
           videoId,
           type: "ADD_NICOVIDEO_SOURCE" as const,
-          payload: { id },
+          payload: { id } satisfies VideoAddNicovideoSourceEventPayload,
         })),
       ],
     }),

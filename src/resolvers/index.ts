@@ -18,7 +18,17 @@ import { resolveSemitag } from "./Semitag/index.js";
 import { resolveTag } from "./Tag/index.js";
 import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
-import { resolveVideoSimilarity } from "./VideoSimilarity/index.js";
+import { resolveVideoAddNicovideoSourceEvent } from "./VideoAddNicovideoSourceEvent/index.js";
+import { resolveVideoAddSemitagEvent } from "./VideoAddSemitagEvent/index.js";
+import { resolveVideoAddTagEvent } from "./VideoAddTagEvent/index.js";
+import { resolveVideoAddThumbnailEvent } from "./VideoAddThumbnailEvent/index.js";
+import { resolveVideoAddTitleEvent } from "./VideoAddTitleEvent/index.js";
+import { resolveVideoEvent } from "./VideoEvent/index.js";
+import { resolveVideoRegisterEvent } from "./VideoRegisterEvent/index.js";
+import { resolveVideoRemoveThumbnailEvent } from "./VideoRemoveThumbnailEvent/index.js";
+import { resolveVideoRemoveTitleEvent } from "./VideoRemoveTitleEvent/index.js";
+import { resolveVideoSetPrimaryThumbnailEvent } from "./VideoSetPrimaryThumbnailEvent/index.js";
+import { resolveVideoSetPrimaryTitleEvent } from "./VideoSetPrimaryTitleEvent/index.js";
 
 export type ResolverDeps = {
   prisma: PrismaClient;
@@ -41,5 +51,15 @@ export const resolvers = (deps: ResolverDeps) =>
     Tag: resolveTag(deps),
     User: resolveUser(deps),
     Video: resolveVideo(deps),
-    VideoSimilarity: resolveVideoSimilarity(deps),
+    VideoAddNicovideoSourceEvent: resolveVideoAddNicovideoSourceEvent(deps),
+    VideoAddSemitagEvent: resolveVideoAddSemitagEvent(deps),
+    VideoAddTagEvent: resolveVideoAddTagEvent(deps),
+    VideoAddThumbnailEvent: resolveVideoAddThumbnailEvent(deps),
+    VideoAddTitleEvent: resolveVideoAddTitleEvent(deps),
+    VideoEvent: resolveVideoEvent(deps),
+    VideoRegisterEvent: resolveVideoRegisterEvent(),
+    VideoRemoveThumbnailEvent: resolveVideoRemoveThumbnailEvent(deps),
+    VideoRemoveTitleEvent: resolveVideoRemoveTitleEvent(deps),
+    VideoSetPrimaryThumbnailEvent: resolveVideoSetPrimaryThumbnailEvent(deps),
+    VideoSetPrimaryTitleEvent: resolveVideoSetPrimaryTitleEvent(deps),
   } satisfies Resolvers);
