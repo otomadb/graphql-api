@@ -44,6 +44,8 @@ export const resolveVideoEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
         // tag
         case "ADD_TAG":
           return "VideoAddTagEvent";
+        case "REMOVE_TAG":
+          return "VideoRemoveTagEvent";
         // semitag
         case "ADD_SEMITAG":
           return "VideoAddSemitagEvent";
