@@ -4,7 +4,7 @@ import { ulid } from "ulid";
 
 import { isValidNicovideoSourceId } from "../../../utils/isValidNicovideoSourceId.js";
 import { ensureContextUser } from "../../ensureContextUser.js";
-import { MutationRegisterVideoArgs, MutationResolvers, RegisterVideoInputSourceType } from "../../graphql.js";
+import { MutationResolvers, RegisterVideoInputSourceType } from "../../graphql.js";
 import { parseGqlIDs } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { VideoModel } from "../../Video/model.js";
@@ -35,85 +35,105 @@ export const registerVideoInNeo4j = async (
   }
 };
 
-export const registerVideoScaffold =
-  ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  async (_parent: unknown, { input }: MutationRegisterVideoArgs) => {
-    // validity check
-    const nicovideoSourceIds = input.sources
-      .filter((v) => v.type === RegisterVideoInputSourceType.Nicovideo)
-      .map(({ sourceId }) => sourceId.toLocaleLowerCase());
-    for (const id of nicovideoSourceIds) {
-      if (!isValidNicovideoSourceId(id)) throw new GraphQLError(`"${id}" is invalid source id for niconico source`);
-    }
+export const register = async (
+  prisma: ResolverDeps["prisma"],
+  {
+    authUserId,
+    primaryTitle,
+    extraTitles,
+    primaryThumbnail,
+    tagIds,
+    semitagNames,
+    nicovideoSourceIds: nicovideoVideoSourceIds,
+  }: {
+    authUserId: string;
 
-    const tagIds = parseGqlIDs("Tag", input.tags);
-    const videoId = ulid();
+    primaryTitle: string;
+    extraTitles: string[];
 
-    const video = await prisma.video.create({
+    primaryThumbnail: string;
+
+    tagIds: string[];
+    semitagNames: string[];
+
+    nicovideoSourceIds: string[];
+  }
+) => {
+  const videoId = ulid();
+  const dataTitles = [
+    { id: ulid(), title: primaryTitle, isPrimary: true },
+    ...extraTitles.map((extraTitle) => ({
+      id: ulid(),
+      title: extraTitle,
+      isPrimary: false,
+    })),
+  ];
+  const dataThumbnails = [
+    {
+      id: ulid(),
+      imageUrl: primaryThumbnail,
+      isPrimary: true,
+    },
+  ];
+  const dataTags = tagIds.map((tagId) => ({
+    id: ulid(),
+    tagId,
+  }));
+  const dataSemitags = semitagNames.map((name) => ({
+    id: ulid(),
+    name,
+    isResolved: false,
+  }));
+  const dataNicovideoSources = nicovideoVideoSourceIds.map((sourceId) => ({
+    id: ulid(),
+    sourceId: sourceId.toLowerCase(),
+  }));
+
+  const [video] = await prisma.$transaction([
+    prisma.video.create({
       data: {
         id: videoId,
-        titles: {
-          createMany: {
-            data: [
-              {
-                title: input.primaryTitle,
-                isPrimary: true,
-              },
-              ...input.extraTitles.map((extraTitle) => ({
-                title: extraTitle,
-                isPrimary: false,
-              })),
-            ],
-          },
-        },
-        thumbnails: {
-          createMany: {
-            data: [
-              {
-                imageUrl: input.primaryThumbnail,
-                isPrimary: true,
-              },
-            ],
-          },
-        },
-        tags: {
-          createMany: {
-            data: tagIds.map((tagId) => ({ tagId })),
-          },
-        },
-        semitags: {
-          createMany: {
-            data: input.semitags.map((name) => ({
-              name,
-              isResolved: false,
-            })),
-          },
-        },
-        nicovideoSources: {
-          createMany: {
-            data: nicovideoSourceIds.map((sourceId) => ({
-              sourceId: sourceId.toLowerCase(),
-            })),
-          },
-        },
+        titles: { createMany: { data: dataTitles } },
+        thumbnails: { createMany: { data: dataThumbnails } },
+        tags: { createMany: { data: dataTags } },
+        semitags: { createMany: { data: dataSemitags } },
+        nicovideoSources: { createMany: { data: dataNicovideoSources } },
       },
-    });
+    }),
+  ]);
 
-    /*
-    await registerVideoInNeo4j(
-      neo4j,
-      video.tags.map(({ tagId, videoId }) => ({ tagId, videoId }))
-    );
-    */
+  return video;
+};
 
-    return {
-      video: new VideoModel(video),
-    };
-  };
-
-export const registerVideo = (deps: Pick<ResolverDeps, "prisma" | "neo4j">) =>
+export const registerVideo = ({ prisma }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
   ensureContextUser(
-    deps.prisma,
+    prisma,
     UserRole.EDITOR,
-    registerVideoScaffold(deps)
+    // registerVideoScaffold(deps)
+    async (_parent, { input }, { userId }) => {
+      // GraphQLのIDをデータベースのIDに変換
+      const tagIds = parseGqlIDs("Tag", input.tags);
+
+      // ニコニコ動画の動画IDチェック
+      const nicovideoSourceIds = input.sources
+        .filter((v) => v.type === RegisterVideoInputSourceType.Nicovideo)
+        .map(({ sourceId }) => sourceId.toLocaleLowerCase());
+      for (const id of nicovideoSourceIds) {
+        if (!isValidNicovideoSourceId(id)) throw new GraphQLError(`"${id}" is invalid source id for niconico source`);
+      }
+
+      const video = await register(prisma, {
+        authUserId: userId,
+        primaryTitle: input.primaryTitle,
+        extraTitles: input.extraTitles,
+        primaryThumbnail: input.primaryThumbnail,
+        tagIds,
+        semitagNames: input.semitags,
+        nicovideoSourceIds,
+      });
+
+      return {
+        video: new VideoModel(video),
+      };
+    }
   ) satisfies MutationResolvers["registerVideo"];
