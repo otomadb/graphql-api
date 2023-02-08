@@ -9,7 +9,7 @@ on:
 
 jobs:
   api:
-    name: API
+    name: Build API image
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -41,7 +41,7 @@ jobs:
           tags: ghcr.io/${{ github.repository_owner }}/api:${{ steps.image_tag.outputs.result }}
 
   migration:
-    name: Migration
+    name: Build Migration image
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
