@@ -7,11 +7,12 @@ import { createSchema, createYoga } from "graphql-yoga";
 import neo4j from "neo4j-driver";
 import prometheusClient from "prom-client";
 
-import { findUserFromAuthToken, findUserFromCookie } from "./auth/getUserFromSession.js";
+import { findSessionFromAuthzToken, findSessionFromCookie } from "./auth/findSession.js";
 import { handlerSignin } from "./auth/signin.js";
 import { handlerSignout } from "./auth/signout.js";
 import { handlerSignup } from "./auth/signup.js";
 import { handlerRemoteNicovideo } from "./remote/nicovideo.js";
+import { Context } from "./resolvers/context.js";
 import { typeDefs } from "./resolvers/graphql.js";
 import { resolvers as makeResolvers } from "./resolvers/index.js";
 
@@ -88,26 +89,26 @@ app
   });
 
 // graphql
-const yoga = createYoga<{ req: FastifyRequest; reply: FastifyReply }>({
+const yoga = createYoga<{ req: FastifyRequest; reply: FastifyReply }, Context>({
   graphiql: process.env.ENABLE_GRAPHIQL === "true",
-  schema: createSchema<{ req: FastifyRequest; reply: FastifyReply }>({
+  schema: createSchema<{ req: FastifyRequest; reply: FastifyReply } & Context>({
     typeDefs,
     resolvers: makeResolvers({ neo4j: neo4jDriver, prisma: prismaClient }),
   }),
   async context({ req }) {
     const cookie = req.cookies["otmd-session"];
     if (cookie) {
-      const user = await findUserFromCookie(prismaClient, cookie);
-      if (user) return { user };
+      const session = await findSessionFromCookie(prismaClient, cookie);
+      if (session) return { userId: session.userId } satisfies Context;
     }
 
     const authToken = req.headers["authorization"]?.split(" ").at(1);
     if (authToken) {
-      const user = await findUserFromAuthToken(prismaClient, authToken);
-      if (user) return { user };
+      const session = await findSessionFromAuthzToken(prismaClient, authToken);
+      if (session) return { userId: session.id } satisfies Context;
     }
 
-    return {};
+    return { userId: null } satisfies Context;
   },
   logging: {
     debug: (...args) => args.forEach((arg) => app.log.debug(arg)),
