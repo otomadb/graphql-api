@@ -285,5 +285,37 @@ model VideoEvent {
   user   User   @relation(fields: [userId], references: [id])
   userId String
 
+  type    VideoEventType
   payload Json
+}
+
+enum VideoEventType {
+  REGISTER
+
+  // タイトル周り
+  ADD_TITLE
+  REMOVE_TITLE
+  SET_PRIMARY_TITLE
+  CHANGE_PRIMARY_TITLE
+
+  // サムネイル周り
+  ADD_THUMBNAIL
+  REMOVE_THUMBNAIL
+  SET_PRIMARY_THUMBNAIL
+  CHANGE_PRIMARY_THUMBNAIL
+
+  // タグ周り
+  ADD_TAG
+  REMOVE_TAG
+
+  // 仮タグ周り
+  ADD_SEMITAG
+
+  // ニコニコ動画ソース周り
+  ADD_NICOVIDEO_SOURCE
+  DELETE_NICOVIDEO_SOURCE
+
+  // マイリスト周り
+  ADD_MYLIST
+  DELETE_MYLIST
 }
