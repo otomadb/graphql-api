@@ -100,6 +100,58 @@ export const register = async (
         nicovideoSources: { createMany: { data: dataNicovideoSources } },
       },
     }),
+    prisma.videoEvent.createMany({
+      data: [
+        {
+          userId: authUserId,
+          videoId,
+          type: "REGISTER",
+          payload: {},
+        },
+        ...dataTitles.map(({ id }) => ({
+          userId: authUserId,
+          videoId,
+          type: "ADD_TITLE" as const,
+          payload: { id },
+        })),
+        {
+          userId: authUserId,
+          videoId,
+          type: "SET_PRIMARY_TITLE",
+          payload: { id: dataTitles[0].id },
+        },
+        ...dataThumbnails.map(({ id }) => ({
+          userId: authUserId,
+          videoId,
+          type: "ADD_THUMBNAIL" as const,
+          payload: { id },
+        })),
+        {
+          userId: authUserId,
+          videoId,
+          type: "SET_PRIMARY_THUMBNAIL",
+          payload: { id: dataThumbnails[0].id },
+        },
+        ...dataTags.map(({ id }) => ({
+          userId: authUserId,
+          videoId,
+          type: "ADD_TAG" as const,
+          payload: { id },
+        })),
+        ...dataSemitags.map(({ id }) => ({
+          userId: authUserId,
+          videoId,
+          type: "ADD_SEMITAG" as const,
+          payload: { id },
+        })),
+        ...dataNicovideoSources.map(({ id }) => ({
+          userId: authUserId,
+          videoId,
+          type: "ADD_NICOVIDEO_SOURCE" as const,
+          payload: { id },
+        })),
+      ],
+    }),
   ]);
 
   return video;
