@@ -8,13 +8,13 @@ import { MutationResolvers, RegisterVideoInputSourceType } from "../../graphql.j
 import { parseGqlIDs } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { VideoModel } from "../../Video/model.js";
-import { VideoAddNicovideoSourceEventPayload } from "../../VideoAddNicovideoSourceEvent/model.js";
-import { VideoAddSemitagEventPayload } from "../../VideoAddSemitagEvent/model.js";
-import { VideoAddTagEventModelPayload as VideoAddTagEventPayload } from "../../VideoAddTagEvent/model.js";
-import { VideoAddThumbnailEventPayload } from "../../VideoAddThumbnailEvent/model.js";
-import { VideoAddTitleEventPayload } from "../../VideoAddTitleEvent/model.js";
-import { VideoSetPrimaryThumbnailEventPayload } from "../../VideoSetPrimaryThumbnailEvent/model.js";
-import { VideoSetPrimaryTitleEventPayload } from "../../VideoSetPrimaryTitleEvent/model.js";
+import { VideoAddNicovideoSourceEventPayload } from "../../VideoAddNicovideoSourceEvent/index.js";
+import { VideoAddSemitagEventPayload } from "../../VideoAddSemitagEvent/index.js";
+import { VideoAddTagEventPayload } from "../../VideoAddTagEvent/index.js";
+import { VideoAddThumbnailEventPayload } from "../../VideoAddThumbnailEvent/index.js";
+import { VideoAddTitleEventPayload } from "../../VideoAddTitleEvent/index.js";
+import { VideoSetPrimaryThumbnailEventPayload } from "../../VideoSetPrimaryThumbnailEvent/index.js";
+import { VideoSetPrimaryTitleEventPayload } from "../../VideoSetPrimaryTitleEvent/index.js";
 
 export const registerVideoInNeo4j = async (
   neo4j: ResolverDeps["neo4j"],

@@ -10,7 +10,7 @@ const schemaPayload = z.object({
    */
   id: z.string(),
 });
-export type VideoAddTagEventModelPayload = z.infer<typeof schemaPayload>;
+export type VideoAddTagEventPayload = z.infer<typeof schemaPayload>;
 
 export const resolveVideoAddTagEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
