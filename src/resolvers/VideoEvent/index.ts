@@ -25,22 +25,29 @@ export const resolveVideoEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
         }),
     __resolveType({ type }) {
       switch (type) {
+        case "REGISTER":
+          return "VideoRegisterEvent";
+        // title
         case "ADD_TITLE":
           return "VideoAddTitleEvent";
         case "REMOVE_TITLE":
           return "VideoRemoveTitleEvent";
         case "SET_PRIMARY_TITLE":
           return "VideoSetPrimaryTitleEvent";
+        // thumbnail
         case "ADD_THUMBNAIL":
           return "VideoAddThumbnailEvent";
         case "REMOVE_THUMBNAIL":
           return "VideoRemoveThumbnailEvent";
         case "SET_PRIMARY_THUMBNAIL":
           return "VideoSetPrimaryThumbnailEvent";
+        // tag
         case "ADD_TAG":
           return "VideoAddTagEvent";
+        // semitag
         case "ADD_SEMITAG":
           return "VideoAddSemitagEvent";
+        // nicovideo source
         case "ADD_NICOVIDEO_SOURCE":
           return "VideoAddNicovideoSourceEvent";
         default:

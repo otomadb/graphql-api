@@ -161,7 +161,6 @@ type VideoConnection {
 input VideoEventsInput {
   skip: Int! = 0
   limit: Int! = 10
-  order: VideoEventsInputOrder! = { createdAt: DESC }
 }
 
 input VideoEventsInputOrder {

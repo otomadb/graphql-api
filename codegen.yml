@@ -25,16 +25,16 @@ generates:
         Tag: ./Tag/model.js#TagModel
         User: ./User/model.js#UserModel
         Video: ./Video/model.js#VideoModel
-        VideoAddNicovideoSourceEvent: ./VideoAddNicovideoSourceEvent/model.js#VideoAddNicovideoSourceEventModel
-        VideoAddSemitagEvent: ./VideoAddSemitagEvent/model.js#VideoAddSemitagEventModel
-        VideoAddTagEvent: ./VideoAddTagEvent/model.js#VideoAddTagEventModel
-        VideoAddThumbnailEvent: ./VideoAddThumbnailEvent/model.js#VideoAddThumbnailEventModel
-        VideoAddTitleEvent: ./VideoAddTitleEvent/model.js#VideoAddTitleEventModel
+        VideoAddNicovideoSourceEvent: ./VideoEvent/model.js#VideoEventModel
+        VideoAddSemitagEvent: ./VideoEvent/model.js#VideoEventModel
+        VideoAddTagEvent: ./VideoEvent/model.js#VideoEventModel
+        VideoAddThumbnailEvent:  ./VideoEvent/model.js#VideoEventModel
+        VideoAddTitleEvent: ./VideoEvent/model.js#VideoEventModel
         VideoEvent: ./VideoEvent/model.js#VideoEventModel
-        VideoRemoveThumbnailEvent: ./VideoRemoveThumbnailEvent/model.js#VideoRemoveThumbnailEventModel
-        VideoRemoveTitleEvent: ./VideoRemoveTitleEvent/model.js#VideoRemoveTitleEventModel
-        VideoSetPrimaryThumbnailEvent: ./VideoSetPrimaryThumbnailEvent/model.js#VideoSetPrimaryThumbnailEventModel
-        VideoSetPrimaryTitleEvent: ./VideoSetPrimaryTitleEvent/model.js#VideoSetPrimaryTitleEventModel
+        VideoRemoveThumbnailEvent: ./VideoEvent/model.js#VideoEventModel
+        VideoRemoveTitleEvent: ./VideoEvent/model.js#VideoEventModel
+        VideoSetPrimaryThumbnailEvent: ./VideoEvent/model.js#VideoEventModel
+        VideoSetPrimaryTitleEvent: ./VideoEvent/model.js#VideoEventModel
         VideoSimilarity: ./VideoSimilarity/model.js#VideoSimilarityModel
       makeResolverTypeCallable: true
     plugins:

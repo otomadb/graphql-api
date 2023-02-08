@@ -4,7 +4,6 @@ import { Resolvers, VideoResolvers } from "../graphql.js";
 import { buildGqlId } from "../id.js";
 import { ResolverDeps } from "../index.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
-import { parseSortOrder } from "../parseSortOrder.js";
 import { SemitagModel } from "../Semitag/model.js";
 import { VideoEventModel } from "../VideoEvent/model.js";
 import { resolveSimilarVideos } from "./similarVideos.js";
@@ -65,7 +64,7 @@ export const resolveVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "n
           where: { videoId },
           take: input.limit,
           skip: input.skip,
-          orderBy: { createdAt: parseSortOrder(input.order.createdAt) },
+          orderBy: { id: "desc" },
         })
         .then((es) => es.map((e) => new VideoEventModel(e)));
       return { nodes };

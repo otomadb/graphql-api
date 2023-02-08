@@ -18,4 +18,12 @@ export class VideoEventModel {
   get type() {
     return this.event.type;
   }
+
+  get createdAt() {
+    return this.event.createdAt;
+  }
+
+  get payload() {
+    return this.event.payload;
+  }
 }
