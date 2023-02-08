@@ -5,6 +5,7 @@ import { buildGqlId } from "../id.js";
 import { ResolverDeps } from "../index.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
 import { SemitagModel } from "../Semitag/model.js";
+import { VideoEventModel } from "../VideoEvent/model.js";
 import { resolveSimilarVideos } from "./similarVideos.js";
 import { resolveTags } from "./tags.js";
 
@@ -56,4 +57,16 @@ export const resolveVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "n
       prisma.semitag
         .findMany({ where: { videoId, isResolved: resolved?.valueOf() } })
         .then((semitags) => semitags.map((semitag) => new SemitagModel(semitag))),
+
+    events: async ({ id: videoId }, { input }) => {
+      const nodes = await prisma.videoEvent
+        .findMany({
+          where: { videoId },
+          take: input.limit,
+          skip: input.skip,
+          orderBy: { id: "desc" },
+        })
+        .then((es) => es.map((e) => new VideoEventModel(e)));
+      return { nodes };
+    },
   } satisfies Resolvers["Video"]);

@@ -1,0 +1,10 @@
+interface VideoEvent {
+  id: ID!
+  createdAt: DateTime!
+  video: Video!
+  user: User!
+}
+
+type VideoEventsConnection {
+  nodes: [VideoEvent!]!
+}

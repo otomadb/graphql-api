@@ -9,7 +9,8 @@ export type NodeType =
   | "Mylist"
   | "MylistGroup"
   | "MylistGroupMylistInclusion"
-  | "MylistRegistration";
+  | "MylistRegistration"
+  | "VideoEvent";
 
 export const buildGqlId = (type: NodeType, dbId: string): string =>
   Buffer.from(`${type}:${dbId}`).toString("base64url");

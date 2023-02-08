@@ -9,6 +9,7 @@ type Video implements Node {
   tags(input: VideoTagsInput!): [Tag!]!
   hasTag(id: ID!): Boolean!
   history(input: VideoHistoryInput!): VideoHistoryConnection!
+  events(input: VideoEventsInput!): VideoEventsConnection!
   registeredAt: DateTime!
 
   nicovideoSources: [NicovideoVideoSource!]!
@@ -155,4 +156,9 @@ type VideoSimilarVideosPayload {
 
 type VideoConnection {
   nodes: [Video!]!
+}
+
+input VideoEventsInput {
+  skip: Int! = 0
+  limit: Int! = 10
 }
