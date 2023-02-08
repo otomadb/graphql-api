@@ -6,7 +6,7 @@ import { ResolverDeps } from "../index.js";
 import { UserModel } from "../User/model.js";
 import { VideoModel } from "../Video/model.js";
 
-export const resolveVideoEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveVideoEventCommonProps = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
     id: ({ id }): string => buildGqlId("VideoEvent", id),
     user: ({ userId }) =>
@@ -23,6 +23,10 @@ export const resolveVideoEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Video", videoId);
         }),
+  } satisfies Omit<Exclude<Resolvers["VideoEvent"], undefined>, "__resolveType">);
+
+export const resolveVideoEvent = () =>
+  ({
     __resolveType({ type }) {
       switch (type) {
         case "REGISTER":

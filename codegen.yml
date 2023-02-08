@@ -30,7 +30,10 @@ generates:
         VideoAddTagEvent: ./VideoEvent/model.js#VideoEventModel
         VideoAddThumbnailEvent: ./VideoEvent/model.js#VideoEventModel
         VideoAddTitleEvent: ./VideoEvent/model.js#VideoEventModel
+        VideoChangePrimaryThumbnailEvent: ./VideoEvent/model.js#VideoEventModel
+        VideoChangePrimaryTitleEvent: ./VideoEvent/model.js#VideoEventModel
         VideoEvent: ./VideoEvent/model.js#VideoEventModel
+        VideoRegisterEvent: ./VideoEvent/model.js#VideoEventModel
         VideoRemoveTagEvent: ./VideoEvent/model.js#VideoEventModel
         VideoRemoveThumbnailEvent: ./VideoEvent/model.js#VideoEventModel
         VideoRemoveTitleEvent: ./VideoEvent/model.js#VideoEventModel
