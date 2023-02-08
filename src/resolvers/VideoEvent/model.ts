@@ -1,6 +1,6 @@
 import { VideoEvent } from "@prisma/client";
 
-export abstract class VideoEventModel<TPayload> {
+export abstract class VideoEventModel<TPayload = unknown> {
   constructor(protected readonly event: VideoEvent) {}
 
   get id() {
