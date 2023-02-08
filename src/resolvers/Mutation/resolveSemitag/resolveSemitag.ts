@@ -28,7 +28,7 @@ export const resolveSemitagInNeo4j = async (
 };
 
 export const resolveSemitag = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  ensureContextUser(UserRole.EDITOR, async (_, { input: { id: semitagGqlId, tagId: tagGqlId } }) => {
+  ensureContextUser(prisma, UserRole.EDITOR, async (_, { input: { id: semitagGqlId, tagId: tagGqlId } }) => {
     const semitagId = parseGqlID("Semitag", semitagGqlId);
     const tagId = tagGqlId ? parseGqlID("Tag", tagGqlId) : null;
 

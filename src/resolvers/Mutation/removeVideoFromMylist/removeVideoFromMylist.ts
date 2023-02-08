@@ -30,25 +30,29 @@ export const removeMylistRegistrationInNeo4j = async (
 };
 
 export const removeVideoFromMylist = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  ensureContextUser(UserRole.NORMAL, async (_, { input: { mylistId: mylistGqlId, videoId: videoGqlId } }, { user }) => {
-    const videoId = parseGqlID("Video", videoGqlId);
-    const mylistId = parseGqlID("Mylist", mylistGqlId);
+  ensureContextUser(
+    prisma,
+    UserRole.NORMAL,
+    async (_, { input: { mylistId: mylistGqlId, videoId: videoGqlId } }, { userId }) => {
+      const videoId = parseGqlID("Video", videoGqlId);
+      const mylistId = parseGqlID("Mylist", mylistGqlId);
 
-    if ((await prisma.mylist.findUniqueOrThrow({ where: { id: mylistId } })).holderId !== user.id)
-      throw new GraphQLError("This mylist is not yours");
+      if ((await prisma.mylist.findUniqueOrThrow({ where: { id: mylistId } })).holderId !== userId)
+        throw new GraphQLError("This mylist is not yours");
 
-    const registration = await prisma.mylistRegistration.delete({
-      where: { mylistId_videoId: { videoId, mylistId } },
-      include: { video: true, mylist: true },
-    });
+      const registration = await prisma.mylistRegistration.delete({
+        where: { mylistId_videoId: { videoId, mylistId } },
+        include: { video: true, mylist: true },
+      });
 
-    await removeMylistRegistrationInNeo4j(neo4j, {
-      mylistId: registration.mylist.id,
-      videoId: registration.video.id,
-    });
+      await removeMylistRegistrationInNeo4j(neo4j, {
+        mylistId: registration.mylist.id,
+        videoId: registration.video.id,
+      });
 
-    return {
-      video: new VideoModel(registration.video),
-      mylist: new MylistModel(registration.mylist),
-    };
-  }) satisfies MutationResolvers["removeVideoFromMylist"];
+      return {
+        video: new VideoModel(registration.video),
+        mylist: new MylistModel(registration.mylist),
+      };
+    }
+  ) satisfies MutationResolvers["removeVideoFromMylist"];

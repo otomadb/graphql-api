@@ -40,5 +40,5 @@ export const resolveQuery = (deps: Pick<ResolverDeps, "prisma">) =>
     tag: tag(deps),
     user: user(deps),
     video: video(deps),
-    whoami: whoami(),
+    whoami: whoami(deps),
   } satisfies Resolvers["Query"]);

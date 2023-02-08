@@ -30,12 +30,13 @@ export const addMylistRegistrationInNeo4j = async (
 
 export const addVideoToMylist = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
   ensureContextUser(
+    prisma,
     UserRole.NORMAL,
-    async (_parent, { input: { mylistId: mylistGqlId, note, videoId: videoGqlId } }, { user }) => {
+    async (_parent, { input: { mylistId: mylistGqlId, note, videoId: videoGqlId } }, { userId }) => {
       const mylistId = parseGqlID("Mylist", mylistGqlId);
       const videoId = parseGqlID("Video", videoGqlId);
 
-      if ((await prisma.mylist.findUniqueOrThrow({ where: { id: mylistId } })).holderId !== user.id)
+      if ((await prisma.mylist.findUniqueOrThrow({ where: { id: mylistId } })).holderId !== userId)
         throw new GraphQLError(`mylist "${mylistGqlId}" is not holded by you`);
 
       const registration = await prisma.mylistRegistration.create({

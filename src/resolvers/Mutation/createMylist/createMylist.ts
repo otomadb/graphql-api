@@ -6,12 +6,12 @@ import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
 
 export const createMylist = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
-  ensureContextUser(UserRole.NORMAL, async (_parent, { input: { title, range } }, { user }) => {
+  ensureContextUser(prisma, UserRole.NORMAL, async (_parent, { input: { title, range } }, { userId }) => {
     const mylist = await prisma.mylist.create({
       data: {
         title,
         shareRange: range,
-        holderId: user.id,
+        holderId: userId,
         isLikeList: false,
       },
     });

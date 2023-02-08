@@ -112,4 +112,8 @@ export const registerVideoScaffold =
   };
 
 export const registerVideo = (deps: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  ensureContextUser(UserRole.EDITOR, registerVideoScaffold(deps)) satisfies MutationResolvers["registerVideo"];
+  ensureContextUser(
+    deps.prisma,
+    UserRole.EDITOR,
+    registerVideoScaffold(deps)
+  ) satisfies MutationResolvers["registerVideo"];

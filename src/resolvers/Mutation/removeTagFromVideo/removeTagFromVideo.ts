@@ -26,7 +26,7 @@ export const removeInNeo4j = async (driver: Neo4jDriver, { videoId, tagId }: { v
 };
 
 export const removeTagFromVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  ensureContextUser(UserRole.NORMAL, async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }) => {
+  ensureContextUser(prisma, UserRole.NORMAL, async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }) => {
     const videoId = parseGqlID("Video", videoGqlId);
     const tagId = parseGqlID("Tag", tagGqlId);
 

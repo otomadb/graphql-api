@@ -1,7 +1,7 @@
 import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
 
-import { ContextUser } from "../../context.js";
+import { ContextUserId } from "../../context.js";
 import { ensureContextUser } from "../../ensureContextUser.js";
 import { MutationLikeVideoArgs, MutationResolvers } from "../../graphql.js";
 import { parseGqlID } from "../../id.js";
@@ -33,14 +33,14 @@ export const likeVideoScaffold =
   async (
     _parent: unknown,
     { input: { videoId: videoGqlId } }: MutationLikeVideoArgs,
-    { user }: { user: ContextUser }
+    { userId }: { userId: ContextUserId }
   ) => {
     const videoId = parseGqlID("Video", videoGqlId);
 
     const likelist = await prisma.mylist
-      .findFirstOrThrow({ where: { holder: { id: user.id }, isLikeList: true } })
+      .findFirstOrThrow({ where: { holder: { id: userId }, isLikeList: true } })
       .catch(() => {
-        throw new GraphQLError(`like list for "${user.id}" is not found`);
+        throw new GraphQLError(`like list for "${userId}" is not found`);
       });
     const registration = await prisma.mylistRegistration.create({
       data: { note: null, videoId, mylistId: likelist.id },
@@ -51,4 +51,4 @@ export const likeVideoScaffold =
   };
 
 export const likeVideo = (inject: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  ensureContextUser(UserRole.NORMAL, likeVideoScaffold(inject)) satisfies MutationResolvers["likeVideo"];
+  ensureContextUser(inject.prisma, UserRole.NORMAL, likeVideoScaffold(inject)) satisfies MutationResolvers["likeVideo"];

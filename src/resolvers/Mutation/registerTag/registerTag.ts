@@ -191,4 +191,8 @@ export const registerTagScaffold =
   };
 
 export const registerTag = ({ prisma }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  ensureContextUser(UserRole.EDITOR, registerTagScaffold({ prisma })) satisfies MutationResolvers["registerTag"];
+  ensureContextUser(
+    prisma,
+    UserRole.EDITOR,
+    registerTagScaffold({ prisma })
+  ) satisfies MutationResolvers["registerTag"];
