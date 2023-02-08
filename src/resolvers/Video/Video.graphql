@@ -165,5 +165,5 @@ input VideoEventsInput {
 }
 
 input VideoEventsInputOrder {
-  createdAt: SortOrder
+  createdAt: SortOrder!
 }
