@@ -1,12 +1,15 @@
-import { UserRole } from "@prisma/client";
+import { Tag, UserRole, Video, VideoTag } from "@prisma/client";
+import { GraphQLError } from "graphql";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 
+import { Result } from "../../../utils/Result.js";
 import { ensureContextUser } from "../../ensureContextUser.js";
 import { MutationResolvers } from "../../graphql.js";
-import { parseGqlID } from "../../id.js";
+import { GraphQLNotExistsInDBError, parseGqlID } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 import { VideoModel } from "../../Video/model.js";
+import { VideoRemoveTagEventPayload } from "../../VideoRemoveTagEvent/index.js";
 
 export const removeInNeo4j = async (driver: Neo4jDriver, { videoId, tagId }: { videoId: string; tagId: string }) => {
   const session = driver.session();
@@ -25,23 +28,56 @@ export const removeInNeo4j = async (driver: Neo4jDriver, { videoId, tagId }: { v
   }
 };
 
-export const removeTagFromVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  ensureContextUser(prisma, UserRole.NORMAL, async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }) => {
-    const videoId = parseGqlID("Video", videoGqlId);
-    const tagId = parseGqlID("Tag", tagGqlId);
+export const remove = async (
+  prisma: ResolverDeps["prisma"],
+  { authUserId, videoId, tagId }: { authUserId: string; videoId: string; tagId: string }
+): Promise<Result<"NO_VIDEO" | "NO_TAG" | "NO_TAGGING", VideoTag & { video: Video; tag: Tag }>> => {
+  if ((await prisma.video.findUnique({ where: { id: videoId } })) === null)
+    return { status: "error", error: "NO_VIDEO" };
+  if ((await prisma.tag.findUnique({ where: { id: tagId } })) === null) return { status: "error", error: "NO_TAG" };
+  if ((await prisma.videoTag.findUnique({ where: { videoId_tagId: { tagId, videoId } } })) === null)
+    return { status: "error", error: "NO_TAGGING" };
 
-    const tagging = await prisma.videoTag.delete({
+  const [tagging] = await prisma.$transaction([
+    prisma.videoTag.delete({
       where: { videoId_tagId: { tagId, videoId } },
       include: { tag: true, video: true },
-    });
+    }),
+    prisma.videoEvent.create({
+      data: {
+        userId: authUserId,
+        videoId,
+        type: "REMOVE_TAG",
+        payload: { tagId } satisfies VideoRemoveTagEventPayload,
+      },
+    }),
+  ]);
+  return { status: "ok", data: tagging };
+};
 
-    await removeInNeo4j(neo4j, {
-      videoId: tagging.video.id,
-      tagId: tagging.tag.id,
-    });
+export const removeTagFromVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
+  ensureContextUser(
+    prisma,
+    UserRole.NORMAL,
+    async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { userId: authUserId }) => {
+      const videoId = parseGqlID("Video", videoGqlId);
+      const tagId = parseGqlID("Tag", tagGqlId);
 
-    return {
-      video: new VideoModel(tagging.video),
-      tag: new TagModel(tagging.tag),
-    };
-  }) satisfies MutationResolvers["removeTagFromVideo"];
+      const result = await remove(prisma, { videoId, tagId, authUserId });
+      if (result.status === "error") {
+        switch (result.error) {
+          case "NO_VIDEO":
+            throw new GraphQLNotExistsInDBError("Video", videoId);
+          case "NO_TAG":
+            throw new GraphQLNotExistsInDBError("Video", videoId);
+          case "NO_TAGGING":
+            throw new GraphQLError("Tagging does not exist");
+        }
+      }
+
+      const tagging = result.data;
+      await removeInNeo4j(neo4j, { videoId: tagging.video.id, tagId: tagging.tag.id });
+
+      return { video: new VideoModel(tagging.video), tag: new TagModel(tagging.tag) };
+    }
+  ) satisfies MutationResolvers["removeTagFromVideo"];
