@@ -8,7 +8,7 @@ import { ResolverDeps } from "../../index.js";
 import { SemitagModel } from "../../Semitag/model.js";
 
 export const addSemitagToVideo = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
-  ensureContextUser(UserRole.NORMAL, async (_parent, { input: { videoId: videoGqlId, name: semitagName } }) => {
+  ensureContextUser(prisma, UserRole.NORMAL, async (_parent, { input: { videoId: videoGqlId, name: semitagName } }) => {
     const videoId = parseGqlID("Video", videoGqlId);
 
     if (!(await prisma.video.findUnique({ where: { id: videoId } })))

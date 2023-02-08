@@ -2,20 +2,23 @@ import { UserRole } from "@prisma/client";
 import { GraphQLError, GraphQLResolveInfo } from "graphql";
 
 import { Context } from "./context.js";
+import { ResolverDeps } from "./index.js";
 
 export const ensureContextUser =
   <TResult, TParent, TArgs>(
+    prisma: ResolverDeps["prisma"],
     requestRole: UserRole,
     resolver: (
       parent: TParent,
       args: TArgs,
-      ctx: Omit<Context, "user"> & { user: Exclude<Context["user"], null> },
+      ctx: Omit<Context, "userId"> & { userId: Exclude<Context["userId"], null> },
       op: GraphQLResolveInfo
     ) => TResult
   ) =>
-  (parent: TParent, args: TArgs, { user, ...rest }: Context, op: GraphQLResolveInfo) => {
-    if (!user) throw new GraphQLError("you must be logged in");
-    const { role } = user;
+  async (parent: TParent, args: TArgs, { userId, ...rest }: Context, op: GraphQLResolveInfo) => {
+    if (!userId) throw new GraphQLError("you must be logged in");
+
+    const { id, role } = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
 
     if (
       (requestRole === UserRole.EDITOR && role !== UserRole.EDITOR && role !== UserRole.ADMINISTRATOR) || // Require EDITOR role
@@ -23,5 +26,5 @@ export const ensureContextUser =
     )
       throw new GraphQLError(`"${op.fieldName}" needs ${requestRole} role but your role is ${role}`);
 
-    return resolver(parent, args, { user, ...rest }, op);
+    return resolver(parent, args, { userId: id, ...rest }, op);
   };

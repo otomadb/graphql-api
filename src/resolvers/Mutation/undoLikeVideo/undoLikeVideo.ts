@@ -29,13 +29,11 @@ export const undoLikeVideoInNeo4j = async (
 };
 
 export const undoLikeVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  ensureContextUser(UserRole.NORMAL, async (_, { input: { videoId: videoGqlId } }, { user }) => {
-    if (!user) throw new GraphQLError("required to sign in");
-
+  ensureContextUser(prisma, UserRole.NORMAL, async (_, { input: { videoId: videoGqlId } }, { userId }) => {
     const videoId = parseGqlID("Video", videoGqlId);
 
-    const likelist = await prisma.mylist.findFirst({ where: { holder: { id: user.id }, isLikeList: true } });
-    if (!likelist) throw new GraphQLError(`like list for "${user.id}" is not found`); // TODO:
+    const likelist = await prisma.mylist.findFirst({ where: { holder: { id: userId }, isLikeList: true } });
+    if (!likelist) throw new GraphQLError(`like list for "${userId}" is not found`); // TODO:
 
     const registration = await prisma.mylistRegistration.delete({
       where: {
