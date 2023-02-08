@@ -5,5 +5,5 @@ type VideoSetPrimaryThumbnailEvent implements VideoEvent {
   user: User!
   video: Video!
 
-  thumbnail: String!
+  thumbnailUrl: String!
 }

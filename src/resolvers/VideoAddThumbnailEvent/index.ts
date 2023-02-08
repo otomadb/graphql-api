@@ -8,7 +8,7 @@ export type VideoAddThumbnailEventPayload = z.infer<typeof schemaPayload>;
 
 export const resolveVideoAddThumbnailEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
-    thumbnail: ({ payload }) =>
+    thumbnailUrl: ({ payload }) =>
       prisma.videoThumbnail
         .findUniqueOrThrow({ where: { id: schemaPayload.parse(payload).id } })
         .then((v) => v.imageUrl),

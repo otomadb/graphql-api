@@ -6,5 +6,5 @@ type VideoRemoveThumbnailEvent implements VideoEvent {
   video: Video!
 
   "削除されたサムネイル"
-  thumbnail: String!
+  thumbnailUrl: String!
 }

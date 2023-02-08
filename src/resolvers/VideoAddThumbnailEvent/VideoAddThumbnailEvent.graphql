@@ -6,5 +6,5 @@ type VideoAddThumbnailEvent implements VideoEvent {
   video: Video!
 
   "追加されたサムネイル"
-  thumbnail: String!
+  thumbnailUrl: String!
 }
