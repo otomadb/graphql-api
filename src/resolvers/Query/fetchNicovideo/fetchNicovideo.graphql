@@ -1,0 +1,30 @@
+type Query {
+  "ニコニコ動画から動画情報を取得する"
+  fetchNicovideo(input: FetchNicovideoInput!): FetchNicovideoPayload!
+}
+
+input FetchNicovideoInput {
+  "ニコニコ動画の動画ID（sm2057168など）"
+  sourceId: String!
+}
+
+type FetchNicovideoPayload {
+  source: NicovideoOriginalSource
+}
+
+type NicovideoOriginalSource {
+  sourceId: String!
+
+  title: String!
+  thumbnailUrl: String!
+  tags: [String!]!
+
+  countViews: Int!
+  countComments: Int!
+  countMylists: Int!
+  countLikes: Int!
+
+  "動画の長さ"
+  duration: Int!
+  registeredAt: DateTime!
+}
