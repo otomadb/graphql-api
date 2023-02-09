@@ -143,7 +143,7 @@ export const register = async (
           userId: authUserId,
           videoId,
           type: "ADD_TAG" as const,
-          payload: { tagId } satisfies VideoAddTagEventPayload,
+          payload: { tagId, isUpdate: false } satisfies VideoAddTagEventPayload,
         })),
         ...dataSemitags.map(({ id }) => ({
           userId: authUserId,

@@ -7,6 +7,7 @@ import { resolveVideoEventCommonProps } from "../VideoEvent/index.js";
 
 const schemaPayload = z.object({
   tagId: z.string(),
+  isUpdate: z.boolean(),
 });
 export type VideoAddTagEventPayload = z.infer<typeof schemaPayload>;
 

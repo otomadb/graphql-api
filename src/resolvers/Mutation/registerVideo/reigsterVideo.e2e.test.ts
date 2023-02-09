@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import { ResolverDeps } from "../../index.js";
+import { VideoAddTagEventPayload } from "../../VideoAddTagEvent/index.js";
 import { register } from "./registerVideo.js";
 
 describe("Mutation.registerVideo", () => {
@@ -138,7 +139,7 @@ describe("Mutation.registerVideo", () => {
         videoId: actual.id,
         userId: "u1",
         type: "ADD_TAG",
-        payload: { tagId: "t1" },
+        payload: { tagId: "t1", isUpdate: false } satisfies VideoAddTagEventPayload,
       })
     );
     expect(actualEvents).toContainEqual(
@@ -147,7 +148,7 @@ describe("Mutation.registerVideo", () => {
         videoId: actual.id,
         userId: "u1",
         type: "ADD_TAG",
-        payload: { tagId: "t2" },
+        payload: { tagId: "t2", isUpdate: false } satisfies VideoAddTagEventPayload,
       })
     );
 

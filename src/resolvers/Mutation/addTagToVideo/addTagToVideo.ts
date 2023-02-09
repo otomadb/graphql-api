@@ -1,7 +1,9 @@
-import { UserRole } from "@prisma/client";
+import { Tag, UserRole, Video, VideoTag } from "@prisma/client";
+import { GraphQLError } from "graphql";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 import { ulid } from "ulid";
 
+import { Result } from "../../../utils/Result.js";
 import { ensureContextUser } from "../../ensureContextUser.js";
 import { MutationResolvers } from "../../graphql.js";
 import { parseGqlID } from "../../id.js";
@@ -33,7 +35,10 @@ export const addTagToVideoInNeo4j = async (
 export const add = async (
   prisma: ResolverDeps["prisma"],
   { authUserId, videoId, tagId }: { authUserId: string; videoId: string; tagId: string }
-) => {
+): Promise<Result<"EXISTS_TAGGING", VideoTag & { video: Video; tag: Tag }>> => {
+  const extTagging = await prisma.videoTag.findUnique({ where: { videoId_tagId: { tagId, videoId } } });
+  if (extTagging && !extTagging.isRemoved) return { status: "error", error: "EXISTS_TAGGING" };
+
   const taggingId = ulid();
 
   const [tagging] = await prisma.$transaction([
@@ -48,12 +53,12 @@ export const add = async (
         userId: authUserId,
         videoId,
         type: "ADD_TAG",
-        payload: { tagId } satisfies VideoAddTagEventPayload,
+        payload: { tagId, isUpdate: !!extTagging } satisfies VideoAddTagEventPayload,
       },
     }),
   ]);
 
-  return tagging;
+  return { status: "ok", data: tagging };
 };
 
 export const addTagToVideo = ({ neo4j, prisma }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
@@ -64,8 +69,15 @@ export const addTagToVideo = ({ neo4j, prisma }: Pick<ResolverDeps, "prisma" | "
       const videoId = parseGqlID("Video", videoGqlId);
       const tagId = parseGqlID("Tag", tagGqlId);
 
-      const tagging = await add(prisma, { authUserId, videoId, tagId });
+      const result = await add(prisma, { authUserId, videoId, tagId });
+      if (result.status === "error") {
+        switch (result.error) {
+          case "EXISTS_TAGGING":
+            throw new GraphQLError("Tagging is already exists");
+        }
+      }
 
+      const tagging = result.data;
       await addTagToVideoInNeo4j(neo4j, {
         tagId: tagging.tagId,
         videoId: tagging.videoId,
