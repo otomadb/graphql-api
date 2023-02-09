@@ -50,6 +50,7 @@ describe("Mutation.addTagToVideo", () => {
         id: expect.any(String),
         videoId: "v1",
         tagId: "t1",
+        isRemoved: false,
       })
     );
 

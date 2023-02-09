@@ -8,6 +8,7 @@ import { parseGqlID } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 import { VideoModel } from "../../Video/model.js";
+import { VideoAddTagEventPayload } from "../../VideoAddTagEvent/index.js";
 
 export const addTagToVideoInNeo4j = async (
   neo4jDriver: Neo4jDriver,
@@ -36,8 +37,10 @@ export const add = async (
   const taggingId = ulid();
 
   const [tagging] = await prisma.$transaction([
-    prisma.videoTag.create({
-      data: { id: taggingId, videoId, tagId },
+    prisma.videoTag.upsert({
+      where: { videoId_tagId: { videoId, tagId } },
+      create: { id: taggingId, videoId, tagId, isRemoved: false },
+      update: { isRemoved: false },
       include: { video: true, tag: true },
     }),
     prisma.videoEvent.create({
@@ -45,7 +48,7 @@ export const add = async (
         userId: authUserId,
         videoId,
         type: "ADD_TAG",
-        payload: { id: taggingId },
+        payload: { tagId } satisfies VideoAddTagEventPayload,
       },
     }),
   ]);
