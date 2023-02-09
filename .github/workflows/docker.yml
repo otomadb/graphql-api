@@ -26,14 +26,17 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/github-script@v6.4.0
-        id: image_tag
+      - id: image_tag
+        name: Determine image tag
+        uses: actions/github-script@v6.4.0
         with:
           result-encoding: string
           script: |
             if (context.eventName === "push" && context.ref.startsWith("refs/tags/v"))
               return context.ref.substring(11)
             else return context.sha
+        # pull_requestではcontext.shaすなわちGITHUB_SHAの値には若干違う値が入るが支障はないので無視する．
+        # ref: https://sue445.hatenablog.com/entry/2021/01/07/004835
 
       - uses: docker/build-push-action@v4
         with:
@@ -59,8 +62,9 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/github-script@v6.4.0
-        id: image_tag
+      - id: image_tag
+        name: Determine image tag
+        uses: actions/github-script@v6.4.0
         with:
           result-encoding: string
           script: |
