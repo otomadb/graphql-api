@@ -138,6 +138,7 @@ describe("Mutation.removeTagFromVideo", () => {
         id: expect.any(String),
         videoId: "v1",
         tagId: "t1",
+        isRemoved: true,
       }),
     });
 

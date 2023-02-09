@@ -39,8 +39,9 @@ export const remove = async (
     return { status: "error", error: "NO_TAGGING" };
 
   const [tagging] = await prisma.$transaction([
-    prisma.videoTag.delete({
+    prisma.videoTag.update({
       where: { videoId_tagId: { tagId, videoId } },
+      data: { isRemoved: true },
       include: { tag: true, video: true },
     }),
     prisma.videoEvent.create({
