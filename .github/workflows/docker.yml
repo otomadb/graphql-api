@@ -4,8 +4,11 @@ on:
   push:
     branches:
       - main
+    tags:
+      - v*
   pull_request:
   workflow_dispatch:
+
 
 jobs:
   api:
@@ -29,15 +32,16 @@ jobs:
         with:
           result-encoding: string
           script: |
-            if (context.eventName === "push") return process.env.GITHUB_REF_NAME
-            else return `build-${process.env.GITHUB_RUN_NUMBER}`
+            if (context.eventName === "push" && context.ref.startsWith("refs/tags/v"))
+              return context.ref.substring(11)
+            else return context.sha
 
       - uses: docker/build-push-action@v4
         with:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           context: .
-          push: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+          push: ${{ github.event_name == 'push' }}
           tags: ghcr.io/${{ github.repository_owner }}/api:${{ steps.image_tag.outputs.result }}
 
   migration:
@@ -61,8 +65,9 @@ jobs:
         with:
           result-encoding: string
           script: |
-            if (context.eventName === "push") return process.env.GITHUB_REF_NAME
-            else return `build-${process.env.GITHUB_RUN_NUMBER}`
+            if (context.eventName === "push" && context.ref.startsWith("refs/tags/v"))
+              return context.ref.substring(11)
+            else return context.sha
 
       - uses: docker/build-push-action@v4
         with:
@@ -70,5 +75,5 @@ jobs:
           cache-to: type=gha,mode=max
           context: .
           file: Dockerfile.migration
-          push: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+          push: ${{ github.event_name == 'push' }}
           tags: ghcr.io/${{ github.repository_owner }}/api-postgres-migration:${{ steps.image_tag.outputs.result }}
