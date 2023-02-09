@@ -138,7 +138,7 @@ describe("Mutation.registerVideo", () => {
         videoId: actual.id,
         userId: "u1",
         type: "ADD_TAG",
-        payload: { id: video.tags[0].id },
+        payload: { tagId: "t1" },
       })
     );
     expect(actualEvents).toContainEqual(
@@ -147,7 +147,7 @@ describe("Mutation.registerVideo", () => {
         videoId: actual.id,
         userId: "u1",
         type: "ADD_TAG",
-        payload: { id: video.tags[1].id },
+        payload: { tagId: "t2" },
       })
     );
 

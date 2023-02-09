@@ -72,7 +72,7 @@ describe("Mutation.addTagToVideo", () => {
         videoId: video.id,
         userId: "u1",
         type: "ADD_TAG",
-        payload: { id: actual.id },
+        payload: { tagId: "t1" },
       })
     );
   });
