@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
 
 import { Resolvers, VideoResolvers } from "../graphql.js";
-import { buildGqlId } from "../id.js";
+import { buildGqlId, parseGqlID } from "../id.js";
 import { ResolverDeps } from "../index.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
 import { SemitagModel } from "../Semitag/model.js";
@@ -41,8 +41,10 @@ export const resolveVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "n
     },
 
     tags: resolveTags({ prisma }),
-    hasTag: async ({ id: videoId }, { id: tagId }) =>
-      prisma.videoTag.findFirst({ where: { videoId, tagId } }).then((v) => !!v),
+    hasTag: async ({ id: videoId }, { id: tagGqlId }) =>
+      prisma.videoTag
+        .findUnique({ where: { videoId_tagId: { videoId, tagId: parseGqlID("Tag", tagGqlId) } } })
+        .then((v) => !!v && !v.isRemoved),
 
     history: resolveHistory,
 

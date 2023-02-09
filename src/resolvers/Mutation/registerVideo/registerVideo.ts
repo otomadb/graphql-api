@@ -139,11 +139,11 @@ export const register = async (
           type: "SET_PRIMARY_THUMBNAIL",
           payload: { id: dataThumbnails[0].id } satisfies VideoSetPrimaryThumbnailEventPayload,
         },
-        ...dataTags.map(({ id }) => ({
+        ...dataTags.map(({ tagId }) => ({
           userId: authUserId,
           videoId,
           type: "ADD_TAG" as const,
-          payload: { id } satisfies VideoAddTagEventPayload,
+          payload: { tagId, isUpdate: false } satisfies VideoAddTagEventPayload,
         })),
         ...dataSemitags.map(({ id }) => ({
           userId: authUserId,

@@ -105,6 +105,39 @@ describe("Mutation.removeTagFromVideo", () => {
     });
   });
 
+  test("動画へのタグ付けはすでに存在するが，削除されている", async () => {
+    await prisma.$transaction([
+      prisma.user.create({
+        data: {
+          id: "u1",
+          name: "user1",
+          displayName: "User1",
+          email: "user1@example.com",
+          password: "password",
+        },
+      }),
+      prisma.video.create({
+        data: { id: "v1" },
+      }),
+      prisma.tag.create({
+        data: { id: "t1", meaningless: false },
+      }),
+      prisma.videoTag.create({
+        data: { videoId: "v1", tagId: "t1", isRemoved: true },
+      }),
+    ]);
+
+    const actual = await remove(prisma, {
+      authUserId: "u1",
+      videoId: "v1",
+      tagId: "t1",
+    });
+    expect(actual).toStrictEqual({
+      status: "error",
+      error: "REMOVED_TAGGING",
+    });
+  });
+
   test("タグを動画から削除", async () => {
     await prisma.$transaction([
       prisma.user.create({
@@ -123,7 +156,7 @@ describe("Mutation.removeTagFromVideo", () => {
         data: { id: "v1" },
       }),
       prisma.videoTag.create({
-        data: { videoId: "v1", tagId: "t1" },
+        data: { videoId: "v1", tagId: "t1", isRemoved: false },
       }),
     ]);
 
@@ -138,6 +171,7 @@ describe("Mutation.removeTagFromVideo", () => {
         id: expect.any(String),
         videoId: "v1",
         tagId: "t1",
+        isRemoved: true,
       }),
     });
 

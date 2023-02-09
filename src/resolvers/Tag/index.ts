@@ -65,15 +65,8 @@ export const resolveTag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
 
     history: resolveHistory,
 
-    canTagTo: async ({ id: tagId }, { videoId: videoGqlId }) => {
-      const videoId = parseGqlID("Video", videoGqlId);
-      return prisma.videoTag
-        .findFirst({
-          where: {
-            tag: { id: tagId },
-            video: { id: videoId },
-          },
-        })
-        .then((v) => !v);
-    },
+    canTagTo: async ({ id: tagId }, { videoId: videoGqlId }) =>
+      prisma.videoTag
+        .findUnique({ where: { videoId_tagId: { tagId, videoId: parseGqlID("Video", videoGqlId) } } })
+        .then((v) => !v || v.isRemoved),
   } satisfies Resolvers["Tag"]);

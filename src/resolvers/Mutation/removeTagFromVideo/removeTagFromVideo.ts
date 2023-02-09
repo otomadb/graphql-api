@@ -31,16 +31,19 @@ export const removeInNeo4j = async (driver: Neo4jDriver, { videoId, tagId }: { v
 export const remove = async (
   prisma: ResolverDeps["prisma"],
   { authUserId, videoId, tagId }: { authUserId: string; videoId: string; tagId: string }
-): Promise<Result<"NO_VIDEO" | "NO_TAG" | "NO_TAGGING", VideoTag & { video: Video; tag: Tag }>> => {
+): Promise<Result<"NO_VIDEO" | "NO_TAG" | "NO_TAGGING" | "REMOVED_TAGGING", VideoTag & { video: Video; tag: Tag }>> => {
   if ((await prisma.video.findUnique({ where: { id: videoId } })) === null)
     return { status: "error", error: "NO_VIDEO" };
   if ((await prisma.tag.findUnique({ where: { id: tagId } })) === null) return { status: "error", error: "NO_TAG" };
-  if ((await prisma.videoTag.findUnique({ where: { videoId_tagId: { tagId, videoId } } })) === null)
-    return { status: "error", error: "NO_TAGGING" };
+
+  const extTagging = await prisma.videoTag.findUnique({ where: { videoId_tagId: { tagId, videoId } } });
+  if (extTagging === null) return { status: "error", error: "NO_TAGGING" };
+  if (extTagging.isRemoved) return { status: "error", error: "REMOVED_TAGGING" };
 
   const [tagging] = await prisma.$transaction([
-    prisma.videoTag.delete({
+    prisma.videoTag.update({
       where: { videoId_tagId: { tagId, videoId } },
+      data: { isRemoved: true },
       include: { tag: true, video: true },
     }),
     prisma.videoEvent.create({
@@ -72,6 +75,8 @@ export const removeTagFromVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma
             throw new GraphQLNotExistsInDBError("Video", videoId);
           case "NO_TAGGING":
             throw new GraphQLError("Tagging does not exist");
+          case "REMOVED_TAGGING":
+            throw new GraphQLError("Tagging is removed already");
         }
       }
 

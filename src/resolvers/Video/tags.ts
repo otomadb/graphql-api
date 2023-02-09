@@ -7,7 +7,7 @@ export const resolveTags = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (({ id: videoId }, { input }) =>
     prisma.videoTag
       .findMany({
-        where: { videoId },
+        where: { videoId, isRemoved: false },
         take: input.limit?.valueOf(),
         skip: input.skip.valueOf(),
         include: { tag: true },

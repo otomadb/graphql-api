@@ -257,6 +257,8 @@ model VideoTag {
   videoId String
   video   Video  @relation(fields: [videoId], references: [id])
 
+  isRemoved Boolean @default(false) @map("removed")
+
   @@unique([videoId, tagId])
 }
 
