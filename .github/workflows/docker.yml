@@ -33,7 +33,10 @@ jobs:
           script: |
             if (context.eventName === "push" && context.ref.startsWith("refs/tags/v"))
               return context.ref.substring(11)
-            else return context.sha
+            else if (context.eventName === "push" && context.ref === "refs/heads/main")
+              return "latest"
+            else
+              return context.sha
         # pull_requestではcontext.shaすなわちGITHUB_SHAの値には若干違う値が入るが支障はないので無視する．
         # ref: https://sue445.hatenablog.com/entry/2021/01/07/004835
 
@@ -42,6 +45,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           context: .
+          file: Dockerfile
           push: ${{ github.event_name == 'push' }}
           tags: ghcr.io/${{ github.repository_owner }}/api:${{ steps.image_tag.outputs.result }}
 
@@ -69,7 +73,10 @@ jobs:
           script: |
             if (context.eventName === "push" && context.ref.startsWith("refs/tags/v"))
               return context.ref.substring(11)
-            else return context.sha
+            else if (context.eventName === "push" && context.ref === "refs/heads/main")
+              return "latest"
+            else
+              return context.sha
 
       - uses: docker/build-push-action@v4
         with:
