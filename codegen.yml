@@ -20,6 +20,7 @@ generates:
         MylistRegistration: ./MylistRegistration/model.js#MylistRegistrationModel
         MylistTagInclusion: ./MylistTagInclusion/model.js#MylistTagInclusionModel
         MylistVideoRecommendation: ./MylistVideoRecommendation/model.js#MylistVideoRecommendationModel
+        NicovideoOriginalSourceTag: ./NicovideoOriginalSourceTag/model.js#NicovideoOriginalSourceTagModel
         NicovideoVideoSource: ./NicovideoVideoSource/model.js#NicovideoVideoSourceModel
         Semitag: ./Semitag/model.js#SemitagModel
         Tag: ./Tag/model.js#TagModel
