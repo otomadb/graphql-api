@@ -2,7 +2,7 @@ import { usePrometheus } from "@envelop/prometheus";
 import cookie, { FastifyCookieOptions } from "@fastify/cookie";
 import cors, { FastifyCorsOptions } from "@fastify/cors";
 import { PrismaClient } from "@prisma/client";
-import { fastify, FastifyReply, FastifyRequest } from "fastify";
+import { fastify, FastifyRequest } from "fastify";
 import { createSchema, createYoga } from "graphql-yoga";
 import neo4j from "neo4j-driver";
 import prometheusClient from "prom-client";
@@ -12,7 +12,7 @@ import { handlerSignin } from "./auth/signin.js";
 import { handlerSignout } from "./auth/signout.js";
 import { handlerSignup } from "./auth/signup.js";
 import { handlerRemoteNicovideo } from "./remote/nicovideo.js";
-import { Context } from "./resolvers/context.js";
+import { ServerContext, UserContext } from "./resolvers/context.js";
 import { typeDefs } from "./resolvers/graphql.js";
 import { resolvers as makeResolvers } from "./resolvers/index.js";
 
@@ -89,9 +89,9 @@ app
   });
 
 // graphql
-const yoga = createYoga<{ req: FastifyRequest; reply: FastifyReply }, Context>({
+const yoga = createYoga<ServerContext, UserContext>({
   graphiql: process.env.ENABLE_GRAPHIQL === "true",
-  schema: createSchema<{ req: FastifyRequest; reply: FastifyReply } & Context>({
+  schema: createSchema({
     typeDefs,
     resolvers: makeResolvers({ neo4j: neo4jDriver, prisma: prismaClient }),
   }),
@@ -99,16 +99,15 @@ const yoga = createYoga<{ req: FastifyRequest; reply: FastifyReply }, Context>({
     const cookie = req.cookies["otmd-session"];
     if (cookie) {
       const session = await findSessionFromCookie(prismaClient, cookie);
-      if (session) return { userId: session.userId } satisfies Context;
+      if (session) return { userId: session.userId } satisfies UserContext;
     }
 
     const authToken = req.headers["authorization"]?.split(" ").at(1);
     if (authToken) {
       const session = await findSessionFromAuthzToken(prismaClient, authToken);
-      if (session) return { userId: session.id } satisfies Context;
+      if (session) return { userId: session.id } satisfies UserContext;
     }
-
-    return { userId: null } satisfies Context;
+    return { userId: null } satisfies UserContext;
   },
   logging: {
     debug: (...args) => args.forEach((arg) => app.log.debug(arg)),

@@ -2,6 +2,7 @@ import { describe } from "@jest/globals";
 import { Mylist, MylistShareRange, PrismaClient } from "@prisma/client";
 import { DeepMockProxy, mockDeep } from "jest-mock-extended";
 
+import { Context } from "../context.js";
 import { resolveUserLikes } from "./likes.js";
 import { UserModel } from "./model.js";
 
@@ -18,7 +19,7 @@ describe("resolver User.likes", () => {
         id: "1",
       } as UserModel,
       {},
-      { userId: null }
+      { userId: null } as Context
     );
 
     expect(actual).toStrictEqual(null);
@@ -31,13 +32,9 @@ describe("resolver User.likes", () => {
       holderId: "1",
     } as Mylist);
 
-    const actual = await resolveUserLikes({ prisma: prismaMock })(
-      { id: "1" } as UserModel,
-      {},
-      {
-        userId: "2",
-      }
-    );
+    const actual = await resolveUserLikes({ prisma: prismaMock })({ id: "1" } as UserModel, {}, {
+      userId: "2",
+    } as Context);
 
     expect(actual).toStrictEqual(null);
   });
@@ -49,13 +46,9 @@ describe("resolver User.likes", () => {
       holderId: "1",
     } as Mylist);
 
-    const actual = await resolveUserLikes({ prisma: prismaMock })(
-      { id: "1" } as UserModel,
-      {},
-      {
-        userId: "2",
-      }
-    );
+    const actual = await resolveUserLikes({ prisma: prismaMock })({ id: "1" } as UserModel, {}, {
+      userId: "2",
+    } as Context);
 
     expect(actual).toStrictEqual(null);
   });
@@ -67,13 +60,9 @@ describe("resolver User.likes", () => {
       holderId: "1",
     } as Mylist);
 
-    const actual = await resolveUserLikes({ prisma: prismaMock })(
-      { id: "1" } as UserModel,
-      {},
-      {
-        userId: "2",
-      }
-    );
+    const actual = await resolveUserLikes({ prisma: prismaMock })({ id: "1" } as UserModel, {}, {
+      userId: "2",
+    } as Context);
 
     expect(actual).toStrictEqual(null);
   });

@@ -1,9 +1,8 @@
 import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
 
-import { ContextUserId } from "../../context.js";
 import { ensureContextUser } from "../../ensureContextUser.js";
-import { MutationLikeVideoArgs, MutationResolvers } from "../../graphql.js";
+import { MutationResolvers } from "../../graphql.js";
 import { parseGqlID } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
@@ -28,13 +27,8 @@ export const addMylistRegistrationInNeo4j = async (
   }
 };
 
-export const likeVideoScaffold =
-  ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  async (
-    _parent: unknown,
-    { input: { videoId: videoGqlId } }: MutationLikeVideoArgs,
-    { userId }: { userId: ContextUserId }
-  ) => {
+export const likeVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
+  ensureContextUser(prisma, UserRole.NORMAL, async (_parent, { input: { videoId: videoGqlId } }, { userId }) => {
     const videoId = parseGqlID("Video", videoGqlId);
 
     const likelist = await prisma.mylist
@@ -48,7 +42,4 @@ export const likeVideoScaffold =
     await addMylistRegistrationInNeo4j(neo4j, { videoId: registration.videoId, mylistId: registration.mylistId });
 
     return { registration: new MylistRegistrationModel(registration) };
-  };
-
-export const likeVideo = (inject: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  ensureContextUser(inject.prisma, UserRole.NORMAL, likeVideoScaffold(inject)) satisfies MutationResolvers["likeVideo"];
+  }) satisfies MutationResolvers["likeVideo"];

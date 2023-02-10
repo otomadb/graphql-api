@@ -1,5 +1,13 @@
 import { User } from "@prisma/client";
+import { FastifyReply, FastifyRequest } from "fastify";
 
-export type ContextUserId = User["id"];
+export type ServerContext = {
+  req: FastifyRequest;
+  reply: FastifyReply;
+};
 
-export type Context = { userId: ContextUserId | null };
+export type UserContext = {
+  userId: User["id"] | null;
+};
+
+export type Context = UserContext & ServerContext;
