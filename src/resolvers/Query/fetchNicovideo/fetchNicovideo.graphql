@@ -17,7 +17,7 @@ type NicovideoOriginalSource {
 
   title: String!
   thumbnailUrl: String!
-  tags: [String!]!
+  tags: [NicovideoOriginalSourceTag!]!
 
   countViews: Int!
   countComments: Int!

@@ -12,6 +12,7 @@ import { resolveMylistGroupVideoAggregation } from "./MylistGroupVideoAggregatio
 import { resolveMylistRegistration } from "./MylistRegistration/index.js";
 import { resolveMylistTagInclusion } from "./MylistTagInclusion/index.js";
 import { resolveMylistVideoRecommendation } from "./MylistVideoRecommendation/index.js";
+import { resolveNicovideoOriginalSourceTag } from "./NicovideoOriginalSourceTag/index.js";
 import { resolveNicovideoVideoSource } from "./NicovideoVideoSource/index.js";
 import { resolveQuery } from "./Query/index.js";
 import { resolveSemitag } from "./Semitag/index.js";
@@ -46,6 +47,7 @@ export const resolvers = (deps: ResolverDeps) =>
     MylistRegistration: resolveMylistRegistration(deps),
     MylistTagInclusion: resolveMylistTagInclusion(deps),
     MylistVideoRecommendation: resolveMylistVideoRecommendation(deps),
+    NicovideoOriginalSourceTag: resolveNicovideoOriginalSourceTag(deps),
     NicovideoVideoSource: resolveNicovideoVideoSource(deps),
     Query: resolveQuery(deps),
     Semitag: resolveSemitag(deps),

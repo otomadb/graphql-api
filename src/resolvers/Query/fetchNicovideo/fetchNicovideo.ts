@@ -2,7 +2,8 @@ import { GraphQLError } from "graphql";
 import { z } from "zod";
 
 import { isValidNicovideoSourceId } from "../../../utils/isValidNicovideoSourceId.js";
-import { NicovideoOriginalSource, QueryResolvers } from "../../graphql.js";
+import { QueryResolvers } from "../../graphql.js";
+import { NicovideoOriginalSourceTagModel } from "../../NicovideoOriginalSourceTag/model.js";
 
 const apiResponse = z.object({
   data: z.object({
@@ -71,10 +72,10 @@ export const fetchNicovideo = () =>
         countMylists: video.count.mylist,
         countComments: video.count.comment,
 
-        tags: tag.items.map(({ name }) => name),
+        tags: tag.items.map(({ name }) => new NicovideoOriginalSourceTagModel({ name })),
 
         registeredAt: video.registeredAt,
         duration: video.duration,
-      } satisfies NicovideoOriginalSource,
+      },
     };
   }) satisfies QueryResolvers["fetchNicovideo"];

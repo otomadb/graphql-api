@@ -1,0 +1,18 @@
+type NicovideoOriginalSourceTag {
+  name: String!
+
+  searchTags(input: NicovideoOriginalSourceTagSearchTagsInput!): NicovideoOriginalSourceTagSearchTagsPayload!
+}
+
+input NicovideoOriginalSourceTagSearchTagsInput {
+  limit: Int! = 3
+  skip: Int! = 0
+}
+
+type NicovideoOriginalSourceTagSearchTagsPayload {
+  items: [NicovideoOriginalSourceTagSearchTagsItem!]!
+}
+
+type NicovideoOriginalSourceTagSearchTagsItem {
+  tag: Tag!
+}
