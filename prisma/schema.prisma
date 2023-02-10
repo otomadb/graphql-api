@@ -119,6 +119,7 @@ model Session {
   secret String @db.VarChar(64)
 
   expiredAt DateTime
+  isExpired Boolean  @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())

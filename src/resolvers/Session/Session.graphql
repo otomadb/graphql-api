@@ -1,0 +1,10 @@
+type Session {
+  id: ID!
+
+  createdAt: DateTime!
+
+  expired: Boolean!
+  expiredAt: DateTime!
+
+  user: User!
+}
