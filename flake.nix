@@ -42,7 +42,6 @@
             openssl
             treefmt
           ];
-          devshell.startup.npm_install.text = "npm install";
           env = [
             {
               name = "PATH";
