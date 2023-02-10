@@ -42,7 +42,7 @@ describe("Mutation.signup()", () => {
 
     expect(actual).toStrictEqual({
       status: "error",
-      error: { message: "USER_NAME_ALREADY_REGISTERED" },
+      error: "EXISTS_USERNAME",
     });
   });
 
@@ -56,13 +56,11 @@ describe("Mutation.signup()", () => {
 
     expect(actual).toStrictEqual({
       status: "ok",
-      data: {
-        user: expect.objectContaining({
-          id: expect.any(String),
-          name: "testuser",
-          role: UserRole.ADMINISTRATOR,
-        }),
-      },
+      data: expect.objectContaining({
+        id: expect.any(String),
+        name: "testuser",
+        role: UserRole.ADMINISTRATOR,
+      }),
     });
   });
 
@@ -87,13 +85,11 @@ describe("Mutation.signup()", () => {
 
     expect(actual).toStrictEqual({
       status: "ok",
-      data: {
-        user: expect.objectContaining({
-          id: expect.any(String),
-          name: "testuser",
-          role: UserRole.NORMAL,
-        }),
-      },
+      data: expect.objectContaining({
+        id: expect.any(String),
+        name: "testuser",
+        role: UserRole.NORMAL,
+      }),
     });
   });
 });
