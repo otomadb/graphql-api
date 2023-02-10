@@ -1,0 +1,24 @@
+type Mutation {
+  signout: SignoutPayload!
+}
+
+union SignoutPayload = SignoutSuccessedPayload | SignoutFailedPayload
+
+type SignoutSuccessedPayload {
+  session: Session!
+}
+
+type SignoutFailedPayload {
+  message: SignoutFailedMessage!
+}
+
+enum SignoutFailedMessage {
+  "セッションIDが取得できない"
+  NO_SESSION_ID
+
+  "セッションが存在しない"
+  SESSION_NOT_FOUND
+
+  "原因不明のエラー"
+  UNKNOWN
+}
