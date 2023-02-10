@@ -38,7 +38,7 @@
             alejandra
             dprint
             hadolint
-            nodejs
+            nodejs-19_x
             openssl
             treefmt
           ];

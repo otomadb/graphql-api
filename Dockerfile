@@ -1,5 +1,5 @@
 # Builder
-FROM node:18-slim AS builder
+FROM node:19-slim AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json ./
@@ -13,7 +13,7 @@ COPY ./codegen-plugins ./codegen-plugins
 RUN npm run build
 
 # Runner
-FROM node:18-slim AS runner
+FROM node:19-slim AS runner
 WORKDIR /app
 
 ## install tini
