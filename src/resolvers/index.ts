@@ -16,6 +16,7 @@ import { resolveNicovideoOriginalSourceTag } from "./NicovideoOriginalSourceTag/
 import { resolveNicovideoVideoSource } from "./NicovideoVideoSource/index.js";
 import { resolveQuery } from "./Query/index.js";
 import { resolveSemitag } from "./Semitag/index.js";
+import { resolveSession } from "./Session/index.js";
 import { resolveTag } from "./Tag/index.js";
 import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
@@ -51,6 +52,7 @@ export const resolvers = (deps: ResolverDeps) =>
     NicovideoVideoSource: resolveNicovideoVideoSource(deps),
     Query: resolveQuery(deps),
     Semitag: resolveSemitag(deps),
+    Session: resolveSession(deps),
     Tag: resolveTag(deps),
     User: resolveUser(deps),
     Video: resolveVideo(deps),

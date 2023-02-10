@@ -23,6 +23,7 @@ generates:
         NicovideoOriginalSourceTag: ./NicovideoOriginalSourceTag/model.js#NicovideoOriginalSourceTagModel
         NicovideoVideoSource: ./NicovideoVideoSource/model.js#NicovideoVideoSourceModel
         Semitag: ./Semitag/model.js#SemitagModel
+        Session: ./Session/model.js#SessionModel
         Tag: ./Tag/model.js#TagModel
         User: ./User/model.js#UserModel
         Video: ./Video/model.js#VideoModel
