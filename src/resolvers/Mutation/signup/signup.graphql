@@ -1,0 +1,31 @@
+type Mutation {
+  signup(input: SignupInput!): SignupPayload!
+}
+
+input SignupInput {
+  name: String!
+  displayName: String!
+  email: String!
+  password: String!
+}
+
+union SignupPayload = SignupSuccessedPayload | SignupFailedPayload
+
+type SignupSuccessedPayload {
+  user: User!
+}
+
+type SignupFailedPayload {
+  message: SignupFailedMessage!
+}
+
+enum SignupFailedMessage {
+  "そのユーザーネームはすでに存在する"
+  EXISTS_USERNAME
+
+  "そのメールアドレスはすでに存在する"
+  EXISTS_EMAIL
+
+  "原因不明のエラー"
+  UNKNOWN
+}
