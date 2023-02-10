@@ -1,0 +1,29 @@
+type Mutation {
+  signin(input: SigninInput!): SigninPayload!
+}
+
+input SigninInput {
+  username: String!
+  password: String!
+}
+
+union SigninPayload = SigninSuccessedPayload | SigninFailedPayload
+
+type SigninSuccessedPayload {
+  user: User!
+}
+
+type SigninFailedPayload {
+  message: SigninFailedMessage!
+}
+
+enum SigninFailedMessage {
+  "ユーザーは存在しない"
+  USER_NOT_FOUND
+
+  "パスワードが間違っている"
+  WRONG_PASSWORD
+
+  "原因不明のエラー"
+  UNKNOWN
+}

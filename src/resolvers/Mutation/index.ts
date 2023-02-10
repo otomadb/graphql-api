@@ -14,6 +14,7 @@ import { registerVideo } from "./registerVideo/registerVideo.js";
 import { removeTagFromVideo } from "./removeTagFromVideo/removeTagFromVideo.js";
 import { removeVideoFromMylist } from "./removeVideoFromMylist/removeVideoFromMylist.js";
 import { resolveSemitag } from "./resolveSemitag/resolveSemitag.js";
+import { signin } from "./signin/signin.js";
 import { undoLikeVideo } from "./undoLikeVideo/undoLikeVideo.js";
 
 export const resolveMutation = (deps: Pick<ResolverDeps, "prisma" | "neo4j">) =>
@@ -30,5 +31,6 @@ export const resolveMutation = (deps: Pick<ResolverDeps, "prisma" | "neo4j">) =>
     removeTagFromVideo: removeTagFromVideo(deps),
     removeVideoFromMylist: removeVideoFromMylist(deps),
     resovleSemitag: resolveSemitag(deps),
+    signin: signin(deps),
     undoLikeVideo: undoLikeVideo(deps),
   } satisfies Resolvers["Mutation"]);
