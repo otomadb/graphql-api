@@ -1,11 +1,11 @@
 import { describe } from "@jest/globals";
 import { PrismaClient, UserRole } from "@prisma/client";
 
-import { ResolverDeps } from "../resolvers/index.js";
-import { cleanPrisma } from "../test/cleanPrisma.js";
-import { registerUser } from "./signup.js";
+import { cleanPrisma } from "../../../test/cleanPrisma.js";
+import { ResolverDeps } from "../../index.js";
+import { registerNewUser } from "./signup.js";
 
-describe("registerUser()", () => {
+describe("Mutation.signup()", () => {
   let prisma: ResolverDeps["prisma"];
 
   beforeAll(async () => {
@@ -33,7 +33,7 @@ describe("registerUser()", () => {
       },
     });
 
-    const actual = await registerUser(prisma, {
+    const actual = await registerNewUser(prisma, {
       name: "testuser",
       displayName: "Test User",
       email: "testuser@example.net",
@@ -47,7 +47,7 @@ describe("registerUser()", () => {
   });
 
   test("管理者が存在しないなら，管理者ユーザとして作成される", async () => {
-    const actual = await registerUser(prisma, {
+    const actual = await registerNewUser(prisma, {
       name: "testuser",
       displayName: "Test User",
       email: "testuser@example.net",
@@ -78,7 +78,7 @@ describe("registerUser()", () => {
       },
     });
 
-    const actual = await registerUser(prisma, {
+    const actual = await registerNewUser(prisma, {
       name: "testuser",
       displayName: "Test User",
       email: "testuser@example.net",
