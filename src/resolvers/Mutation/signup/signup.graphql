@@ -23,6 +23,9 @@ enum SignupFailedMessage {
   "そのユーザーネームはすでに存在する"
   EXISTS_USERNAME
 
+  "そのメールアドレスはすでに存在する"
+  EXISTS_EMAIL
+
   "原因不明のエラー"
   UNKNOWN
 }

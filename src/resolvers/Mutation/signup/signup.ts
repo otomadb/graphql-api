@@ -10,11 +10,16 @@ import { UserModel } from "../../User/model.js";
 export const registerNewUser = async (
   prisma: ResolverDeps["prisma"],
   { name, displayName, email, password }: { name: string; displayName: string; email: string; password: string }
-): Promise<Result<"EXISTS_USERNAME", User>> => {
+): Promise<Result<"EXISTS_USERNAME" | "EXISTS_EMAIL", User>> => {
   if (await prisma.user.findUnique({ where: { name } }))
     return {
       status: "error",
       error: "EXISTS_USERNAME",
+    };
+  if (await prisma.user.findUnique({ where: { email } }))
+    return {
+      status: "error",
+      error: "EXISTS_EMAIL",
     };
 
   const isExistAdmin = !!(await prisma.user.findFirst({ where: { role: UserRole.ADMINISTRATOR } }));
@@ -58,6 +63,8 @@ export const signup = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       switch (result.error) {
         case "EXISTS_USERNAME":
           return { __typename: "SignupFailedPayload", message: SignupFailedMessage.ExistsUsername };
+        case "EXISTS_EMAIL":
+          return { __typename: "SignupFailedPayload", message: SignupFailedMessage.ExistsEmail };
       }
     }
 
