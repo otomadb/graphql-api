@@ -1,9 +1,10 @@
+import { IncomingMessage, ServerResponse } from "node:http";
+
 import { User } from "@prisma/client";
-import { FastifyReply, FastifyRequest } from "fastify";
 
 export type ServerContext = {
-  req: FastifyRequest;
-  reply: FastifyReply;
+  req: IncomingMessage;
+  res: ServerResponse;
 };
 
 export type UserContext = {

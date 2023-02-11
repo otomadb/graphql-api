@@ -2,6 +2,8 @@
 
 declare namespace NodeJS {
   interface ProcessEnv {
+    readonly DOMAIN?: string;
+
     readonly NODE_ENV: "development" | "production";
 
     readonly ENABLE_GRAPHIQL?: string;

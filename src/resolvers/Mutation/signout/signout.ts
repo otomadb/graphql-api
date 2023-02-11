@@ -1,5 +1,7 @@
 import { Session } from "@prisma/client";
+import { serialize as serializeCookie } from "cookie";
 
+import { extractSessionFromReq, OTOMADB_SESSION_COOKIE_NAME } from "../../../auth/session.js";
 import { Result } from "../../../utils/Result.js";
 import { MutationResolvers, SignoutFailedMessage } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
@@ -20,13 +22,29 @@ export const expire = async (
 };
 
 export const signout = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
-  (async (_parent, _args, { req, reply }) => {
-    const sessionId = req.cookies["otmd-session"]?.split("-").at(0);
-    if (!sessionId) {
-      return { __typename: "SignoutFailedPayload", message: SignoutFailedMessage.NoSessionId };
+  (async (_parent, _args, { req, res }) => {
+    const resultExtractSession = extractSessionFromReq(req);
+    if (resultExtractSession.status === "error") {
+      switch (resultExtractSession.error) {
+        case "NO_COOKIE":
+          // TODO: ここでログを残す
+          return {
+            __typename: "SignoutFailedPayload",
+            message: SignoutFailedMessage.NoSessionId,
+          };
+        case "INVALID_FORM":
+          // TODO: ここでログを残す
+          return {
+            __typename: "SignoutFailedPayload",
+            message: SignoutFailedMessage.NoSessionId,
+          };
+      }
     }
 
-    const result = await expire(prisma, sessionId);
+    const { id, secret } = resultExtractSession.data;
+    // TODO: 不正なsessionのチェック
+
+    const result = await expire(prisma, id);
     if (result.status === "error") {
       switch (result.error) {
         case "SESSION_NOT_FOUND":
@@ -36,12 +54,16 @@ export const signout = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
 
     const session = result.data;
 
-    reply.setCookie("otmd-session", "", {
-      httpOnly: true,
-      secure: "auto",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-      path: "/",
-    });
+    res.setHeader(
+      "Set-Cookie",
+      serializeCookie(OTOMADB_SESSION_COOKIE_NAME, "", {
+        domain: process.env.DOMAIN,
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        path: "/",
+      })
+    );
 
     return {
       __typename: "SignoutSuccessedPayload",
