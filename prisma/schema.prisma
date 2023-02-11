@@ -11,35 +11,6 @@ datasource db {
   shadowDatabaseUrl = env("PRISMA_SHADOW_DATABASE_URL")
 }
 
-model MylistGroup {
-  id String @id @default(cuid())
-
-  title String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  holderId String
-  holder   User   @relation(fields: [holderId], references: [id])
-
-  mylists MylistGroupMylistInclsion[]
-}
-
-model MylistGroupMylistInclsion {
-  id String @id @default(cuid())
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  mylistId String
-  mylist   Mylist @relation(fields: [mylistId], references: [id])
-
-  groupId String
-  group   MylistGroup @relation(fields: [groupId], references: [id])
-
-  @@unique([mylistId, groupId])
-}
-
 model Mylist {
   id String @id @default(cuid())
 
@@ -83,34 +54,33 @@ model MylistRegistration {
   @@unique([mylistId, videoId])
 }
 
-model NicovideoVideoSource {
+model MylistGroup {
   id String @id @default(cuid())
 
-  sourceId String @unique @db.Citext
+  title String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  videoId String
-  video   Video  @relation(fields: [videoId], references: [id])
+  holderId String
+  holder   User   @relation(fields: [holderId], references: [id])
 
-  @@unique([sourceId, videoId])
+  mylists MylistGroupMylistInclsion[]
 }
 
-model Semitag {
+model MylistGroupMylistInclsion {
   id String @id @default(cuid())
-
-  name String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  videoId String
-  video   Video  @relation(fields: [videoId], references: [id])
+  mylistId String
+  mylist   Mylist @relation(fields: [mylistId], references: [id])
 
-  isResolved Boolean
-  tagId      String?
-  tag        Tag?    @relation(fields: [tagId], references: [id])
+  groupId String
+  group   MylistGroup @relation(fields: [groupId], references: [id])
+
+  @@unique([mylistId, groupId])
 }
 
 model Session {
@@ -128,6 +98,45 @@ model Session {
   user   User   @relation(fields: [userId], references: [id])
 }
 
+model Tag {
+  id     String @id
+  serial Int    @unique @default(autoincrement())
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
+  meaningless Boolean
+  semitags    Semitag[]
+
+  names TagName[]
+
+  parents  TagParent[] @relation("tag_parents_childIdTotags")
+  children TagParent[] @relation("tag_parents_parentIdTotags")
+
+  videos VideoTag[]
+
+  events TagEvent[]
+}
+
+model TagEvent {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  tag   Tag    @relation(fields: [tagId], references: [id])
+  tagId String
+
+  type    VideoEventType
+  payload Json
+}
+
+enum TagEventType {
+  CREATED
+}
+
 model TagName {
   id String @id @default(cuid())
 
@@ -141,7 +150,29 @@ model TagName {
   tagId String
   tag   Tag    @relation(fields: [tagId], references: [id])
 
+  events TagNameEvent[]
+
   @@unique([name, tagId])
+}
+
+model TagNameEvent {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  tagName   TagName @relation(fields: [tagNameId], references: [id])
+  tagNameId String
+
+  type    TagNameEventType
+  payload Json
+}
+
+enum TagNameEventType {
+  CREATED
 }
 
 model TagParent {
@@ -161,21 +192,21 @@ model TagParent {
   @@unique([parentId, childId])
 }
 
-model Tag {
-  id     String @id
-  serial Int    @unique @default(autoincrement())
+model TagParentEvent {
+  id String @id @default(cuid())
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now())
-  meaningless Boolean
-  semitags    Semitag[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
-  names TagName[]
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 
-  parents  TagParent[] @relation("tag_parents_childIdTotags")
-  children TagParent[] @relation("tag_parents_parentIdTotags")
+  type    TagParentEventType
+  payload Json
+}
 
-  videos VideoTag[]
+enum TagParentEventType {
+  CREATED
 }
 
 model User {
@@ -202,7 +233,16 @@ model User {
 
   sessions Session[]
 
-  events VideoEvent[]
+  eventTag        TagEvent[]
+  eventsTagName   TagNameEvent[]
+  eventsTagParent TagParentEvent[]
+
+  eventsVideo           VideoEvent[]
+  eventsVideoTag        VideoTagEvent[]
+  eventsVideoTitle      VideoTitleEvent[]
+  eventsVideoThumbnail  VideoThumbnailEvent[]
+  eventsNicovideoSource NicovideoVideoSourceEvent[]
+  eventsSemitag         SemitagEvent[]
 }
 
 enum UserRole {
@@ -229,51 +269,6 @@ model Video {
   mylists MylistRegistration[]
 
   events VideoEvent[]
-}
-
-model VideoTitle {
-  id String @id @default(cuid())
-
-  title     String
-  isPrimary Boolean
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  videoId String
-  video   Video  @relation(fields: [videoId], references: [id])
-
-  @@unique([videoId, title])
-}
-
-model VideoTag {
-  id String @id @default(cuid())
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  tagId String
-  tag   Tag    @relation(fields: [tagId], references: [id])
-
-  videoId String
-  video   Video  @relation(fields: [videoId], references: [id])
-
-  isRemoved Boolean @default(false) @map("removed")
-
-  @@unique([videoId, tagId])
-}
-
-model VideoThumbnail {
-  id String @id @default(cuid())
-
-  imageUrl  String
-  isPrimary Boolean
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  videoId String
-  video   Video  @relation(fields: [videoId], references: [id])
 }
 
 model VideoEvent {
@@ -321,4 +316,189 @@ enum VideoEventType {
   // マイリスト周り
   ADD_MYLIST
   DELETE_MYLIST
+}
+
+model VideoTitle {
+  id String @id @default(cuid())
+
+  title     String
+  isPrimary Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  events VideoTitleEvent[]
+
+  @@unique([videoId, title])
+}
+
+model VideoTitleEvent {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  videoTitle   VideoTitle @relation(fields: [videoTitleId], references: [id])
+  videoTitleId String
+
+  type    VideoTitleEventType
+  payload Json
+}
+
+enum VideoTitleEventType {
+  CREATED
+}
+
+model VideoTag {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  tagId String
+  tag   Tag    @relation(fields: [tagId], references: [id])
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  isRemoved Boolean @default(false) @map("removed")
+
+  events VideoTagEvent[]
+
+  @@unique([videoId, tagId])
+}
+
+model VideoTagEvent {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  videoTag   VideoTag @relation(fields: [videoTagId], references: [id])
+  videoTagId String
+
+  type    VideoTagEventType
+  payload Json
+}
+
+enum VideoTagEventType {
+  CREATED
+}
+
+model VideoThumbnail {
+  id String @id @default(cuid())
+
+  imageUrl  String
+  isPrimary Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  events VideoThumbnailEvent[]
+}
+
+model VideoThumbnailEvent {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  videoThumbnail   VideoThumbnail @relation(fields: [videoThumbnailId], references: [id])
+  videoThumbnailId String
+
+  type    VideoThumbnailEventType
+  payload Json
+}
+
+enum VideoThumbnailEventType {
+  CREATED
+}
+
+model NicovideoVideoSource {
+  id String @id @default(cuid())
+
+  sourceId String @unique @db.Citext
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  events NicovideoVideoSourceEvent[]
+
+  @@unique([sourceId, videoId])
+}
+
+model NicovideoVideoSourceEvent {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  source   NicovideoVideoSource @relation(fields: [sourceId], references: [id])
+  sourceId String
+
+  type    NicovideoVideoSourceEventType
+  payload Json
+}
+
+enum NicovideoVideoSourceEventType {
+  CREATED
+}
+
+model Semitag {
+  id String @id @default(cuid())
+
+  name String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  isResolved Boolean
+  tagId      String?
+  tag        Tag?    @relation(fields: [tagId], references: [id])
+
+  events SemitagEvent[]
+}
+
+model SemitagEvent {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  semitag   Semitag @relation(fields: [semitagId], references: [id])
+  semitagId String
+
+  type    SemitagEventType
+  payload Json
+}
+
+enum SemitagEventType {
+  CREATED
 }
