@@ -2,7 +2,7 @@ import { createServer } from "node:http";
 
 import { usePrometheus } from "@envelop/prometheus";
 import { PrismaClient } from "@prisma/client";
-import { createSchema, createYoga, useLogger } from "graphql-yoga";
+import { createSchema, createYoga } from "graphql-yoga";
 import neo4j from "neo4j-driver";
 
 import { extractSessionFromReq, verifySession } from "./auth/session.js";
@@ -18,75 +18,6 @@ const neo4jDriver = neo4j.driver(
   neo4j.auth.basic(process.env.NEO4J_USERNAME, process.env.NEO4J_PASSWORD)
 );
 
-/*
-const app = fastify({
-  logger: {
-    enabled: true,
-    transport: {
-      target: "pino-pretty",
-    },
-  },
-});
-
-await app.register(cors, { credentials: true, origin: true } satisfies FastifyCorsOptions);
-await app.register(cookie, {} satisfies FastifyCookieOptions);
-
-// metrics
-prometheusClient.register.clear();
-
-const requestHistogram = new prometheusClient.Histogram({
-  name: "http_request_duration_seconds",
-  help: "request duration in seconds",
-  labelNames: ["method", "status_code", "route"],
-});
-const requestSummary = new prometheusClient.Summary({
-  name: "http_request_summary_seconds",
-  help: "request duration in seconds summary",
-  labelNames: ["method", "status_code", "route"],
-});
-const requestTimersMap = new WeakMap<
-  FastifyRequest,
-  {
-    history: ReturnType<(typeof requestHistogram)["startTimer"]>;
-    summary: ReturnType<(typeof requestSummary)["startTimer"]>;
-  }
->();
-app
-  .addHook<Record<string, never>, { collectMetrics?: boolean }>("onRequest", (req, _reply, done) => {
-    if (!req.routeConfig?.collectMetrics) return done();
-    requestTimersMap.set(req, {
-      history: requestHistogram.startTimer(),
-      summary: requestSummary.startTimer(),
-    });
-    return done();
-  })
-  .addHook("onResponse", (req, reply, done) => {
-    const timers = requestTimersMap.get(req);
-    if (!timers) return done();
-
-    const method = req.method;
-    const statusCode = reply.statusCode;
-    const route = req.routerPath;
-
-    const labels = { method, route, status_code: statusCode };
-    timers.history(labels);
-    timers.summary(labels);
-    return done();
-  })
-  .route<Record<string, never>, { collectMetrics: boolean }>({
-    url: "/metrics",
-    method: "GET",
-    handler: async (_req, reply) => {
-      const register = prometheusClient.register;
-      const metrics = await register.metrics();
-      return reply.type(register.contentType).send(metrics);
-    },
-    config: { collectMetrics: true },
-  });
-
-  */
-
-// graphql
 const yoga = createYoga<ServerContext, UserContext>({
   graphiql: process.env.ENABLE_GRAPHIQL === "true",
   schema: createSchema({
@@ -123,6 +54,13 @@ const yoga = createYoga<ServerContext, UserContext>({
     }
     return { userId: null } satisfies UserContext;
   },
+  cors: (request) => {
+    const origin = request.headers.get("origin");
+    return {
+      origin: origin || [],
+      credentials: true,
+    };
+  },
   /*
   logging: {
     debug: (...args) => args.forEach((arg) => app.log.debug(arg)),
@@ -132,9 +70,11 @@ const yoga = createYoga<ServerContext, UserContext>({
   },
   */
   plugins: [
+    /*
     useLogger({
       logFn: console.log,
     }),
+    */
     usePrometheus({
       execute: true,
       errors: true,

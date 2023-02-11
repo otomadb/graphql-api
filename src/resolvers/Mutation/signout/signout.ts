@@ -57,9 +57,10 @@ export const signout = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
     res.setHeader(
       "Set-Cookie",
       serializeCookie(OTOMADB_SESSION_COOKIE_NAME, "", {
+        domain: process.env.DOMAIN,
         httpOnly: true,
-        secure: false, // TODO: なんとかする
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        secure: true,
+        sameSite: "strict",
         path: "/",
       })
     );
