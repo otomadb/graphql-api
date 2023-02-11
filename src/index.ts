@@ -1,17 +1,12 @@
-import { usePrometheus } from "@envelop/prometheus";
-import cookie, { FastifyCookieOptions } from "@fastify/cookie";
-import cors, { FastifyCorsOptions } from "@fastify/cors";
-import { PrismaClient } from "@prisma/client";
-import { fastify, FastifyRequest } from "fastify";
-import { createSchema, createYoga } from "graphql-yoga";
-import neo4j from "neo4j-driver";
-import prometheusClient from "prom-client";
+import { createServer } from "node:http";
 
-import { findSessionFromAuthzToken, findSessionFromCookie } from "./auth/findSession.js";
-import { handlerSignin } from "./auth/signin.js";
-import { handlerSignout } from "./auth/signout.js";
-import { handlerSignup } from "./auth/signup.js";
-import { handlerRemoteNicovideo } from "./remote/nicovideo.js";
+import { usePrometheus } from "@envelop/prometheus";
+import { PrismaClient } from "@prisma/client";
+import { createSchema, createYoga, useLogger } from "graphql-yoga";
+import neo4j from "neo4j-driver";
+
+import { extractSessionFromReq, verifySession } from "./auth/session.js";
+import { findSessionFromAuthzToken } from "./auth/token.js";
 import { ServerContext, UserContext } from "./resolvers/context.js";
 import { typeDefs } from "./resolvers/graphql.js";
 import { resolvers as makeResolvers } from "./resolvers/index.js";
@@ -23,6 +18,7 @@ const neo4jDriver = neo4j.driver(
   neo4j.auth.basic(process.env.NEO4J_USERNAME, process.env.NEO4J_PASSWORD)
 );
 
+/*
 const app = fastify({
   logger: {
     enabled: true,
@@ -88,6 +84,8 @@ app
     config: { collectMetrics: true },
   });
 
+  */
+
 // graphql
 const yoga = createYoga<ServerContext, UserContext>({
   graphiql: process.env.ENABLE_GRAPHIQL === "true",
@@ -96,12 +94,28 @@ const yoga = createYoga<ServerContext, UserContext>({
     resolvers: makeResolvers({ neo4j: neo4jDriver, prisma: prismaClient }),
   }),
   async context({ req }) {
-    const cookie = req.cookies["otmd-session"];
-    if (cookie) {
-      const session = await findSessionFromCookie(prismaClient, cookie);
-      if (session) return { userId: session.userId } satisfies UserContext;
+    // from cookie
+    const resultExtractSession = extractSessionFromReq(req);
+    if (resultExtractSession.status === "ok") {
+      const session = await verifySession(prismaClient, resultExtractSession.data);
+      if (session.status === "ok") return { userId: session.data.userId } satisfies UserContext;
+      else {
+        switch (session.error) {
+          case "NOT_FOUND_SESSION":
+          case "WRONG_SECRET":
+            // TODO: 明らかにおかしいのでログに残す
+            break;
+        }
+      }
+    } else {
+      switch (resultExtractSession.error) {
+        case "INVALID_FORM":
+          // TODO: 不正なセッションなのでログに残す
+          break;
+      }
     }
 
+    // from authorization
     const authToken = req.headers["authorization"]?.split(" ").at(1);
     if (authToken) {
       const session = await findSessionFromAuthzToken(prismaClient, authToken);
@@ -109,13 +123,18 @@ const yoga = createYoga<ServerContext, UserContext>({
     }
     return { userId: null } satisfies UserContext;
   },
+  /*
   logging: {
     debug: (...args) => args.forEach((arg) => app.log.debug(arg)),
     info: (...args) => args.forEach((arg) => app.log.info(arg)),
     warn: (...args) => args.forEach((arg) => app.log.warn(arg)),
     error: (...args) => args.forEach((arg) => app.log.error(arg)),
   },
+  */
   plugins: [
+    useLogger({
+      logFn: console.log,
+    }),
     usePrometheus({
       execute: true,
       errors: true,
@@ -124,45 +143,8 @@ const yoga = createYoga<ServerContext, UserContext>({
     }),
   ],
 });
-app.route({
-  url: "/graphql",
-  method: ["GET", "POST", "OPTIONS"],
-  config: { collectMetrics: true },
-  handler: async (req, reply) => {
-    const response = await yoga.handleNodeRequest(req, { req, reply });
 
-    for (const [name, value] of response.headers) {
-      reply.header(name, value);
-    }
-    reply.status(response.status);
-    reply.send(response.body);
-
-    return reply;
-  },
+const server = createServer(yoga);
+server.listen(8080, () => {
+  console.info("Server is running on http://localhost:8080/graphql");
 });
-
-app.post("/auth/signin", { config: { collectMetrics: true } }, handlerSignin(prismaClient));
-app.post("/auth/signup", { config: { collectMetrics: true } }, handlerSignup(prismaClient));
-app.post("/auth/signout", { config: { collectMetrics: true } }, handlerSignout());
-
-app.post("/auth/login", { config: { collectMetrics: true } }, handlerSignin(prismaClient));
-app.post("/auth/logout", { config: { collectMetrics: true } }, handlerSignout());
-
-app.get<{ Querystring: { id: string } }>(
-  "/remote/nicovideo",
-  { config: { collectMetrics: true } },
-  handlerRemoteNicovideo
-);
-
-app
-  .listen({
-    host: process.env.NODE_ENV === "production" ? "0.0.0.0" : "localhost",
-    port: 8080,
-  })
-  .then((serverUrl) => {
-    app.log.info(`server listening at ${serverUrl}`);
-  })
-  .catch((err) => {
-    app.log.error(err);
-    process.exit(1);
-  });
