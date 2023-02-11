@@ -1,4 +1,4 @@
-import { PrismaClient, Session } from "@prisma/client";
+import { PrismaClient, Session, UserRole } from "@prisma/client";
 import { parse as parseCookie } from "cookie";
 import { createHash, randomBytes } from "crypto";
 import { IncomingMessage } from "http";
@@ -29,8 +29,11 @@ export const extractSessionFromReq = (
 export const verifySession = async (
   prisma: PrismaClient,
   { id, secret }: { id: string; secret: string }
-): Promise<Result<"NOT_FOUND_SESSION" | "WRONG_SECRET", Session>> => {
-  const session = await prisma.session.findUnique({ where: { id } });
+): Promise<Result<"NOT_FOUND_SESSION" | "WRONG_SECRET", Session & { user: { id: string; role: UserRole } }>> => {
+  const session = await prisma.session.findUnique({
+    where: { id },
+    include: { user: { select: { id: true, role: true } } },
+  });
   if (!session)
     return {
       status: "error",

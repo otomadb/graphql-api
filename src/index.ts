@@ -6,7 +6,6 @@ import { createSchema, createYoga } from "graphql-yoga";
 import neo4j from "neo4j-driver";
 
 import { extractSessionFromReq, verifySession } from "./auth/session.js";
-import { findSessionFromAuthzToken } from "./auth/token.js";
 import { ServerContext, UserContext } from "./resolvers/context.js";
 import { typeDefs } from "./resolvers/graphql.js";
 import { resolvers as makeResolvers } from "./resolvers/index.js";
@@ -29,7 +28,11 @@ const yoga = createYoga<ServerContext, UserContext>({
     const resultExtractSession = extractSessionFromReq(req);
     if (resultExtractSession.status === "ok") {
       const session = await verifySession(prismaClient, resultExtractSession.data);
-      if (session.status === "ok") return { userId: session.data.userId } satisfies UserContext;
+      if (session.status === "ok")
+        return {
+          userId: session.data.userId,
+          user: { id: session.data.user.id, role: session.data.user.role },
+        } satisfies UserContext;
       else {
         switch (session.error) {
           case "NOT_FOUND_SESSION":
@@ -46,13 +49,21 @@ const yoga = createYoga<ServerContext, UserContext>({
       }
     }
 
+    return { userId: null, user: null } satisfies UserContext;
+
+    /* # TODO: 一旦廃止
     // from authorization
     const authToken = req.headers["authorization"]?.split(" ").at(1);
     if (authToken) {
       const session = await findSessionFromAuthzToken(prismaClient, authToken);
-      if (session) return { userId: session.id } satisfies UserContext;
+      if (session)
+        return {
+          userId: session.id,
+          user: { id: session.data.user.id, role: session.data.user.role },
+        } satisfies UserContext;
     }
     return { userId: null } satisfies UserContext;
+    */
   },
   cors: (request) => {
     const origin = request.headers.get("origin");
