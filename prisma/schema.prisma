@@ -353,6 +353,47 @@ model VideoTitleEvent {
 
 enum VideoTitleEventType {
   CREATED
+
+  SET_PRIMARY
+  UNSET_PRIMARY
+}
+
+model VideoThumbnail {
+  id String @id @default(cuid())
+
+  imageUrl  String
+  isPrimary Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  events VideoThumbnailEvent[]
+}
+
+model VideoThumbnailEvent {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  videoThumbnail   VideoThumbnail @relation(fields: [videoThumbnailId], references: [id])
+  videoThumbnailId String
+
+  type    VideoThumbnailEventType
+  payload Json
+}
+
+enum VideoThumbnailEventType {
+  CREATED
+
+  SET_PRIMARY
+  UNSET_PRIMARY
 }
 
 model VideoTag {
@@ -394,11 +435,10 @@ enum VideoTagEventType {
   CREATED
 }
 
-model VideoThumbnail {
+model Semitag {
   id String @id @default(cuid())
 
-  imageUrl  String
-  isPrimary Boolean
+  name String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -406,10 +446,14 @@ model VideoThumbnail {
   videoId String
   video   Video  @relation(fields: [videoId], references: [id])
 
-  events VideoThumbnailEvent[]
+  isResolved Boolean
+  tagId      String?
+  tag        Tag?    @relation(fields: [tagId], references: [id])
+
+  events SemitagEvent[]
 }
 
-model VideoThumbnailEvent {
+model SemitagEvent {
   id String @id @default(cuid())
 
   createdAt DateTime @default(now())
@@ -418,14 +462,14 @@ model VideoThumbnailEvent {
   user   User   @relation(fields: [userId], references: [id])
   userId String
 
-  videoThumbnail   VideoThumbnail @relation(fields: [videoThumbnailId], references: [id])
-  videoThumbnailId String
+  semitag   Semitag @relation(fields: [semitagId], references: [id])
+  semitagId String
 
-  type    VideoThumbnailEventType
+  type    SemitagEventType
   payload Json
 }
 
-enum VideoThumbnailEventType {
+enum SemitagEventType {
   CREATED
 }
 
@@ -462,43 +506,5 @@ model NicovideoVideoSourceEvent {
 }
 
 enum NicovideoVideoSourceEventType {
-  CREATED
-}
-
-model Semitag {
-  id String @id @default(cuid())
-
-  name String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  videoId String
-  video   Video  @relation(fields: [videoId], references: [id])
-
-  isResolved Boolean
-  tagId      String?
-  tag        Tag?    @relation(fields: [tagId], references: [id])
-
-  events SemitagEvent[]
-}
-
-model SemitagEvent {
-  id String @id @default(cuid())
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
-
-  semitag   Semitag @relation(fields: [semitagId], references: [id])
-  semitagId String
-
-  type    SemitagEventType
-  payload Json
-}
-
-enum SemitagEventType {
   CREATED
 }
