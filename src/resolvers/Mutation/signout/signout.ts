@@ -60,7 +60,7 @@ export const signout = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
         domain: process.env.DOMAIN,
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
+        sameSite: process.env.ENABLE_SAME_SITE_NONE === "true" ? "none" : "strict",
         path: "/",
       })
     );
