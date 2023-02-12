@@ -1,4 +1,12 @@
-import { UserRole } from "@prisma/client";
+import {
+  NicovideoVideoSourceEventType,
+  SemitagEventType,
+  UserRole,
+  VideoEventType,
+  VideoTagEventType,
+  VideoThumbnailEventType,
+  VideoTitleEventType,
+} from "@prisma/client";
 import { GraphQLError } from "graphql";
 import { ulid } from "ulid";
 
@@ -8,13 +16,6 @@ import { MutationResolvers, RegisterVideoInputSourceType } from "../../graphql.j
 import { parseGqlIDs } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { VideoModel } from "../../Video/model.js";
-import { VideoAddNicovideoSourceEventPayload } from "../../VideoAddNicovideoSourceEvent/index.js";
-import { VideoAddSemitagEventPayload } from "../../VideoAddSemitagEvent/index.js";
-import { VideoAddTagEventPayload } from "../../VideoAddTagEvent/index.js";
-import { VideoAddThumbnailEventPayload } from "../../VideoAddThumbnailEvent/index.js";
-import { VideoAddTitleEventPayload } from "../../VideoAddTitleEvent/index.js";
-import { VideoSetPrimaryThumbnailEventPayload } from "../../VideoSetPrimaryThumbnailEvent/index.js";
-import { VideoSetPrimaryTitleEventPayload } from "../../VideoSetPrimaryTitleEvent/index.js";
 
 export const registerVideoInNeo4j = async (
   neo4j: ResolverDeps["neo4j"],
@@ -112,50 +113,70 @@ export const register = async (
         {
           userId: authUserId,
           videoId,
-          type: "REGISTER",
+          type: VideoEventType.REGISTER,
           payload: {},
         },
+      ],
+    }),
+    prisma.videoTitleEvent.createMany({
+      data: [
         ...dataTitles.map(({ id }) => ({
           userId: authUserId,
-          videoId,
-          type: "ADD_TITLE" as const,
-          payload: { id } satisfies VideoAddTitleEventPayload,
+          videoTitleId: id,
+          type: VideoTitleEventType.CREATED,
+          payload: {},
         })),
         {
           userId: authUserId,
-          videoId,
-          type: "SET_PRIMARY_TITLE",
-          payload: { id: dataTitles[0].id } satisfies VideoSetPrimaryTitleEventPayload,
+          videoTitleId: dataTitles[0].id,
+          type: VideoTitleEventType.SET_PRIMARY,
+          payload: {},
         },
+      ],
+    }),
+    prisma.videoThumbnailEvent.createMany({
+      data: [
         ...dataThumbnails.map(({ id }) => ({
           userId: authUserId,
-          videoId,
-          type: "ADD_THUMBNAIL" as const,
-          payload: { id } satisfies VideoAddThumbnailEventPayload,
+          videoThumbnailId: id,
+          type: VideoThumbnailEventType.CREATED,
+          payload: {},
         })),
         {
           userId: authUserId,
-          videoId,
-          type: "SET_PRIMARY_THUMBNAIL",
-          payload: { id: dataThumbnails[0].id } satisfies VideoSetPrimaryThumbnailEventPayload,
+          videoThumbnailId: dataThumbnails[0].id,
+          type: VideoThumbnailEventType.SET_PRIMARY,
+          payload: {},
         },
-        ...dataTags.map(({ tagId }) => ({
+      ],
+    }),
+    prisma.videoTagEvent.createMany({
+      data: [
+        ...dataTags.map(({ id }) => ({
           userId: authUserId,
-          videoId,
-          type: "ADD_TAG" as const,
-          payload: { tagId, isUpdate: false } satisfies VideoAddTagEventPayload,
+          videoTagId: id,
+          type: VideoTagEventType.CREATED,
+          payload: {},
         })),
+      ],
+    }),
+    prisma.semitagEvent.createMany({
+      data: [
         ...dataSemitags.map(({ id }) => ({
           userId: authUserId,
-          videoId,
-          type: "ADD_SEMITAG" as const,
-          payload: { id } satisfies VideoAddSemitagEventPayload,
+          semitagId: id,
+          type: SemitagEventType.CREATED,
+          payload: {},
         })),
+      ],
+    }),
+    prisma.nicovideoVideoSourceEvent.createMany({
+      data: [
         ...dataNicovideoSources.map(({ id }) => ({
           userId: authUserId,
-          videoId,
-          type: "ADD_NICOVIDEO_SOURCE" as const,
-          payload: { id } satisfies VideoAddNicovideoSourceEventPayload,
+          sourceId: id,
+          type: NicovideoVideoSourceEventType.CREATED,
+          payload: {},
         })),
       ],
     }),
