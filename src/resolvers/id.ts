@@ -1,5 +1,7 @@
 import { GraphQLError } from "graphql";
 
+import { Result } from "../utils/Result.js";
+
 export type NodeType =
   | "User"
   | "Video"
@@ -24,6 +26,16 @@ export function parseGqlID(type: NodeType, gqlId: string): string {
   if (t !== type) throw new GraphQLInvalidIDError(type, gqlId);
 
   return i;
+}
+
+export function parseGqlID2(type: NodeType, gqlId: string): Result<"INVALID_ID", string> {
+  const split = Buffer.from(gqlId, "base64url").toString().split(":");
+  if (split.length !== 2) return { status: "error", error: "INVALID_ID" };
+
+  const [t, i] = split;
+  if (t !== type) return { status: "error", error: "INVALID_ID" };
+
+  return { status: "ok", data: i };
 }
 
 export function parseGqlIDs(type: NodeType, gqlIds: string[]): string[] {

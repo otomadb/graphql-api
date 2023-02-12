@@ -1,12 +1,10 @@
 import { Tag, UserRole, Video, VideoTag } from "@prisma/client";
-import { GraphQLError } from "graphql";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 import { ulid } from "ulid";
 
 import { Result } from "../../../utils/Result.js";
-import { ensureContextUser } from "../../ensureContextUser.js";
-import { MutationResolvers } from "../../graphql.js";
-import { parseGqlID } from "../../id.js";
+import { AddTagToVideoFailedMessage, MutationResolvers } from "../../graphql.js";
+import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 import { VideoModel } from "../../Video/model.js";
@@ -62,30 +60,52 @@ export const add = async (
 };
 
 export const addTagToVideo = ({ neo4j, prisma }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  ensureContextUser(
-    prisma,
-    UserRole.NORMAL,
-    async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { userId: authUserId }) => {
-      const videoId = parseGqlID("Video", videoGqlId);
-      const tagId = parseGqlID("Tag", tagGqlId);
-
-      const result = await add(prisma, { authUserId, videoId, tagId });
-      if (result.status === "error") {
-        switch (result.error) {
-          case "EXISTS_TAGGING":
-            throw new GraphQLError("Tagging is already exists");
-        }
-      }
-
-      const tagging = result.data;
-      await addTagToVideoInNeo4j(neo4j, {
-        tagId: tagging.tagId,
-        videoId: tagging.videoId,
-      });
-
+  (async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { user }) => {
+    if (!user || (user?.role !== UserRole.EDITOR && user?.role !== UserRole.ADMINISTRATOR))
       return {
-        video: new VideoModel(tagging.video),
-        tag: new TagModel(tagging.tag),
+        __typename: "AddTagToVideoFailedPayload",
+        message: AddTagToVideoFailedMessage.Forbidden,
       };
+
+    const videoId = parseGqlID2("Video", videoGqlId);
+    if (videoId.status === "error")
+      return {
+        __typename: "AddTagToVideoFailedPayload",
+        message: AddTagToVideoFailedMessage.InvalidVideoId,
+      };
+
+    const tagId = parseGqlID2("Tag", tagGqlId);
+    if (tagId.status === "error")
+      return {
+        __typename: "AddTagToVideoFailedPayload",
+        message: AddTagToVideoFailedMessage.InvalidTagId,
+      };
+
+    const result = await add(prisma, {
+      authUserId: user.id,
+      videoId: videoId.data,
+      tagId: tagId.data,
+    });
+    if (result.status === "error") {
+      switch (result.error) {
+        case "EXISTS_TAGGING":
+          return {
+            __typename: "AddTagToVideoFailedPayload",
+            message: AddTagToVideoFailedMessage.VideoAlreadyTagged,
+          };
+      }
     }
-  ) satisfies MutationResolvers["addTagToVideo"];
+
+    const tagging = result.data;
+    await addTagToVideoInNeo4j(neo4j, {
+      tagId: tagging.tagId,
+      videoId: tagging.videoId,
+    });
+
+    return {
+      __typename: "AddTagToVideoSuccessedPayload",
+
+      video: new VideoModel(tagging.video),
+      tag: new TagModel(tagging.tag),
+    };
+  }) satisfies MutationResolvers["addTagToVideo"];
