@@ -1,0 +1,39 @@
+interface VideoTitleEvent implements Node {
+  id: ID!
+  createdAt: DateTime!
+
+  user: User!
+  videoTitle: VideoTitle!
+}
+
+type VideoEventsConnection {
+  nodes: [VideoEvent!]!
+}
+
+type VideoTitleCreateEventType implements VideoTitleEvent & Node {
+  id: ID!
+  createdAt: DateTime!
+
+  user: User!
+  videoTitle: VideoTitle!
+}
+
+type VideoTitleSetPrimaryEventType implements VideoTitleEvent & Node {
+  id: ID!
+  createdAt: DateTime!
+
+  user: User!
+  videoTitle: VideoTitle!
+}
+
+type VideoTitleUnsetPrimaryEventType implements VideoTitleEvent & Node {
+  id: ID!
+  createdAt: DateTime!
+
+  user: User!
+  videoTitle: VideoTitle!
+}
+
+type VideoTitleEventsConnection {
+  nodes: [VideoTitleEvent!]!
+}
