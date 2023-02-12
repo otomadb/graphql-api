@@ -29,7 +29,7 @@ export const resolveVideoThumbnailEvent = () =>
   ({
     __resolveType({ type }) {
       switch (type) {
-        case VideoTitleEventType.CREATED:
+        case VideoTitleEventType.CREATE:
           return "VideoThumbnailCreateEvent";
         case VideoTitleEventType.SET_PRIMARY:
           return "VideoThumbnailSetPrimaryEvent";

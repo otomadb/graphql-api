@@ -149,7 +149,7 @@ describe("Mutation.registerVideo", () => {
           updatedAt: expect.any(Date),
           userId: "u1",
           videoTitleId: videoPrimaryTitle.id,
-          type: VideoTitleEventType.CREATED,
+          type: VideoTitleEventType.CREATE,
           payload: {},
         } satisfies VideoTitleEvent,
         {
@@ -158,7 +158,7 @@ describe("Mutation.registerVideo", () => {
           updatedAt: expect.any(Date),
           userId: "u1",
           videoTitleId: videoExtraTitles[0].id,
-          type: VideoTitleEventType.CREATED,
+          type: VideoTitleEventType.CREATE,
           payload: {},
         } satisfies VideoTitleEvent,
         {
@@ -167,7 +167,7 @@ describe("Mutation.registerVideo", () => {
           updatedAt: expect.any(Date),
           userId: "u1",
           videoTitleId: videoExtraTitles[1].id,
-          type: VideoTitleEventType.CREATED,
+          type: VideoTitleEventType.CREATE,
           payload: {},
         } satisfies VideoTitleEvent,
         {
@@ -207,7 +207,7 @@ describe("Mutation.registerVideo", () => {
           updatedAt: expect.any(Date),
           userId: "u1",
           videoThumbnailId: videoThumbnails[0].id,
-          type: VideoThumbnailEventType.CREATED,
+          type: VideoThumbnailEventType.CREATE,
           payload: {},
         } satisfies VideoThumbnailEvent,
         {
@@ -255,7 +255,7 @@ describe("Mutation.registerVideo", () => {
           updatedAt: expect.any(Date),
           userId: "u1",
           videoTagId: videoTags[0].id,
-          type: VideoTagEventType.ATTACHED,
+          type: VideoTagEventType.ATTACH,
           payload: {},
         } satisfies VideoTagEvent,
         {
@@ -264,7 +264,7 @@ describe("Mutation.registerVideo", () => {
           updatedAt: expect.any(Date),
           userId: "u1",
           videoTagId: videoTags[1].id,
-          type: VideoTagEventType.ATTACHED,
+          type: VideoTagEventType.ATTACH,
           payload: {},
         } satisfies VideoTagEvent,
       ])
@@ -304,7 +304,7 @@ describe("Mutation.registerVideo", () => {
           updatedAt: expect.any(Date),
           userId: "u1",
           semitagId: videoSemitags[0].id,
-          type: SemitagEventType.ATTACHED,
+          type: SemitagEventType.ATTACH,
           payload: {},
         } satisfies SemitagEvent),
         expect.objectContaining({
@@ -313,7 +313,7 @@ describe("Mutation.registerVideo", () => {
           updatedAt: expect.any(Date),
           userId: "u1",
           semitagId: videoSemitags[1].id,
-          type: SemitagEventType.ATTACHED,
+          type: SemitagEventType.ATTACH,
           payload: {},
         } satisfies SemitagEvent),
       ])
@@ -342,7 +342,7 @@ describe("Mutation.registerVideo", () => {
           updatedAt: expect.any(Date),
           userId: "u1",
           sourceId: nicovideoVideoSources[0].id,
-          type: NicovideoVideoSourceEventType.CREATED,
+          type: NicovideoVideoSourceEventType.CREATE,
           payload: {},
         } satisfies NicovideoVideoSourceEvent),
       ])

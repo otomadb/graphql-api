@@ -61,7 +61,7 @@ export const resolve = async (
         events: {
           create: {
             userId,
-            type: SemitagEventType.RESOLVED,
+            type: SemitagEventType.RESOLVE,
             payload: {},
           },
         },
@@ -75,7 +75,7 @@ export const resolve = async (
         events: {
           create: {
             userId,
-            type: VideoTagEventType.ATTACHED,
+            type: VideoTagEventType.ATTACH,
             payload: {},
           },
         },

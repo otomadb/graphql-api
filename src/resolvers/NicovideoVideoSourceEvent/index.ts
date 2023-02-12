@@ -29,7 +29,7 @@ export const resolveNicovideoVideoSourceEvent = () =>
   ({
     __resolveType({ type }) {
       switch (type) {
-        case NicovideoVideoSourceEventType.CREATED:
+        case NicovideoVideoSourceEventType.CREATE:
           return "NicovideoVideoSourceCreateEvent";
       }
     },
