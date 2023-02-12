@@ -1,0 +1,13 @@
+type VideoTag {
+  id: ID!
+
+  video: Video!
+  tag: Tag!
+
+  events(input: VideoTagEventsInput!): VideoTagEventsConnection!
+}
+
+input VideoTagEventsInput {
+  skip: Int! = 0
+  limit: Int! = 10
+}

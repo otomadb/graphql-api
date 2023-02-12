@@ -22,10 +22,15 @@ import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
 import { resolveVideoAddNicovideoSourceEvent } from "./VideoAddNicovideoSourceEvent/index.js";
 import { resolveVideoAddSemitagEvent } from "./VideoAddSemitagEvent/index.js";
-import { resolveVideoAddTagEvent } from "./VideoAddTagEvent/index.js";
 import { resolveVideoEvent } from "./VideoEvent/index.js";
 import { resolveVideoRegisterEvent } from "./VideoRegisterEvent/index.js";
-import { resolveVideoRemoveTagEvent } from "./VideoRemoveTagEvent/index.js";
+import { resolveVideoTag } from "./VideoTag/index.js";
+import {
+  resolveVideoTagAttachEvent,
+  resolveVideoTagDetachEvent,
+  resolveVideoTagEvent,
+  resolveVideoTagReattachEvent,
+} from "./VideoTagEvent/index.js";
 import { resolveVideoThumbnail } from "./VideoThumbnail/index.js";
 import {
   resolveVideoThumbnailCreateEvent,
@@ -66,10 +71,13 @@ export const resolvers = (deps: ResolverDeps) =>
     Video: resolveVideo(deps),
     VideoAddNicovideoSourceEvent: resolveVideoAddNicovideoSourceEvent(deps),
     VideoAddSemitagEvent: resolveVideoAddSemitagEvent(deps),
-    VideoAddTagEvent: resolveVideoAddTagEvent(deps),
     VideoEvent: resolveVideoEvent(),
     VideoRegisterEvent: resolveVideoRegisterEvent(deps),
-    VideoRemoveTagEvent: resolveVideoRemoveTagEvent(deps),
+    VideoTag: resolveVideoTag(deps),
+    VideoTagAttachEvent: resolveVideoTagAttachEvent(deps),
+    VideoTagDetachEvent: resolveVideoTagDetachEvent(deps),
+    VideoTagEvent: resolveVideoTagEvent(),
+    VideoTagReattachEvent: resolveVideoTagReattachEvent(deps),
     VideoThumbnail: resolveVideoThumbnail(deps),
     VideoThumbnailCreateEvent: resolveVideoThumbnailCreateEvent(deps),
     VideoThumbnailEvent: resolveVideoThumbnailEvent(),

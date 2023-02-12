@@ -6,7 +6,7 @@ type Video implements Node {
   titles: [VideoTitle!]!
   thumbnailUrl: String!
   thumbnails: [VideoThumbnail!]!
-  tags(input: VideoTagsInput!): [Tag!]!
+  tags(input: VideoTagsInput!): [VideoTag!]!
   hasTag(id: ID!): Boolean!
   events(input: VideoEventsInput!): VideoEventsConnection!
   registeredAt: DateTime!
