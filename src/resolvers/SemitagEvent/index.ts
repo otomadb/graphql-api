@@ -29,11 +29,11 @@ export const resolveSemitagEvent = () =>
   ({
     __resolveType({ type }) {
       switch (type) {
-        case SemitagEventType.ATTACHED:
+        case SemitagEventType.ATTACH:
           return "SemitagEventAttachEvent";
-        case SemitagEventType.RESOLVED:
+        case SemitagEventType.RESOLVE:
           return "SemitagEventResolveEvent";
-        case SemitagEventType.REJECTED:
+        case SemitagEventType.REJECT:
           return "SemitagEventRejectEvent";
       }
     },

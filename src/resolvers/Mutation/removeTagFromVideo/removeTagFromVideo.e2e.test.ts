@@ -188,7 +188,7 @@ describe("Mutation.removeTagFromVideo", () => {
           updatedAt: expect.any(Date),
           userId: "u1",
           videoTagId,
-          type: VideoTagEventType.REMOVED,
+          type: VideoTagEventType.DETACH,
           payload: {},
         } satisfies VideoTagEvent,
       ])

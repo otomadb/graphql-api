@@ -30,11 +30,11 @@ export const resolveVideoTagEvent = () =>
   ({
     __resolveType({ type }) {
       switch (type) {
-        case VideoTagEventType.ATTACHED:
+        case VideoTagEventType.ATTACH:
           return "VideoTagAttachEvent";
-        case VideoTagEventType.REATTACHED:
+        case VideoTagEventType.REATTACH:
           return "VideoTagReattachEvent";
-        case VideoTagEventType.REMOVED:
+        case VideoTagEventType.DETACH:
           return "VideoTagDetachEvent";
         default:
           throw new GraphQLError(`Unknown VideoTagEventType: ${type}`);

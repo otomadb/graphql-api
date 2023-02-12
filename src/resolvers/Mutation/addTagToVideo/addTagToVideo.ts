@@ -45,7 +45,7 @@ export const add = async (
         events: {
           create: {
             userId,
-            type: VideoTagEventType.REATTACHED,
+            type: VideoTagEventType.REATTACH,
             payload: {},
           },
         },
@@ -69,7 +69,7 @@ export const add = async (
         events: {
           create: {
             userId,
-            type: VideoTagEventType.ATTACHED,
+            type: VideoTagEventType.ATTACH,
             payload: {},
           },
         },

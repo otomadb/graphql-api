@@ -109,7 +109,7 @@ export const register = async (
           ({ id }) =>
             ({
               userId,
-              type: TagNameEventType.CREATED,
+              type: TagNameEventType.CREATE,
               tagNameId: id,
               payload: {},
             } satisfies Prisma.TagNameEventCreateManyInput)
@@ -128,7 +128,7 @@ export const register = async (
             data: [
               {
                 userId,
-                type: TagParentEventType.CREATED,
+                type: TagParentEventType.CREATE,
                 tagParentId: dataExplicitParent.id,
                 payload: {},
               },
@@ -148,7 +148,7 @@ export const register = async (
           ({ id }) =>
             ({
               userId,
-              type: TagParentEventType.CREATED,
+              type: TagParentEventType.CREATE,
               tagParentId: id,
               payload: {},
             } satisfies Prisma.TagParentEventCreateManyInput)

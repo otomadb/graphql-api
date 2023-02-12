@@ -29,7 +29,7 @@ export const resolveVideoTitleEvent = () =>
   ({
     __resolveType({ type }) {
       switch (type) {
-        case VideoTitleEventType.CREATED:
+        case VideoTitleEventType.CREATE:
           return "VideoTitleCreateEvent";
         case VideoTitleEventType.SET_PRIMARY:
           return "VideoTitleSetPrimaryEvent";

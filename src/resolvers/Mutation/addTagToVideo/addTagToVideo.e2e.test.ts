@@ -101,7 +101,7 @@ describe("Mutation.addTagToVideo", () => {
           updatedAt: expect.any(Date),
           userId: "u1",
           videoTagId,
-          type: VideoTagEventType.ATTACHED,
+          type: VideoTagEventType.ATTACH,
           payload: {},
         } satisfies VideoTagEvent,
       ])
@@ -157,7 +157,7 @@ describe("Mutation.addTagToVideo", () => {
           updatedAt: expect.any(Date),
           userId: "u1",
           videoTagId,
-          type: VideoTagEventType.REATTACHED,
+          type: VideoTagEventType.REATTACH,
           payload: {},
         } satisfies VideoTagEvent,
       ])

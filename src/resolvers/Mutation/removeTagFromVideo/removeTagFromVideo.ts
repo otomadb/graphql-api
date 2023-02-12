@@ -44,7 +44,7 @@ export const remove = async (
       events: {
         create: {
           userId: authUserId,
-          type: VideoTagEventType.REMOVED,
+          type: VideoTagEventType.DETACH,
           payload: {},
         },
       },

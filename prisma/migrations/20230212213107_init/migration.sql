@@ -5,13 +5,25 @@ CREATE EXTENSION IF NOT EXISTS "citext";
 CREATE TYPE "MylistShareRange" AS ENUM ('PUBLIC', 'KNOW_LINK', 'PRIVATE');
 
 -- CreateEnum
-CREATE TYPE "TagEventType" AS ENUM ('CREATED');
+CREATE TYPE "MylistEventType" AS ENUM ('CREATE');
 
 -- CreateEnum
-CREATE TYPE "TagNameEventType" AS ENUM ('CREATED', 'SET_PRIMARY', 'UNSET_PRIMARY');
+CREATE TYPE "MylistRegistrationEventType" AS ENUM ('REGISTER', 'UNREGISTER', 'REREGISTER');
 
 -- CreateEnum
-CREATE TYPE "TagParentEventType" AS ENUM ('CREATED', 'SET_PRIMARY', 'UNSET_PRIMARY');
+CREATE TYPE "MylistGroupEventType" AS ENUM ('CREATE');
+
+-- CreateEnum
+CREATE TYPE "MylistGroupMylistInclsionEventType" AS ENUM ('INCLUDE', 'EXCLUDE', 'REINCLUDE');
+
+-- CreateEnum
+CREATE TYPE "TagEventType" AS ENUM ('CREATE');
+
+-- CreateEnum
+CREATE TYPE "TagNameEventType" AS ENUM ('CREATE', 'SET_PRIMARY', 'UNSET_PRIMARY');
+
+-- CreateEnum
+CREATE TYPE "TagParentEventType" AS ENUM ('CREATE', 'SET_PRIMARY', 'UNSET_PRIMARY');
 
 -- CreateEnum
 CREATE TYPE "UserRole" AS ENUM ('NORMAL', 'EDITOR', 'ADMINISTRATOR');
@@ -20,19 +32,19 @@ CREATE TYPE "UserRole" AS ENUM ('NORMAL', 'EDITOR', 'ADMINISTRATOR');
 CREATE TYPE "VideoEventType" AS ENUM ('REGISTER');
 
 -- CreateEnum
-CREATE TYPE "VideoTitleEventType" AS ENUM ('CREATED', 'SET_PRIMARY', 'UNSET_PRIMARY');
+CREATE TYPE "VideoTitleEventType" AS ENUM ('CREATE', 'SET_PRIMARY', 'UNSET_PRIMARY');
 
 -- CreateEnum
-CREATE TYPE "VideoThumbnailEventType" AS ENUM ('CREATED', 'SET_PRIMARY', 'UNSET_PRIMARY');
+CREATE TYPE "VideoThumbnailEventType" AS ENUM ('CREATE', 'SET_PRIMARY', 'UNSET_PRIMARY');
 
 -- CreateEnum
-CREATE TYPE "VideoTagEventType" AS ENUM ('ATTACHED', 'REMOVED', 'REATTACHED');
+CREATE TYPE "VideoTagEventType" AS ENUM ('ATTACH', 'DETACH', 'REATTACH');
 
 -- CreateEnum
-CREATE TYPE "SemitagEventType" AS ENUM ('ATTACHED', 'RESOLVED', 'REJECTED');
+CREATE TYPE "SemitagEventType" AS ENUM ('ATTACH', 'RESOLVE', 'REJECT');
 
 -- CreateEnum
-CREATE TYPE "NicovideoVideoSourceEventType" AS ENUM ('CREATED');
+CREATE TYPE "NicovideoVideoSourceEventType" AS ENUM ('CREATE');
 
 -- CreateTable
 CREATE TABLE "Mylist" (
@@ -48,6 +60,19 @@ CREATE TABLE "Mylist" (
 );
 
 -- CreateTable
+CREATE TABLE "MylistEvent" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT NOT NULL,
+    "mylistId" TEXT NOT NULL,
+    "type" "MylistEventType" NOT NULL,
+    "payload" JSONB NOT NULL,
+
+    CONSTRAINT "MylistEvent_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "MylistRegistration" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -55,8 +80,22 @@ CREATE TABLE "MylistRegistration" (
     "note" TEXT,
     "videoId" TEXT NOT NULL,
     "mylistId" TEXT NOT NULL,
+    "isRemoved" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "MylistRegistration_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "MylistRegistrationEvent" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT NOT NULL,
+    "mylistRegistrationId" TEXT NOT NULL,
+    "type" "MylistRegistrationEventType" NOT NULL,
+    "payload" JSONB NOT NULL,
+
+    CONSTRAINT "MylistRegistrationEvent_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -71,14 +110,41 @@ CREATE TABLE "MylistGroup" (
 );
 
 -- CreateTable
+CREATE TABLE "MylistGroupEvent" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT NOT NULL,
+    "groupId" TEXT NOT NULL,
+    "type" "MylistGroupEventType" NOT NULL,
+    "payload" JSONB NOT NULL,
+
+    CONSTRAINT "MylistGroupEvent_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "MylistGroupMylistInclsion" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "mylistId" TEXT NOT NULL,
     "groupId" TEXT NOT NULL,
+    "isRemoved" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "MylistGroupMylistInclsion_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "MylistGroupMylistInclsionEvent" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT NOT NULL,
+    "inclusionId" TEXT NOT NULL,
+    "type" "MylistGroupMylistInclsionEventType" NOT NULL,
+    "payload" JSONB NOT NULL,
+
+    CONSTRAINT "MylistGroupMylistInclsionEvent_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -112,7 +178,7 @@ CREATE TABLE "TagEvent" (
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" TEXT NOT NULL,
     "tagId" TEXT NOT NULL,
-    "type" "VideoEventType" NOT NULL,
+    "type" "TagEventType" NOT NULL,
     "payload" JSONB NOT NULL,
 
     CONSTRAINT "TagEvent_pkey" PRIMARY KEY ("id")
@@ -372,19 +438,43 @@ CREATE UNIQUE INDEX "NicovideoVideoSource_sourceId_videoId_key" ON "NicovideoVid
 ALTER TABLE "Mylist" ADD CONSTRAINT "Mylist_holderId_fkey" FOREIGN KEY ("holderId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "MylistEvent" ADD CONSTRAINT "MylistEvent_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "MylistEvent" ADD CONSTRAINT "MylistEvent_mylistId_fkey" FOREIGN KEY ("mylistId") REFERENCES "Mylist"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "MylistRegistration" ADD CONSTRAINT "MylistRegistration_videoId_fkey" FOREIGN KEY ("videoId") REFERENCES "Video"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "MylistRegistration" ADD CONSTRAINT "MylistRegistration_mylistId_fkey" FOREIGN KEY ("mylistId") REFERENCES "Mylist"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "MylistRegistrationEvent" ADD CONSTRAINT "MylistRegistrationEvent_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "MylistRegistrationEvent" ADD CONSTRAINT "MylistRegistrationEvent_mylistRegistrationId_fkey" FOREIGN KEY ("mylistRegistrationId") REFERENCES "MylistRegistration"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "MylistGroup" ADD CONSTRAINT "MylistGroup_holderId_fkey" FOREIGN KEY ("holderId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "MylistGroupEvent" ADD CONSTRAINT "MylistGroupEvent_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "MylistGroupEvent" ADD CONSTRAINT "MylistGroupEvent_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "MylistGroup"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "MylistGroupMylistInclsion" ADD CONSTRAINT "MylistGroupMylistInclsion_mylistId_fkey" FOREIGN KEY ("mylistId") REFERENCES "Mylist"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "MylistGroupMylistInclsion" ADD CONSTRAINT "MylistGroupMylistInclsion_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "MylistGroup"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "MylistGroupMylistInclsionEvent" ADD CONSTRAINT "MylistGroupMylistInclsionEvent_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "MylistGroupMylistInclsionEvent" ADD CONSTRAINT "MylistGroupMylistInclsionEvent_inclusionId_fkey" FOREIGN KEY ("inclusionId") REFERENCES "MylistGroupMylistInclsion"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

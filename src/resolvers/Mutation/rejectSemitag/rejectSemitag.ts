@@ -22,7 +22,7 @@ export const reject = async (
       events: {
         create: {
           userId,
-          type: SemitagEventType.REJECTED,
+          type: SemitagEventType.REJECT,
           payload: {},
         },
       },
