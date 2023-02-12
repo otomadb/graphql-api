@@ -6,9 +6,9 @@ input UndoLikeVideoInput {
   videoId: ID!
 }
 
-union UndoLikeVideoPayload = UndoLikeVideoSuccessedPayload | UndoLikeVideoFailedPayload
+union UndoLikeVideoPayload = UndoLikeVideoSucceededPayload | UndoLikeVideoFailedPayload
 
-type UndoLikeVideoSuccessedPayload {
+type UndoLikeVideoSucceededPayload {
   video: Video!
   mylist: Mylist!
 }

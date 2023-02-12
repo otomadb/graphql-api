@@ -238,5 +238,8 @@ export const registerVideo = ({ prisma }: Pick<ResolverDeps, "prisma" | "neo4j">
     }
 
     const video = result.data;
-    return { video: new VideoModel(video) };
+    return {
+      __typename: "RegisterVideoSucceededPayload",
+      video: new VideoModel(video),
+    };
   }) satisfies MutationResolvers["registerVideo"];

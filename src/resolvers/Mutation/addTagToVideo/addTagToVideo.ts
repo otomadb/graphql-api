@@ -125,7 +125,7 @@ export const addTagToVideo = ({ neo4j, prisma }: Pick<ResolverDeps, "prisma" | "
     });
 
     return {
-      __typename: "AddTagToVideoSuccessedPayload",
+      __typename: "AddTagToVideoSucceededPayload",
 
       video: new VideoModel(tagging.video),
       tag: new TagModel(tagging.tag),

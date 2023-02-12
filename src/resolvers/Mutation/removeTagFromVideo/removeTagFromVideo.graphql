@@ -7,9 +7,9 @@ input RemoveTagFromVideoInput {
   tagId: ID!
 }
 
-union RemoveTagFromVideoPayload = RemoveTagFromVideoSuccessedPayload | RemoveTagFromVideoFailedPayload
+union RemoveTagFromVideoPayload = RemoveTagFromVideoSucceededPayload | RemoveTagFromVideoFailedPayload
 
-type RemoveTagFromVideoSuccessedPayload {
+type RemoveTagFromVideoSucceededPayload {
   video: Video!
   tag: Tag!
 }

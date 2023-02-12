@@ -78,7 +78,7 @@ export const undoLikeVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "
     await undoLikeVideoInNeo4j(neo4j, { mylistId: registration.mylistId, videoId: registration.videoId });
 
     return {
-      __typename: "UndoLikeVideoSuccessedPayload",
+      __typename: "UndoLikeVideoSucceededPayload",
       video: new VideoModel(registration.video),
       mylist: new MylistModel(registration.mylist),
     };

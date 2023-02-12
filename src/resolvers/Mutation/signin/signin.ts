@@ -49,7 +49,7 @@ export const signin = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
     );
 
     return {
-      __typename: "SigninSuccessedPayload",
+      __typename: "SigninSucceededPayload",
       user: new UserModel(user),
     };
   }) satisfies MutationResolvers["signin"];

@@ -14,9 +14,9 @@ input RegisterTagInput {
   resolveSemitags: [ID!]! = []
 }
 
-union RegisterTagPayload = RegisterTagSuccessedPayload | RegisterTagFailedPayload
+union RegisterTagPayload = RegisterTagSucceededPayload | RegisterTagFailedPayload
 
-type RegisterTagSuccessedPayload {
+type RegisterTagSucceededPayload {
   tag: Tag!
 }
 
