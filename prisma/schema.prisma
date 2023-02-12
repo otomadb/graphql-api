@@ -102,10 +102,9 @@ model Tag {
   id     String @id
   serial Int    @unique @default(autoincrement())
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
   meaningless Boolean
-  semitags    Semitag[]
 
   names TagName[]
 
@@ -412,6 +411,8 @@ model VideoTag {
 
   events VideoTagEvent[]
 
+  semitags Semitag[]
+
   @@unique([videoId, tagId])
 }
 
@@ -446,9 +447,10 @@ model Semitag {
   videoId String
   video   Video  @relation(fields: [videoId], references: [id])
 
-  isResolved Boolean
-  tagId      String?
-  tag        Tag?    @relation(fields: [tagId], references: [id])
+  isChecked Boolean @map("isResolved")
+
+  videoTag   VideoTag? @relation(fields: [videoTagId], references: [id])
+  videoTagId String?
 
   events SemitagEvent[]
 }
@@ -471,6 +473,9 @@ model SemitagEvent {
 
 enum SemitagEventType {
   CREATED
+
+  RESOLVED
+  REJECTED
 }
 
 model NicovideoVideoSource {
