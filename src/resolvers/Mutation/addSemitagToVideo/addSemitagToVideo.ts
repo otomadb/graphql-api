@@ -1,31 +1,53 @@
-import { UserRole } from "@prisma/client";
-import { GraphQLError } from "graphql";
-
-import { ensureContextUser } from "../../ensureContextUser.js";
-import { MutationResolvers } from "../../graphql.js";
-import { GraphQLNotExistsInDBError, parseGqlID } from "../../id.js";
+import { AddSemitagToVideoFailedMessage, MutationResolvers } from "../../graphql.js";
+import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { SemitagModel } from "../../Semitag/model.js";
 
 export const addSemitagToVideo = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
-  ensureContextUser(prisma, UserRole.NORMAL, async (_parent, { input: { videoId: videoGqlId, name: semitagName } }) => {
-    const videoId = parseGqlID("Video", videoGqlId);
+  (async (_parent, { input: { videoId: videoGqlId, name: semitagName } }, { user }) => {
+    if (!user)
+      return {
+        __typename: "AddSemitagToVideoFailedPayload",
+        message: AddSemitagToVideoFailedMessage.Forbidden,
+      };
 
-    if (!(await prisma.video.findUnique({ where: { id: videoId } })))
-      throw new GraphQLNotExistsInDBError("Video", videoId);
+    const videoId = parseGqlID2("Video", videoGqlId);
+    if (videoId.status === "error")
+      return {
+        __typename: "AddSemitagToVideoFailedPayload",
+        message: AddSemitagToVideoFailedMessage.InvalidVideoId,
+      };
 
-    if (await prisma.semitag.findFirst({ where: { videoId, name: semitagName, isChecked: false } }))
-      throw new GraphQLError(`"${semitagName}" is already registered for "${videoGqlId}"`);
+    if (!(await prisma.video.findUnique({ where: { id: videoId.data } })))
+      return {
+        __typename: "AddSemitagToVideoFailedPayload",
+        message: AddSemitagToVideoFailedMessage.VideoNotFound,
+      };
+
+    const tagging = await prisma.semitag.findFirst({
+      where: { videoId: videoId.data, name: semitagName },
+    });
+    if (tagging && !tagging.isChecked)
+      return {
+        __typename: "AddSemitagToVideoFailedPayload",
+        message: AddSemitagToVideoFailedMessage.AlreadyAttached,
+      };
+    else if (tagging && tagging.isChecked)
+      return {
+        __typename: "AddSemitagToVideoFailedPayload",
+        message: AddSemitagToVideoFailedMessage.AlreadyChecked,
+      };
 
     const semitag = await prisma.semitag.create({
       data: {
         name: semitagName,
-        videoId,
+        videoId: videoId.data,
         isChecked: false,
       },
     });
 
     return {
+      __typename: "AddSemitagToVideoSuccessedPayload",
       semitag: new SemitagModel(semitag),
     };
   }) satisfies MutationResolvers["addSemitagToVideo"];

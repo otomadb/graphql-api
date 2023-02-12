@@ -7,6 +7,27 @@ input AddSemitagToVideoInput {
   name: String!
 }
 
-type AddSemitagToVideoPayload {
+union AddSemitagToVideoPayload = AddSemitagToVideoSuccessedPayload | AddSemitagToVideoFailedPayload
+
+type AddSemitagToVideoSuccessedPayload {
   semitag: Semitag!
+}
+
+type AddSemitagToVideoFailedPayload {
+  message: AddSemitagToVideoFailedMessage!
+}
+
+enum AddSemitagToVideoFailedMessage {
+  FORBIDDEN
+
+  INVALID_VIDEO_ID
+  VIDEO_NOT_FOUND
+
+  "すでに同名の仮タグが付いている"
+  ALREADY_ATTACHED
+
+  "すでにこの仮タグはチェックした"
+  ALREADY_CHECKED
+
+  UNKNOWN
 }
