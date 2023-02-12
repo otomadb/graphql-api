@@ -3,4 +3,11 @@ type NicovideoVideoSource implements Node & VideoSource {
   sourceId: String!
   video: Video!
   url: String!
+
+  events(input: NicovideoVideoSourceEventsInput!): NicovideoVideoSourceEventConnection!
+}
+
+input NicovideoVideoSourceEventsInput {
+  skip: Int! = 0
+  limit: Int! = 10
 }

@@ -14,6 +14,10 @@ import { resolveMylistTagInclusion } from "./MylistTagInclusion/index.js";
 import { resolveMylistVideoRecommendation } from "./MylistVideoRecommendation/index.js";
 import { resolveNicovideoOriginalSourceTag } from "./NicovideoOriginalSourceTag/index.js";
 import { resolveNicovideoVideoSource } from "./NicovideoVideoSource/index.js";
+import {
+  resolveNicovideoVideoSourceCreateEvent,
+  resolveNicovideoVideoSourceEvent,
+} from "./NicovideoVideoSourceEvent/index.js";
 import { resolveQuery } from "./Query/index.js";
 import { resolveSemitag } from "./Semitag/index.js";
 import {
@@ -26,7 +30,6 @@ import { resolveSession } from "./Session/index.js";
 import { resolveTag } from "./Tag/index.js";
 import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
-import { resolveVideoAddNicovideoSourceEvent } from "./VideoAddNicovideoSourceEvent/index.js";
 import { resolveVideoEvent, resolveVideoRegisterEvent } from "./VideoEvent/index.js";
 import { resolveVideoTag } from "./VideoTag/index.js";
 import {
@@ -67,6 +70,8 @@ export const resolvers = (deps: ResolverDeps) =>
     MylistVideoRecommendation: resolveMylistVideoRecommendation(deps),
     NicovideoOriginalSourceTag: resolveNicovideoOriginalSourceTag(deps),
     NicovideoVideoSource: resolveNicovideoVideoSource(deps),
+    NicovideoVideoSourceCreateEvent: resolveNicovideoVideoSourceCreateEvent(deps),
+    NicovideoVideoSourceEvent: resolveNicovideoVideoSourceEvent(),
     Query: resolveQuery(deps),
     Semitag: resolveSemitag(deps),
     SemitagEvent: resolveSemitagEvent(),
@@ -77,7 +82,6 @@ export const resolvers = (deps: ResolverDeps) =>
     Tag: resolveTag(deps),
     User: resolveUser(deps),
     Video: resolveVideo(deps),
-    VideoAddNicovideoSourceEvent: resolveVideoAddNicovideoSourceEvent(deps),
     VideoEvent: resolveVideoEvent(),
     VideoRegisterEvent: resolveVideoRegisterEvent(deps),
     VideoTag: resolveVideoTag(deps),
