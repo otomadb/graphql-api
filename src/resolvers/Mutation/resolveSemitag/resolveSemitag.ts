@@ -75,7 +75,7 @@ export const resolve = async (
         events: {
           create: {
             userId,
-            type: VideoTagEventType.CREATED,
+            type: VideoTagEventType.ATTACHED,
             payload: {},
           },
         },
