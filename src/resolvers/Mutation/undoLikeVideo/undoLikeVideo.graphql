@@ -6,7 +6,23 @@ input UndoLikeVideoInput {
   videoId: ID!
 }
 
-type UndoLikeVideoPayload {
+union UndoLikeVideoPayload = UndoLikeVideoSuccessedPayload | UndoLikeVideoFailedPayload
+
+type UndoLikeVideoSuccessedPayload {
   video: Video!
   mylist: Mylist!
+}
+
+type UndoLikeVideoFailedPayload {
+  message: UndoLikeVideoFailedMessage!
+}
+
+enum UndoLikeVideoFailedMessage {
+  FORBIDDEN
+
+  INVALID_VIDEO_ID
+  VIDEO_NOT_FOUND
+  VIDEO_NOT_LIKED
+
+  UNKNOWN
 }
