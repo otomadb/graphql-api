@@ -30,26 +30,26 @@ export const resolveVideoTitleEvent = () =>
     __resolveType({ type }) {
       switch (type) {
         case VideoTitleEventType.CREATED:
-          return "VideoTitleCreateEventType";
+          return "VideoTitleCreateEvent";
         case VideoTitleEventType.SET_PRIMARY:
-          return "VideoTitleSetPrimaryEventType";
+          return "VideoTitleSetPrimaryEvent";
         case VideoTitleEventType.UNSET_PRIMARY:
-          return "VideoTitleUnsetPrimaryEventType";
+          return "VideoTitleUnsetPrimaryEvent";
       }
     },
   } satisfies Resolvers["VideoTitleEvent"]);
 
-export const resolveVideoTitleCreateEventType = (deps: Pick<ResolverDeps, "prisma">) =>
+export const resolveVideoTitleCreateEvent = (deps: Pick<ResolverDeps, "prisma">) =>
   ({
     ...resolveVideoEventCommonProps(deps),
-  } satisfies Resolvers["VideoTitleCreateEventType"]);
+  } satisfies Resolvers["VideoTitleCreateEvent"]);
 
-export const resolveVideoTitleSetPrimaryEventType = (deps: Pick<ResolverDeps, "prisma">) =>
+export const resolveVideoTitleSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma">) =>
   ({
     ...resolveVideoEventCommonProps(deps),
-  } satisfies Resolvers["VideoTitleSetPrimaryEventType"]);
+  } satisfies Resolvers["VideoTitleSetPrimaryEvent"]);
 
-export const resolveVideoTitleUnsetPrimaryEventType = (deps: Pick<ResolverDeps, "prisma">) =>
+export const resolveVideoTitleUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma">) =>
   ({
     ...resolveVideoEventCommonProps(deps),
-  } satisfies Resolvers["VideoTitleUnsetPrimaryEventType"]);
+  } satisfies Resolvers["VideoTitleUnsetPrimaryEvent"]);
