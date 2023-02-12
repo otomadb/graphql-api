@@ -1,0 +1,35 @@
+interface VideoThumbnailEvent implements Node {
+  id: ID!
+  createdAt: DateTime!
+
+  user: User!
+  videoThumbnail: VideoThumbnail!
+}
+
+type VideoThumbnailCreateEvent implements VideoThumbnailEvent & Node {
+  id: ID!
+  createdAt: DateTime!
+
+  user: User!
+  videoThumbnail: VideoThumbnail!
+}
+
+type VideoThumbnailSetPrimaryEvent implements VideoThumbnailEvent & Node {
+  id: ID!
+  createdAt: DateTime!
+
+  user: User!
+  videoThumbnail: VideoThumbnail!
+}
+
+type VideoThumbnailUnsetPrimaryEvent implements VideoThumbnailEvent & Node {
+  id: ID!
+  createdAt: DateTime!
+
+  user: User!
+  videoThumbnail: VideoThumbnail!
+}
+
+type VideoThumbnailEventsConnection {
+  nodes: [VideoThumbnailEvent!]!
+}

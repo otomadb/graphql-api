@@ -6,6 +6,7 @@ import { ResolverDeps } from "../index.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
 import { SemitagModel } from "../Semitag/model.js";
 import { VideoEventModel } from "../VideoEvent/model.js";
+import { VideoThumbnailModel } from "../VideoThumbnail/model.js";
 import { VideoTitleModel } from "../VideoTitle/model.js";
 import { resolveSimilarVideos } from "./similarVideos.js";
 import { resolveTags } from "./tags.js";
@@ -29,10 +30,9 @@ export const resolveVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "n
       if (!thumbnail) throw new GraphQLError(`primary thumbnail for video ${videoId} is not found`);
       return thumbnail.imageUrl;
     },
-    thumbnails: async ({ id: videoId }) => {
-      const thumbnails = await prisma.videoThumbnail.findMany({ where: { videoId } });
-      return thumbnails.map((t) => ({ imageUrl: t.imageUrl, primary: t.isPrimary }));
-    },
+
+    thumbnails: async ({ id: videoId }) =>
+      prisma.videoThumbnail.findMany({ where: { videoId } }).then((vs) => vs.map((t) => new VideoThumbnailModel(t))),
 
     tags: resolveTags({ prisma }),
     hasTag: async ({ id: videoId }, { id: tagGqlId }) =>
