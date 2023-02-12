@@ -14,14 +14,14 @@ export const addSemitagToVideo = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
     if (!(await prisma.video.findUnique({ where: { id: videoId } })))
       throw new GraphQLNotExistsInDBError("Video", videoId);
 
-    if (await prisma.semitag.findFirst({ where: { videoId, name: semitagName, isResolved: false } }))
+    if (await prisma.semitag.findFirst({ where: { videoId, name: semitagName, isChecked: false } }))
       throw new GraphQLError(`"${semitagName}" is already registered for "${videoGqlId}"`);
 
     const semitag = await prisma.semitag.create({
       data: {
         name: semitagName,
         videoId,
-        isResolved: false,
+        isChecked: false,
       },
     });
 

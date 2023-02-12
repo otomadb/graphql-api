@@ -57,7 +57,7 @@ export const resolveVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "n
 
     semitags: ({ id: videoId }, { resolved }) =>
       prisma.semitag
-        .findMany({ where: { videoId, isResolved: resolved?.valueOf() } })
+        .findMany({ where: { videoId, isChecked: resolved?.valueOf() } })
         .then((semitags) => semitags.map((semitag) => new SemitagModel(semitag))),
 
     events: async ({ id: videoId }, { input }) => {

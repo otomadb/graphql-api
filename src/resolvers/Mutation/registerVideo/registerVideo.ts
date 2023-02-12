@@ -90,7 +90,7 @@ export const register = async (
   const dataSemitags = semitagNames.map((name) => ({
     id: ulid(),
     name,
-    isResolved: false,
+    isChecked: false,
   }));
   const dataNicovideoSources = nicovideoVideoSourceIds.map((sourceId) => ({
     id: ulid(),
