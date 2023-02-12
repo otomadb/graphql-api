@@ -1,10 +1,9 @@
-import { UserRole } from "@prisma/client";
-import { GraphQLError } from "graphql";
+import { Tag, UserRole } from "@prisma/client";
 import { ulid } from "ulid";
 
-import { ensureContextUser } from "../../ensureContextUser.js";
-import { MutationRegisterTagArgs, MutationResolvers } from "../../graphql.js";
-import { parseGqlID, parseGqlIDs } from "../../id.js";
+import { Result } from "../../../utils/Result.js";
+import { MutationResolvers, RegisterTagFailedMessage } from "../../graphql.js";
+import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 
@@ -31,168 +30,126 @@ export const registerTagInNeo4j = async (neo4j: ResolverDeps["neo4j"], rels: { v
   }
 };
 
-export const registerTagScaffold =
-  ({ prisma }: Pick<ResolverDeps, "prisma">) =>
-  async (_: unknown, { input }: MutationRegisterTagArgs) => {
-    const { primaryName, extraNames, meaningless } = input;
+export const register = async (
+  prisma: ResolverDeps["prisma"],
+  {
+    extraNames,
+    meaningless,
+    primaryName,
+    explicitParentId,
+    implicitParentIds,
+    semitagIds,
+  }: {
+    primaryName: string;
+    extraNames: string[];
 
-    // implicitParentsの中にexplicitParentが存在すればエラー
-    if (input.explicitParent && input.implicitParents.includes(input.explicitParent))
-      throw new GraphQLError(`"${input.explicitParent}" is specified as explicitParent and also implicitParents`);
+    meaningless: boolean;
 
-    // implicitParentsの中で重複チェック
-    const duplicatedImplicitParentGqlId = input.implicitParents.find((id, i, arr) => arr.indexOf(id) !== i);
-    if (duplicatedImplicitParentGqlId)
-      throw new GraphQLError(`"${duplicatedImplicitParentGqlId}" is duplicated in implicitParents`);
+    explicitParentId: string | null;
+    implicitParentIds: string[];
 
-    const explicitParentId = input.explicitParent ? parseGqlID("Tag", input.explicitParent) : null;
-    const implicitParentIds = parseGqlIDs("Tag", input.implicitParents);
-    const semitagIds = parseGqlIDs("Semitag", input.resolveSemitags);
+    semitagIds: string[];
+  }
+): Promise<
+  Result<
+    | { type: "COLLIDE_BETWEEN_EXPLICIT_PARENT_AND_IMPLICIT_PARENTS"; id: string }
+    | { type: "DUPLICATE_IN_IMPLICIT_PARENTS"; id: string },
+    Tag
+  >
+> => {
+  if (explicitParentId && implicitParentIds.includes(explicitParentId))
+    return {
+      status: "error",
+      error: { type: "COLLIDE_BETWEEN_EXPLICIT_PARENT_AND_IMPLICIT_PARENTS", id: explicitParentId },
+    };
 
-    const semitagVideos = await prisma.video.findMany({
-      where: { semitags: { some: { id: { in: semitagIds } } } },
-      select: { id: true },
-    });
+  const duplicatedImplicitId = implicitParentIds.find((id, i, arr) => arr.indexOf(id) !== i);
+  if (duplicatedImplicitId)
+    return {
+      status: "error",
+      error: { type: "DUPLICATE_IN_IMPLICIT_PARENTS", id: duplicatedImplicitId },
+    };
 
-    const tagId = ulid();
-    const [tag] = await prisma.$transaction([
-      prisma.tag.create({
-        data: {
-          id: tagId,
-          meaningless,
-          names: {
-            createMany: {
-              data: [
-                { name: primaryName, isPrimary: true },
-                ...extraNames.map((extraName) => ({ name: extraName, isPrimary: false })),
-              ],
-            },
-          },
-          parents: {
-            createMany: {
-              data: [
-                ...(explicitParentId ? [{ parentId: explicitParentId, isExplicit: true }] : []),
-                ...implicitParentIds.map((implicitParentId) => ({ parentId: implicitParentId, isExplicit: false })),
-              ],
-            },
+  // const semitagVideos = await prisma.video.findMany({ where: { semitags: { some: { id: { in: semitagIds } } } } });
+
+  const tagId = ulid();
+  const [tag] = await prisma.$transaction([
+    prisma.tag.create({
+      data: {
+        id: tagId,
+        meaningless,
+        names: {
+          createMany: {
+            data: [
+              { name: primaryName, isPrimary: true },
+              ...extraNames.map((extraName) => ({ name: extraName, isPrimary: false })),
+            ],
           },
         },
-      }),
-      prisma.semitag.updateMany({
-        where: { id: { in: semitagIds } },
-        data: { isResolved: true, tagId },
-      }),
-      prisma.videoTag.createMany({
-        data: semitagVideos.map(({ id: videoId }) => ({ tagId, videoId })),
-      }),
-    ]);
-    return { tag: new TagModel(tag) };
-
-    /*
-    const tagParents: TagParent[] = [];
-    const semitagVideoTags: VideoTag[] = [];
-
-    await dataSource.transaction(async (manager) => {
-      const repoTag = manager.getRepository(Tag);
-      const repoTagName = manager.getRepository(TagName);
-      const repoTagParent = manager.getRepository(TagParent);
-      const repoSemitag = manager.getRepository(Semitag);
-      const repoVideoTag = manager.getRepository(VideoTag);
-
-      await repoTag.insert(tag);
-
-      if (!explicitParentId && implicitParentIds.length === 0) {
-        for (const name of [primaryName, ...extraNames]) {
-          const already = await repoTag.findOne({ where: { tagNames: { name } } });
-          if (already) throw new GraphQLError(`"tag:${already.id}" is already registered for "${name}"`);
-        }
-      }
-
-      if (explicitParentId) {
-        const explicitParent = await repoTag.findOne({ where: { id: explicitParentId } });
-        if (!explicitParent) throw new GraphQLNotExistsInDBError("Tag", explicitParentId);
-
-        for (const name of [primaryName, ...extraNames]) {
-          const already = await repoTag.findOne({
-            where: {
-              tagNames: { name },
-              tagParents: { parent: { id: explicitParentId } },
-            },
-          });
-          if (already)
-            throw new GraphQLError(
-              `"tag:${already.id}" is already registered for "${name}" with parent "tag:${explicitParentId}"`
-            );
-        }
-        GraphQLNotExistsInDBError;
-        const explicitTagParent = new TagParent();
-        explicitTagParent.id = ulid();
-        explicitTagParent.explicit = true;
-        explicitTagParent.parent = explicitParent;
-        explicitTagParent.child = tag;
-        tagParents.push(explicitTagParent);
-      }
-
-      for (const implicitParentId of implicitParentIds) {
-        const implicitParent = await repoTag.findOne({ where: { id: implicitParentId } });
-        if (!implicitParent) throw new GraphQLNotExistsInDBError("Tag", implicitParentId);
-
-        for (const name of [primaryName, ...extraNames]) {
-          const already = await repoTag.findOne({
-            where: {
-              tagNames: { name },
-              tagParents: { parent: { id: implicitParentId } },
-            },
-          });
-          if (already)
-            throw new GraphQLError(
-              `"tag:${already.id}" is already registered for "${name}" with parent "tag:${implicitParentId}"`
-            );
-        }
-
-        const implicitTagParent = new TagParent();
-        implicitTagParent.id = ulid();
-        implicitTagParent.explicit = false;
-        implicitTagParent.parent = implicitParent;
-        implicitTagParent.child = tag;
-        tagParents.push(implicitTagParent);
-      }
-
-      for (const semitagId of semitagIds) {
-        const semitag = await repoSemitag
-          .findOneOrFail({
-            where: { id: semitagId, resolved: false },
-            relations: { video: true },
-          })
-          .catch(() => {
-            throw new GraphQLNotExistsInDBError("Semitag", semitagId);
-          });
-
-        await repoSemitag.update({ id: semitag.id }, { resolved: true, tag });
-
-        const videoTag = new VideoTag();
-        videoTag.id = ulid();
-        videoTag.tag = tag;
-        videoTag.video = semitag.video;
-
-        semitagVideoTags.push(videoTag);
-      }
-
-      await repoTagName.insert([primaryTagName, ...extraTagNames]);
-      await repoTagParent.insert(tagParents);
-      await repoVideoTag.insert(semitagVideoTags);
-    });
-
-    await registerTagInNeo4j(
-      neo4j,
-      semitagVideoTags.map(({ tag, video }) => ({ tagId: tag.id, videoId: video.id }))
-    );
-    */
+        parents: {
+          createMany: {
+            data: [
+              ...(explicitParentId ? [{ parentId: explicitParentId, isExplicit: true }] : []),
+              ...implicitParentIds.map((implicitParentId) => ({ parentId: implicitParentId, isExplicit: false })),
+            ],
+          },
+        },
+      },
+    }),
+    // TODO: Semitagの処理
+  ]);
+  return {
+    status: "ok",
+    data: tag,
   };
+};
 
 export const registerTag = ({ prisma }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  ensureContextUser(
-    prisma,
-    UserRole.EDITOR,
-    registerTagScaffold({ prisma })
-  ) satisfies MutationResolvers["registerTag"];
+  (async (_: unknown, { input }, { user }) => {
+    if (!user || (user.role !== UserRole.EDITOR && user.role !== UserRole.ADMINISTRATOR))
+      return {
+        __typename: "RegisterTagFailedPayload",
+        message: RegisterTagFailedMessage.Forbidden,
+      };
+
+    const explicitParent = input.explicitParent ? parseGqlID2("Tag", input.explicitParent) : null;
+    if (explicitParent?.status === "error")
+      return {
+        __typename: "RegisterTagFailedPayload",
+        message: RegisterTagFailedMessage.InvalidTagId, // TODO: 詳細なエラーを返すようにする
+      };
+
+    const result = await register(prisma, {
+      explicitParentId: explicitParent ? explicitParent.data : null,
+      implicitParentIds: [],
+      semitagIds: [],
+      primaryName: input.primaryName,
+      extraNames: input.extraNames,
+      meaningless: input.meaningless,
+    });
+
+    if (result.status === "error") {
+      switch (result.error.type) {
+        case "COLLIDE_BETWEEN_EXPLICIT_PARENT_AND_IMPLICIT_PARENTS":
+          return {
+            __typename: "RegisterTagFailedPayload",
+            message: RegisterTagFailedMessage.InvalidTagId,
+          };
+        case "DUPLICATE_IN_IMPLICIT_PARENTS":
+          return {
+            __typename: "RegisterTagFailedPayload",
+            message: RegisterTagFailedMessage.InvalidTagId,
+          };
+        default:
+          return {
+            __typename: "RegisterTagFailedPayload",
+            message: RegisterTagFailedMessage.Unknown,
+          };
+      }
+    }
+    const tag = result.data;
+    return {
+      __typename: "RegisterTagSuccessedPayload",
+      tag: new TagModel(tag),
+    };
+  }) satisfies MutationResolvers["registerTag"];

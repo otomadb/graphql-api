@@ -14,6 +14,20 @@ input RegisterTagInput {
   resolveSemitags: [ID!]! = []
 }
 
-type RegisterTagPayload {
+union RegisterTagPayload = RegisterTagSuccessedPayload | RegisterTagFailedPayload
+
+type RegisterTagSuccessedPayload {
   tag: Tag!
+}
+
+type RegisterTagFailedPayload {
+  message: RegisterTagFailedMessage!
+}
+
+enum RegisterTagFailedMessage {
+  FORBIDDEN
+
+  INVALID_TAG_ID
+
+  UNKNOWN
 }
