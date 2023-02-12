@@ -391,7 +391,7 @@ model VideoTag {
   videoId String
   video   Video  @relation(fields: [videoId], references: [id])
 
-  isRemoved Boolean @default(false) @map("removed")
+  isRemoved Boolean @default(false)
 
   events VideoTagEvent[]
 
@@ -434,7 +434,7 @@ model Semitag {
   videoId String
   video   Video  @relation(fields: [videoId], references: [id])
 
-  isChecked Boolean @map("isResolved")
+  isChecked Boolean
 
   videoTag   VideoTag? @relation(fields: [videoTagId], references: [id])
   videoTagId String?
