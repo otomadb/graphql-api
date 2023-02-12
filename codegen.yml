@@ -23,12 +23,15 @@ generates:
         NicovideoOriginalSourceTag: ./NicovideoOriginalSourceTag/model.js#NicovideoOriginalSourceTagModel
         NicovideoVideoSource: ./NicovideoVideoSource/model.js#NicovideoVideoSourceModel
         Semitag: ./Semitag/model.js#SemitagModel
+        SemitagEvent: ./SemitagEvent/model.js#SemitagEventModel
+        SemitagEventAttachEvent: ./SemitagEvent/model.js#SemitagEventModel
+        SemitagEventRejectEvent: ./SemitagEvent/model.js#SemitagEventModel
+        SemitagEventResolveEvent: ./SemitagEvent/model.js#SemitagEventModel
         Session: ./Session/model.js#SessionModel
         Tag: ./Tag/model.js#TagModel
         User: ./User/model.js#UserModel
         Video: ./Video/model.js#VideoModel
         VideoAddNicovideoSourceEvent: ./VideoEvent/model.js#VideoEventModel
-        VideoAddSemitagEvent: ./VideoEvent/model.js#VideoEventModel
         VideoEvent: ./VideoEvent/model.js#VideoEventModel
         VideoRegisterEvent: ./VideoEvent/model.js#VideoEventModel
         VideoSimilarity: ./VideoSimilarity/model.js#VideoSimilarityModel
