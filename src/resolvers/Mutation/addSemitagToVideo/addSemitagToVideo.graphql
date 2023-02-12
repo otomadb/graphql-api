@@ -7,9 +7,9 @@ input AddSemitagToVideoInput {
   name: String!
 }
 
-union AddSemitagToVideoPayload = AddSemitagToVideoSuccessedPayload | AddSemitagToVideoFailedPayload
+union AddSemitagToVideoPayload = AddSemitagToVideoSucceededPayload | AddSemitagToVideoFailedPayload
 
-type AddSemitagToVideoSuccessedPayload {
+type AddSemitagToVideoSucceededPayload {
   semitag: Semitag!
 }
 

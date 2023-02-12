@@ -209,7 +209,7 @@ export const registerTag = ({ prisma }: Pick<ResolverDeps, "prisma" | "neo4j">) 
     }
     const tag = result.data;
     return {
-      __typename: "RegisterTagSuccessedPayload",
+      __typename: "RegisterTagSucceededPayload",
       tag: new TagModel(tag),
     };
   }) satisfies MutationResolvers["registerTag"];

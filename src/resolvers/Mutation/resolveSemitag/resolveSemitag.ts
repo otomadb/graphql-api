@@ -147,7 +147,7 @@ export const resolveSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
 
     const { semitag } = result.data;
     return {
-      __typename: "ResolveSemitagSuccessedPayload",
+      __typename: "ResolveSemitagSucceededPayload",
       semitag: new SemitagModel(semitag),
     };
   }) satisfies MutationResolvers["resovleSemitag"];

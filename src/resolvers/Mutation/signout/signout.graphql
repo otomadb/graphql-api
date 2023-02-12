@@ -2,9 +2,9 @@ type Mutation {
   signout: SignoutPayload!
 }
 
-union SignoutPayload = SignoutSuccessedPayload | SignoutFailedPayload
+union SignoutPayload = SignoutSucceededPayload | SignoutFailedPayload
 
-type SignoutSuccessedPayload {
+type SignoutSucceededPayload {
   session: Session!
 }
 

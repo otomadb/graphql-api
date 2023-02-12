@@ -72,7 +72,7 @@ export const likeVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4
     await addMylistRegistrationInNeo4j(neo4j, { videoId: registration.videoId, mylistId: registration.mylistId });
 
     return {
-      __typename: "LikeVideoSuccessedPayload",
+      __typename: "LikeVideoSucceededPayload",
       registration: new MylistRegistrationModel(registration),
     };
   }) satisfies MutationResolvers["likeVideo"];
