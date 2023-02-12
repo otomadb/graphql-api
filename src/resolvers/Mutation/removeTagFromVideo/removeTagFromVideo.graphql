@@ -7,8 +7,29 @@ input RemoveTagFromVideoInput {
   tagId: ID!
 }
 
-type RemoveTagFromVideoPayload {
+union RemoveTagFromVideoPayload = RemoveTagFromVideoSuccessedPayload | RemoveTagFromVideoFailedPayload
+
+type RemoveTagFromVideoSuccessedPayload {
   video: Video!
   tag: Tag!
-  # history: VideoDeleteTagHistoryItem!
+}
+
+type RemoveTagFromVideoFailedPayload {
+  message: RemoveTagFromVideoFailedMessage!
+}
+
+enum RemoveTagFromVideoFailedMessage {
+  FORBIDDEN
+
+  INVALID_VIDEO_ID
+  INVALID_TAG_ID
+
+  VIDEO_NOT_FOUND
+  TAG_NOT_FOUND
+
+  NO_TAGGING
+  TAGGING_ALREADY_REMOVED
+
+  "原因不明のエラー"
+  UNKNOWN
 }
