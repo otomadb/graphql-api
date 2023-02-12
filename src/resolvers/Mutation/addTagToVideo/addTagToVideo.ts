@@ -45,7 +45,7 @@ export const add = async (
         events: {
           create: {
             userId,
-            type: VideoTagEventType.REATTACHED,
+            type: VideoTagEventType.REATTACH,
             payload: {},
           },
         },
@@ -69,7 +69,7 @@ export const add = async (
         events: {
           create: {
             userId,
-            type: VideoTagEventType.ATTACHED,
+            type: VideoTagEventType.ATTACH,
             payload: {},
           },
         },
@@ -125,7 +125,7 @@ export const addTagToVideo = ({ neo4j, prisma }: Pick<ResolverDeps, "prisma" | "
     });
 
     return {
-      __typename: "AddTagToVideoSuccessedPayload",
+      __typename: "AddTagToVideoSucceededPayload",
 
       video: new VideoModel(tagging.video),
       tag: new TagModel(tagging.tag),

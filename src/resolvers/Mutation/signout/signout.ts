@@ -66,7 +66,7 @@ export const signout = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
     );
 
     return {
-      __typename: "SignoutSuccessedPayload",
+      __typename: "SignoutSucceededPayload",
       session: new SessionModel(session),
     };
   }) satisfies MutationResolvers["signout"];

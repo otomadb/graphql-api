@@ -44,7 +44,7 @@ export const remove = async (
       events: {
         create: {
           userId: authUserId,
-          type: VideoTagEventType.REMOVED,
+          type: VideoTagEventType.DETACH,
           payload: {},
         },
       },
@@ -110,7 +110,7 @@ export const removeTagFromVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma
     await removeInNeo4j(neo4j, { videoId: tagging.video.id, tagId: tagging.tag.id });
 
     return {
-      __typename: "RemoveTagFromVideoSuccessedPayload",
+      __typename: "RemoveTagFromVideoSucceededPayload",
       tag: new TagModel(tagging.tag),
       video: new VideoModel(tagging.video),
     };

@@ -6,9 +6,9 @@ input LikeVideoInput {
   videoId: ID!
 }
 
-union LikeVideoPayload = LikeVideoSuccessedPayload | LikeVideoFailedPayload
+union LikeVideoPayload = LikeVideoSucceededPayload | LikeVideoFailedPayload
 
-type LikeVideoSuccessedPayload {
+type LikeVideoSucceededPayload {
   registration: MylistRegistration!
 }
 

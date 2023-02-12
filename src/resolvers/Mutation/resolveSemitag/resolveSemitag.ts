@@ -61,7 +61,7 @@ export const resolve = async (
         events: {
           create: {
             userId,
-            type: SemitagEventType.RESOLVED,
+            type: SemitagEventType.RESOLVE,
             payload: {},
           },
         },
@@ -75,7 +75,7 @@ export const resolve = async (
         events: {
           create: {
             userId,
-            type: VideoTagEventType.ATTACHED,
+            type: VideoTagEventType.ATTACH,
             payload: {},
           },
         },
@@ -147,7 +147,7 @@ export const resolveSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
 
     const { semitag } = result.data;
     return {
-      __typename: "ResolveSemitagSuccessedPayload",
+      __typename: "ResolveSemitagSucceededPayload",
       semitag: new SemitagModel(semitag),
     };
   }) satisfies MutationResolvers["resovleSemitag"];

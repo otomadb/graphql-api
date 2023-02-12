@@ -9,9 +9,9 @@ input SignupInput {
   password: String!
 }
 
-union SignupPayload = SignupSuccessedPayload | SignupFailedPayload
+union SignupPayload = SignupSucceededPayload | SignupFailedPayload
 
-type SignupSuccessedPayload {
+type SignupSucceededPayload {
   user: User!
 }
 

@@ -48,7 +48,7 @@ export const addSemitagToVideo = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
         events: {
           create: {
             userId: user.id,
-            type: SemitagEventType.ATTACHED,
+            type: SemitagEventType.ATTACH,
             payload: {},
           },
         },
@@ -56,7 +56,7 @@ export const addSemitagToVideo = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
     });
 
     return {
-      __typename: "AddSemitagToVideoSuccessedPayload",
+      __typename: "AddSemitagToVideoSucceededPayload",
       semitag: new SemitagModel(semitag),
     };
   }) satisfies MutationResolvers["addSemitagToVideo"];

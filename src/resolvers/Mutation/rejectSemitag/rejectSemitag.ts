@@ -22,7 +22,7 @@ export const reject = async (
       events: {
         create: {
           userId,
-          type: SemitagEventType.REJECTED,
+          type: SemitagEventType.REJECT,
           payload: {},
         },
       },
@@ -75,7 +75,7 @@ export const rejectSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
 
     const semitag = result.data;
     return {
-      __typename: "RejectSemitagSuccessedPayload",
+      __typename: "RejectSemitagSucceededPayload",
       semitag: new SemitagModel(semitag),
     };
   }) satisfies MutationResolvers["rejectSemitag"];

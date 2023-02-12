@@ -29,12 +29,34 @@ model Mylist {
   registrations MylistRegistration[]
 
   includedGroups MylistGroupMylistInclsion[]
+
+  events MylistEvent[]
 }
 
 enum MylistShareRange {
   PUBLIC
   KNOW_LINK
   PRIVATE
+}
+
+model MylistEvent {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  mylist   Mylist @relation(fields: [mylistId], references: [id])
+  mylistId String
+
+  type    MylistEventType
+  payload Json
+}
+
+enum MylistEventType {
+  CREATE
 }
 
 model MylistRegistration {
@@ -51,7 +73,34 @@ model MylistRegistration {
   mylistId String
   mylist   Mylist @relation(fields: [mylistId], references: [id])
 
+  isRemoved Boolean @default(false)
+
+  events MylistRegistrationEvent[]
+
   @@unique([mylistId, videoId])
+}
+
+model MylistRegistrationEvent {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  mylist               MylistRegistration @relation(fields: [mylistRegistrationId], references: [id])
+  mylistRegistrationId String
+
+  type    MylistRegistrationEventType
+  payload Json
+}
+
+enum MylistRegistrationEventType {
+  REGISTER
+
+  UNREGISTER
+  REREGISTER
 }
 
 model MylistGroup {
@@ -66,6 +115,28 @@ model MylistGroup {
   holder   User   @relation(fields: [holderId], references: [id])
 
   mylists MylistGroupMylistInclsion[]
+
+  events MylistGroupEvent[]
+}
+
+model MylistGroupEvent {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  group   MylistGroup @relation(fields: [groupId], references: [id])
+  groupId String
+
+  type    MylistGroupEventType
+  payload Json
+}
+
+enum MylistGroupEventType {
+  CREATE
 }
 
 model MylistGroupMylistInclsion {
@@ -80,7 +151,34 @@ model MylistGroupMylistInclsion {
   groupId String
   group   MylistGroup @relation(fields: [groupId], references: [id])
 
+  isRemoved Boolean @default(false)
+
+  events MylistGroupMylistInclsionEvent[]
+
   @@unique([mylistId, groupId])
+}
+
+model MylistGroupMylistInclsionEvent {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  inclusion   MylistGroupMylistInclsion @relation(fields: [inclusionId], references: [id])
+  inclusionId String
+
+  type    MylistGroupMylistInclsionEventType
+  payload Json
+}
+
+enum MylistGroupMylistInclsionEventType {
+  INCLUDE
+
+  EXCLUDE
+  REINCLUDE
 }
 
 model Session {
@@ -133,7 +231,7 @@ model TagEvent {
 }
 
 enum TagEventType {
-  CREATED
+  CREATE
 }
 
 model TagName {
@@ -171,7 +269,7 @@ model TagNameEvent {
 }
 
 enum TagNameEventType {
-  CREATED
+  CREATE
 
   SET_PRIMARY
   UNSET_PRIMARY
@@ -213,7 +311,7 @@ model TagParentEvent {
 }
 
 enum TagParentEventType {
-  CREATED
+  CREATE
 
   SET_PRIMARY
   UNSET_PRIMARY
@@ -253,6 +351,11 @@ model User {
   eventsVideoThumbnail  VideoThumbnailEvent[]
   eventsNicovideoSource NicovideoVideoSourceEvent[]
   eventsSemitag         SemitagEvent[]
+
+  eventsMylist                   MylistEvent[]
+  eventMylistRegistration        MylistRegistrationEvent[]
+  eventMylistGroup               MylistGroupEvent[]
+  eventMylistGroupMylistInclsion MylistGroupMylistInclsionEvent[]
 }
 
 enum UserRole {
@@ -335,7 +438,7 @@ model VideoTitleEvent {
 }
 
 enum VideoTitleEventType {
-  CREATED
+  CREATE
 
   SET_PRIMARY
   UNSET_PRIMARY
@@ -373,7 +476,7 @@ model VideoThumbnailEvent {
 }
 
 enum VideoThumbnailEventType {
-  CREATED
+  CREATE
 
   SET_PRIMARY
   UNSET_PRIMARY
@@ -417,10 +520,10 @@ model VideoTagEvent {
 }
 
 enum VideoTagEventType {
-  ATTACHED
+  ATTACH
 
-  REMOVED
-  REATTACHED
+  DETACH
+  REATTACH
 }
 
 model Semitag {
@@ -459,10 +562,10 @@ model SemitagEvent {
 }
 
 enum SemitagEventType {
-  ATTACHED
+  ATTACH
 
-  RESOLVED
-  REJECTED
+  RESOLVE
+  REJECT
 }
 
 model NicovideoVideoSource {
@@ -498,5 +601,5 @@ model NicovideoVideoSourceEvent {
 }
 
 enum NicovideoVideoSourceEventType {
-  CREATED
+  CREATE
 }

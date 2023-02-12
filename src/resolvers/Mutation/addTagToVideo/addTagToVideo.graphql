@@ -7,9 +7,9 @@ input AddTagToVideoInput {
   tagId: ID!
 }
 
-union AddTagToVideoPayload = AddTagToVideoSuccessedPayload | AddTagToVideoFailedPayload
+union AddTagToVideoPayload = AddTagToVideoSucceededPayload | AddTagToVideoFailedPayload
 
-type AddTagToVideoSuccessedPayload {
+type AddTagToVideoSucceededPayload {
   video: Video!
   tag: Tag!
 }

@@ -123,7 +123,7 @@ export const register = async (
         ...dataTitles.map(({ id }) => ({
           userId: authUserId,
           videoTitleId: id,
-          type: VideoTitleEventType.CREATED,
+          type: VideoTitleEventType.CREATE,
           payload: {},
         })),
         {
@@ -139,7 +139,7 @@ export const register = async (
         ...dataThumbnails.map(({ id }) => ({
           userId: authUserId,
           videoThumbnailId: id,
-          type: VideoThumbnailEventType.CREATED,
+          type: VideoThumbnailEventType.CREATE,
           payload: {},
         })),
         {
@@ -155,7 +155,7 @@ export const register = async (
         ...dataTags.map(({ id }) => ({
           userId: authUserId,
           videoTagId: id,
-          type: VideoTagEventType.ATTACHED,
+          type: VideoTagEventType.ATTACH,
           payload: {},
         })),
       ],
@@ -165,7 +165,7 @@ export const register = async (
         ...dataSemitags.map(({ id }) => ({
           userId: authUserId,
           semitagId: id,
-          type: SemitagEventType.ATTACHED,
+          type: SemitagEventType.ATTACH,
           payload: {},
         })),
       ],
@@ -175,7 +175,7 @@ export const register = async (
         ...dataNicovideoSources.map(({ id }) => ({
           userId: authUserId,
           sourceId: id,
-          type: NicovideoVideoSourceEventType.CREATED,
+          type: NicovideoVideoSourceEventType.CREATE,
           payload: {},
         })),
       ],
@@ -238,5 +238,8 @@ export const registerVideo = ({ prisma }: Pick<ResolverDeps, "prisma" | "neo4j">
     }
 
     const video = result.data;
-    return { video: new VideoModel(video) };
+    return {
+      __typename: "RegisterVideoSucceededPayload",
+      video: new VideoModel(video),
+    };
   }) satisfies MutationResolvers["registerVideo"];
