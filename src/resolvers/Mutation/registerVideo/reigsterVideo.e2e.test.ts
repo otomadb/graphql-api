@@ -1,9 +1,28 @@
 import { describe } from "@jest/globals";
-import { PrismaClient } from "@prisma/client";
+import {
+  NicovideoVideoSource,
+  NicovideoVideoSourceEvent,
+  NicovideoVideoSourceEventType,
+  PrismaClient,
+  Semitag,
+  SemitagEvent,
+  SemitagEventType,
+  VideoEvent,
+  VideoEventType,
+  VideoTag,
+  VideoTagEvent,
+  VideoTagEventType,
+  VideoThumbnail,
+  VideoThumbnailEvent,
+  VideoThumbnailEventType,
+  VideoTitle,
+  VideoTitleEvent,
+  VideoTitleEventType,
+} from "@prisma/client";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
+import { Ok } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
-import { VideoAddTagEventPayload } from "../../VideoAddTagEvent/index.js";
 import { register } from "./registerVideo.js";
 
 describe("Mutation.registerVideo", () => {
@@ -50,14 +69,16 @@ describe("Mutation.registerVideo", () => {
       semitagNames: ["Semitag 1", "Semitag 2"],
       nicovideoSourceIds: ["sm1"],
     });
-    expect(actual).toStrictEqual(
-      expect.objectContaining({
+    expect(actual).toStrictEqual({
+      status: "ok",
+      data: expect.objectContaining({
         id: expect.any(String),
-      })
-    );
+      }),
+    } satisfies Awaited<ReturnType<typeof register>>);
 
+    const videoId = (actual as Ok<Awaited<ReturnType<typeof register>>>).data.id;
     const video = await prisma.video.findUniqueOrThrow({
-      where: { id: actual.id },
+      where: { id: videoId },
       include: {
         titles: true,
         thumbnails: true,
@@ -66,119 +87,265 @@ describe("Mutation.registerVideo", () => {
         nicovideoSources: true,
       },
     });
-    const actualEvents = await prisma.videoEvent.findMany({});
-    expect(actualEvents).toHaveLength(12);
-    expect(actualEvents).toContainEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        videoId: video.id,
-        userId: "u1",
-        type: "REGISTER",
-        payload: {},
-      })
-    );
-    expect(actualEvents).toContainEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        videoId: actual.id,
-        userId: "u1",
-        type: "ADD_TITLE",
-        payload: { id: video.titles[0].id },
-      })
-    );
-    expect(actualEvents).toContainEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        videoId: actual.id,
-        userId: "u1",
-        type: "ADD_TITLE",
-        payload: { id: video.titles[1].id },
-      })
-    );
-    expect(actualEvents).toContainEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        videoId: actual.id,
-        userId: "u1",
-        type: "ADD_TITLE",
-        payload: { id: video.titles[2].id },
-      })
-    );
-    expect(actualEvents).toContainEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        videoId: actual.id,
-        userId: "u1",
-        type: "SET_PRIMARY_TITLE",
-        payload: { id: video.titles[0].id },
-      })
+
+    const videoEvents = await prisma.videoEvent.findMany({});
+    expect(videoEvents).toHaveLength(1);
+    expect(videoEvents).toStrictEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          userId: "u1",
+          videoId: video.id,
+          type: VideoEventType.REGISTER,
+          payload: {},
+        } satisfies VideoEvent),
+      ])
     );
 
-    expect(actualEvents).toContainEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        videoId: actual.id,
-        userId: "u1",
-        type: "ADD_THUMBNAIL",
-        payload: { id: video.thumbnails[0].id },
-      })
-    );
-    expect(actualEvents).toContainEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        videoId: actual.id,
-        userId: "u1",
-        type: "SET_PRIMARY_THUMBNAIL",
-        payload: { id: video.thumbnails[0].id },
-      })
+    const videoPrimaryTitle = (await prisma.videoTitle.findFirst({
+      where: { videoId, isPrimary: true },
+    })) as VideoTitle;
+    expect(videoPrimaryTitle).toStrictEqual({
+      id: expect.any(String),
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
+      isPrimary: true,
+      title: "Video 1",
+      videoId,
+    } satisfies VideoTitle);
+
+    const videoExtraTitles = await prisma.videoTitle.findMany({ where: { videoId, isPrimary: false } });
+    expect(videoExtraTitles).toHaveLength(2);
+    expect(videoExtraTitles).toStrictEqual(
+      expect.arrayContaining([
+        {
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          isPrimary: false,
+          title: "Video 1.1",
+          videoId,
+        } satisfies VideoTitle,
+        {
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          isPrimary: false,
+          title: "Video 1.2",
+          videoId,
+        } satisfies VideoTitle,
+      ])
     );
 
-    expect(actualEvents).toContainEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        videoId: actual.id,
-        userId: "u1",
-        type: "ADD_TAG",
-        payload: { tagId: "t1", isUpdate: false } satisfies VideoAddTagEventPayload,
-      })
-    );
-    expect(actualEvents).toContainEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        videoId: actual.id,
-        userId: "u1",
-        type: "ADD_TAG",
-        payload: { tagId: "t2", isUpdate: false } satisfies VideoAddTagEventPayload,
-      })
+    const videoTitleEvents = await prisma.videoTitleEvent.findMany({});
+    expect(videoTitleEvents).toHaveLength(4);
+    expect(videoTitleEvents).toStrictEqual(
+      expect.arrayContaining([
+        {
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          userId: "u1",
+          videoTitleId: videoPrimaryTitle.id,
+          type: VideoTitleEventType.CREATED,
+          payload: {},
+        } satisfies VideoTitleEvent,
+        {
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          userId: "u1",
+          videoTitleId: videoExtraTitles[0].id,
+          type: VideoTitleEventType.CREATED,
+          payload: {},
+        } satisfies VideoTitleEvent,
+        {
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          userId: "u1",
+          videoTitleId: videoExtraTitles[1].id,
+          type: VideoTitleEventType.CREATED,
+          payload: {},
+        } satisfies VideoTitleEvent,
+        {
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          userId: "u1",
+          videoTitleId: videoPrimaryTitle.id,
+          type: VideoTitleEventType.SET_PRIMARY,
+          payload: {},
+        } satisfies VideoTitleEvent,
+      ])
     );
 
-    expect(actualEvents).toContainEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        videoId: actual.id,
-        userId: "u1",
-        type: "ADD_SEMITAG",
-        payload: { id: video.semitags[0].id },
-      })
-    );
-    expect(actualEvents).toContainEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        videoId: actual.id,
-        userId: "u1",
-        type: "ADD_SEMITAG",
-        payload: { id: video.semitags[1].id },
-      })
+    const videoThumbnails = await prisma.videoThumbnail.findMany({ where: { videoId } });
+    expect(videoThumbnails).toHaveLength(1);
+    expect(videoThumbnails).toStrictEqual(
+      expect.arrayContaining([
+        {
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          isPrimary: true,
+          imageUrl: "https://example.com/1.jpg",
+          videoId,
+        } satisfies VideoThumbnail,
+      ])
     );
 
-    expect(actualEvents).toContainEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        videoId: actual.id,
-        userId: "u1",
-        type: "ADD_NICOVIDEO_SOURCE",
-        payload: { id: video.nicovideoSources[0].id },
-      })
+    const videoThumbnailEvents = await prisma.videoThumbnailEvent.findMany({});
+    expect(videoThumbnailEvents).toHaveLength(2);
+    expect(videoThumbnailEvents).toStrictEqual(
+      expect.arrayContaining([
+        {
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          userId: "u1",
+          videoThumbnailId: videoThumbnails[0].id,
+          type: VideoThumbnailEventType.CREATED,
+          payload: {},
+        } satisfies VideoThumbnailEvent,
+        {
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          userId: "u1",
+          videoThumbnailId: videoThumbnails[0].id,
+          type: VideoThumbnailEventType.SET_PRIMARY,
+          payload: {},
+        } satisfies VideoThumbnailEvent,
+      ])
+    );
+
+    const videoTags = await prisma.videoTag.findMany({ where: { videoId } });
+    expect(videoTags).toHaveLength(2);
+    expect(videoTags).toStrictEqual(
+      expect.arrayContaining([
+        {
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          tagId: "t1",
+          videoId,
+          isRemoved: false,
+        } satisfies VideoTag,
+        {
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          tagId: "t2",
+          videoId,
+          isRemoved: false,
+        } satisfies VideoTag,
+      ])
+    );
+
+    const videoTagEvents = await prisma.videoTagEvent.findMany({});
+    expect(videoTagEvents).toHaveLength(2);
+    expect(videoTagEvents).toStrictEqual(
+      expect.arrayContaining([
+        {
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          userId: "u1",
+          videoTagId: videoTags[0].id,
+          type: VideoTagEventType.ATTACHED,
+          payload: {},
+        } satisfies VideoTagEvent,
+        {
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          userId: "u1",
+          videoTagId: videoTags[1].id,
+          type: VideoTagEventType.ATTACHED,
+          payload: {},
+        } satisfies VideoTagEvent,
+      ])
+    );
+
+    const videoSemitags = await prisma.semitag.findMany({ where: { videoId } });
+    expect(videoSemitags).toHaveLength(2);
+    expect(videoSemitags).toStrictEqual(
+      expect.arrayContaining([
+        {
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          videoId,
+          name: "Semitag 1",
+          isChecked: false,
+          videoTagId: null,
+        } satisfies Semitag,
+        {
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          videoId,
+          name: "Semitag 2",
+          isChecked: false,
+          videoTagId: null,
+        } satisfies Semitag,
+      ])
+    );
+    const semitagEvents = await prisma.semitagEvent.findMany({});
+    expect(semitagEvents).toHaveLength(2);
+    expect(semitagEvents).toStrictEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          userId: "u1",
+          semitagId: videoSemitags[0].id,
+          type: SemitagEventType.ATTACHED,
+          payload: {},
+        } satisfies SemitagEvent),
+        expect.objectContaining({
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          userId: "u1",
+          semitagId: videoSemitags[1].id,
+          type: SemitagEventType.ATTACHED,
+          payload: {},
+        } satisfies SemitagEvent),
+      ])
+    );
+
+    const nicovideoVideoSources = await prisma.nicovideoVideoSource.findMany({ where: { videoId } });
+    expect(nicovideoVideoSources).toHaveLength(1);
+    expect(nicovideoVideoSources).toStrictEqual(
+      expect.arrayContaining([
+        {
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          videoId,
+          sourceId: "sm1",
+        } satisfies NicovideoVideoSource,
+      ])
+    );
+    const nicovideoVideoSourceEvents = await prisma.nicovideoVideoSourceEvent.findMany({});
+    expect(nicovideoVideoSourceEvents).toHaveLength(1);
+    expect(nicovideoVideoSourceEvents).toStrictEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          userId: "u1",
+          sourceId: nicovideoVideoSources[0].id,
+          type: NicovideoVideoSourceEventType.CREATED,
+          payload: {},
+        } satisfies NicovideoVideoSourceEvent),
+      ])
     );
   });
 });
