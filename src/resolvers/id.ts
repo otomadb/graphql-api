@@ -14,6 +14,8 @@ export type NodeType =
   | "User"
   | "Video"
   | "VideoEvent"
+  | "VideoThumbnail"
+  | "VideoThumbnailEvent"
   | "VideoTitle"
   | "VideoTitleEvent";
 

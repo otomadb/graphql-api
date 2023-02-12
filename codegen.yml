@@ -38,6 +38,11 @@ generates:
         VideoRemoveThumbnailEvent: ./VideoEvent/model.js#VideoEventModel
         VideoSetPrimaryThumbnailEvent: ./VideoEvent/model.js#VideoEventModel
         VideoSimilarity: ./VideoSimilarity/model.js#VideoSimilarityModel
+        VideoThumbnail: ./VideoThumbnail/model.js#VideoThumbnailModel
+        VideoThumbnailCreateEvent: ./VideoThumbnailEvent/model.js#VideoThumbnailEventModel
+        VideoThumbnailEvent: ./VideoThumbnailEvent/model.js#VideoThumbnailEventModel
+        VideoThumbnailSetPrimaryEvent: ./VideoThumbnailEvent/model.js#VideoThumbnailEventModel
+        VideoThumbnailUnsetPrimaryEvent: ./VideoThumbnailEvent/model.js#VideoThumbnailEventModel
         VideoTitle: ./VideoTitle/model.js#VideoTitleModel
         VideoTitleCreateEventType: ./VideoTitleEvent/model.js#VideoTitleEventModel
         VideoTitleEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel

@@ -29,6 +29,13 @@ import { resolveVideoRegisterEvent } from "./VideoRegisterEvent/index.js";
 import { resolveVideoRemoveTagEvent } from "./VideoRemoveTagEvent/index.js";
 import { resolveVideoRemoveThumbnailEvent } from "./VideoRemoveThumbnailEvent/index.js";
 import { resolveVideoSetPrimaryThumbnailEvent } from "./VideoSetPrimaryThumbnailEvent/index.js";
+import { resolveVideoThumbnail } from "./VideoThumbnail/index.js";
+import {
+  resolveVideoThumbnailCreateEvent,
+  resolveVideoThumbnailEvent,
+  resolveVideoThumbnailSetPrimaryEvent,
+  resolveVideoThumbnailUnsetPrimaryEvent,
+} from "./VideoThumbnailEvent/index.js";
 import { resolveVideoTitle } from "./VideoTitle/index.js";
 import {
   resolveVideoTitleCreateEventType,
@@ -69,6 +76,11 @@ export const resolvers = (deps: ResolverDeps) =>
     VideoRemoveTagEvent: resolveVideoRemoveTagEvent(deps),
     VideoRemoveThumbnailEvent: resolveVideoRemoveThumbnailEvent(deps),
     VideoSetPrimaryThumbnailEvent: resolveVideoSetPrimaryThumbnailEvent(deps),
+    VideoThumbnail: resolveVideoThumbnail(deps),
+    VideoThumbnailCreateEvent: resolveVideoThumbnailCreateEvent(deps),
+    VideoThumbnailEvent: resolveVideoThumbnailEvent(),
+    VideoThumbnailSetPrimaryEvent: resolveVideoThumbnailSetPrimaryEvent(deps),
+    VideoThumbnailUnsetPrimaryEvent: resolveVideoThumbnailUnsetPrimaryEvent(deps),
     VideoTitle: resolveVideoTitle(deps),
     VideoTitleCreateEventType: resolveVideoTitleCreateEventType(deps),
     VideoTitleEvent: resolveVideoTitleEvent(),
