@@ -32,3 +32,8 @@ export const resolveVideoEvent = () =>
       }
     },
   } satisfies Resolvers["VideoEvent"]);
+
+export const resolveVideoRegisterEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+  ({
+    ...resolveVideoEventCommonProps({ prisma }),
+  } satisfies Resolvers["VideoRegisterEvent"]);

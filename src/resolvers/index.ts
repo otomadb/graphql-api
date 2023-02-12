@@ -27,8 +27,7 @@ import { resolveTag } from "./Tag/index.js";
 import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
 import { resolveVideoAddNicovideoSourceEvent } from "./VideoAddNicovideoSourceEvent/index.js";
-import { resolveVideoEvent } from "./VideoEvent/index.js";
-import { resolveVideoRegisterEvent } from "./VideoRegisterEvent/index.js";
+import { resolveVideoEvent, resolveVideoRegisterEvent } from "./VideoEvent/index.js";
 import { resolveVideoTag } from "./VideoTag/index.js";
 import {
   resolveVideoTagAttachEvent,
