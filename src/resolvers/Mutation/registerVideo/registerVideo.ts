@@ -2,18 +2,18 @@ import {
   NicovideoVideoSourceEventType,
   SemitagEventType,
   UserRole,
+  Video,
   VideoEventType,
   VideoTagEventType,
   VideoThumbnailEventType,
   VideoTitleEventType,
 } from "@prisma/client";
-import { GraphQLError } from "graphql";
 import { ulid } from "ulid";
 
 import { isValidNicovideoSourceId } from "../../../utils/isValidNicovideoSourceId.js";
-import { ensureContextUser } from "../../ensureContextUser.js";
-import { MutationResolvers, RegisterVideoInputSourceType } from "../../graphql.js";
-import { parseGqlIDs } from "../../id.js";
+import { Result } from "../../../utils/Result.js";
+import { MutationResolvers, RegisterVideoFailedMessage, RegisterVideoInputSourceType } from "../../graphql.js";
+import { parseGqlIDs2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { VideoModel } from "../../Video/model.js";
 
@@ -66,7 +66,7 @@ export const register = async (
 
     nicovideoSourceIds: string[];
   }
-) => {
+): Promise<Result<{ type: "NO_TAG" }, Video>> => {
   const videoId = ulid();
   const dataTitles = [
     { id: ulid(), title: primaryTitle, isPrimary: true },
@@ -182,38 +182,61 @@ export const register = async (
     }),
   ]);
 
-  return video;
+  return {
+    status: "ok",
+    data: video,
+  };
 };
 
 export const registerVideo = ({ prisma }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  ensureContextUser(
-    prisma,
-    UserRole.EDITOR,
-    // registerVideoScaffold(deps)
-    async (_parent, { input }, { userId }) => {
-      // GraphQLのIDをデータベースのIDに変換
-      const tagIds = parseGqlIDs("Tag", input.tags);
-
-      // ニコニコ動画の動画IDチェック
-      const nicovideoSourceIds = input.sources
-        .filter((v) => v.type === RegisterVideoInputSourceType.Nicovideo)
-        .map(({ sourceId }) => sourceId.toLocaleLowerCase());
-      for (const id of nicovideoSourceIds) {
-        if (!isValidNicovideoSourceId(id)) throw new GraphQLError(`"${id}" is invalid source id for niconico source`);
-      }
-
-      const video = await register(prisma, {
-        authUserId: userId,
-        primaryTitle: input.primaryTitle,
-        extraTitles: input.extraTitles,
-        primaryThumbnail: input.primaryThumbnail,
-        tagIds,
-        semitagNames: input.semitags,
-        nicovideoSourceIds,
-      });
-
+  // registerVideoScaffold(deps)
+  (async (_parent, { input }, { user }) => {
+    if (!user || (user.role !== UserRole.EDITOR && user.role !== UserRole.ADMINISTRATOR))
       return {
-        video: new VideoModel(video),
+        __typename: "RegisterVideoFailedPayload",
+        message: RegisterVideoFailedMessage.Forbidden,
+      };
+
+    const tagIds = parseGqlIDs2("Tag", input.tags);
+    if (tagIds.status === "error") {
+      return {
+        __typename: "RegisterVideoFailedPayload",
+        message: RegisterVideoFailedMessage.InvalidTagId,
       };
     }
-  ) satisfies MutationResolvers["registerVideo"];
+
+    // ニコニコ動画の動画IDチェック
+    const nicovideoSourceIds = input.sources
+      .filter((v) => v.type === RegisterVideoInputSourceType.Nicovideo)
+      .map(({ sourceId }) => sourceId.toLocaleLowerCase());
+    for (const id of nicovideoSourceIds) {
+      if (!isValidNicovideoSourceId(id))
+        return {
+          __typename: "RegisterVideoFailedPayload",
+          message: RegisterVideoFailedMessage.InvalidNicovideoSourceId,
+        };
+    }
+
+    const result = await register(prisma, {
+      authUserId: user.id,
+      primaryTitle: input.primaryTitle,
+      extraTitles: input.extraTitles,
+      primaryThumbnail: input.primaryThumbnail,
+      tagIds: tagIds.data,
+      semitagNames: input.semitags,
+      nicovideoSourceIds,
+    });
+
+    if (result.status === "error") {
+      switch (result.error.type) {
+        default:
+          return {
+            __typename: "RegisterVideoFailedPayload",
+            message: RegisterVideoFailedMessage.Unknown,
+          };
+      }
+    }
+
+    const video = result.data;
+    return { video: new VideoModel(video) };
+  }) satisfies MutationResolvers["registerVideo"];
