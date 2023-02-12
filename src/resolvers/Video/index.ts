@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
 
-import { Resolvers, VideoResolvers } from "../graphql.js";
+import { Resolvers } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
 import { ResolverDeps } from "../index.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
@@ -8,8 +8,6 @@ import { SemitagModel } from "../Semitag/model.js";
 import { VideoEventModel } from "../VideoEvent/model.js";
 import { resolveSimilarVideos } from "./similarVideos.js";
 import { resolveTags } from "./tags.js";
-
-export const resolveHistory = (() => ({ nodes: [] })) satisfies VideoResolvers["history"];
 
 export const resolveVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
   ({
@@ -45,8 +43,6 @@ export const resolveVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "n
       prisma.videoTag
         .findUnique({ where: { videoId_tagId: { videoId, tagId: parseGqlID("Tag", tagGqlId) } } })
         .then((v) => !!v && !v.isRemoved),
-
-    history: resolveHistory,
 
     similarVideos: resolveSimilarVideos({ neo4j }),
 
