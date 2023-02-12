@@ -155,7 +155,7 @@ export const register = async (
         ...dataTags.map(({ id }) => ({
           userId: authUserId,
           videoTagId: id,
-          type: VideoTagEventType.CREATED,
+          type: VideoTagEventType.ATTACHED,
           payload: {},
         })),
       ],
