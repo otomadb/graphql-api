@@ -1,0 +1,35 @@
+interface VideoTagEvent implements Node {
+  id: ID!
+  createdAt: DateTime!
+
+  user: User!
+  videoTag: VideoTag!
+}
+
+type VideoTagAttachEvent implements VideoThumbnailEvent & Node {
+  id: ID!
+  createdAt: DateTime!
+
+  user: User!
+  videoTag: VideoTag!
+}
+
+type VideoTagReattachEvent implements VideoThumbnailEvent & Node {
+  id: ID!
+  createdAt: DateTime!
+
+  user: User!
+  videoTag: VideoTag!
+}
+
+type VideoTagDetachEvent implements VideoThumbnailEvent & Node {
+  id: ID!
+  createdAt: DateTime!
+
+  user: User!
+  videoTag: VideoTag!
+}
+
+type VideoTagEventsConnection {
+  nodes: [VideoTagEvent!]!
+}

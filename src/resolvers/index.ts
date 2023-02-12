@@ -26,6 +26,7 @@ import { resolveVideoAddTagEvent } from "./VideoAddTagEvent/index.js";
 import { resolveVideoEvent } from "./VideoEvent/index.js";
 import { resolveVideoRegisterEvent } from "./VideoRegisterEvent/index.js";
 import { resolveVideoRemoveTagEvent } from "./VideoRemoveTagEvent/index.js";
+import { resolveVideoTag } from "./VideoTag/index.js";
 import { resolveVideoThumbnail } from "./VideoThumbnail/index.js";
 import {
   resolveVideoThumbnailCreateEvent,
@@ -80,4 +81,5 @@ export const resolvers = (deps: ResolverDeps) =>
     VideoTitleEvent: resolveVideoTitleEvent(),
     VideoTitleSetPrimaryEvent: resolveVideoTitleSetPrimaryEvent(deps),
     VideoTitleUnsetPrimaryEvent: resolveVideoTitleUnsetPrimaryEvent(deps),
+    VideoTag: resolveVideoTag(deps),
   } satisfies Resolvers);
