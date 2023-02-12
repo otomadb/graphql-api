@@ -7,7 +7,29 @@ input RemoveVideoFromMylistInput {
   mylistId: ID!
 }
 
-type RemoveVideoFromMylistPayload {
+union RemoveVideoFromMylistPayload = RemoveVideoFromMylistSucceededPayload | RemoveVideoFromMylistFailedPayload
+
+type RemoveVideoFromMylistSucceededPayload {
   video: Video!
   mylist: Mylist!
+}
+
+type RemoveVideoFromMylistFailedPayload {
+  message: RemoveVideoFromMylistFailedMessage!
+}
+
+enum RemoveVideoFromMylistFailedMessage {
+  FORBIDDEN
+
+  INVALID_VIDEO_ID
+  VIDEO_NOT_FOUND
+
+  INVALID_MYLIST_ID
+  MYLIST_NOT_FOUND
+  WRONG_MYLIST_HOLDER
+
+  NOT_REGISTERED
+  ALREADY_UNREGISTERED
+
+  UNKNOWN
 }
