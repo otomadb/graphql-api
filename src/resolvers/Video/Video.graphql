@@ -8,7 +8,6 @@ type Video implements Node {
   thumbnails: [VideoThumbnail!]!
   tags(input: VideoTagsInput!): [Tag!]!
   hasTag(id: ID!): Boolean!
-  history(input: VideoHistoryInput!): VideoHistoryConnection!
   events(input: VideoEventsInput!): VideoEventsConnection!
   registeredAt: DateTime!
 
@@ -39,111 +38,6 @@ input VideoTagsInput {
 input VideoTagsInputOrder {
   createdAt: SortOrder
   updatedAt: SortOrder
-}
-
-# History
-
-input VideoHistoryInput {
-  skip: Int! = 0
-  limit: Int! = 10
-  order: VideoHistoryOrder! = { createdAt: DESC }
-}
-
-input VideoHistoryOrder {
-  createdAt: SortOrder
-}
-
-type VideoHistoryConnection {
-  nodes: [VideoHistoryItem!]!
-}
-
-interface VideoHistoryItem {
-  id: ID!
-  user: User!
-  createdAt: DateTime!
-  video: Video!
-}
-
-type VideoRegisterHistoryItem implements VideoHistoryItem {
-  id: ID!
-  user: User!
-  createdAt: DateTime!
-  video: Video!
-}
-
-type VideoAddTitleHistoryItem implements VideoHistoryItem {
-  id: ID!
-  user: User!
-  createdAt: DateTime!
-  video: Video!
-  title: String!
-}
-
-type VideoDeleteTitleHistoryItem implements VideoHistoryItem {
-  id: ID!
-  user: User!
-  createdAt: DateTime!
-  video: Video!
-  title: String!
-}
-
-type VideoChangePrimaryTitleHistoryItem implements VideoHistoryItem {
-  id: ID!
-  user: User!
-  createdAt: DateTime!
-  video: Video!
-  from: String
-  to: String!
-}
-
-type VideoAddThumbnailHistoryItem implements VideoHistoryItem {
-  id: ID!
-  user: User!
-  createdAt: DateTime!
-  video: Video!
-  thumbnail: String!
-}
-
-type VideoDeleteThumbnailHistoryItem implements VideoHistoryItem {
-  id: ID!
-  user: User!
-  createdAt: DateTime!
-  video: Video!
-  thumbnail: String!
-}
-
-type VideoChangePrimaryThumbnailHistoryItem implements VideoHistoryItem {
-  id: ID!
-  user: User!
-  createdAt: DateTime!
-  video: Video!
-  from: String
-  to: String!
-}
-
-type VideoAddTagHistoryItem implements VideoHistoryItem {
-  id: ID!
-  user: User!
-  createdAt: DateTime!
-  video: Video!
-  tag: Tag!
-}
-
-type VideoDeleteTagHistoryItem implements VideoHistoryItem {
-  id: ID!
-  user: User!
-  createdAt: DateTime!
-  video: Video!
-  tag: Tag!
-}
-
-type VideoAddNicovideoVideoSourceHistoryItem implements VideoHistoryItem {
-  id: ID!
-  user: User!
-  createdAt: DateTime!
-  video: Video!
-
-  source: NicovideoVideoSource!
 }
 
 input VideoSimilarVideosInput {

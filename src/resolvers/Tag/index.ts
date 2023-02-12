@@ -1,13 +1,11 @@
 import { GraphQLError } from "graphql";
 
-import { Resolvers, TagResolvers, TagType } from "../graphql.js";
+import { Resolvers, TagType } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
 import { ResolverDeps } from "../index.js";
 import { VideoModel } from "../Video/model.js";
 import { TagModel } from "./model.js";
 import { resolvePseudoType } from "./pseudoType.js";
-
-export const resolveHistory = (() => ({ nodes: [] })) satisfies TagResolvers["history"];
 
 export const resolveTag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
@@ -62,8 +60,6 @@ export const resolveTag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       });
       return videoTags.map(({ video }) => new VideoModel(video));
     },
-
-    history: resolveHistory,
 
     canTagTo: async ({ id: tagId }, { videoId: videoGqlId }) =>
       prisma.videoTag
