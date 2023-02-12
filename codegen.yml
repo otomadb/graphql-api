@@ -30,14 +30,15 @@ generates:
         VideoAddNicovideoSourceEvent: ./VideoEvent/model.js#VideoEventModel
         VideoAddSemitagEvent: ./VideoEvent/model.js#VideoEventModel
         VideoAddTagEvent: ./VideoEvent/model.js#VideoEventModel
-        VideoAddThumbnailEvent: ./VideoEvent/model.js#VideoEventModel
-        VideoChangePrimaryThumbnailEvent: ./VideoEvent/model.js#VideoEventModel
         VideoEvent: ./VideoEvent/model.js#VideoEventModel
         VideoRegisterEvent: ./VideoEvent/model.js#VideoEventModel
         VideoRemoveTagEvent: ./VideoEvent/model.js#VideoEventModel
-        VideoRemoveThumbnailEvent: ./VideoEvent/model.js#VideoEventModel
-        VideoSetPrimaryThumbnailEvent: ./VideoEvent/model.js#VideoEventModel
         VideoSimilarity: ./VideoSimilarity/model.js#VideoSimilarityModel
+        VideoThumbnail: ./VideoThumbnail/model.js#VideoThumbnailModel
+        VideoThumbnailCreateEvent: ./VideoThumbnailEvent/model.js#VideoThumbnailEventModel
+        VideoThumbnailEvent: ./VideoThumbnailEvent/model.js#VideoThumbnailEventModel
+        VideoThumbnailSetPrimaryEvent: ./VideoThumbnailEvent/model.js#VideoThumbnailEventModel
+        VideoThumbnailUnsetPrimaryEvent: ./VideoThumbnailEvent/model.js#VideoThumbnailEventModel
         VideoTitle: ./VideoTitle/model.js#VideoTitleModel
         VideoTitleCreateEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
         VideoTitleEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel

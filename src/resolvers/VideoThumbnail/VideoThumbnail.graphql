@@ -1,0 +1,15 @@
+type VideoThumbnail {
+  id: ID!
+
+  imageUrl: String!
+  primary: Boolean!
+
+  video: Video!
+
+  events(input: VideoThumbnailEventsInput!): VideoThumbnailEventsConnection!
+}
+
+input VideoThumbnailEventsInput {
+  skip: Int! = 0
+  limit: Int! = 10
+}
