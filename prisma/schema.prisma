@@ -128,7 +128,7 @@ model TagEvent {
   tag   Tag    @relation(fields: [tagId], references: [id])
   tagId String
 
-  type    VideoEventType
+  type    TagEventType
   payload Json
 }
 
