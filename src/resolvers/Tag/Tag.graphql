@@ -9,7 +9,6 @@ type Tag implements Node {
   names: [TagName!]!
 
   taggedVideos: [Video!]!
-  history(input: TagHistoryInput!): TagHistoryConnection!
 
   explicitParent: Tag
   parents(meaningless: Boolean): [TagParent!]!
@@ -67,16 +66,6 @@ enum PseudoTagType {
   UNKNOWN
 }
 
-input TagHistoryInput {
-  skip: Int! = 0
-  limit: Int! = 10
-  order: TagHistoryOrder! = { createdAt: DESC }
-}
-
-input TagHistoryOrder {
-  createdAt: SortOrder
-}
-
 type TagParent {
   tag: Tag!
   explicit: Boolean!
@@ -84,46 +73,4 @@ type TagParent {
 
 type TagConnection {
   nodes: [Tag!]!
-}
-
-type TagHistoryConnection {
-  nodes: [VideoHistoryItem!]!
-}
-
-interface TagHistoryItem {
-  id: ID!
-  user: User!
-  createdAt: DateTime!
-}
-
-type TagRegisterHistoryItem implements TagHistoryItem {
-  id: ID!
-  user: User!
-  createdAt: DateTime!
-  tag: Tag!
-}
-
-type TagAddNameHistoryItem implements TagHistoryItem {
-  id: ID!
-  user: User!
-  createdAt: DateTime!
-  tag: Tag!
-  name: String!
-}
-
-type TagDeleteNameHistoryItem implements TagHistoryItem {
-  id: ID!
-  user: User!
-  createdAt: DateTime!
-  tag: Tag!
-  name: String!
-}
-
-type TagChangePrimaryNameHistoryItem implements TagHistoryItem {
-  id: ID!
-  user: User!
-  createdAt: DateTime!
-  tag: Tag!
-  from: String
-  to: String!
 }
