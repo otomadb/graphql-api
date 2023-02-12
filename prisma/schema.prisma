@@ -459,7 +459,7 @@ model SemitagEvent {
 }
 
 enum SemitagEventType {
-  CREATED
+  ATTACHED
 
   RESOLVED
   REJECTED
