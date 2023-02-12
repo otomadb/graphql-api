@@ -165,7 +165,7 @@ export const register = async (
         ...dataSemitags.map(({ id }) => ({
           userId: authUserId,
           semitagId: id,
-          type: SemitagEventType.CREATED,
+          type: SemitagEventType.ATTACHED,
           payload: {},
         })),
       ],
