@@ -7,8 +7,15 @@ type Semitag implements Node {
 
   resolved: Boolean!
   resolvedTag: Tag
+
+  events(input: SemitagEventsInput!): SemitagEventConnection!
 }
 
 type SemitagConnection {
   nodes: [Semitag!]!
+}
+
+input SemitagEventsInput {
+  skip: Int! = 0
+  limit: Int! = 10
 }
