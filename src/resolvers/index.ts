@@ -31,10 +31,10 @@ import { resolveVideoRemoveThumbnailEvent } from "./VideoRemoveThumbnailEvent/in
 import { resolveVideoSetPrimaryThumbnailEvent } from "./VideoSetPrimaryThumbnailEvent/index.js";
 import { resolveVideoTitle } from "./VideoTitle/index.js";
 import {
-  resolveVideoTitleCreateEventType,
+  resolveVideoTitleCreateEvent,
   resolveVideoTitleEvent,
-  resolveVideoTitleSetPrimaryEventType,
-  resolveVideoTitleUnsetPrimaryEventType,
+  resolveVideoTitleSetPrimaryEvent,
+  resolveVideoTitleUnsetPrimaryEvent,
 } from "./VideoTitleEvent/index.js";
 
 export type ResolverDeps = {
@@ -70,8 +70,8 @@ export const resolvers = (deps: ResolverDeps) =>
     VideoRemoveThumbnailEvent: resolveVideoRemoveThumbnailEvent(deps),
     VideoSetPrimaryThumbnailEvent: resolveVideoSetPrimaryThumbnailEvent(deps),
     VideoTitle: resolveVideoTitle(deps),
-    VideoTitleCreateEventType: resolveVideoTitleCreateEventType(deps),
+    VideoTitleCreateEvent: resolveVideoTitleCreateEvent(deps),
     VideoTitleEvent: resolveVideoTitleEvent(),
-    VideoTitleSetPrimaryEventType: resolveVideoTitleSetPrimaryEventType(deps),
-    VideoTitleUnsetPrimaryEventType: resolveVideoTitleUnsetPrimaryEventType(deps),
+    VideoTitleSetPrimaryEvent: resolveVideoTitleSetPrimaryEvent(deps),
+    VideoTitleUnsetPrimaryEvent: resolveVideoTitleUnsetPrimaryEvent(deps),
   } satisfies Resolvers);
