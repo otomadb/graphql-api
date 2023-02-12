@@ -172,6 +172,9 @@ model TagNameEvent {
 
 enum TagNameEventType {
   CREATED
+
+  SET_PRIMARY
+  UNSET_PRIMARY
 }
 
 model TagParent {
@@ -188,6 +191,8 @@ model TagParent {
   parentId String
   parent   Tag    @relation("tag_parents_parentIdTotags", fields: [parentId], references: [id])
 
+  events TagParentEvent[]
+
   @@unique([parentId, childId])
 }
 
@@ -200,12 +205,18 @@ model TagParentEvent {
   user   User   @relation(fields: [userId], references: [id])
   userId String
 
+  tagParent   TagParent @relation(fields: [tagParentId], references: [id])
+  tagParentId String
+
   type    TagParentEventType
   payload Json
 }
 
 enum TagParentEventType {
   CREATED
+
+  SET_PRIMARY
+  UNSET_PRIMARY
 }
 
 model User {
@@ -288,33 +299,6 @@ model VideoEvent {
 
 enum VideoEventType {
   REGISTER
-
-  // タイトル周り
-  ADD_TITLE
-  REMOVE_TITLE
-  SET_PRIMARY_TITLE
-  CHANGE_PRIMARY_TITLE
-
-  // サムネイル周り
-  ADD_THUMBNAIL
-  REMOVE_THUMBNAIL
-  SET_PRIMARY_THUMBNAIL
-  CHANGE_PRIMARY_THUMBNAIL
-
-  // タグ周り
-  ADD_TAG
-  REMOVE_TAG
-
-  // 仮タグ周り
-  ADD_SEMITAG
-
-  // ニコニコ動画ソース周り
-  ADD_NICOVIDEO_SOURCE
-  DELETE_NICOVIDEO_SOURCE
-
-  // マイリスト周り
-  ADD_MYLIST
-  DELETE_MYLIST
 }
 
 model VideoTitle {
@@ -433,7 +417,10 @@ model VideoTagEvent {
 }
 
 enum VideoTagEventType {
-  CREATED
+  ATTACHED
+
+  REMOVED
+  REATTACHED
 }
 
 model Semitag {

@@ -1,4 +1,4 @@
-import { Tag, UserRole, Video, VideoTag } from "@prisma/client";
+import { Tag, UserRole, Video, VideoTag, VideoTagEventType } from "@prisma/client";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 import { ulid } from "ulid";
 
@@ -8,7 +8,6 @@ import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 import { VideoModel } from "../../Video/model.js";
-import { VideoAddTagEventPayload } from "../../VideoAddTagEvent/index.js";
 
 export const addTagToVideoInNeo4j = async (
   neo4jDriver: Neo4jDriver,
@@ -32,31 +31,53 @@ export const addTagToVideoInNeo4j = async (
 
 export const add = async (
   prisma: ResolverDeps["prisma"],
-  { authUserId, videoId, tagId }: { authUserId: string; videoId: string; tagId: string }
+  { authUserId: userId, videoId, tagId }: { authUserId: string; videoId: string; tagId: string }
 ): Promise<Result<"EXISTS_TAGGING", VideoTag & { video: Video; tag: Tag }>> => {
-  const extTagging = await prisma.videoTag.findUnique({ where: { videoId_tagId: { tagId, videoId } } });
-  if (extTagging && !extTagging.isRemoved) return { status: "error", error: "EXISTS_TAGGING" };
+  const exists = await prisma.videoTag.findUnique({ where: { videoId_tagId: { tagId, videoId } } });
+  if (exists && !exists.isRemoved) return { status: "error", error: "EXISTS_TAGGING" };
 
-  const taggingId = ulid();
+  if (exists) {
+    // reattach
+    const [tagging] = await prisma.$transaction([
+      prisma.videoTag.update({
+        where: { id: exists.id },
+        data: { isRemoved: false },
+        include: { video: true, tag: true },
+      }),
+      prisma.videoTagEvent.create({
+        data: {
+          userId,
+          videoTagId: exists.id,
+          type: VideoTagEventType.REATTACHED,
+          payload: {},
+        },
+      }),
+    ]);
 
-  const [tagging] = await prisma.$transaction([
-    prisma.videoTag.upsert({
-      where: { videoId_tagId: { videoId, tagId } },
-      create: { id: taggingId, videoId, tagId, isRemoved: false },
-      update: { isRemoved: false },
-      include: { video: true, tag: true },
-    }),
-    prisma.videoEvent.create({
-      data: {
-        userId: authUserId,
-        videoId,
-        type: "ADD_TAG",
-        payload: { tagId, isUpdate: !!extTagging } satisfies VideoAddTagEventPayload,
-      },
-    }),
-  ]);
+    return {
+      status: "ok",
+      data: tagging,
+    };
+  } else {
+    // attach
+    const id = ulid();
+    const [tagging] = await prisma.$transaction([
+      prisma.videoTag.create({
+        data: { id, tagId, videoId, isRemoved: false },
+        include: { video: true, tag: true },
+      }),
+      prisma.videoTagEvent.create({
+        data: {
+          userId,
+          videoTagId: id,
+          type: VideoTagEventType.REATTACHED,
+          payload: {},
+        },
+      }),
+    ]);
 
-  return { status: "ok", data: tagging };
+    return { status: "ok", data: tagging };
+  }
 };
 
 export const addTagToVideo = ({ neo4j, prisma }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
