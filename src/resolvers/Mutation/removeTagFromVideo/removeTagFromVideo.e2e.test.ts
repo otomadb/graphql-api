@@ -1,7 +1,8 @@
 import { describe } from "@jest/globals";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, VideoTagEvent, VideoTagEventType } from "@prisma/client";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
+import { Err, Ok } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 import { remove } from "./removeTagFromVideo.js";
 
@@ -45,7 +46,7 @@ describe("Mutation.removeTagFromVideo", () => {
     expect(actual).toStrictEqual({
       status: "error",
       error: "NO_VIDEO",
-    });
+    } satisfies Err<Awaited<ReturnType<typeof remove>>>);
   });
 
   test("対象のタグは存在しない", async () => {
@@ -72,7 +73,7 @@ describe("Mutation.removeTagFromVideo", () => {
     expect(actual).toStrictEqual({
       status: "error",
       error: "NO_TAG",
-    });
+    } satisfies Err<Awaited<ReturnType<typeof remove>>>);
   });
 
   test("動画にタグ付けが存在しない", async () => {
@@ -102,7 +103,7 @@ describe("Mutation.removeTagFromVideo", () => {
     expect(actual).toStrictEqual({
       status: "error",
       error: "NO_TAGGING",
-    });
+    } satisfies Err<Awaited<ReturnType<typeof remove>>>);
   });
 
   test("動画へのタグ付けはすでに存在するが，削除されている", async () => {
@@ -135,7 +136,7 @@ describe("Mutation.removeTagFromVideo", () => {
     expect(actual).toStrictEqual({
       status: "error",
       error: "REMOVED_TAGGING",
-    });
+    } satisfies Err<Awaited<ReturnType<typeof remove>>>);
   });
 
   test("タグを動画から削除", async () => {
@@ -175,26 +176,22 @@ describe("Mutation.removeTagFromVideo", () => {
       }),
     });
 
-    const video = await prisma.video.findUniqueOrThrow({
-      where: { id: "v1" },
-      include: {
-        titles: true,
-        thumbnails: true,
-        tags: true,
-        semitags: true,
-        nicovideoSources: true,
-      },
-    });
-    const actualEvents = await prisma.videoEvent.findMany({});
-    expect(actualEvents).toHaveLength(1);
-    expect(actualEvents).toContainEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        videoId: video.id,
-        userId: "u1",
-        type: "REMOVE_TAG",
-        payload: { tagId: "t1" },
-      })
+    const videoTagId = (actual as Ok<Awaited<ReturnType<typeof remove>>>).data.id;
+
+    const videoTagEvents = await prisma.videoTagEvent.findMany({ where: { videoTagId } });
+    expect(videoTagEvents).toHaveLength(1);
+    expect(videoTagEvents).toStrictEqual(
+      expect.arrayContaining([
+        {
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          userId: "u1",
+          videoTagId,
+          type: VideoTagEventType.REMOVED,
+          payload: {},
+        } satisfies VideoTagEvent,
+      ])
     );
   });
 });
