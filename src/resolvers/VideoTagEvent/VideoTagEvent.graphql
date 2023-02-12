@@ -6,7 +6,7 @@ interface VideoTagEvent implements Node {
   videoTag: VideoTag!
 }
 
-type VideoTagAttachEvent implements VideoThumbnailEvent & Node {
+type VideoTagAttachEvent implements VideoTagEvent & Node {
   id: ID!
   createdAt: DateTime!
 
@@ -14,7 +14,7 @@ type VideoTagAttachEvent implements VideoThumbnailEvent & Node {
   videoTag: VideoTag!
 }
 
-type VideoTagReattachEvent implements VideoThumbnailEvent & Node {
+type VideoTagReattachEvent implements VideoTagEvent & Node {
   id: ID!
   createdAt: DateTime!
 
@@ -22,7 +22,7 @@ type VideoTagReattachEvent implements VideoThumbnailEvent & Node {
   videoTag: VideoTag!
 }
 
-type VideoTagDetachEvent implements VideoThumbnailEvent & Node {
+type VideoTagDetachEvent implements VideoTagEvent & Node {
   id: ID!
   createdAt: DateTime!
 
