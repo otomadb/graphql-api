@@ -1,3 +1,6 @@
+import { Mylist, MylistRegistration, Video } from "@prisma/client";
+
+import { err, ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, UndoLikeVideoFailedMessage } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
@@ -24,57 +27,57 @@ export const undoLikeVideoInNeo4j = async (
   }
 };
 
+export const undo = async (
+  prisma: ResolverDeps["prisma"],
+  { videoId, userId }: { videoId: string; userId: string }
+): Promise<
+  Result<
+    "VIDEO_NOT_FOUND" | "LIKELIST_NOT_FOUND" | "NOT_REGISTERED" | "ALREADY_UNREGISTERED",
+    MylistRegistration & { mylist: Mylist; video: Video }
+  >
+> => {
+  const video = await prisma.video.findUnique({ where: { id: videoId } });
+  if (!video) return err("VIDEO_NOT_FOUND");
+
+  const mylist = await prisma.mylist.findFirst({ where: { holder: { id: userId }, isLikeList: true } });
+  if (!mylist) return err("LIKELIST_NOT_FOUND");
+
+  const ext = await prisma.mylistRegistration.findUnique({
+    where: { mylistId_videoId: { mylistId: mylist.id, videoId: video.id } },
+  });
+  if (!ext) return err("NOT_REGISTERED");
+  if (!ext.isRemoved) return err("ALREADY_UNREGISTERED");
+
+  const registration = await prisma.mylistRegistration.update({
+    where: { id: ext.id },
+    data: { isRemoved: true, events: { create: { type: "UNREGISTER", userId, payload: {} } } },
+    include: { video: true, mylist: true },
+  });
+  return ok(registration);
+};
+
 export const undoLikeVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
   (async (_, { input: { videoId: videoGqlId } }, { user }) => {
-    if (!user)
-      return {
-        __typename: "UndoLikeVideoFailedPayload",
-        message: UndoLikeVideoFailedMessage.Forbidden,
-      };
+    if (!user) return { __typename: "UndoLikeVideoFailedPayload", message: UndoLikeVideoFailedMessage.Forbidden };
 
     const videoId = parseGqlID2("Video", videoGqlId);
     if (videoId.status === "error")
-      return {
-        __typename: "UndoLikeVideoFailedPayload",
-        message: UndoLikeVideoFailedMessage.InvalidVideoId,
-      };
+      return { __typename: "UndoLikeVideoFailedPayload", message: UndoLikeVideoFailedMessage.InvalidVideoId };
 
-    if (!(await prisma.video.findUnique({ where: { id: videoId.data } })))
-      return {
-        __typename: "UndoLikeVideoFailedPayload",
-        message: UndoLikeVideoFailedMessage.VideoNotFound,
-      };
+    const result = await undo(prisma, { userId: user.id, videoId: videoId.data });
+    if (result.status === "error") {
+      switch (result.error) {
+        case "VIDEO_NOT_FOUND":
+          return { __typename: "UndoLikeVideoFailedPayload", message: UndoLikeVideoFailedMessage.VideoNotFound };
+        case "NOT_REGISTERED":
+          return { __typename: "UndoLikeVideoFailedPayload", message: UndoLikeVideoFailedMessage.VideoNotLiked };
+        case "LIKELIST_NOT_FOUND":
+        case "ALREADY_UNREGISTERED":
+          return { __typename: "UndoLikeVideoFailedPayload", message: UndoLikeVideoFailedMessage.Unknown };
+      }
+    }
 
-    const likelist = await prisma.mylist.findFirst({ where: { holder: { id: user.id }, isLikeList: true } });
-    if (!likelist)
-      return {
-        __typename: "UndoLikeVideoFailedPayload",
-        message: UndoLikeVideoFailedMessage.Unknown, // 本来起こり得ないため
-      };
-
-    if (
-      !(await prisma.mylistRegistration.findUnique({
-        where: { mylistId_videoId: { mylistId: likelist.id, videoId: videoId.data } },
-      }))
-    )
-      return {
-        __typename: "UndoLikeVideoFailedPayload",
-        message: UndoLikeVideoFailedMessage.VideoNotLiked,
-      };
-
-    const registration = await prisma.mylistRegistration.delete({
-      where: {
-        mylistId_videoId: {
-          mylistId: likelist.id,
-          videoId: videoId.data,
-        },
-      },
-      include: {
-        video: true,
-        mylist: true,
-      },
-    });
-
+    const registration = result.data;
     await undoLikeVideoInNeo4j(neo4j, { mylistId: registration.mylistId, videoId: registration.videoId });
 
     return {
