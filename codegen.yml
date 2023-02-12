@@ -29,10 +29,8 @@ generates:
         Video: ./Video/model.js#VideoModel
         VideoAddNicovideoSourceEvent: ./VideoEvent/model.js#VideoEventModel
         VideoAddSemitagEvent: ./VideoEvent/model.js#VideoEventModel
-        VideoAddTagEvent: ./VideoEvent/model.js#VideoEventModel
         VideoEvent: ./VideoEvent/model.js#VideoEventModel
         VideoRegisterEvent: ./VideoEvent/model.js#VideoEventModel
-        VideoRemoveTagEvent: ./VideoEvent/model.js#VideoEventModel
         VideoSimilarity: ./VideoSimilarity/model.js#VideoSimilarityModel
         VideoTag: ./VideoTag/model.js#VideoTagModel
         VideoTagAttachEvent: ./VideoTagEvent/model.js#VideoTagEventModel
