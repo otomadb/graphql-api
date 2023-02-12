@@ -1,0 +1,30 @@
+type Mutation {
+  rejectSemitag(input: RejectSemitagInput!): RejectSemitagPayload!
+}
+
+input RejectSemitagInput {
+  id: ID!
+}
+
+union RejectSemitagPayload = RejectSemitagSuccessedPayload | RejectSemitagFailedPayload
+
+type RejectSemitagSuccessedPayload {
+  semitag: Semitag!
+}
+
+type RejectSemitagFailedPayload {
+  message: RejectSemitagFailedMessage!
+}
+
+enum RejectSemitagFailedMessage {
+  "権限なし"
+  FORBIDDEN
+
+  INVALID_SEMITAG_ID
+
+  SEMITAG_NOT_FOUND
+  SEMITAG_ALREADY_CHECKED
+
+  "原因不明のエラー"
+  UNKNOWN
+}

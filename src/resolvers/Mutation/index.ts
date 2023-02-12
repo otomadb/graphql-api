@@ -11,6 +11,7 @@ import { createMylistGroup } from "./createMylistGroup/createMylistGroup.js";
 import { likeVideo } from "./likeVideo/likeVideo.js";
 import { registerTag } from "./registerTag/registerTag.js";
 import { registerVideo } from "./registerVideo/registerVideo.js";
+import { rejectSemitag } from "./rejectSemitag/rejectSemitag.js";
 import { removeTagFromVideo } from "./removeTagFromVideo/removeTagFromVideo.js";
 import { removeVideoFromMylist } from "./removeVideoFromMylist/removeVideoFromMylist.js";
 import { resolveSemitag } from "./resolveSemitag/resolveSemitag.js";
@@ -30,6 +31,7 @@ export const resolveMutation = (deps: Pick<ResolverDeps, "prisma" | "neo4j">) =>
     likeVideo: likeVideo(deps),
     registerTag: registerTag(deps),
     registerVideo: registerVideo(deps),
+    rejectSemitag: rejectSemitag(deps),
     removeTagFromVideo: removeTagFromVideo(deps),
     removeVideoFromMylist: removeVideoFromMylist(deps),
     resovleSemitag: resolveSemitag(deps),
