@@ -1,0 +1,15 @@
+type VideoTitle {
+  id: ID!
+
+  title: String!
+  primary: Boolean!
+
+  video: Video!
+
+  events(input: VideoTitleEventsInput!): VideoTitleEventsConnection!
+}
+
+input VideoTitleEventsInput {
+  skip: Int! = 0
+  limit: Int! = 10
+}

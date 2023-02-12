@@ -3,17 +3,19 @@ import { GraphQLError } from "graphql";
 import { Result } from "../utils/Result.js";
 
 export type NodeType =
-  | "User"
-  | "Video"
-  | "Tag"
-  | "Semitag"
-  | "NicovideoVideoSource"
   | "Mylist"
   | "MylistGroup"
   | "MylistGroupMylistInclusion"
   | "MylistRegistration"
+  | "NicovideoVideoSource"
+  | "Semitag"
+  | "Session"
+  | "Tag"
+  | "User"
+  | "Video"
   | "VideoEvent"
-  | "Session";
+  | "VideoTitle"
+  | "VideoTitleEvent";
 
 export const buildGqlId = (type: NodeType, dbId: string): string =>
   Buffer.from(`${type}:${dbId}`).toString("base64url");

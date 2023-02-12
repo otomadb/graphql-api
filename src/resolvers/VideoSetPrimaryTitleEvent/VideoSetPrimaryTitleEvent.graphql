@@ -1,9 +1,0 @@
-"Videoに主タイトルを設定した際に発生．（初回のみ）"
-type VideoSetPrimaryTitleEvent implements VideoEvent {
-  id: ID!
-  createdAt: DateTime!
-  user: User!
-  video: Video!
-
-  title: String!
-}
