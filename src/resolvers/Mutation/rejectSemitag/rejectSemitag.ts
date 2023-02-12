@@ -14,22 +14,20 @@ export const reject = async (
   if (!check) return { status: "error", error: "SEMITAG_NOT_FOUND" };
   if (check.isChecked) return { status: "error", error: "SEMITAG_ALREADY_CHECKED" };
 
-  const [semitag] = await prisma.$transaction([
-    prisma.semitag.update({
-      where: { id: semitagId },
-      data: {
-        isChecked: true,
-        videoTagId: null,
-        events: {
-          create: {
-            userId,
-            type: SemitagEventType.REJECTED,
-            payload: {},
-          },
+  const semitag = await prisma.semitag.update({
+    where: { id: semitagId },
+    data: {
+      isChecked: true,
+      videoTagId: null,
+      events: {
+        create: {
+          userId,
+          type: SemitagEventType.REJECTED,
+          payload: {},
         },
       },
-    }),
-  ]);
+    },
+  });
   return {
     status: "ok",
     data: semitag,

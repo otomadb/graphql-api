@@ -38,21 +38,20 @@ export const add = async (
 
   if (exists) {
     // reattach
-    const [tagging] = await prisma.$transaction([
-      prisma.videoTag.update({
-        where: { id: exists.id },
-        data: { isRemoved: false },
-        include: { video: true, tag: true },
-      }),
-      prisma.videoTagEvent.create({
-        data: {
-          userId,
-          videoTagId: exists.id,
-          type: VideoTagEventType.REATTACHED,
-          payload: {},
+    const tagging = await prisma.videoTag.update({
+      where: { id: exists.id },
+      data: {
+        isRemoved: false,
+        events: {
+          create: {
+            userId,
+            type: VideoTagEventType.REATTACHED,
+            payload: {},
+          },
         },
-      }),
-    ]);
+      },
+      include: { video: true, tag: true },
+    });
 
     return {
       status: "ok",
@@ -61,20 +60,22 @@ export const add = async (
   } else {
     // attach
     const id = ulid();
-    const [tagging] = await prisma.$transaction([
-      prisma.videoTag.create({
-        data: { id, tagId, videoId, isRemoved: false },
-        include: { video: true, tag: true },
-      }),
-      prisma.videoTagEvent.create({
-        data: {
-          userId,
-          videoTagId: id,
-          type: VideoTagEventType.REATTACHED,
-          payload: {},
+    const tagging = await prisma.videoTag.create({
+      data: {
+        id,
+        tagId,
+        videoId,
+        isRemoved: false,
+        events: {
+          create: {
+            userId,
+            type: VideoTagEventType.REATTACHED,
+            payload: {},
+          },
         },
-      }),
-    ]);
+      },
+      include: { video: true, tag: true },
+    });
 
     return { status: "ok", data: tagging };
   }

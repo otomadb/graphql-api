@@ -40,22 +40,20 @@ export const addSemitagToVideo = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
         message: AddSemitagToVideoFailedMessage.AlreadyChecked,
       };
 
-    const [semitag] = await prisma.$transaction([
-      prisma.semitag.create({
-        data: {
-          name: semitagName,
-          videoId: videoId.data,
-          isChecked: false,
-          events: {
-            create: {
-              userId: user.id,
-              type: SemitagEventType.ATTACHED,
-              payload: {},
-            },
+    const semitag = await prisma.semitag.create({
+      data: {
+        name: semitagName,
+        videoId: videoId.data,
+        isChecked: false,
+        events: {
+          create: {
+            userId: user.id,
+            type: SemitagEventType.ATTACHED,
+            payload: {},
           },
         },
-      }),
-    ]);
+      },
+    });
 
     return {
       __typename: "AddSemitagToVideoSuccessedPayload",
