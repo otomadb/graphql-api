@@ -14,13 +14,13 @@ export const resolveSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Video", videoId);
         }),
-    async resolvedTag({ tagId }) {
-      if (!tagId) return null;
-      return prisma.tag
-        .findFirstOrThrow({ where: { id: tagId } })
-        .then((v) => new TagModel(v))
+    async resolvedTag({ videoTagId }) {
+      if (!videoTagId) return null;
+      return prisma.videoTag
+        .findFirstOrThrow({ where: { id: videoTagId }, include: { tag: true } })
+        .then((v) => new TagModel(v.tag))
         .catch(() => {
-          throw new GraphQLNotExistsInDBError("Tag", tagId);
+          throw new GraphQLNotExistsInDBError("Tag", videoTagId); // # TODO: 全然嘘;
         });
     },
   } satisfies Resolvers["Semitag"]);

@@ -1,4 +1,4 @@
-import { Tag, UserRole, Video, VideoTag } from "@prisma/client";
+import { Tag, UserRole, Video, VideoTag, VideoTagEventType } from "@prisma/client";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 
 import { Result } from "../../../utils/Result.js";
@@ -7,7 +7,6 @@ import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 import { VideoModel } from "../../Video/model.js";
-import { VideoRemoveTagEventPayload } from "../../VideoRemoveTagEvent/index.js";
 
 export const removeInNeo4j = async (driver: Neo4jDriver, { videoId, tagId }: { videoId: string; tagId: string }) => {
   const session = driver.session();
@@ -38,21 +37,20 @@ export const remove = async (
   if (extTagging === null) return { status: "error", error: "NO_TAGGING" };
   if (extTagging.isRemoved) return { status: "error", error: "REMOVED_TAGGING" };
 
-  const [tagging] = await prisma.$transaction([
-    prisma.videoTag.update({
-      where: { videoId_tagId: { tagId, videoId } },
-      data: { isRemoved: true },
-      include: { tag: true, video: true },
-    }),
-    prisma.videoEvent.create({
-      data: {
-        userId: authUserId,
-        videoId,
-        type: "REMOVE_TAG",
-        payload: { tagId } satisfies VideoRemoveTagEventPayload,
+  const tagging = await prisma.videoTag.update({
+    where: { id: extTagging.id },
+    data: {
+      isRemoved: true,
+      events: {
+        create: {
+          userId: authUserId,
+          type: VideoTagEventType.REMOVED,
+          payload: {},
+        },
       },
-    }),
-  ]);
+    },
+    include: { tag: true, video: true },
+  });
   return { status: "ok", data: tagging };
 };
 

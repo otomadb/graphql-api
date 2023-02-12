@@ -38,6 +38,25 @@ export function parseGqlID2(type: NodeType, gqlId: string): Result<"INVALID_ID",
   return { status: "ok", data: i };
 }
 
+export function parseGqlIDs2(
+  type: NodeType,
+  gqlIds: string[]
+): Result<{ type: "INVALID_ID"; wrongGqlIds: string[] }, string[]> {
+  const ids: string[] = [],
+    wrongGqlIds: string[] = [];
+  for (const gqlId of gqlIds) {
+    const p = parseGqlID2(type, gqlId);
+    if (p.status === "error") wrongGqlIds.push(gqlId);
+    else ids.push(p.data);
+  }
+  if (0 < wrongGqlIds.length)
+    return {
+      status: "error",
+      error: { type: "INVALID_ID", wrongGqlIds },
+    };
+  return { status: "ok", data: ids };
+}
+
 export function parseGqlIDs(type: NodeType, gqlIds: string[]): string[] {
   return gqlIds.map((gqlId) => parseGqlID(type, gqlId));
 }

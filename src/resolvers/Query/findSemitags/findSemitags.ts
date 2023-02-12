@@ -17,7 +17,7 @@ export const findSemitags = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       },
       where: {
         id: { notIn: execptIds },
-        isResolved: input.resolved?.valueOf(),
+        isChecked: input.resolved?.valueOf(),
       },
     });
     return { nodes: semitags.map((t) => new SemitagModel(t)) };

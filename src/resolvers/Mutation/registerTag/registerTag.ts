@@ -1,4 +1,4 @@
-import { Tag, UserRole } from "@prisma/client";
+import { Prisma, Tag, TagNameEventType, TagParentEventType, UserRole } from "@prisma/client";
 import { ulid } from "ulid";
 
 import { Result } from "../../../utils/Result.js";
@@ -33,6 +33,7 @@ export const registerTagInNeo4j = async (neo4j: ResolverDeps["neo4j"], rels: { v
 export const register = async (
   prisma: ResolverDeps["prisma"],
   {
+    userId,
     extraNames,
     meaningless,
     primaryName,
@@ -40,6 +41,7 @@ export const register = async (
     implicitParentIds,
     semitagIds,
   }: {
+    userId: string;
     primaryName: string;
     extraNames: string[];
 
@@ -73,28 +75,85 @@ export const register = async (
   // const semitagVideos = await prisma.video.findMany({ where: { semitags: { some: { id: { in: semitagIds } } } } });
 
   const tagId = ulid();
+  const dataNames = [
+    { id: ulid(), name: primaryName, isPrimary: true },
+    ...extraNames.map((extraName) => ({
+      id: ulid(),
+      name: extraName,
+      isPrimary: false,
+    })),
+  ];
+  const dataExplicitParent = explicitParentId ? { id: ulid(), parentId: explicitParentId, isExplicit: true } : null;
+  const dataImplicitParents = implicitParentIds.map((implicitParentId) => ({
+    id: ulid(),
+    parentId: implicitParentId,
+    isExplicit: false,
+  }));
+
   const [tag] = await prisma.$transaction([
     prisma.tag.create({
       data: {
         id: tagId,
         meaningless,
-        names: {
-          createMany: {
-            data: [
-              { name: primaryName, isPrimary: true },
-              ...extraNames.map((extraName) => ({ name: extraName, isPrimary: false })),
-            ],
-          },
-        },
+        names: { createMany: { data: dataNames } },
         parents: {
           createMany: {
-            data: [
-              ...(explicitParentId ? [{ parentId: explicitParentId, isExplicit: true }] : []),
-              ...implicitParentIds.map((implicitParentId) => ({ parentId: implicitParentId, isExplicit: false })),
-            ],
+            data: [...(dataExplicitParent ? [dataExplicitParent] : []), ...dataImplicitParents],
           },
         },
       },
+    }),
+    prisma.tagNameEvent.createMany({
+      data: [
+        ...dataNames.map(
+          ({ id }) =>
+            ({
+              userId,
+              type: TagNameEventType.CREATED,
+              tagNameId: id,
+              payload: {},
+            } satisfies Prisma.TagNameEventCreateManyInput)
+        ),
+        {
+          userId,
+          tagNameId: dataNames[0].id,
+          type: TagNameEventType.SET_PRIMARY,
+          payload: {},
+        },
+      ],
+    }),
+    ...(dataExplicitParent
+      ? [
+          prisma.tagParentEvent.createMany({
+            data: [
+              {
+                userId,
+                type: TagParentEventType.CREATED,
+                tagParentId: dataExplicitParent.id,
+                payload: {},
+              },
+              {
+                userId,
+                type: TagParentEventType.SET_PRIMARY,
+                tagParentId: dataExplicitParent.id,
+                payload: {},
+              },
+            ],
+          }),
+        ]
+      : []),
+    prisma.tagParentEvent.createMany({
+      data: [
+        ...dataImplicitParents.map(
+          ({ id }) =>
+            ({
+              userId,
+              type: TagParentEventType.CREATED,
+              tagParentId: id,
+              payload: {},
+            } satisfies Prisma.TagParentEventCreateManyInput)
+        ),
+      ],
     }),
     // TODO: Semitagの処理
   ]);
@@ -120,6 +179,7 @@ export const registerTag = ({ prisma }: Pick<ResolverDeps, "prisma" | "neo4j">) 
       };
 
     const result = await register(prisma, {
+      userId: user.id,
       explicitParentId: explicitParent ? explicitParent.data : null,
       implicitParentIds: [],
       semitagIds: [],

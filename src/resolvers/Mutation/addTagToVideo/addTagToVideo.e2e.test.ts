@@ -1,9 +1,9 @@
 import { describe } from "@jest/globals";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, VideoTagEvent, VideoTagEventType } from "@prisma/client";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
+import { Ok } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
-import { VideoAddTagEventPayload } from "../../VideoAddTagEvent/index.js";
 import { add } from "./addTagToVideo.js";
 
 describe("Mutation.addTagToVideo", () => {
@@ -87,28 +87,24 @@ describe("Mutation.addTagToVideo", () => {
         tagId: "t1",
         isRemoved: false,
       }),
-    } satisfies Awaited<ReturnType<typeof add>>);
+    } satisfies Ok<Awaited<ReturnType<typeof add>>>);
 
-    const video = await prisma.video.findUniqueOrThrow({
-      where: { id: "v1" },
-      include: {
-        titles: true,
-        thumbnails: true,
-        tags: true,
-        semitags: true,
-        nicovideoSources: true,
-      },
-    });
-    const actualEvents = await prisma.videoEvent.findMany({});
-    expect(actualEvents).toHaveLength(1);
-    expect(actualEvents).toContainEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        videoId: video.id,
-        userId: "u1",
-        type: "ADD_TAG",
-        payload: { tagId: "t1", isUpdate: false } satisfies VideoAddTagEventPayload,
-      })
+    const videoTagId = (actual as Ok<Awaited<ReturnType<typeof add>>>).data.id;
+
+    const videoTagEvents = await prisma.videoTagEvent.findMany({ where: { videoTagId } });
+    expect(videoTagEvents).toHaveLength(1);
+    expect(videoTagEvents).toStrictEqual(
+      expect.arrayContaining([
+        {
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          userId: "u1",
+          videoTagId,
+          type: VideoTagEventType.ATTACHED,
+          payload: {},
+        } satisfies VideoTagEvent,
+      ])
     );
   });
 
@@ -147,28 +143,24 @@ describe("Mutation.addTagToVideo", () => {
         tagId: "t1",
         isRemoved: false,
       }),
-    } satisfies Awaited<ReturnType<typeof add>>);
+    } satisfies Ok<Awaited<ReturnType<typeof add>>>);
 
-    const video = await prisma.video.findUniqueOrThrow({
-      where: { id: "v1" },
-      include: {
-        titles: true,
-        thumbnails: true,
-        tags: true,
-        semitags: true,
-        nicovideoSources: true,
-      },
-    });
-    const actualEvents = await prisma.videoEvent.findMany({});
-    expect(actualEvents).toHaveLength(1);
-    expect(actualEvents).toContainEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        videoId: video.id,
-        userId: "u1",
-        type: "ADD_TAG",
-        payload: { tagId: "t1", isUpdate: true } satisfies VideoAddTagEventPayload,
-      })
+    const videoTagId = (actual as Ok<Awaited<ReturnType<typeof add>>>).data.id;
+
+    const videoTagEvents = await prisma.videoTagEvent.findMany({ where: { videoTagId } });
+    expect(videoTagEvents).toHaveLength(1);
+    expect(videoTagEvents).toStrictEqual(
+      expect.arrayContaining([
+        {
+          id: expect.any(String),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          userId: "u1",
+          videoTagId,
+          type: VideoTagEventType.REATTACHED,
+          payload: {},
+        } satisfies VideoTagEvent,
+      ])
     );
   });
 });

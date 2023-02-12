@@ -12,11 +12,11 @@ export class SemitagModel {
   }
 
   get resolved() {
-    return this.entity.isResolved;
+    return this.entity.isChecked;
   }
 
-  get tagId() {
-    return this.entity.tagId;
+  get videoTagId() {
+    return this.entity.videoTagId;
   }
 
   get videoId() {
