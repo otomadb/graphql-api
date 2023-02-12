@@ -7,8 +7,25 @@ input AddTagToVideoInput {
   tagId: ID!
 }
 
-type AddTagToVideoPayload {
+union AddTagToVideoPayload = AddTagToVideoSuccessedPayload | AddTagToVideoFailedPayload
+
+type AddTagToVideoSuccessedPayload {
   video: Video!
   tag: Tag!
-  # history: VideoAddTagHistoryItem!
+}
+
+type AddTagToVideoFailedPayload {
+  message: AddTagToVideoFailedMessage!
+}
+
+enum AddTagToVideoFailedMessage {
+  FORBIDDEN
+
+  INVALID_VIDEO_ID
+  INVALID_TAG_ID
+
+  VIDEO_ALREADY_TAGGED
+
+  "原因不明のエラー"
+  UNKNOWN
 }
