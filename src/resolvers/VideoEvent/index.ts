@@ -1,5 +1,3 @@
-import { GraphQLError } from "graphql";
-
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
 import { ResolverDeps } from "../index.js";
@@ -31,33 +29,6 @@ export const resolveVideoEvent = () =>
       switch (type) {
         case "REGISTER":
           return "VideoRegisterEvent";
-        // title
-        case "ADD_TITLE":
-          return "VideoAddTitleEvent";
-        case "REMOVE_TITLE":
-          return "VideoRemoveTitleEvent";
-        case "SET_PRIMARY_TITLE":
-          return "VideoSetPrimaryTitleEvent";
-        // thumbnail
-        case "ADD_THUMBNAIL":
-          return "VideoAddThumbnailEvent";
-        case "REMOVE_THUMBNAIL":
-          return "VideoRemoveThumbnailEvent";
-        case "SET_PRIMARY_THUMBNAIL":
-          return "VideoSetPrimaryThumbnailEvent";
-        // tag
-        case "ADD_TAG":
-          return "VideoAddTagEvent";
-        case "REMOVE_TAG":
-          return "VideoRemoveTagEvent";
-        // semitag
-        case "ADD_SEMITAG":
-          return "VideoAddSemitagEvent";
-        // nicovideo source
-        case "ADD_NICOVIDEO_SOURCE":
-          return "VideoAddNicovideoSourceEvent";
-        default:
-          throw new GraphQLError(`Unsupport VideoEvent type: ${type}`);
       }
     },
   } satisfies Resolvers["VideoEvent"]);

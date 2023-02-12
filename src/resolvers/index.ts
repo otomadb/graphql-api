@@ -24,14 +24,18 @@ import { resolveVideoAddNicovideoSourceEvent } from "./VideoAddNicovideoSourceEv
 import { resolveVideoAddSemitagEvent } from "./VideoAddSemitagEvent/index.js";
 import { resolveVideoAddTagEvent } from "./VideoAddTagEvent/index.js";
 import { resolveVideoAddThumbnailEvent } from "./VideoAddThumbnailEvent/index.js";
-import { resolveVideoAddTitleEvent } from "./VideoAddTitleEvent/index.js";
 import { resolveVideoEvent } from "./VideoEvent/index.js";
 import { resolveVideoRegisterEvent } from "./VideoRegisterEvent/index.js";
 import { resolveVideoRemoveTagEvent } from "./VideoRemoveTagEvent/index.js";
 import { resolveVideoRemoveThumbnailEvent } from "./VideoRemoveThumbnailEvent/index.js";
-import { resolveVideoRemoveTitleEvent } from "./VideoRemoveTitleEvent/index.js";
 import { resolveVideoSetPrimaryThumbnailEvent } from "./VideoSetPrimaryThumbnailEvent/index.js";
-import { resolveVideoSetPrimaryTitleEvent } from "./VideoSetPrimaryTitleEvent/index.js";
+import { resolveVideoTitle } from "./VideoTitle/index.js";
+import {
+  resolveVideoTitleCreateEvent,
+  resolveVideoTitleEvent,
+  resolveVideoTitleSetPrimaryEvent,
+  resolveVideoTitleUnsetPrimaryEvent,
+} from "./VideoTitleEvent/index.js";
 
 export type ResolverDeps = {
   prisma: PrismaClient;
@@ -60,12 +64,14 @@ export const resolvers = (deps: ResolverDeps) =>
     VideoAddSemitagEvent: resolveVideoAddSemitagEvent(deps),
     VideoAddTagEvent: resolveVideoAddTagEvent(deps),
     VideoAddThumbnailEvent: resolveVideoAddThumbnailEvent(deps),
-    VideoAddTitleEvent: resolveVideoAddTitleEvent(deps),
     VideoEvent: resolveVideoEvent(),
     VideoRegisterEvent: resolveVideoRegisterEvent(deps),
     VideoRemoveTagEvent: resolveVideoRemoveTagEvent(deps),
     VideoRemoveThumbnailEvent: resolveVideoRemoveThumbnailEvent(deps),
-    VideoRemoveTitleEvent: resolveVideoRemoveTitleEvent(deps),
     VideoSetPrimaryThumbnailEvent: resolveVideoSetPrimaryThumbnailEvent(deps),
-    VideoSetPrimaryTitleEvent: resolveVideoSetPrimaryTitleEvent(deps),
+    VideoTitle: resolveVideoTitle(deps),
+    VideoTitleCreateEvent: resolveVideoTitleCreateEvent(deps),
+    VideoTitleEvent: resolveVideoTitleEvent(),
+    VideoTitleSetPrimaryEvent: resolveVideoTitleSetPrimaryEvent(deps),
+    VideoTitleUnsetPrimaryEvent: resolveVideoTitleUnsetPrimaryEvent(deps),
   } satisfies Resolvers);

@@ -21,6 +21,22 @@ input RegisterVideoInputSource {
   sourceId: String!
 }
 
-type RegisterVideoPayload {
+union RegisterVideoPayload = RegisterVideoSuccessedPayload | RegisterVideoFailedPayload
+
+type RegisterVideoSuccessedPayload {
   video: Video!
+}
+
+type RegisterVideoFailedPayload {
+  message: RegisterVideoFailedMessage!
+}
+
+enum RegisterVideoFailedMessage {
+  FORBIDDEN
+
+  INVALID_NICOVIDEO_SOURCE_ID
+
+  INVALID_TAG_ID
+
+  UNKNOWN
 }

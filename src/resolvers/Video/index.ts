@@ -6,6 +6,7 @@ import { ResolverDeps } from "../index.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
 import { SemitagModel } from "../Semitag/model.js";
 import { VideoEventModel } from "../VideoEvent/model.js";
+import { VideoTitleModel } from "../VideoTitle/model.js";
 import { resolveSimilarVideos } from "./similarVideos.js";
 import { resolveTags } from "./tags.js";
 
@@ -19,13 +20,8 @@ export const resolveVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "n
 
       return title.title;
     },
-    titles: async ({ id: videoId }) => {
-      const titles = await prisma.videoTitle.findMany({ where: { videoId } });
-      return titles.map(({ title, isPrimary }) => ({
-        title,
-        primary: isPrimary,
-      }));
-    },
+    titles: async ({ id: videoId }) =>
+      prisma.videoTitle.findMany({ where: { videoId } }).then((vs) => vs.map((t) => new VideoTitleModel(t))),
 
     thumbnailUrl: async ({ id: videoId }) => {
       const thumbnail = await prisma.videoThumbnail.findFirst({ where: { videoId, isPrimary: true } });
@@ -53,7 +49,7 @@ export const resolveVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "n
 
     semitags: ({ id: videoId }, { resolved }) =>
       prisma.semitag
-        .findMany({ where: { videoId, isResolved: resolved?.valueOf() } })
+        .findMany({ where: { videoId, isChecked: resolved?.valueOf() } })
         .then((semitags) => semitags.map((semitag) => new SemitagModel(semitag))),
 
     events: async ({ id: videoId }, { input }) => {

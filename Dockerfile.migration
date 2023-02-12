@@ -9,7 +9,6 @@ RUN chmod +x /bin/tini
 COPY package.json package-lock.json ./
 RUN npm ci
 
-COPY ./tsconfig.json ./
 COPY ./prisma ./prisma
 
 ENTRYPOINT ["tini", "--"]

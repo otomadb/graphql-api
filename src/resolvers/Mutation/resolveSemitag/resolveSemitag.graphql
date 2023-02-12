@@ -4,9 +4,33 @@ type Mutation {
 
 input ResolveSemitagInput {
   id: ID!
-  tagId: ID
+  tagId: ID!
 }
 
-type ResolveSemitagPayload {
+union ResolveSemitagPayload = ResolveSemitagSuccessedPayload | ResolveSemitagFailedPayload
+
+type ResolveSemitagSuccessedPayload {
   semitag: Semitag!
+}
+
+type ResolveSemitagFailedPayload {
+  message: ResolveSemitagFailedMessage!
+}
+
+enum ResolveSemitagFailedMessage {
+  "権限なし"
+  FORBIDDEN
+
+  INVALID_SEMITAG_ID
+  INVALID_TAG_ID
+
+  SEMITAG_NOT_FOUND
+  SEMITAG_ALREADY_CHECKED
+
+  TAG_NOT_FOUND
+
+  VIDEO_ALREADY_TAGGED
+
+  "原因不明のエラー"
+  UNKNOWN
 }

@@ -31,17 +31,18 @@ generates:
         VideoAddSemitagEvent: ./VideoEvent/model.js#VideoEventModel
         VideoAddTagEvent: ./VideoEvent/model.js#VideoEventModel
         VideoAddThumbnailEvent: ./VideoEvent/model.js#VideoEventModel
-        VideoAddTitleEvent: ./VideoEvent/model.js#VideoEventModel
         VideoChangePrimaryThumbnailEvent: ./VideoEvent/model.js#VideoEventModel
-        VideoChangePrimaryTitleEvent: ./VideoEvent/model.js#VideoEventModel
         VideoEvent: ./VideoEvent/model.js#VideoEventModel
         VideoRegisterEvent: ./VideoEvent/model.js#VideoEventModel
         VideoRemoveTagEvent: ./VideoEvent/model.js#VideoEventModel
         VideoRemoveThumbnailEvent: ./VideoEvent/model.js#VideoEventModel
-        VideoRemoveTitleEvent: ./VideoEvent/model.js#VideoEventModel
         VideoSetPrimaryThumbnailEvent: ./VideoEvent/model.js#VideoEventModel
-        VideoSetPrimaryTitleEvent: ./VideoEvent/model.js#VideoEventModel
         VideoSimilarity: ./VideoSimilarity/model.js#VideoSimilarityModel
+        VideoTitle: ./VideoTitle/model.js#VideoTitleModel
+        VideoTitleCreateEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
+        VideoTitleEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
+        VideoTitleSetPrimaryEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
+        VideoTitleUnsetPrimaryEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
       makeResolverTypeCallable: true
     plugins:
       - typescript
