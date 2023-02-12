@@ -1,0 +1,31 @@
+interface SemitagEvent {
+  id: ID!
+  createdAt: DateTime!
+  user: User!
+  semitag: Semitag!
+}
+
+type SemitagEventConnection {
+  nodes: [SemitagEvent!]!
+}
+
+type SemitagEventAttachEvent implements SemitagEvent & Node {
+  id: ID!
+  createdAt: DateTime!
+  user: User!
+  semitag: Semitag!
+}
+
+type SemitagEventResolveEvent implements SemitagEvent & Node {
+  id: ID!
+  createdAt: DateTime!
+  user: User!
+  semitag: Semitag!
+}
+
+type SemitagEventRejectEvent implements SemitagEvent & Node {
+  id: ID!
+  createdAt: DateTime!
+  user: User!
+  semitag: Semitag!
+}

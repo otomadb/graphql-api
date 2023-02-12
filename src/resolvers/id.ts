@@ -9,17 +9,18 @@ export type NodeType =
   | "MylistRegistration"
   | "NicovideoVideoSource"
   | "Semitag"
+  | "SemitagEvent"
   | "Session"
   | "Tag"
   | "User"
   | "Video"
   | "VideoEvent"
+  | "VideoTag"
+  | "VideoTagEvent"
   | "VideoThumbnail"
   | "VideoThumbnailEvent"
   | "VideoTitle"
-  | "VideoTitleEvent"
-  | "VideoTag"
-  | "VideoTagEvent";
+  | "VideoTitleEvent";
 
 export const buildGqlId = (type: NodeType, dbId: string): string =>
   Buffer.from(`${type}:${dbId}`).toString("base64url");

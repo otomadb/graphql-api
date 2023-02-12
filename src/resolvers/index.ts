@@ -16,12 +16,17 @@ import { resolveNicovideoOriginalSourceTag } from "./NicovideoOriginalSourceTag/
 import { resolveNicovideoVideoSource } from "./NicovideoVideoSource/index.js";
 import { resolveQuery } from "./Query/index.js";
 import { resolveSemitag } from "./Semitag/index.js";
+import {
+  resolveSemitagEvent,
+  resolveSemitagEventAttachEvent,
+  resolveSemitagEventRejectEvent,
+  resolveSemitagEventResolveEvent,
+} from "./SemitagEvent/index.js";
 import { resolveSession } from "./Session/index.js";
 import { resolveTag } from "./Tag/index.js";
 import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
 import { resolveVideoAddNicovideoSourceEvent } from "./VideoAddNicovideoSourceEvent/index.js";
-import { resolveVideoAddSemitagEvent } from "./VideoAddSemitagEvent/index.js";
 import { resolveVideoEvent } from "./VideoEvent/index.js";
 import { resolveVideoRegisterEvent } from "./VideoRegisterEvent/index.js";
 import { resolveVideoTag } from "./VideoTag/index.js";
@@ -65,12 +70,15 @@ export const resolvers = (deps: ResolverDeps) =>
     NicovideoVideoSource: resolveNicovideoVideoSource(deps),
     Query: resolveQuery(deps),
     Semitag: resolveSemitag(deps),
+    SemitagEvent: resolveSemitagEvent(),
+    SemitagEventAttachEvent: resolveSemitagEventAttachEvent(deps),
+    SemitagEventRejectEvent: resolveSemitagEventRejectEvent(deps),
+    SemitagEventResolveEvent: resolveSemitagEventResolveEvent(deps),
     Session: resolveSession(deps),
     Tag: resolveTag(deps),
     User: resolveUser(deps),
     Video: resolveVideo(deps),
     VideoAddNicovideoSourceEvent: resolveVideoAddNicovideoSourceEvent(deps),
-    VideoAddSemitagEvent: resolveVideoAddSemitagEvent(deps),
     VideoEvent: resolveVideoEvent(),
     VideoRegisterEvent: resolveVideoRegisterEvent(deps),
     VideoTag: resolveVideoTag(deps),
