@@ -40,10 +40,10 @@ generates:
         VideoThumbnailSetPrimaryEvent: ./VideoThumbnailEvent/model.js#VideoThumbnailEventModel
         VideoThumbnailUnsetPrimaryEvent: ./VideoThumbnailEvent/model.js#VideoThumbnailEventModel
         VideoTitle: ./VideoTitle/model.js#VideoTitleModel
-        VideoTitleCreateEventType: ./VideoTitleEvent/model.js#VideoTitleEventModel
+        VideoTitleCreateEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
         VideoTitleEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
-        VideoTitleSetPrimaryEventType: ./VideoTitleEvent/model.js#VideoTitleEventModel
-        VideoTitleUnsetPrimaryEventType: ./VideoTitleEvent/model.js#VideoTitleEventModel
+        VideoTitleSetPrimaryEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
+        VideoTitleUnsetPrimaryEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
       makeResolverTypeCallable: true
     plugins:
       - typescript

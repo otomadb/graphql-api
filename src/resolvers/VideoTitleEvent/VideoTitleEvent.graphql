@@ -10,7 +10,7 @@ type VideoEventsConnection {
   nodes: [VideoEvent!]!
 }
 
-type VideoTitleCreateEventType implements VideoTitleEvent & Node {
+type VideoTitleCreateEvent implements VideoTitleEvent & Node {
   id: ID!
   createdAt: DateTime!
 
@@ -18,7 +18,7 @@ type VideoTitleCreateEventType implements VideoTitleEvent & Node {
   videoTitle: VideoTitle!
 }
 
-type VideoTitleSetPrimaryEventType implements VideoTitleEvent & Node {
+type VideoTitleSetPrimaryEvent implements VideoTitleEvent & Node {
   id: ID!
   createdAt: DateTime!
 
@@ -26,7 +26,7 @@ type VideoTitleSetPrimaryEventType implements VideoTitleEvent & Node {
   videoTitle: VideoTitle!
 }
 
-type VideoTitleUnsetPrimaryEventType implements VideoTitleEvent & Node {
+type VideoTitleUnsetPrimaryEvent implements VideoTitleEvent & Node {
   id: ID!
   createdAt: DateTime!
 
