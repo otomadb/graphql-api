@@ -8,3 +8,11 @@ interface VideoEvent {
 type VideoEventsConnection {
   nodes: [VideoEvent!]!
 }
+
+"Videoを追加した際に発生．（初回のみ）"
+type VideoRegisterEvent implements VideoEvent {
+  id: ID!
+  createdAt: DateTime!
+  user: User!
+  video: Video!
+}
