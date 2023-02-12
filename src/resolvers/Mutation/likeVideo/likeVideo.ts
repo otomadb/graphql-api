@@ -1,9 +1,5 @@
-import { UserRole } from "@prisma/client";
-import { GraphQLError } from "graphql";
-
-import { ensureContextUser } from "../../ensureContextUser.js";
-import { MutationResolvers } from "../../graphql.js";
-import { parseGqlID } from "../../id.js";
+import { LikeVideoFailedMessage, MutationResolvers } from "../../graphql.js";
+import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
 
@@ -28,18 +24,55 @@ export const addMylistRegistrationInNeo4j = async (
 };
 
 export const likeVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  ensureContextUser(prisma, UserRole.NORMAL, async (_parent, { input: { videoId: videoGqlId } }, { userId }) => {
-    const videoId = parseGqlID("Video", videoGqlId);
+  (async (_parent, { input: { videoId: videoGqlId } }, { user }) => {
+    if (!user)
+      return {
+        __typename: "LikeVideoFailedPayload",
+        message: LikeVideoFailedMessage.Forbidden,
+      };
 
-    const likelist = await prisma.mylist
-      .findFirstOrThrow({ where: { holder: { id: userId }, isLikeList: true } })
-      .catch(() => {
-        throw new GraphQLError(`like list for "${userId}" is not found`);
-      });
+    const videoId = parseGqlID2("Video", videoGqlId);
+    if (videoId.status === "error")
+      return {
+        __typename: "LikeVideoFailedPayload",
+        message: LikeVideoFailedMessage.InvalidVideoId,
+      };
+
+    if (!(await prisma.video.findUnique({ where: { id: videoId.data } })))
+      return {
+        __typename: "LikeVideoFailedPayload",
+        message: LikeVideoFailedMessage.VideoNotFound,
+      };
+
+    const likelist = await prisma.mylist.findFirst({ where: { holder: { id: user.id }, isLikeList: true } });
+    if (!likelist)
+      return {
+        __typename: "LikeVideoFailedPayload",
+        message: LikeVideoFailedMessage.Unknown, // 本来起こり得ないため
+      };
+
+    if (
+      await prisma.mylistRegistration.findUnique({
+        where: { mylistId_videoId: { mylistId: likelist.id, videoId: videoId.data } },
+      })
+    )
+      return {
+        __typename: "LikeVideoFailedPayload",
+        message: LikeVideoFailedMessage.VideoAlreadyLiked,
+      };
+
     const registration = await prisma.mylistRegistration.create({
-      data: { note: null, videoId, mylistId: likelist.id },
+      data: {
+        note: null,
+        videoId: videoId.data,
+        mylistId: likelist.id,
+      },
     });
+
     await addMylistRegistrationInNeo4j(neo4j, { videoId: registration.videoId, mylistId: registration.mylistId });
 
-    return { registration: new MylistRegistrationModel(registration) };
+    return {
+      __typename: "LikeVideoSuccessedPayload",
+      registration: new MylistRegistrationModel(registration),
+    };
   }) satisfies MutationResolvers["likeVideo"];

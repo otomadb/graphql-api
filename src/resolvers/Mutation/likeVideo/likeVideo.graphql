@@ -6,6 +6,23 @@ input LikeVideoInput {
   videoId: ID!
 }
 
-type LikeVideoPayload {
+union LikeVideoPayload = LikeVideoSuccessedPayload | LikeVideoFailedPayload
+
+type LikeVideoSuccessedPayload {
   registration: MylistRegistration!
+}
+
+type LikeVideoFailedPayload {
+  message: LikeVideoFailedMessage!
+}
+
+enum LikeVideoFailedMessage {
+  FORBIDDEN
+
+  INVALID_VIDEO_ID
+
+  VIDEO_NOT_FOUND
+  VIDEO_ALREADY_LIKED
+
+  UNKNOWN
 }
