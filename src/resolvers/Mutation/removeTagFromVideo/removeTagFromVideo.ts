@@ -40,16 +40,17 @@ export const remove = async (
   const [tagging] = await prisma.$transaction([
     prisma.videoTag.update({
       where: { id: extTagging.id },
-      data: { isRemoved: true },
-      include: { tag: true, video: true },
-    }),
-    prisma.videoTagEvent.create({
       data: {
-        userId: authUserId,
-        videoTagId: extTagging.id,
-        type: VideoTagEventType.REMOVED,
-        payload: {},
+        isRemoved: true,
+        events: {
+          create: {
+            userId: authUserId,
+            type: VideoTagEventType.REMOVED,
+            payload: {},
+          },
+        },
       },
+      include: { tag: true, video: true },
     }),
   ]);
   return { status: "ok", data: tagging };
