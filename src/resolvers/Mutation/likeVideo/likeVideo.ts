@@ -1,3 +1,6 @@
+import { Mylist, MylistRegistration, Video } from "@prisma/client";
+
+import { err, ok, Result } from "../../../utils/Result.js";
 import { LikeVideoFailedMessage, MutationResolvers } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
@@ -23,8 +26,55 @@ export const addMylistRegistrationInNeo4j = async (
   }
 };
 
+export const like = async (
+  prisma: ResolverDeps["prisma"],
+  { videoId, userId }: { videoId: string; userId: string }
+): Promise<
+  Result<
+    "VIDEO_NOT_FOUND" | "LIKELIST_NOT_FOUND" | "ALREADY_REGISTERED",
+    MylistRegistration & { mylist: Mylist; video: Video }
+  >
+> => {
+  const video = await prisma.video.findUnique({ where: { id: videoId } });
+  if (!video) return err("VIDEO_NOT_FOUND");
+
+  const mylist = await prisma.mylist.findFirst({ where: { holder: { id: userId }, isLikeList: true } });
+  if (!mylist) return err("LIKELIST_NOT_FOUND");
+
+  const ext = await prisma.mylistRegistration.findUnique({
+    where: { mylistId_videoId: { mylistId: mylist.id, videoId: video.id } },
+  });
+
+  if (!ext) {
+    const registration = await prisma.mylistRegistration.create({
+      data: {
+        videoId: video.id,
+        mylistId: mylist.id,
+        isRemoved: false,
+        events: {
+          create: { type: "REGISTER", userId, payload: {} },
+        },
+      },
+      include: { video: true, mylist: true },
+    });
+    return ok(registration);
+  } else {
+    if (!ext.isRemoved) return err("ALREADY_REGISTERED");
+
+    const registration = await prisma.mylistRegistration.update({
+      where: { id: ext.id },
+      data: {
+        isRemoved: false,
+        events: { create: { type: "REREGISTER", userId, payload: {} } },
+      },
+      include: { video: true, mylist: true },
+    });
+    return ok(registration);
+  }
+};
+
 export const likeVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  (async (_parent, { input: { videoId: videoGqlId } }, { user }) => {
+  (async (_parent, { input: { videoId: videoGqlId } }, { user }, info) => {
     if (!user)
       return {
         __typename: "LikeVideoFailedPayload",
@@ -32,43 +82,24 @@ export const likeVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4
       };
 
     const videoId = parseGqlID2("Video", videoGqlId);
-    if (videoId.status === "error")
-      return {
-        __typename: "LikeVideoFailedPayload",
-        message: LikeVideoFailedMessage.InvalidVideoId,
-      };
+    if (videoId.status === "error") {
+      return { __typename: "LikeVideoFailedPayload", message: LikeVideoFailedMessage.InvalidVideoId };
+    }
 
-    if (!(await prisma.video.findUnique({ where: { id: videoId.data } })))
-      return {
-        __typename: "LikeVideoFailedPayload",
-        message: LikeVideoFailedMessage.VideoNotFound,
-      };
+    const result = await like(prisma, { userId: user.id, videoId: videoId.data });
+    if (result.status === "error") {
+      switch (result.error) {
+        case "VIDEO_NOT_FOUND":
+          return { __typename: "LikeVideoFailedPayload", message: LikeVideoFailedMessage.VideoNotFound };
+        case "ALREADY_REGISTERED":
+          return { __typename: "LikeVideoFailedPayload", message: LikeVideoFailedMessage.VideoAlreadyLiked };
+        case "LIKELIST_NOT_FOUND":
+          // 本来起こり得ないため
+          return { __typename: "LikeVideoFailedPayload", message: LikeVideoFailedMessage.Unknown };
+      }
+    }
 
-    const likelist = await prisma.mylist.findFirst({ where: { holder: { id: user.id }, isLikeList: true } });
-    if (!likelist)
-      return {
-        __typename: "LikeVideoFailedPayload",
-        message: LikeVideoFailedMessage.Unknown, // 本来起こり得ないため
-      };
-
-    if (
-      await prisma.mylistRegistration.findUnique({
-        where: { mylistId_videoId: { mylistId: likelist.id, videoId: videoId.data } },
-      })
-    )
-      return {
-        __typename: "LikeVideoFailedPayload",
-        message: LikeVideoFailedMessage.VideoAlreadyLiked,
-      };
-
-    const registration = await prisma.mylistRegistration.create({
-      data: {
-        note: null,
-        videoId: videoId.data,
-        mylistId: likelist.id,
-      },
-    });
-
+    const registration = result.data;
     await addMylistRegistrationInNeo4j(neo4j, { videoId: registration.videoId, mylistId: registration.mylistId });
 
     return {
