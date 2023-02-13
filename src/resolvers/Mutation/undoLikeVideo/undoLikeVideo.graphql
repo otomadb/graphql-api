@@ -9,8 +9,10 @@ input UndoLikeVideoInput {
 union UndoLikeVideoPayload = UndoLikeVideoSucceededPayload | UndoLikeVideoFailedPayload
 
 type UndoLikeVideoSucceededPayload {
-  video: Video!
-  mylist: Mylist!
+  registration: MylistRegistration!
+
+  video: Video! @deprecated
+  mylist: Mylist! @deprecated
 }
 
 type UndoLikeVideoFailedPayload {
