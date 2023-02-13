@@ -12,13 +12,22 @@ import { typeDefs } from "./resolvers/graphql.js";
 import { resolvers as makeResolvers } from "./resolvers/index.js";
 
 const logger = pino({
-  level: process.env.NODE_ENV === "production" ? "info" : "trace",
   transport: {
-    target: "pino/file",
-    options: {
-      destination: "logs/out.log",
-      mkdir: true,
-    },
+    targets: [
+      {
+        target: "pino-pretty",
+        level: process.env.NODE_ENV === "production" ? "info" : "trace",
+        options: {},
+      },
+      {
+        target: "pino/file",
+        level: process.env.NODE_ENV === "production" ? "info" : "trace",
+        options: {
+          destination: "logs/out.log",
+          mkdir: true,
+        },
+      },
+    ],
   },
 });
 
