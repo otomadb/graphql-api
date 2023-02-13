@@ -21,23 +21,17 @@ export const expire = async (
   return { status: "ok", data: session };
 };
 
-export const signout = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const signout = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async (_parent, _args, { req, res }) => {
     const resultExtractSession = extractSessionFromReq(req);
     if (resultExtractSession.status === "error") {
-      switch (resultExtractSession.error) {
+      switch (resultExtractSession.error.type) {
         case "NO_COOKIE":
-          // TODO: ここでログを残す
-          return {
-            __typename: "SignoutFailedPayload",
-            message: SignoutFailedMessage.NoSessionId,
-          };
+          logger.warn("Cookie not found");
+          return { __typename: "SignoutFailedPayload", message: SignoutFailedMessage.NoSessionId };
         case "INVALID_FORM":
-          // TODO: ここでログを残す
-          return {
-            __typename: "SignoutFailedPayload",
-            message: SignoutFailedMessage.NoSessionId,
-          };
+          logger.warn({ cookie: resultExtractSession.error.cookie }, "Cookie is invalid form for session");
+          return { __typename: "SignoutFailedPayload", message: SignoutFailedMessage.NoSessionId };
       }
     }
 
