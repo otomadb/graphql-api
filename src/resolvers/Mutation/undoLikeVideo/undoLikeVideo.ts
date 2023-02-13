@@ -46,7 +46,7 @@ export const undo = async (
     where: { mylistId_videoId: { mylistId: mylist.id, videoId: video.id } },
   });
   if (!ext) return err("NOT_REGISTERED");
-  if (!ext.isRemoved) return err("ALREADY_UNREGISTERED");
+  if (ext.isRemoved) return err("ALREADY_UNREGISTERED");
 
   const registration = await prisma.mylistRegistration.update({
     where: { id: ext.id },
@@ -68,12 +68,25 @@ export const undoLikeVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "
     if (result.status === "error") {
       switch (result.error) {
         case "VIDEO_NOT_FOUND":
-          return { __typename: "UndoLikeVideoFailedPayload", message: UndoLikeVideoFailedMessage.VideoNotFound };
+          return {
+            __typename: "UndoLikeVideoFailedPayload",
+            message: UndoLikeVideoFailedMessage.VideoNotFound,
+          };
         case "NOT_REGISTERED":
-          return { __typename: "UndoLikeVideoFailedPayload", message: UndoLikeVideoFailedMessage.VideoNotLiked };
-        case "LIKELIST_NOT_FOUND":
+          return {
+            __typename: "UndoLikeVideoFailedPayload",
+            message: UndoLikeVideoFailedMessage.VideoNotLiked,
+          };
         case "ALREADY_UNREGISTERED":
-          return { __typename: "UndoLikeVideoFailedPayload", message: UndoLikeVideoFailedMessage.Unknown };
+          return {
+            __typename: "UndoLikeVideoFailedPayload",
+            message: UndoLikeVideoFailedMessage.VideoNotLiked,
+          };
+        case "LIKELIST_NOT_FOUND":
+          return {
+            __typename: "UndoLikeVideoFailedPayload",
+            message: UndoLikeVideoFailedMessage.Unknown,
+          };
       }
     }
 
