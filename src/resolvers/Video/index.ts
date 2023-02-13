@@ -63,4 +63,11 @@ export const resolveVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "n
         .then((es) => es.map((e) => new VideoEventModel(e)));
       return { nodes };
     },
+
+    isLiked: ({ id: videoId }, _args, { user }) => {
+      if (!user) throw new GraphQLError("Not logged in");
+      return prisma.mylistRegistration
+        .findFirst({ where: { videoId, mylist: { holderId: user.id }, isRemoved: false } })
+        .then((r) => !!r);
+    },
   } satisfies Resolvers["Video"]);

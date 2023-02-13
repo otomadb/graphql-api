@@ -16,6 +16,8 @@ type Video implements Node {
   semitags(resolved: Boolean): [Semitag!]!
 
   similarVideos(input: VideoSimilarVideosInput!): VideoSimilarVideosPayload!
+
+  isLiked: Boolean!
 }
 
 type VideoThumbnail {
