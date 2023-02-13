@@ -50,13 +50,8 @@ export const resolveMylist = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "
 
     isIncludesVideo: async ({ id: mylistId }, { id: videoId }) =>
       prisma.mylistRegistration
-        .findFirst({
-          where: {
-            mylistId,
-            videoId: parseGqlID("Video", videoId),
-          },
-        })
-        .then((r) => !!r),
+        .findUnique({ where: { mylistId_videoId: { mylistId, videoId: parseGqlID("Video", videoId) } } })
+        .then((r) => (r ? !r.isRemoved : false)),
 
     recommendedVideos: resolveRecommendedVideos({ neo4j }),
     includeTags: resolveIncludeTags({ prisma }),
