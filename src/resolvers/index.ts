@@ -2,6 +2,7 @@
 
 import { PrismaClient } from "@prisma/client";
 import { Driver as Neo4jDriver } from "neo4j-driver";
+import { Logger } from "pino";
 
 import { type Resolvers } from "./graphql.js";
 import { resolveMutation } from "./Mutation/index.js";
@@ -56,6 +57,7 @@ import {
 export type ResolverDeps = {
   prisma: PrismaClient;
   neo4j: Neo4jDriver;
+  logger: Logger;
 };
 
 export const resolvers = (deps: ResolverDeps) =>
