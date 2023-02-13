@@ -4,11 +4,32 @@ import { usePrometheus } from "@envelop/prometheus";
 import { PrismaClient } from "@prisma/client";
 import { createSchema, createYoga } from "graphql-yoga";
 import neo4j from "neo4j-driver";
+import { pino } from "pino";
 
 import { extractSessionFromReq, verifySession } from "./auth/session.js";
 import { ServerContext, UserContext } from "./resolvers/context.js";
 import { typeDefs } from "./resolvers/graphql.js";
 import { resolvers as makeResolvers } from "./resolvers/index.js";
+
+const logger = pino({
+  transport: {
+    targets: [
+      {
+        target: "pino-pretty",
+        level: process.env.NODE_ENV === "production" ? "info" : "trace",
+        options: {},
+      },
+      {
+        target: "pino/file",
+        level: process.env.NODE_ENV === "production" ? "info" : "trace",
+        options: {
+          destination: "logs/out.log",
+          mkdir: true,
+        },
+      },
+    ],
+  },
+});
 
 const prismaClient = new PrismaClient({ datasources: { db: { url: process.env.PRISMA_DATABASE_URL } } });
 
@@ -21,12 +42,18 @@ const yoga = createYoga<ServerContext, UserContext>({
   graphiql: process.env.ENABLE_GRAPHIQL === "true",
   schema: createSchema({
     typeDefs,
-    resolvers: makeResolvers({ neo4j: neo4jDriver, prisma: prismaClient }),
+    resolvers: makeResolvers({ neo4j: neo4jDriver, prisma: prismaClient, logger }),
   }),
   async context({ req }) {
     // from cookie
     const resultExtractSession = extractSessionFromReq(req);
-    if (resultExtractSession.status === "ok") {
+    if (resultExtractSession.status === "error") {
+      switch (resultExtractSession.error.type) {
+        case "INVALID_FORM":
+          logger.warn({ cookie: resultExtractSession.error.cookie }, "Cookie is invalid form for session");
+          break;
+      }
+    } else {
       const session = await verifySession(prismaClient, resultExtractSession.data);
       if (session.status === "ok")
         return {
@@ -34,18 +61,14 @@ const yoga = createYoga<ServerContext, UserContext>({
           user: { id: session.data.user.id, role: session.data.user.role },
         } satisfies UserContext;
       else {
-        switch (session.error) {
+        switch (session.error.type) {
           case "NOT_FOUND_SESSION":
+            logger.warn({ id: session.error.id }, "Session not found");
+            break;
           case "WRONG_SECRET":
-            // TODO: 明らかにおかしいのでログに残す
+            logger.warn({ id: session.error.id, secret: session.error.secret }, "Session secret is incorrect");
             break;
         }
-      }
-    } else {
-      switch (resultExtractSession.error) {
-        case "INVALID_FORM":
-          // TODO: 不正なセッションなのでログに残す
-          break;
       }
     }
 
@@ -72,30 +95,40 @@ const yoga = createYoga<ServerContext, UserContext>({
       credentials: true,
     };
   },
-  /*
-  logging: {
-    debug: (...args) => args.forEach((arg) => app.log.debug(arg)),
-    info: (...args) => args.forEach((arg) => app.log.info(arg)),
-    warn: (...args) => args.forEach((arg) => app.log.warn(arg)),
-    error: (...args) => args.forEach((arg) => app.log.error(arg)),
-  },
-  */
   plugins: [
-    /*
-    useLogger({
-      logFn: console.log,
-    }),
-    */
     usePrometheus({
       execute: true,
       errors: true,
       requestCount: true,
       requestSummary: true,
     }),
+    /*
+    useLogger({
+      logFn(a, b) {
+        switch (a) {
+          case "execute-start":
+            console.log(b);
+            break;
+          case "execute-end":
+            console.log(b);
+            logger.info(
+              {
+                operation: b.args.operationName,
+                variables: b.args.variableValues,
+                user: b.args.contextValue.user,
+                result: b.result,
+              },
+              "Executed graphql"
+            );
+            break;
+        }
+      },
+    }),
+    */
   ],
 });
 
 const server = createServer(yoga);
 server.listen(8080, () => {
-  console.info("Server is running on http://localhost:8080/graphql");
+  logger.info("Server is running on http://localhost:8080");
 });
