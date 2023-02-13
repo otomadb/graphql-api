@@ -20,7 +20,6 @@ enum LikeVideoFailedMessage {
   FORBIDDEN
 
   INVALID_VIDEO_ID
-
   VIDEO_NOT_FOUND
   VIDEO_ALREADY_LIKED
 
