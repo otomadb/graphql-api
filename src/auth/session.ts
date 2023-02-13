@@ -3,54 +3,42 @@ import { parse as parseCookie } from "cookie";
 import { createHash, randomBytes } from "crypto";
 import { IncomingMessage } from "http";
 
-import { Result } from "../utils/Result.js";
+import { err, ok, Result } from "../utils/Result.js";
 
-export const OTOMADB_SESSION_COOKIE_NAME = "otmd-session";
+export const OTOMADB_SESSION_COOKIE_NAME = "otomadb_session";
 
 export const extractSessionFromReq = (
   req: IncomingMessage
-): Result<"NO_COOKIE" | "INVALID_FORM", { id: string; secret: string }> => {
+): Result<{ type: "NO_COOKIE" } | { type: "INVALID_FORM"; cookie: string }, { id: string; secret: string }> => {
   const cookies = parseCookie(req.headers.cookie || "");
   const sessionCookie = cookies?.[OTOMADB_SESSION_COOKIE_NAME];
-  if (!sessionCookie) return { status: "error", error: "NO_COOKIE" };
+  if (!sessionCookie) return err({ type: "NO_COOKIE" });
 
   const [sessionId, sessionSecret] = sessionCookie.split("-");
-  if (!sessionId || !sessionSecret) return { status: "error", error: "INVALID_FORM" };
+  if (!sessionId || !sessionSecret) return err({ type: "INVALID_FORM", cookie: sessionCookie });
 
-  return {
-    status: "ok",
-    data: {
-      id: sessionId,
-      secret: sessionSecret,
-    },
-  };
+  return ok({ id: sessionId, secret: sessionSecret });
 };
 
 export const verifySession = async (
   prisma: PrismaClient,
   { id, secret }: { id: string; secret: string }
-): Promise<Result<"NOT_FOUND_SESSION" | "WRONG_SECRET", Session & { user: { id: string; role: UserRole } }>> => {
+): Promise<
+  Result<
+    { type: "NOT_FOUND_SESSION"; id: string; secret: string } | { type: "WRONG_SECRET"; id: string; secret: string },
+    Session & { user: { id: string; role: UserRole } }
+  >
+> => {
   const session = await prisma.session.findUnique({
     where: { id },
     include: { user: { select: { id: true, role: true } } },
   });
-  if (!session)
-    return {
-      status: "error",
-      error: "NOT_FOUND_SESSION",
-    };
+  if (!session) return err({ type: "NOT_FOUND_SESSION", id, secret });
 
   const hashedSecret = createHash("sha256").update(secret).digest("hex");
-  if (hashedSecret !== session.secret)
-    return {
-      status: "error",
-      error: "WRONG_SECRET",
-    };
+  if (hashedSecret !== session.secret) return err({ type: "WRONG_SECRET", id, secret });
 
-  return {
-    status: "ok",
-    data: session,
-  };
+  return ok(session);
 };
 
 export const createSession = async (prisma: PrismaClient, userId: string) => {
