@@ -5,6 +5,7 @@ import { MutationResolvers, UndoLikeVideoFailedMessage } from "../../graphql.js"
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
+import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
 import { VideoModel } from "../../Video/model.js";
 
 export const undoLikeVideoInNeo4j = async (
@@ -95,6 +96,7 @@ export const undoLikeVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "
 
     return {
       __typename: "UndoLikeVideoSucceededPayload",
+      registration: new MylistRegistrationModel(registration),
       video: new VideoModel(registration.video),
       mylist: new MylistModel(registration.mylist),
     };
