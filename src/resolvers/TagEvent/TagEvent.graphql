@@ -1,0 +1,18 @@
+interface TagEvent {
+  id: ID!
+  createdAt: DateTime!
+  user: User!
+  tag: Tag!
+}
+
+type TagEventsConnection {
+  nodes: [TagEvent!]!
+}
+
+"Tagを追加した際に発生．（初回のみ）"
+type TagRegisterEvent implements TagEvent {
+  id: ID!
+  createdAt: DateTime!
+  user: User!
+  tag: Tag!
+}

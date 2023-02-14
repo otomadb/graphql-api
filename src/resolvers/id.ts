@@ -13,6 +13,7 @@ export type NodeType =
   | "SemitagEvent"
   | "Session"
   | "Tag"
+  | "TagEvent"
   | "User"
   | "Video"
   | "VideoEvent"

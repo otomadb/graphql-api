@@ -23,6 +23,13 @@ type Tag implements Node {
     """
     videoId: ID!
   ): Boolean!
+
+  events(input: TagEventsInput!): TagEventsConnection!
+}
+
+input TagEventsInput {
+  skip: Int! = 0
+  limit: Int! = 10
 }
 
 type TagName {

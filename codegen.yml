@@ -31,6 +31,8 @@ generates:
         SemitagEventResolveEvent: ./SemitagEvent/model.js#SemitagEventModel
         Session: ./Session/model.js#SessionModel
         Tag: ./Tag/model.js#TagModel
+        TagEvent: ./TagEvent/model.js#TagEventModel
+        TagRegisterEvent: ./TagEvent/model.js#TagEventModel
         User: ./User/model.js#UserModel
         Video: ./Video/model.js#VideoModel
         VideoAddNicovideoSourceEvent: ./VideoEvent/model.js#VideoEventModel
