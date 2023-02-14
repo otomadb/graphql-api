@@ -35,7 +35,7 @@ export const resolveMylist = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "
 
     registrations: async ({ id: mylistId }, { input }) => {
       const regs = await prisma.mylistRegistration.findMany({
-        where: { id: mylistId },
+        where: { mylistId },
         orderBy: {
           createdAt: parseSortOrder(input.order?.createdAt),
           updatedAt: parseSortOrder(input.order?.updatedAt),
