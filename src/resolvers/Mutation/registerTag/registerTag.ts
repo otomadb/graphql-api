@@ -1,9 +1,19 @@
-import { Prisma, Tag, TagEventType, TagNameEventType, TagParentEventType, UserRole } from "@prisma/client";
+import {
+  Prisma,
+  Semitag,
+  SemitagEventType,
+  Tag,
+  TagEventType,
+  TagNameEventType,
+  TagParentEventType,
+  UserRole,
+  VideoTagEventType,
+} from "@prisma/client";
 import { ulid } from "ulid";
 
-import { Result } from "../../../utils/Result.js";
+import { err, Result } from "../../../utils/Result.js";
 import { MutationResolvers, RegisterTagFailedMessage } from "../../graphql.js";
-import { parseGqlID2 } from "../../id.js";
+import { parseGqlID2, parseGqlIDs2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 
@@ -55,26 +65,46 @@ export const register = async (
 ): Promise<
   Result<
     | { type: "COLLIDE_BETWEEN_EXPLICIT_PARENT_AND_IMPLICIT_PARENTS"; id: string }
-    | { type: "DUPLICATE_IN_IMPLICIT_PARENTS"; id: string },
+    | { type: "DUPLICATE_IN_IMPLICIT_PARENTS"; id: string }
+    | { type: "DUPLICATE_IN_SEMITAG_IDS"; id: string }
+    | { type: "SEMITAG_NOT_FOUND"; id: string },
     Tag
   >
 > => {
   if (explicitParentId && implicitParentIds.includes(explicitParentId))
-    return {
-      status: "error",
-      error: { type: "COLLIDE_BETWEEN_EXPLICIT_PARENT_AND_IMPLICIT_PARENTS", id: explicitParentId },
-    };
+    return err({ type: "COLLIDE_BETWEEN_EXPLICIT_PARENT_AND_IMPLICIT_PARENTS", id: explicitParentId });
 
   const duplicatedImplicitId = implicitParentIds.find((id, i, arr) => arr.indexOf(id) !== i);
-  if (duplicatedImplicitId)
-    return {
-      status: "error",
-      error: { type: "DUPLICATE_IN_IMPLICIT_PARENTS", id: duplicatedImplicitId },
-    };
+  if (duplicatedImplicitId) return err({ type: "DUPLICATE_IN_IMPLICIT_PARENTS", id: duplicatedImplicitId });
 
-  // const semitagVideos = await prisma.video.findMany({ where: { semitags: { some: { id: { in: semitagIds } } } } });
+  const duplicatedSemitagId = semitagIds.find((id, i, arr) => arr.indexOf(id) !== i);
+  if (duplicatedSemitagId) return err({ type: "DUPLICATE_IN_SEMITAG_IDS", id: duplicatedSemitagId });
 
   const tagId = ulid();
+
+  const transactionSemitag: Prisma.Prisma__SemitagClient<Semitag>[] = [];
+  for (const semitagId of semitagIds) {
+    const semitag = await prisma.semitag.findUnique({ where: { id: semitagId }, select: { videoId: true } });
+    if (!semitag) return err({ type: "SEMITAG_NOT_FOUND", id: semitagId });
+
+    transactionSemitag.push(
+      prisma.semitag.update({
+        where: { id: semitagId },
+        data: {
+          isChecked: true,
+          videoTag: {
+            create: {
+              tag: { connect: { id: tagId } },
+              video: { connect: { id: semitag.videoId } },
+              events: { create: { userId, type: VideoTagEventType.ATTACH, payload: {} } },
+            },
+          },
+          events: { create: { userId, type: SemitagEventType.RESOLVE, payload: {} } },
+        },
+      })
+    );
+  }
+
   const dataNames = [
     { id: ulid(), name: primaryName, isPrimary: true },
     ...extraNames.map((extraName) => ({
@@ -162,7 +192,7 @@ export const register = async (
         ),
       ],
     }),
-    // TODO: Semitagの処理
+    ...transactionSemitag,
   ]);
   return {
     status: "ok",
@@ -185,11 +215,18 @@ export const registerTag = ({ prisma }: Pick<ResolverDeps, "prisma" | "neo4j">) 
         message: RegisterTagFailedMessage.InvalidTagId, // TODO: 詳細なエラーを返すようにする
       };
 
+    const resolveSemitags = parseGqlIDs2("Semitag", input.resolveSemitags);
+    if (resolveSemitags?.status === "error")
+      return {
+        __typename: "RegisterTagFailedPayload",
+        message: RegisterTagFailedMessage.InvalidSemitagId, // TODO: 詳細なエラーを返すようにする
+      };
+
     const result = await register(prisma, {
       userId: user.id,
       explicitParentId: explicitParent ? explicitParent.data : null,
       implicitParentIds: [],
-      semitagIds: [],
+      semitagIds: resolveSemitags.data,
       primaryName: input.primaryName,
       extraNames: input.extraNames,
       meaningless: input.meaningless,
