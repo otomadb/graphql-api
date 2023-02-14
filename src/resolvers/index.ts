@@ -30,6 +30,13 @@ import {
 import { resolveSession } from "./Session/index.js";
 import { resolveTag } from "./Tag/index.js";
 import { resolveTagEvent, resolveTagRegisterEvent } from "./TagEvent/index.js";
+import { resolveTagName } from "./TagName/index.js";
+import {
+  resolveTagNameCreateEvent,
+  resolveTagNameEvent,
+  resolveTagNameSetPrimaryEvent,
+  resolveTagNameUnsetPrimaryEvent,
+} from "./TagNameEvent/index.js";
 import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
 import { resolveVideoEvent, resolveVideoRegisterEvent } from "./VideoEvent/index.js";
@@ -84,6 +91,11 @@ export const resolvers = (deps: ResolverDeps) =>
     Session: resolveSession(deps),
     Tag: resolveTag(deps),
     TagEvent: resolveTagEvent(),
+    TagName: resolveTagName(deps),
+    TagNameCreateEvent: resolveTagNameCreateEvent(deps),
+    TagNameEvent: resolveTagNameEvent(),
+    TagNameSetPrimaryEvent: resolveTagNameSetPrimaryEvent(deps),
+    TagNameUnsetPrimaryEvent: resolveTagNameUnsetPrimaryEvent(deps),
     TagRegisterEvent: resolveTagRegisterEvent(deps),
     User: resolveUser(deps),
     Video: resolveVideo(deps),

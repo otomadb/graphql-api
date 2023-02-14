@@ -32,11 +32,6 @@ input TagEventsInput {
   limit: Int! = 10
 }
 
-type TagName {
-  name: String!
-  primary: Boolean!
-}
-
 enum TagType {
   CLASS
   COPYRIGHT

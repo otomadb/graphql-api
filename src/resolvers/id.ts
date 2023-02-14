@@ -14,6 +14,8 @@ export type NodeType =
   | "Session"
   | "Tag"
   | "TagEvent"
+  | "TagEventName"
+  | "TagName"
   | "User"
   | "Video"
   | "VideoEvent"
