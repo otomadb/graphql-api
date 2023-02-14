@@ -29,6 +29,7 @@ import {
 } from "./SemitagEvent/index.js";
 import { resolveSession } from "./Session/index.js";
 import { resolveTag } from "./Tag/index.js";
+import { resolveTagEvent, resolveTagRegisterEvent } from "./TagEvent/index.js";
 import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
 import { resolveVideoEvent, resolveVideoRegisterEvent } from "./VideoEvent/index.js";
@@ -82,6 +83,8 @@ export const resolvers = (deps: ResolverDeps) =>
     SemitagEventResolveEvent: resolveSemitagEventResolveEvent(deps),
     Session: resolveSession(deps),
     Tag: resolveTag(deps),
+    TagEvent: resolveTagEvent(),
+    TagRegisterEvent: resolveTagRegisterEvent(deps),
     User: resolveUser(deps),
     Video: resolveVideo(deps),
     VideoEvent: resolveVideoEvent(),

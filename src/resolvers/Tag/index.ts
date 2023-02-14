@@ -3,6 +3,7 @@ import { GraphQLError } from "graphql";
 import { Resolvers, TagType } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
 import { ResolverDeps } from "../index.js";
+import { TagEventModel } from "../TagEvent/model.js";
 import { VideoModel } from "../Video/model.js";
 import { TagModel } from "./model.js";
 import { resolvePseudoType } from "./pseudoType.js";
@@ -65,4 +66,16 @@ export const resolveTag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       prisma.videoTag
         .findUnique({ where: { videoId_tagId: { tagId, videoId: parseGqlID("Video", videoGqlId) } } })
         .then((v) => !v || v.isRemoved),
+
+    events: async ({ id: tagId }, { input }) => {
+      const nodes = await prisma.tagEvent
+        .findMany({
+          where: { tagId },
+          take: input.limit,
+          skip: input.skip,
+          orderBy: { id: "desc" },
+        })
+        .then((es) => es.map((e) => new TagEventModel(e)));
+      return { nodes };
+    },
   } satisfies Resolvers["Tag"]);

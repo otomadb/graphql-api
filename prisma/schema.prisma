@@ -231,7 +231,7 @@ model TagEvent {
 }
 
 enum TagEventType {
-  CREATE
+  REGISTER @map("CREATE")
 }
 
 model TagName {

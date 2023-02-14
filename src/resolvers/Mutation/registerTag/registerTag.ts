@@ -1,4 +1,4 @@
-import { Prisma, Tag, TagNameEventType, TagParentEventType, UserRole } from "@prisma/client";
+import { Prisma, Tag, TagEventType, TagNameEventType, TagParentEventType, UserRole } from "@prisma/client";
 import { ulid } from "ulid";
 
 import { Result } from "../../../utils/Result.js";
@@ -99,6 +99,13 @@ export const register = async (
         parents: {
           createMany: {
             data: [...(dataExplicitParent ? [dataExplicitParent] : []), ...dataImplicitParents],
+          },
+        },
+        events: {
+          create: {
+            userId,
+            type: TagEventType.REGISTER,
+            payload: {},
           },
         },
       },
