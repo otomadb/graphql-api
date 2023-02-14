@@ -28,6 +28,7 @@ enum RegisterTagFailedMessage {
   FORBIDDEN
 
   INVALID_TAG_ID
+  INVALID_SEMITAG_ID
 
   UNKNOWN
 }
