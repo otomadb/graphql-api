@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
 
-import { Resolvers, TagType } from "../graphql.js";
+import { Resolvers } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
 import { ResolverDeps } from "../index.js";
 import { TagEventModel } from "../TagEvent/model.js";
@@ -12,7 +12,6 @@ import { resolvePseudoType } from "./pseudoType.js";
 export const resolveTag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
     id: ({ id }): string => buildGqlId("Tag", id),
-    type: () => TagType.Material,
     pseudoType: resolvePseudoType({ prisma }),
 
     names: async ({ id: tagId }) =>
