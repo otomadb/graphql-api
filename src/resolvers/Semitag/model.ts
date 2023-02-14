@@ -12,6 +12,10 @@ export class SemitagModel {
   }
 
   get resolved() {
+    return this.checked;
+  }
+
+  get checked() {
     return this.entity.isChecked;
   }
 
