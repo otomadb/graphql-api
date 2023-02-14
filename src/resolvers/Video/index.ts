@@ -47,9 +47,9 @@ export const resolveVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "n
         .findMany({ where: { videoId } })
         .then((ss) => ss.map((s) => new NicovideoVideoSourceModel(s))),
 
-    semitags: ({ id: videoId }, { resolved }) =>
+    semitags: ({ id: videoId }, { checked }) =>
       prisma.semitag
-        .findMany({ where: { videoId, isChecked: resolved?.valueOf() } })
+        .findMany({ where: { videoId, isChecked: checked.valueOf() } })
         .then((semitags) => semitags.map((semitag) => new SemitagModel(semitag))),
 
     events: async ({ id: videoId }, { input }) => {
