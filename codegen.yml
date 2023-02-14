@@ -37,6 +37,11 @@ generates:
         TagNameEvent: ./TagNameEvent/model.js#TagNameEventModel
         TagNameSetPrimaryEvent: ./TagNameEvent/model.js#TagNameEventModel
         TagNameUnsetPrimaryEvent: ./TagNameEvent/model.js#TagNameEventModel
+        TagParent: ./TagParent/model.js#TagParentModel
+        TagParentCreateEvent: ./TagParentEvent/model.js#TagParentEventModel
+        TagParentEvent: ./TagParentEvent/model.js#TagParentEventModel
+        TagParentSetPrimaryEvent: ./TagParentEvent/model.js#TagParentEventModel
+        TagParentUnsetPrimaryEvent: ./TagParentEvent/model.js#TagParentEventModel
         TagRegisterEvent: ./TagEvent/model.js#TagEventModel
         User: ./User/model.js#UserModel
         Video: ./Video/model.js#VideoModel
