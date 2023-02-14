@@ -1,7 +1,9 @@
-interface SemitagEvent {
+interface SemitagEvent implements Node & Event {
   id: ID!
+  series: String!
   createdAt: DateTime!
   user: User!
+
   semitag: Semitag!
 }
 
@@ -9,23 +11,29 @@ type SemitagEventConnection {
   nodes: [SemitagEvent!]!
 }
 
-type SemitagEventAttachEvent implements SemitagEvent & Node {
+type SemitagAttachEvent implements Node & Event & SemitagEvent {
   id: ID!
+  series: String!
   createdAt: DateTime!
   user: User!
+
   semitag: Semitag!
 }
 
-type SemitagEventResolveEvent implements SemitagEvent & Node {
+type SemitagResolveEvent implements Node & Event & SemitagEvent {
   id: ID!
+  series: String!
   createdAt: DateTime!
   user: User!
+
   semitag: Semitag!
 }
 
-type SemitagEventRejectEvent implements SemitagEvent & Node {
+type SemitagRejectEvent implements Node & Event & SemitagEvent {
   id: ID!
+  series: String!
   createdAt: DateTime!
   user: User!
+
   semitag: Semitag!
 }

@@ -2,6 +2,16 @@ interface Node {
   id: ID!
 }
 
+interface Event implements Node {
+  id: ID!
+
+  "createdAtでのソートが不可能なので，別のEvent同士を混合してソートする際に必要．"
+  series: String!
+
+  createdAt: DateTime!
+  user: User!
+}
+
 interface VideoSource {
   id: ID!
   sourceId: String!

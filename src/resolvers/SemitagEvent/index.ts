@@ -1,4 +1,5 @@
 import { SemitagEventType } from "@prisma/client";
+import { z } from "zod";
 
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
@@ -30,11 +31,11 @@ export const resolveSemitagEvent = () =>
     __resolveType({ type }) {
       switch (type) {
         case SemitagEventType.ATTACH:
-          return "SemitagEventAttachEvent";
+          return "SemitagAttachEvent";
         case SemitagEventType.RESOLVE:
-          return "SemitagEventResolveEvent";
+          return "SemitagResolveEvent";
         case SemitagEventType.REJECT:
-          return "SemitagEventRejectEvent";
+          return "SemitagRejectEvent";
       }
     },
   } satisfies Resolvers["SemitagEvent"]);
@@ -42,14 +43,16 @@ export const resolveSemitagEvent = () =>
 export const resolveSemitagEventAttachEvent = (deps: Pick<ResolverDeps, "prisma">) =>
   ({
     ...resolveSemitagEventCommonProps(deps),
-  } satisfies Resolvers["SemitagEventAttachEvent"]);
+  } satisfies Resolvers["SemitagAttachEvent"]);
 
-export const resolveSemitagEventResolveEvent = (deps: Pick<ResolverDeps, "prisma">) =>
+const schemaSemitagEventResolveEventPayload = z.object({ resolveTo: z.string() });
+export type SemitagEventResolveEventPayload = z.infer<typeof schemaSemitagEventResolveEventPayload>;
+export const resolveSemitagEventResolveEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
-    ...resolveSemitagEventCommonProps(deps),
-  } satisfies Resolvers["SemitagEventResolveEvent"]);
+    ...resolveSemitagEventCommonProps({ prisma }),
+  } satisfies Resolvers["SemitagResolveEvent"]);
 
 export const resolveSemitagEventRejectEvent = (deps: Pick<ResolverDeps, "prisma">) =>
   ({
     ...resolveSemitagEventCommonProps(deps),
-  } satisfies Resolvers["SemitagEventRejectEvent"]);
+  } satisfies Resolvers["SemitagRejectEvent"]);

@@ -7,6 +7,13 @@ export class VideoTagEventModel {
     return this.event.id;
   }
 
+  get series() {
+    return this.id;
+  }
+  get createdAt() {
+    return this.event.createdAt;
+  }
+
   get userId() {
     return this.event.userId;
   }

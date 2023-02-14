@@ -13,7 +13,7 @@ type Video implements Node {
 
   nicovideoSources: [NicovideoVideoSource!]!
 
-  semitags(checked: Boolean! = false): [Semitag!]!
+  semitags(checked: Boolean): [Semitag!]!
 
   similarVideos(input: VideoSimilarVideosInput!): VideoSimilarVideosPayload!
 

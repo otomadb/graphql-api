@@ -7,6 +7,14 @@ export class VideoEventModel {
     return this.event.id;
   }
 
+  get series() {
+    return this.id;
+  }
+
+  get createdAt() {
+    return this.event.createdAt;
+  }
+
   get userId() {
     return this.event.userId;
   }
@@ -17,10 +25,6 @@ export class VideoEventModel {
 
   get type() {
     return this.event.type;
-  }
-
-  get createdAt() {
-    return this.event.createdAt;
   }
 
   get payload() {

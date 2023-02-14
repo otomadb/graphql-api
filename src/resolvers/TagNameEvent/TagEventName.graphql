@@ -1,7 +1,9 @@
-interface TagNameEvent {
+interface TagNameEvent implements Node & Event {
   id: ID!
+  series: String!
   createdAt: DateTime!
   user: User!
+
   tagName: TagName!
 }
 
@@ -9,23 +11,29 @@ type TagNameEventConnection {
   nodes: [TagNameEvent!]!
 }
 
-type TagNameCreateEvent implements TagNameEvent {
+type TagNameCreateEvent implements Node & Event & TagNameEvent {
   id: ID!
+  series: String!
   createdAt: DateTime!
   user: User!
+
   tagName: TagName!
 }
 
-type TagNameSetPrimaryEvent implements TagNameEvent {
+type TagNameSetPrimaryEvent implements Node & Event & TagNameEvent {
   id: ID!
+  series: String!
   createdAt: DateTime!
   user: User!
+
   tagName: TagName!
 }
 
-type TagNameUnsetPrimaryEvent implements TagNameEvent {
+type TagNameUnsetPrimaryEvent implements Node & Event & TagNameEvent {
   id: ID!
+  series: String!
   createdAt: DateTime!
   user: User!
+
   tagName: TagName!
 }
