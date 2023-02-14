@@ -5,6 +5,7 @@ import { buildGqlId, parseGqlID } from "../id.js";
 import { ResolverDeps } from "../index.js";
 import { TagEventModel } from "../TagEvent/model.js";
 import { TagNameModel } from "../TagName/model.js";
+import { TagParentModel } from "../TagParent/model.js";
 import { VideoModel } from "../Video/model.js";
 import { TagModel } from "./model.js";
 import { resolvePseudoType } from "./pseudoType.js";
@@ -22,21 +23,10 @@ export const resolveTag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       return name.name;
     },
 
-    parents: async ({ id: tagId }, { meaningless }) => {
-      const rel = await prisma.tagParent.findMany({
-        where: {
-          child: { id: tagId },
-          parent: { meaningless: meaningless || undefined },
-        },
-        include: {
-          parent: true,
-        },
-      });
-      return rel.map(({ parent, isExplicit }) => ({
-        tag: new TagModel(parent),
-        explicit: isExplicit,
-      }));
-    },
+    parents: async ({ id: tagId }, { meaningless }) =>
+      prisma.tagParent
+        .findMany({ where: { child: { id: tagId }, parent: { meaningless: meaningless || undefined } } })
+        .then((ps) => ps.map((t) => new TagParentModel(t))),
 
     explicitParent: async ({ id: tagId }) => {
       const rel = await prisma.tagParent.findFirst({

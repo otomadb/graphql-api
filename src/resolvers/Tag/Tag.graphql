@@ -56,11 +56,6 @@ enum PseudoTagType {
   UNKNOWN
 }
 
-type TagParent {
-  tag: Tag!
-  explicit: Boolean!
-}
-
 type TagConnection {
   nodes: [Tag!]!
 }
