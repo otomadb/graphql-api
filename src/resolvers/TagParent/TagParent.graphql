@@ -1,0 +1,16 @@
+type TagParent {
+  id: ID!
+  name: String!
+
+  parent: Tag!
+  child: Tag!
+
+  explicit: Boolean!
+
+  events(input: TagParentEventsInput!): TagParentEventConnection!
+}
+
+input TagParentEventsInput {
+  skip: Int! = 0
+  limit: Int
+}

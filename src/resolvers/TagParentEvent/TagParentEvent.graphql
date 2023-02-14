@@ -1,0 +1,31 @@
+interface TagParentEvent {
+  id: ID!
+  createdAt: DateTime!
+  user: User!
+  tagParent: TagParent!
+}
+
+type TagParentEventConnection {
+  nodes: [TagParentEvent!]!
+}
+
+type TagParentCreateEvent implements TagParentEvent {
+  id: ID!
+  createdAt: DateTime!
+  user: User!
+  tagParent: TagParent!
+}
+
+type TagParentSetPrimaryEvent implements TagParentEvent {
+  id: ID!
+  createdAt: DateTime!
+  user: User!
+  tagParent: TagParent!
+}
+
+type TagParentUnsetPrimaryEvent implements TagParentEvent {
+  id: ID!
+  createdAt: DateTime!
+  user: User!
+  tagParent: TagParent!
+}

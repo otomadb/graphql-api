@@ -16,6 +16,8 @@ export type NodeType =
   | "TagEvent"
   | "TagEventName"
   | "TagName"
+  | "TagParent"
+  | "TagParentEvent"
   | "User"
   | "Video"
   | "VideoEvent"
