@@ -1,0 +1,31 @@
+interface TagNameEvent {
+  id: ID!
+  createdAt: DateTime!
+  user: User!
+  tagName: TagName!
+}
+
+type TagNameEventConnection {
+  nodes: [TagNameEvent!]!
+}
+
+type TagNameCreateEvent implements TagNameEvent {
+  id: ID!
+  createdAt: DateTime!
+  user: User!
+  tagName: TagName!
+}
+
+type TagNameSetPrimaryEvent implements TagNameEvent {
+  id: ID!
+  createdAt: DateTime!
+  user: User!
+  tagName: TagName!
+}
+
+type TagNameUnsetPrimaryEvent implements TagNameEvent {
+  id: ID!
+  createdAt: DateTime!
+  user: User!
+  tagName: TagName!
+}

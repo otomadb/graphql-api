@@ -4,6 +4,7 @@ import { Resolvers, TagType } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
 import { ResolverDeps } from "../index.js";
 import { TagEventModel } from "../TagEvent/model.js";
+import { TagNameModel } from "../TagName/model.js";
 import { VideoModel } from "../Video/model.js";
 import { TagModel } from "./model.js";
 import { resolvePseudoType } from "./pseudoType.js";
@@ -14,15 +15,8 @@ export const resolveTag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
     type: () => TagType.Material,
     pseudoType: resolvePseudoType({ prisma }),
 
-    names: async ({ id: tagId }) => {
-      const names = await prisma.tagName.findMany({
-        where: { tag: { id: tagId } },
-      });
-      return names.map((n) => ({
-        name: n.name,
-        primary: n.isPrimary,
-      }));
-    },
+    names: async ({ id: tagId }) =>
+      prisma.tagName.findMany({ where: { tag: { id: tagId } } }).then((v) => v.map((n) => new TagNameModel(n))),
     name: async ({ id: tagId }) => {
       const name = await prisma.tagName.findFirst({ where: { tagId } });
       if (!name) throw new GraphQLError(`primary name for tag ${tagId} is not found`);

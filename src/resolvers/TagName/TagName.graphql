@@ -1,0 +1,12 @@
+type TagName {
+  id: ID!
+  name: String!
+  primary: Boolean!
+
+  events(input: TagNameEventsInput!): TagNameEventConnection!
+}
+
+input TagNameEventsInput {
+  skip: Int! = 0
+  limit: Int
+}
