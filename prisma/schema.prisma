@@ -498,7 +498,7 @@ model VideoTag {
 
   events VideoTagEvent[]
 
-  semitags Semitag[]
+  semitagResolvings SemitagChecking[]
 
   @@unique([videoId, tagId])
 }
@@ -538,11 +538,24 @@ model Semitag {
   video   Video  @relation(fields: [videoId], references: [id])
 
   isChecked Boolean
+  checking  SemitagChecking?
+
+  events SemitagEvent[]
+}
+
+model SemitagChecking {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  note String?
+
+  semitag   Semitag @relation(fields: [semitagId], references: [id])
+  semitagId String  @unique
 
   videoTag   VideoTag? @relation(fields: [videoTagId], references: [id])
   videoTagId String?
-
-  events SemitagEvent[]
 }
 
 model SemitagEvent {
