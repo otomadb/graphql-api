@@ -40,20 +40,6 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 19
-          cache: npm
-      - run: npm ci
-      - run: npm run codegen
-      - run: npm run prisma:client
-      - run: npm run test
-
-  e2e-test:
-    name: E2E Test
-    runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
       TEST_PRISMA_DATABASE_URL: postgres://user:pass@localhost:5432/test
@@ -84,5 +70,5 @@ jobs:
       - run: npm ci
       - run: npm run codegen
       - run: npm run prisma:client
-      - run: npm run e2e-test:migration
-      - run: npm run e2e-test
+      - run: npm run test:migration
+      - run: npm run test

@@ -15,6 +15,7 @@
     "codegen": "graphql-codegen-esm",
     "prisma:client": "prisma generate",
     "test": "vitest",
+    "test:migration": "PRISMA_DATABASE_URL=$TEST_PRISMA_DATABASE_URL prisma migrate reset --force",
     "typecheck": "tsc --noEmit",
     "lint:eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:prettier": "prettier --check ./**/*.{js,mjs,ts,json,yml,md,graphql}",
