@@ -1,4 +1,3 @@
-import { describe } from "@jest/globals";
 import {
   NicovideoVideoSource,
   NicovideoVideoSourceEvent,
@@ -19,6 +18,7 @@ import {
   VideoTitleEvent,
   VideoTitleEventType,
 } from "@prisma/client";
+import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import { Ok } from "../../../utils/Result.js";

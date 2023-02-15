@@ -1,5 +1,5 @@
-import { describe } from "@jest/globals";
 import { PrismaClient } from "@prisma/client";
+import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
 import { cleanPrisma } from "../../test/cleanPrisma.js";
 import { ResolverDeps } from "../index.js";

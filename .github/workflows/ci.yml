@@ -37,8 +37,8 @@ jobs:
       - run: npm run prisma:client
       - run: npm run typecheck
 
-  e2e-test:
-    name: E2E Test
+  test:
+    name: Test
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -70,5 +70,5 @@ jobs:
       - run: npm ci
       - run: npm run codegen
       - run: npm run prisma:client
-      - run: npm run e2e-test:migration
-      - run: npm run e2e-test
+      - run: npm run test:migration
+      - run: npm run test
