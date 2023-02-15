@@ -5,10 +5,24 @@ type Semitag implements Node {
 
   video: Video!
 
-  resolved: Boolean!
-  resolvedTag: Tag
+  resolved: Boolean! @deprecated
+  resolvedTag: Tag @deprecated
+
+  checked: Boolean!
+  check: SemitagChecking
 
   events(input: SemitagEventsInput!): SemitagEventConnection!
+}
+
+union SemitagChecking = SemitagResolving | SemitagRejecting
+
+type SemitagResolving {
+  note: String
+  resolveTo: VideoTag!
+}
+
+type SemitagRejecting {
+  note: String
 }
 
 type SemitagConnection {

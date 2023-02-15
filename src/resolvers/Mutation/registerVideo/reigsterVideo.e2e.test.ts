@@ -281,7 +281,6 @@ describe("Mutation.registerVideo", () => {
           videoId,
           name: "Semitag 1",
           isChecked: false,
-          videoTagId: null,
         } satisfies Semitag,
         {
           id: expect.any(String),
@@ -290,7 +289,6 @@ describe("Mutation.registerVideo", () => {
           videoId,
           name: "Semitag 2",
           isChecked: false,
-          videoTagId: null,
         } satisfies Semitag,
       ])
     );

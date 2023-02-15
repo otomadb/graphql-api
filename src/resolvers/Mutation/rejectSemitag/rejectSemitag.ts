@@ -1,36 +1,34 @@
-import { Semitag, SemitagEventType, UserRole } from "@prisma/client";
+import { SemitagEventType, UserRole } from "@prisma/client";
 
 import { Result } from "../../../utils/Result.js";
 import { MutationResolvers, RejectSemitagFailedMessage } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
-import { SemitagModel } from "../../Semitag/model.js";
+import { SemitagRejectingModel } from "../../Semitag/model.js";
 
 export const reject = async (
   prisma: ResolverDeps["prisma"],
   { userId, semitagId }: { userId: string; semitagId: string }
-): Promise<Result<"SEMITAG_NOT_FOUND" | "SEMITAG_ALREADY_CHECKED", Semitag>> => {
+): Promise<Result<"SEMITAG_NOT_FOUND" | "SEMITAG_ALREADY_CHECKED", { note: null }>> => {
   const check = await prisma.semitag.findUnique({ where: { id: semitagId } });
   if (!check) return { status: "error", error: "SEMITAG_NOT_FOUND" };
   if (check.isChecked) return { status: "error", error: "SEMITAG_ALREADY_CHECKED" };
 
-  const semitag = await prisma.semitag.update({
-    where: { id: semitagId },
+  await prisma.semitag.update({
+    where: { id: check.id },
     data: {
       isChecked: true,
-      videoTagId: null,
-      events: {
+      events: { create: { userId, type: SemitagEventType.RESOLVE, payload: {} } },
+      checking: {
         create: {
-          userId,
-          type: SemitagEventType.REJECT,
-          payload: {},
+          videoTagId: null,
         },
       },
     },
   });
   return {
     status: "ok",
-    data: semitag,
+    data: { note: null },
   };
 };
 
@@ -73,9 +71,8 @@ export const rejectSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       }
     }
 
-    const semitag = result.data;
     return {
       __typename: "RejectSemitagSucceededPayload",
-      semitag: new SemitagModel(semitag),
+      rejecting: new SemitagRejectingModel(result.data),
     };
   }) satisfies MutationResolvers["rejectSemitag"];

@@ -2,8 +2,8 @@ import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
 import { ResolverDeps } from "../index.js";
 import { SemitagEventModel } from "../SemitagEvent/model.js";
-import { TagModel } from "../Tag/model.js";
 import { VideoModel } from "../Video/model.js";
+import { SemitagRejectingModel, SemitagResolvingModel } from "./model.js";
 
 export const resolveSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
@@ -15,15 +15,6 @@ export const resolveSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Video", videoId);
         }),
-    async resolvedTag({ videoTagId }) {
-      if (!videoTagId) return null;
-      return prisma.videoTag
-        .findFirstOrThrow({ where: { id: videoTagId }, include: { tag: true } })
-        .then((v) => new TagModel(v.tag))
-        .catch(() => {
-          throw new GraphQLNotExistsInDBError("Tag", videoTagId); // # TODO: 全然嘘;
-        });
-    },
     events: async ({ dbId: semitagId }, { input }) => {
       const nodes = await prisma.semitagEvent
         .findMany({
@@ -35,4 +26,24 @@ export const resolveSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
         .then((es) => es.map((e) => new SemitagEventModel(e)));
       return { nodes };
     },
+    check: async ({ dbId, checked }) => {
+      if (!checked) return null; // checkedがfalseでcheckが存在することはありえない
+
+      const checking = await prisma.semitagChecking.findUnique({ where: { semitagId: dbId } });
+      if (!checking) return null;
+
+      const { videoTagId, note } = checking;
+      if (!videoTagId) return new SemitagRejectingModel({ note });
+      return new SemitagResolvingModel({ videoTagId, note });
+    },
   } satisfies Resolvers["Semitag"]);
+
+export const resolveSemitagResolving = () =>
+  ({
+    __isTypeOf: (obj) => obj instanceof SemitagResolvingModel,
+  } satisfies Resolvers["SemitagResolving"]);
+
+export const resolveSemitagRejecting = () =>
+  ({
+    __isTypeOf: (obj) => obj instanceof SemitagRejectingModel,
+  } satisfies Resolvers["SemitagRejecting"]);

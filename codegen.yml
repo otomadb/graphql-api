@@ -29,6 +29,8 @@ generates:
         SemitagEventAttachEvent: ./SemitagEvent/model.js#SemitagEventModel
         SemitagEventRejectEvent: ./SemitagEvent/model.js#SemitagEventModel
         SemitagEventResolveEvent: ./SemitagEvent/model.js#SemitagEventModel
+        SemitagRejecting: ./Semitag/model.js#SemitagRejectingModel
+        SemitagResolving: ./Semitag/model.js#SemitagResolvingModel
         Session: ./Session/model.js#SessionModel
         Tag: ./Tag/model.js#TagModel
         TagEvent: ./TagEvent/model.js#TagEventModel

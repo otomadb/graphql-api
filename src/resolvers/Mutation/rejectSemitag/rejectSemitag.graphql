@@ -9,7 +9,7 @@ input RejectSemitagInput {
 union RejectSemitagPayload = RejectSemitagSucceededPayload | RejectSemitagFailedPayload
 
 type RejectSemitagSucceededPayload {
-  semitag: Semitag!
+  rejecting: SemitagRejecting!
 }
 
 type RejectSemitagFailedPayload {
