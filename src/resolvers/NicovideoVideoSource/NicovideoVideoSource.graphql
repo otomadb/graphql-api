@@ -2,7 +2,9 @@ type NicovideoVideoSource implements Node & VideoSource {
   id: ID!
   sourceId: String!
   video: Video!
+
   url: String!
+  embedUrl: String!
 
   events(input: NicovideoVideoSourceEventsInput!): NicovideoVideoSourceEventConnection!
 }
