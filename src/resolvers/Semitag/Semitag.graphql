@@ -9,16 +9,16 @@ type Semitag implements Node {
   resolvedTag: Tag @deprecated
 
   checked: Boolean!
-  check: SemitagCheck
+  check: SemitagChecking
 
   events(input: SemitagEventsInput!): SemitagEventConnection!
 }
 
-union SemitagCheck = SemitagResolving | SemitagRejecting
+union SemitagChecking = SemitagResolving | SemitagRejecting
 
 type SemitagResolving {
   note: String
-  resolvedTo: VideoTag!
+  resolveTo: VideoTag!
 }
 
 type SemitagRejecting {

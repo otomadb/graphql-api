@@ -19,11 +19,36 @@ export class SemitagModel {
     return this.entity.isChecked;
   }
 
-  get videoTagId() {
-    return this.entity.videoTagId;
-  }
-
   get videoId() {
     return this.entity.videoId;
+  }
+}
+
+export class SemitagRejectingModel {
+  constructor(
+    private readonly entity: {
+      note: string | null;
+    }
+  ) {}
+
+  get note() {
+    return this.entity.note;
+  }
+}
+
+export class SemitagResolvingModel {
+  constructor(
+    private readonly entity: {
+      videoTagId: string;
+      note: string | null;
+    }
+  ) {}
+
+  get note() {
+    return this.entity.note;
+  }
+
+  get videoTagId() {
+    return this.entity.videoTagId;
   }
 }

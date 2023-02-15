@@ -1,11 +1,11 @@
-import { Semitag, SemitagEventType, UserRole, VideoTag, VideoTagEventType } from "@prisma/client";
+import { SemitagEventType, UserRole, VideoTagEventType } from "@prisma/client";
 import { ulid } from "ulid";
 
 import { Result } from "../../../utils/Result.js";
 import { MutationResolvers, ResolveSemitagFailedMessage } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
-import { SemitagModel } from "../../Semitag/model.js";
+import { SemitagResolvingModel } from "../../Semitag/model.js";
 
 export const resolveSemitagInNeo4j = async (
   neo4jDriver: ResolverDeps["neo4j"],
@@ -33,7 +33,7 @@ export const resolve = async (
 ): Promise<
   Result<
     "SEMITAG_NOT_FOUND" | "SEMITAG_ALREADY_CHECKED" | "TAG_NOT_FOUND" | "VIDEO_ALREADY_TAGGED",
-    { semitag: Semitag; videotag: VideoTag }
+    { videoTagId: string; note: null }
   >
 > => {
   const checkedSemitag = await prisma.semitag.findUnique({ where: { id: semitagId } });
@@ -51,40 +51,28 @@ export const resolve = async (
     return { status: "error", error: "VIDEO_ALREADY_TAGGED" };
 
   const videoTagId = ulid();
-
-  const [semitag, videotag] = await prisma.$transaction([
-    prisma.semitag.update({
-      where: { id: semitagId },
-      data: {
-        isChecked: true,
-        videoTagId,
-        events: {
-          create: {
-            userId,
-            type: SemitagEventType.RESOLVE,
-            payload: {},
+  await prisma.semitag.update({
+    where: { id: checkedSemitag.id },
+    data: {
+      isChecked: true,
+      events: { create: { userId, type: SemitagEventType.RESOLVE, payload: {} } },
+      checking: {
+        create: {
+          videoTag: {
+            create: {
+              id: videoTagId,
+              tag: { connect: { id: tagId } },
+              video: { connect: { id: checkedSemitag.videoId } },
+              events: { create: { userId, type: VideoTagEventType.ATTACH, payload: {} } },
+            },
           },
         },
       },
-    }),
-    prisma.videoTag.create({
-      data: {
-        id: videoTagId,
-        videoId: checkedSemitag.videoId,
-        tagId: checkedTag.id,
-        events: {
-          create: {
-            userId,
-            type: VideoTagEventType.ATTACH,
-            payload: {},
-          },
-        },
-      },
-    }),
-  ]);
+    },
+  });
   return {
     status: "ok",
-    data: { semitag, videotag },
+    data: { videoTagId, note: null },
   };
 };
 
@@ -145,9 +133,8 @@ export const resolveSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       }
     }
 
-    const { semitag } = result.data;
     return {
       __typename: "ResolveSemitagSucceededPayload",
-      semitag: new SemitagModel(semitag),
+      resolving: new SemitagResolvingModel(result.data),
     };
   }) satisfies MutationResolvers["resovleSemitag"];

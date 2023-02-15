@@ -10,7 +10,7 @@ input ResolveSemitagInput {
 union ResolveSemitagPayload = ResolveSemitagSucceededPayload | ResolveSemitagFailedPayload
 
 type ResolveSemitagSucceededPayload {
-  semitag: Semitag!
+  resolving: SemitagResolving!
 }
 
 type ResolveSemitagFailedPayload {

@@ -20,7 +20,7 @@ import {
   resolveNicovideoVideoSourceEvent,
 } from "./NicovideoVideoSourceEvent/index.js";
 import { resolveQuery } from "./Query/index.js";
-import { resolveSemitag } from "./Semitag/index.js";
+import { resolveSemitag, resolveSemitagRejecting, resolveSemitagResolving } from "./Semitag/index.js";
 import {
   resolveSemitagEvent,
   resolveSemitagEventAttachEvent,
@@ -88,6 +88,8 @@ export const resolvers = (deps: ResolverDeps) =>
     SemitagEventAttachEvent: resolveSemitagEventAttachEvent(deps),
     SemitagEventRejectEvent: resolveSemitagEventRejectEvent(deps),
     SemitagEventResolveEvent: resolveSemitagEventResolveEvent(deps),
+    SemitagRejecting: resolveSemitagRejecting(),
+    SemitagResolving: resolveSemitagResolving(),
     Session: resolveSession(deps),
     Tag: resolveTag(deps),
     TagEvent: resolveTagEvent(),
