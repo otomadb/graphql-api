@@ -3,7 +3,7 @@ import { hash } from "argon2";
 import { serialize as serializeCookie } from "cookie";
 
 import { createSession, OTOMADB_SESSION_COOKIE_NAME } from "../../../auth/session.js";
-import { Result } from "../../../utils/Result.js";
+import { err, ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, SignupFailedMessage } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { UserModel } from "../../User/model.js";
@@ -12,18 +12,11 @@ export const registerNewUser = async (
   prisma: ResolverDeps["prisma"],
   { name, displayName, email, password }: { name: string; displayName: string; email: string; password: string }
 ): Promise<Result<"EXISTS_USERNAME" | "EXISTS_EMAIL", User>> => {
-  if (await prisma.user.findUnique({ where: { name } }))
-    return {
-      status: "error",
-      error: "EXISTS_USERNAME",
-    };
-  if (await prisma.user.findUnique({ where: { email } }))
-    return {
-      status: "error",
-      error: "EXISTS_EMAIL",
-    };
+  if (await prisma.user.findUnique({ where: { name } })) return err("EXISTS_USERNAME");
+  if (await prisma.user.findUnique({ where: { email } })) return err("EXISTS_EMAIL");
 
   const isExistAdmin = !!(await prisma.user.findFirst({ where: { role: UserRole.ADMINISTRATOR } }));
+  const role = isExistAdmin ? UserRole.NORMAL : UserRole.ADMINISTRATOR;
 
   const hashedPassword = await hash(password, {
     type: 2,
@@ -39,8 +32,8 @@ export const registerNewUser = async (
       email,
       password: hashedPassword,
       icon: null,
-      isEmailConfirmed: true, // TODO: fix
-      role: isExistAdmin ? UserRole.NORMAL : UserRole.ADMINISTRATOR,
+      isEmailConfirmed: false,
+      role,
       mylists: {
         create: {
           isLikeList: true,
@@ -51,10 +44,7 @@ export const registerNewUser = async (
     },
   });
 
-  return {
-    status: "ok",
-    data: newUser,
-  };
+  return ok(newUser);
 };
 
 export const signup = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
