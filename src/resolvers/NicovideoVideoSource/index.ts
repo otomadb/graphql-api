@@ -8,6 +8,7 @@ export const resolveNicovideoVideoSource = ({ prisma }: Pick<ResolverDeps, "pris
   ({
     id: ({ id }) => buildGqlId("NicovideoVideoSource", id),
     url: ({ sourceId }) => `https://www.nicovideo.jp/watch/${sourceId}`,
+    embedUrl: ({ sourceId }) => `https://embed.nicovideo.jp/watch/${sourceId}`,
     video: async ({ videoId }) =>
       prisma.video
         .findUniqueOrThrow({ where: { id: videoId } })
