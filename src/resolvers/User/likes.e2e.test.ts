@@ -43,7 +43,7 @@ describe("User.likes", () => {
       }),
     ]);
 
-    const actual = await get(prisma, { userId: "u1", authUserId: null });
+    const actual = await get(prisma, { holderId: "u1", authUserId: null });
     expect(actual).toStrictEqual(err("PRIVATE_NOT_HOLDER") satisfies Err<Awaited<ReturnType<typeof get>>>);
   });
 
@@ -77,7 +77,7 @@ describe("User.likes", () => {
       }),
     ]);
 
-    const actual = await get(prisma, { userId: "u1", authUserId: "u2" });
+    const actual = await get(prisma, { holderId: "u1", authUserId: "u2" });
     expect(actual).toStrictEqual(err("PRIVATE_NOT_HOLDER") satisfies Err<Awaited<ReturnType<typeof get>>>);
   });
 
@@ -102,7 +102,7 @@ describe("User.likes", () => {
       }),
     ]);
 
-    const actual = await get(prisma, { userId: "u1", authUserId: null });
+    const actual = await get(prisma, { holderId: "u1", authUserId: null });
     expect(actual).toStrictEqual(err("PRIVATE_NOT_HOLDER") satisfies Err<Awaited<ReturnType<typeof get>>>);
   });
 
@@ -136,7 +136,7 @@ describe("User.likes", () => {
       }),
     ]);
 
-    const actual = await get(prisma, { userId: "u1", authUserId: "u2" });
+    const actual = await get(prisma, { holderId: "u1", authUserId: "u2" });
     expect(actual).toStrictEqual(err("PRIVATE_NOT_HOLDER") satisfies Err<Awaited<ReturnType<typeof get>>>);
   });
 
@@ -162,7 +162,7 @@ describe("User.likes", () => {
       }),
     ]);
 
-    const actual = await get(prisma, { userId: "u1", authUserId: null });
+    const actual = await get(prisma, { holderId: "u1", authUserId: null });
     expect(actual).toStrictEqual(
       ok(
         expect.objectContaining({
@@ -205,7 +205,7 @@ describe("User.likes", () => {
       }),
     ]);
 
-    const actual = await get(prisma, { userId: "u1", authUserId: null });
+    const actual = await get(prisma, { holderId: "u1", authUserId: null });
     expect(actual).toStrictEqual(
       ok(
         expect.objectContaining({

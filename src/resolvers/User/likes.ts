@@ -7,19 +7,21 @@ import { MylistModel } from "../Mylist/model.js";
 
 export const get = async (
   prisma: ResolverDeps["prisma"],
-  { userId, authUserId }: { userId: string; authUserId: string | null }
+  { holderId, authUserId }: { holderId: string; authUserId: string | null }
 ): Promise<Result<"NO_LIKELIST" | "PRIVATE_NOT_HOLDER", Mylist>> => {
-  const mylist = await prisma.mylist.findFirst({ where: { holderId: userId, isLikeList: true } });
+  const mylist = await prisma.mylist.findFirst({ where: { holderId, isLikeList: true } });
 
   if (!mylist) return err("NO_LIKELIST");
-  if (mylist.shareRange !== MylistShareRange.PUBLIC && mylist.holderId !== authUserId) err("PRIVATE_NOT_HOLDER");
+
+  if (mylist.shareRange !== MylistShareRange.PUBLIC && (!authUserId || mylist.holderId !== authUserId))
+    return err("PRIVATE_NOT_HOLDER");
 
   return ok(mylist);
 };
 
 export const resolveUserLikes = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async ({ id: userId }, _args, { user }) => {
-    const result = await get(prisma, { userId, authUserId: user?.id || null });
+    const result = await get(prisma, { holderId: userId, authUserId: user?.id || null });
 
     if (result.status === "error")
       switch (result.error) {
