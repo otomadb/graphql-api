@@ -1,7 +1,7 @@
 import { SemitagEventType, UserRole, VideoTagEventType } from "@prisma/client";
 import { ulid } from "ulid";
 
-import { Result } from "../../../utils/Result.js";
+import { ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, ResolveSemitagFailedMessage } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
@@ -33,7 +33,7 @@ export const resolve = async (
 ): Promise<
   Result<
     "SEMITAG_NOT_FOUND" | "SEMITAG_ALREADY_CHECKED" | "TAG_NOT_FOUND" | "VIDEO_ALREADY_TAGGED",
-    { videoTagId: string; note: null }
+    { videoTagId: string; note: null; semitagId: string }
   >
 > => {
   const checkedSemitag = await prisma.semitag.findUnique({ where: { id: semitagId } });
@@ -70,10 +70,8 @@ export const resolve = async (
       },
     },
   });
-  return {
-    status: "ok",
-    data: { videoTagId, note: null },
-  };
+
+  return ok({ videoTagId, note: null, semitagId: checkedSemitag.id });
 };
 
 export const resolveSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>

@@ -19,10 +19,12 @@ union SemitagChecking = SemitagResolving | SemitagRejecting
 type SemitagResolving {
   note: String
   resolveTo: VideoTag!
+  semitag: Semitag!
 }
 
 type SemitagRejecting {
   note: String
+  semitag: Semitag!
 }
 
 type SemitagConnection {

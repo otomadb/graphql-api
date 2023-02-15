@@ -1,6 +1,6 @@
 import { SemitagEventType, UserRole } from "@prisma/client";
 
-import { Result } from "../../../utils/Result.js";
+import { ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, RejectSemitagFailedMessage } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
@@ -9,7 +9,7 @@ import { SemitagRejectingModel } from "../../Semitag/model.js";
 export const reject = async (
   prisma: ResolverDeps["prisma"],
   { userId, semitagId }: { userId: string; semitagId: string }
-): Promise<Result<"SEMITAG_NOT_FOUND" | "SEMITAG_ALREADY_CHECKED", { note: null }>> => {
+): Promise<Result<"SEMITAG_NOT_FOUND" | "SEMITAG_ALREADY_CHECKED", { note: null; semitagId: string }>> => {
   const check = await prisma.semitag.findUnique({ where: { id: semitagId } });
   if (!check) return { status: "error", error: "SEMITAG_NOT_FOUND" };
   if (check.isChecked) return { status: "error", error: "SEMITAG_ALREADY_CHECKED" };
@@ -26,10 +26,7 @@ export const reject = async (
       },
     },
   });
-  return {
-    status: "ok",
-    data: { note: null },
-  };
+  return ok({ note: null, semitagId: check.id });
 };
 
 export const rejectSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>

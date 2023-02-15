@@ -3,8 +3,6 @@ interface SemitagEvent implements Node & Event {
   series: String!
   createdAt: DateTime!
   user: User!
-
-  semitag: Semitag!
 }
 
 type SemitagEventConnection {
@@ -26,7 +24,7 @@ type SemitagResolveEvent implements Node & Event & SemitagEvent {
   createdAt: DateTime!
   user: User!
 
-  semitag: Semitag!
+  resolving: SemitagResolving!
 }
 
 type SemitagRejectEvent implements Node & Event & SemitagEvent {
@@ -35,5 +33,5 @@ type SemitagRejectEvent implements Node & Event & SemitagEvent {
   createdAt: DateTime!
   user: User!
 
-  semitag: Semitag!
+  rejecting: SemitagRejecting!
 }
