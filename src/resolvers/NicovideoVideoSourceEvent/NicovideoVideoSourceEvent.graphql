@@ -1,8 +1,9 @@
-interface NicovideoVideoSourceEvent implements Node {
+interface NicovideoVideoSourceEvent implements Node & Event {
   id: ID!
+  series: String!
   createdAt: DateTime!
-
   user: User!
+
   source: NicovideoVideoSource!
 }
 
@@ -10,10 +11,11 @@ type NicovideoVideoSourceEventConnection {
   nodes: [NicovideoVideoSourceEvent!]!
 }
 
-type NicovideoVideoSourceCreateEvent implements NicovideoVideoSourceEvent & Node {
+type NicovideoVideoSourceCreateEvent implements Node & Event & NicovideoVideoSourceEvent {
   id: ID!
+  series: String!
   createdAt: DateTime!
-
   user: User!
+
   source: NicovideoVideoSource!
 }

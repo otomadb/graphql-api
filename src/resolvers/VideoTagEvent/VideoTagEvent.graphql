@@ -1,32 +1,36 @@
-interface VideoTagEvent implements Node {
+interface VideoTagEvent implements Node & Event {
   id: ID!
+  series: String!
   createdAt: DateTime!
-
   user: User!
+
   videoTag: VideoTag!
 }
 
-type VideoTagAttachEvent implements VideoTagEvent & Node {
+type VideoTagAttachEvent implements Node & Event & VideoTagEvent {
   id: ID!
+  series: String!
   createdAt: DateTime!
-
   user: User!
+
   videoTag: VideoTag!
 }
 
-type VideoTagReattachEvent implements VideoTagEvent & Node {
+type VideoTagReattachEvent implements Node & Event & VideoTagEvent {
   id: ID!
+  series: String!
   createdAt: DateTime!
-
   user: User!
+
   videoTag: VideoTag!
 }
 
-type VideoTagDetachEvent implements VideoTagEvent & Node {
+type VideoTagDetachEvent implements Node & Event & VideoTagEvent {
   id: ID!
+  series: String!
   createdAt: DateTime!
-
   user: User!
+
   videoTag: VideoTag!
 }
 

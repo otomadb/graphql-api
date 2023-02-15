@@ -27,9 +27,14 @@ export class SemitagModel {
 export class SemitagRejectingModel {
   constructor(
     private readonly entity: {
+      semitagId: string;
       note: string | null;
     }
   ) {}
+
+  get semitagId() {
+    return this.entity.semitagId;
+  }
 
   get note() {
     return this.entity.note;
@@ -37,12 +42,11 @@ export class SemitagRejectingModel {
 }
 
 export class SemitagResolvingModel {
-  constructor(
-    private readonly entity: {
-      videoTagId: string;
-      note: string | null;
-    }
-  ) {}
+  constructor(private readonly entity: { semitagId: string; videoTagId: string; note: string | null }) {}
+
+  get semitagId() {
+    return this.entity.semitagId;
+  }
 
   get note() {
     return this.entity.note;

@@ -1,32 +1,36 @@
-interface VideoThumbnailEvent implements Node {
+interface VideoThumbnailEvent implements Node & Event {
   id: ID!
+  series: String!
   createdAt: DateTime!
-
   user: User!
+
   videoThumbnail: VideoThumbnail!
 }
 
-type VideoThumbnailCreateEvent implements VideoThumbnailEvent & Node {
+type VideoThumbnailCreateEvent implements Node & Event & VideoThumbnailEvent {
   id: ID!
+  series: String!
   createdAt: DateTime!
-
   user: User!
+
   videoThumbnail: VideoThumbnail!
 }
 
-type VideoThumbnailSetPrimaryEvent implements VideoThumbnailEvent & Node {
+type VideoThumbnailSetPrimaryEvent implements Node & Event & VideoThumbnailEvent {
   id: ID!
+  series: String!
   createdAt: DateTime!
-
   user: User!
+
   videoThumbnail: VideoThumbnail!
 }
 
-type VideoThumbnailUnsetPrimaryEvent implements VideoThumbnailEvent & Node {
+type VideoThumbnailUnsetPrimaryEvent implements Node & Event & VideoThumbnailEvent {
   id: ID!
+  series: String!
   createdAt: DateTime!
-
   user: User!
+
   videoThumbnail: VideoThumbnail!
 }
 

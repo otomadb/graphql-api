@@ -7,6 +7,14 @@ export class SemitagEventModel {
     return this.event.id;
   }
 
+  get series() {
+    return this.id;
+  }
+
+  get createdAt() {
+    return this.event.createdAt;
+  }
+
   get userId() {
     return this.event.userId;
   }
@@ -17,5 +25,9 @@ export class SemitagEventModel {
 
   get type() {
     return this.event.type;
+  }
+
+  get payload(): unknown {
+    return this.event.payload;
   }
 }

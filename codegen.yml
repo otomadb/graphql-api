@@ -25,11 +25,11 @@ generates:
         NicovideoVideoSourceCreateEvent: ./NicovideoVideoSourceEvent/model.js#NicovideoVideoSourceEventModel
         NicovideoVideoSourceEvent: ./NicovideoVideoSourceEvent/model.js#NicovideoVideoSourceEventModel
         Semitag: ./Semitag/model.js#SemitagModel
+        SemitagAttachEvent: ./SemitagEvent/model.js#SemitagEventModel
         SemitagEvent: ./SemitagEvent/model.js#SemitagEventModel
-        SemitagEventAttachEvent: ./SemitagEvent/model.js#SemitagEventModel
-        SemitagEventRejectEvent: ./SemitagEvent/model.js#SemitagEventModel
-        SemitagEventResolveEvent: ./SemitagEvent/model.js#SemitagEventModel
+        SemitagRejectEvent: ./SemitagEvent/model.js#SemitagEventModel
         SemitagRejecting: ./Semitag/model.js#SemitagRejectingModel
+        SemitagResolveEvent: ./SemitagEvent/model.js#SemitagEventModel
         SemitagResolving: ./Semitag/model.js#SemitagResolvingModel
         Session: ./Session/model.js#SessionModel
         Tag: ./Tag/model.js#TagModel

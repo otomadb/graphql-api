@@ -1,7 +1,9 @@
-interface TagEvent {
+interface TagEvent implements Node & Event {
   id: ID!
+  series: String!
   createdAt: DateTime!
   user: User!
+
   tag: Tag!
 }
 
@@ -10,9 +12,11 @@ type TagEventsConnection {
 }
 
 "Tagを追加した際に発生．（初回のみ）"
-type TagRegisterEvent implements TagEvent {
+type TagRegisterEvent implements Node & Event & TagEvent {
   id: ID!
+  series: String!
   createdAt: DateTime!
   user: User!
+
   tag: Tag!
 }

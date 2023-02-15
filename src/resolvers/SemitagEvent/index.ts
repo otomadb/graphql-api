@@ -1,9 +1,10 @@
 import { SemitagEventType } from "@prisma/client";
+import { GraphQLError } from "graphql";
 
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
 import { ResolverDeps } from "../index.js";
-import { SemitagModel } from "../Semitag/model.js";
+import { SemitagModel, SemitagRejectingModel, SemitagResolvingModel } from "../Semitag/model.js";
 import { UserModel } from "../User/model.js";
 
 export const resolveSemitagEventCommonProps = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
@@ -16,13 +17,6 @@ export const resolveSemitagEventCommonProps = ({ prisma }: Pick<ResolverDeps, "p
         .catch(() => {
           throw new GraphQLNotExistsInDBError("User", userId);
         }),
-    semitag: ({ semitagId }) =>
-      prisma.semitag
-        .findUniqueOrThrow({ where: { id: semitagId } })
-        .then((v) => new SemitagModel(v))
-        .catch(() => {
-          throw new GraphQLNotExistsInDBError("Semitag", semitagId);
-        }),
   } satisfies Omit<Exclude<Resolvers["SemitagEvent"], undefined>, "__resolveType">);
 
 export const resolveSemitagEvent = () =>
@@ -30,26 +24,56 @@ export const resolveSemitagEvent = () =>
     __resolveType({ type }) {
       switch (type) {
         case SemitagEventType.ATTACH:
-          return "SemitagEventAttachEvent";
+          return "SemitagAttachEvent";
         case SemitagEventType.RESOLVE:
-          return "SemitagEventResolveEvent";
+          return "SemitagResolveEvent";
         case SemitagEventType.REJECT:
-          return "SemitagEventRejectEvent";
+          return "SemitagRejectEvent";
       }
     },
   } satisfies Resolvers["SemitagEvent"]);
 
-export const resolveSemitagEventAttachEvent = (deps: Pick<ResolverDeps, "prisma">) =>
+export const resolveSemitagEventAttachEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
-    ...resolveSemitagEventCommonProps(deps),
-  } satisfies Resolvers["SemitagEventAttachEvent"]);
+    ...resolveSemitagEventCommonProps({ prisma }),
+    semitag: ({ semitagId }) =>
+      prisma.semitag
+        .findUniqueOrThrow({ where: { id: semitagId } })
+        .then((v) => new SemitagModel(v))
+        .catch(() => {
+          throw new GraphQLNotExistsInDBError("Semitag", semitagId);
+        }),
+  } satisfies Resolvers["SemitagAttachEvent"]);
 
-export const resolveSemitagEventResolveEvent = (deps: Pick<ResolverDeps, "prisma">) =>
+export const resolveSemitagEventResolveEvent = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   ({
-    ...resolveSemitagEventCommonProps(deps),
-  } satisfies Resolvers["SemitagEventResolveEvent"]);
+    ...resolveSemitagEventCommonProps({ prisma }),
+    resolving: async ({ semitagId }, _args, _context, info) => {
+      const checking = await prisma.semitagChecking.findUniqueOrThrow({ where: { semitagId } });
+      if (!checking.videoTagId) {
+        logger.error(
+          { path: info.path, parent: { semitagId } },
+          "SemitagChecking videoTagId must not be null but null"
+        );
+        throw new GraphQLError("Data inconsistency");
+      }
 
-export const resolveSemitagEventRejectEvent = (deps: Pick<ResolverDeps, "prisma">) =>
+      const { videoTagId, note } = checking;
+      return new SemitagResolvingModel({ semitagId, videoTagId, note });
+    },
+  } satisfies Resolvers["SemitagResolveEvent"]);
+
+export const resolveSemitagEventRejectEvent = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   ({
-    ...resolveSemitagEventCommonProps(deps),
-  } satisfies Resolvers["SemitagEventRejectEvent"]);
+    ...resolveSemitagEventCommonProps({ prisma }),
+    rejecting: async ({ semitagId }, _args, _context, info) => {
+      const checking = await prisma.semitagChecking.findUniqueOrThrow({ where: { semitagId } });
+      if (checking.videoTagId) {
+        logger.error({ path: info.path, parent: { semitagId } }, "SemitagChecking videoTagId must be null but not");
+        throw new GraphQLError("Data inconsistency");
+      }
+
+      const { note } = checking;
+      return new SemitagRejectingModel({ semitagId, note });
+    },
+  } satisfies Resolvers["SemitagRejectEvent"]);

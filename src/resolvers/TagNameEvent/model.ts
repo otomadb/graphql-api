@@ -7,6 +7,10 @@ export class TagNameEventModel {
     return this.event.id;
   }
 
+  get series() {
+    return this.id;
+  }
+
   get createdAt() {
     return this.event.createdAt;
   }
