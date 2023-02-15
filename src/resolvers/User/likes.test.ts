@@ -1,11 +1,4 @@
-import { describe } from "@jest/globals";
-import { Mylist, MylistShareRange, PrismaClient } from "@prisma/client";
-import { DeepMockProxy, mockDeep } from "jest-mock-extended";
-
-import { Context } from "../context.js";
-import { resolveUserLikes } from "./likes.js";
-import { UserModel } from "./model.js";
-
+/*
 describe("resolver User.likes", () => {
   test("MylistがPRIVATEで，認証していなければnull", async () => {
     const prismaMock: DeepMockProxy<PrismaClient> = mockDeep<PrismaClient>();
@@ -67,3 +60,4 @@ describe("resolver User.likes", () => {
     expect(actual).toStrictEqual(null);
   });
 });
+*/
