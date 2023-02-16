@@ -1,11 +1,12 @@
+import { GraphQLError } from "graphql";
 import { Integer } from "neo4j-driver";
 
 import { VideoResolvers } from "../graphql.js";
 import { ResolverDeps } from "../index.js";
 import { VideoSimilarityModel } from "../VideoSimilarity/model.js";
 
-export const resolveSimilarVideos = ({ neo4j }: Pick<ResolverDeps, "neo4j">) =>
-  (async ({ id: videoId }, { input }) => {
+export const resolveSimilarVideos = ({ neo4j, logger }: Pick<ResolverDeps, "logger" | "neo4j">) =>
+  (async ({ id: videoId }, { input }, _context, info) => {
     const session = neo4j.session();
 
     try {
@@ -37,6 +38,9 @@ export const resolveSimilarVideos = ({ neo4j }: Pick<ResolverDeps, "neo4j">) =>
           })
       );
       return { items };
+    } catch (error) {
+      logger.error({ error, path: info.path }, "Failed to get similar video");
+      throw new GraphQLError("Failed to get similar video");
     } finally {
       await session.close();
     }
