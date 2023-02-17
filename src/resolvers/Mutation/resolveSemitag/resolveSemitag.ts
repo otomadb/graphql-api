@@ -39,6 +39,7 @@ export const resolve = async (
       events: { create: { userId, type: SemitagEventType.RESOLVE, payload: {} } },
       checking: {
         create: {
+          id: ulid(),
           videoTag: {
             create: {
               id: videoTagId,

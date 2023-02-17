@@ -1,4 +1,5 @@
 import { UserRole } from "@prisma/client";
+import { ulid } from "ulid";
 
 import { ensureContextUser } from "../../ensureContextUser.js";
 import { MutationResolvers } from "../../graphql.js";
@@ -14,7 +15,13 @@ export const addMylistToMylistGroup = ({ prisma }: Pick<ResolverDeps, "prisma">)
       const mylistId = parseGqlID("Mylist", mylistGqlId);
       const groupId = parseGqlID("MylistGroup", groupGqlId);
 
-      const inc = await prisma.mylistGroupMylistInclsion.create({ data: { groupId, mylistId } });
+      const inc = await prisma.mylistGroupMylistInclsion.create({
+        data: {
+          id: ulid(),
+          groupId,
+          mylistId,
+        },
+      });
       return { inclusion: new MylistGroupMylistInclusionModel(inc) };
     }
   ) satisfies MutationResolvers["addMylistToMylistGroup"];

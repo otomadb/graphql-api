@@ -45,7 +45,7 @@ describe("findTags", () => {
     const tagId = ulid();
     await prisma.$transaction([
       prisma.tag.create({ data: { id: tagId, meaningless: false } }),
-      prisma.tagName.create({ data: { tagId, name: "name", isPrimary: false } }),
+      prisma.tagName.create({ data: { id: ulid(), tagId, name: "name", isPrimary: false } }),
     ]);
 
     const { nodes } = await findTags(
@@ -89,17 +89,17 @@ describe("findTags", () => {
       }),
       prisma.tagName.createMany({
         data: [
-          { tagId: child1Id, name: "name", isPrimary: false },
-          { tagId: parent1Id, name: "parent_t1", isPrimary: false },
+          { id: ulid(), tagId: child1Id, name: "name", isPrimary: false },
+          { id: ulid(), tagId: parent1Id, name: "parent_t1", isPrimary: false },
 
-          { tagId: child2Id, name: "name", isPrimary: false },
-          { tagId: parent2Id, name: "parent_t2", isPrimary: false },
+          { id: ulid(), tagId: child2Id, name: "name", isPrimary: false },
+          { id: ulid(), tagId: parent2Id, name: "parent_t2", isPrimary: false },
         ],
       }),
       prisma.tagParent.createMany({
         data: [
-          { parentId: parent1Id, childId: child1Id, isExplicit: false },
-          { parentId: parent2Id, childId: child2Id, isExplicit: false },
+          { id: ulid(), parentId: parent1Id, childId: child1Id, isExplicit: false },
+          { id: ulid(), parentId: parent2Id, childId: child2Id, isExplicit: false },
         ],
       }),
     ]);
@@ -149,17 +149,17 @@ describe("findTags", () => {
       }),
       prisma.tagName.createMany({
         data: [
-          { tagId: child1Id, name: "name", isPrimary: false },
-          { tagId: parent1Id, name: "parent_t1", isPrimary: false },
+          { id: ulid(), tagId: child1Id, name: "name", isPrimary: false },
+          { id: ulid(), tagId: parent1Id, name: "parent_t1", isPrimary: false },
 
-          { tagId: child2Id, name: "name", isPrimary: false },
-          { tagId: parent2Id, name: "parent_t2", isPrimary: false },
+          { id: ulid(), tagId: child2Id, name: "name", isPrimary: false },
+          { id: ulid(), tagId: parent2Id, name: "parent_t2", isPrimary: false },
         ],
       }),
       prisma.tagParent.createMany({
         data: [
-          { parentId: parent1Id, childId: child1Id, isExplicit: false },
-          { parentId: parent2Id, childId: child2Id, isExplicit: false },
+          { id: ulid(), parentId: parent1Id, childId: child1Id, isExplicit: false },
+          { id: ulid(), parentId: parent2Id, childId: child2Id, isExplicit: false },
         ],
       }),
     ]);

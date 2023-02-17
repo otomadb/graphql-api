@@ -1,4 +1,5 @@
 import { SemitagEventType, UserRole } from "@prisma/client";
+import { ulid } from "ulid";
 
 import { ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, RejectSemitagFailedMessage } from "../../graphql.js";
@@ -21,6 +22,7 @@ export const reject = async (
       events: { create: { userId, type: SemitagEventType.RESOLVE, payload: {} } },
       checking: {
         create: {
+          id: ulid(),
           videoTagId: null,
         },
       },

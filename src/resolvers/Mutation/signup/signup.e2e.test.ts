@@ -24,6 +24,7 @@ describe("Mutation.signup()", () => {
   test("既に同じnameを持つユーザが作成済みならエラーを返却", async () => {
     await prisma.user.create({
       data: {
+        id: "u1",
         name: "testuser",
         displayName: "Test User",
         email: "testuser@example.net",
@@ -67,6 +68,7 @@ describe("Mutation.signup()", () => {
   test("管理者が存在するなら，通常ユーザとして作成される", async () => {
     await prisma.user.create({
       data: {
+        id: "u1",
         name: "admin",
         displayName: "Test User",
         email: "admin@example.net",

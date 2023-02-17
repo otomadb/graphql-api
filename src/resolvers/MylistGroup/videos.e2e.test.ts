@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { ulid } from "ulid";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
 import { cleanPrisma } from "../../test/cleanPrisma.js";
@@ -68,12 +69,12 @@ describe("MylistGroup.videos", () => {
       }),
       prisma.mylistRegistration.createMany({
         data: [
-          { mylistId: mylistId1, videoId: videoId1 },
-          { mylistId: mylistId1, videoId: videoId2 },
-          { mylistId: mylistId1, videoId: videoId3 },
-          { mylistId: mylistId2, videoId: videoId1 },
-          { mylistId: mylistId2, videoId: videoId2 },
-          { mylistId: mylistId3, videoId: videoId1 },
+          { id: ulid(), mylistId: mylistId1, videoId: videoId1 },
+          { id: ulid(), mylistId: mylistId1, videoId: videoId2 },
+          { id: ulid(), mylistId: mylistId1, videoId: videoId3 },
+          { id: ulid(), mylistId: mylistId2, videoId: videoId1 },
+          { id: ulid(), mylistId: mylistId2, videoId: videoId2 },
+          { id: ulid(), mylistId: mylistId3, videoId: videoId1 },
         ],
       }),
       prisma.mylistGroup.create({
@@ -83,7 +84,11 @@ describe("MylistGroup.videos", () => {
           holderId: userId1,
           mylists: {
             createMany: {
-              data: [{ mylistId: mylistId1 }, { mylistId: mylistId2 }, { mylistId: mylistId3 }],
+              data: [
+                { id: ulid(), mylistId: mylistId1 },
+                { id: ulid(), mylistId: mylistId2 },
+                { id: ulid(), mylistId: mylistId3 },
+              ],
             },
           },
         },
@@ -152,15 +157,15 @@ describe("MylistGroup.videos", () => {
       }),
       prisma.mylistRegistration.createMany({
         data: [
-          { mylistId: mylistId1, videoId: videoId1 },
-          { mylistId: mylistId1, videoId: videoId2 },
-          { mylistId: mylistId1, videoId: videoId3 },
-          { mylistId: mylistId2, videoId: videoId1 },
-          { mylistId: mylistId2, videoId: videoId2 },
-          { mylistId: mylistId3, videoId: videoId1 },
-          { mylistId: mylistId4, videoId: videoId1 },
-          { mylistId: mylistId4, videoId: videoId2 },
-          { mylistId: mylistId4, videoId: videoId3 },
+          { id: ulid(), mylistId: mylistId1, videoId: videoId1 },
+          { id: ulid(), mylistId: mylistId1, videoId: videoId2 },
+          { id: ulid(), mylistId: mylistId1, videoId: videoId3 },
+          { id: ulid(), mylistId: mylistId2, videoId: videoId1 },
+          { id: ulid(), mylistId: mylistId2, videoId: videoId2 },
+          { id: ulid(), mylistId: mylistId3, videoId: videoId1 },
+          { id: ulid(), mylistId: mylistId4, videoId: videoId1 },
+          { id: ulid(), mylistId: mylistId4, videoId: videoId2 },
+          { id: ulid(), mylistId: mylistId4, videoId: videoId3 },
         ],
       }),
       prisma.mylistGroup.create({
@@ -170,7 +175,11 @@ describe("MylistGroup.videos", () => {
           holderId: userId1,
           mylists: {
             createMany: {
-              data: [{ mylistId: mylistId1 }, { mylistId: mylistId2 }, { mylistId: mylistId3 }],
+              data: [
+                { id: ulid(), mylistId: mylistId1 },
+                { id: ulid(), mylistId: mylistId2 },
+                { id: ulid(), mylistId: mylistId3 },
+              ],
             },
           },
         },
@@ -234,12 +243,12 @@ describe("MylistGroup.videos", () => {
       }),
       prisma.mylistRegistration.createMany({
         data: [
-          { mylistId: mylistId1, videoId: videoId1 },
-          { mylistId: mylistId1, videoId: videoId2 },
-          { mylistId: mylistId1, videoId: videoId3 },
-          { mylistId: mylistId2, videoId: videoId1 },
-          { mylistId: mylistId2, videoId: videoId2 },
-          { mylistId: mylistId3, videoId: videoId1 },
+          { id: ulid(), mylistId: mylistId1, videoId: videoId1 },
+          { id: ulid(), mylistId: mylistId1, videoId: videoId2 },
+          { id: ulid(), mylistId: mylistId1, videoId: videoId3 },
+          { id: ulid(), mylistId: mylistId2, videoId: videoId1 },
+          { id: ulid(), mylistId: mylistId2, videoId: videoId2 },
+          { id: ulid(), mylistId: mylistId3, videoId: videoId1 },
         ],
       }),
       prisma.mylistGroup.create({
@@ -249,7 +258,11 @@ describe("MylistGroup.videos", () => {
           holderId: userId1,
           mylists: {
             createMany: {
-              data: [{ mylistId: mylistId1 }, { mylistId: mylistId2 }, { mylistId: mylistId3 }],
+              data: [
+                { id: ulid(), mylistId: mylistId1 },
+                { id: ulid(), mylistId: mylistId2 },
+                { id: ulid(), mylistId: mylistId3 },
+              ],
             },
           },
         },

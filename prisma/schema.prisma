@@ -12,7 +12,7 @@ datasource db {
 }
 
 model Mylist {
-  id String @id
+  id String @id @default(cuid())
 
   title String
 
@@ -40,7 +40,7 @@ enum MylistShareRange {
 }
 
 model MylistEvent {
-  id String @id
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -81,7 +81,7 @@ model MylistRegistration {
 }
 
 model MylistRegistrationEvent {
-  id String @id
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -104,7 +104,7 @@ enum MylistRegistrationEventType {
 }
 
 model MylistGroup {
-  id String @id
+  id String @id @default(cuid())
 
   title String
 
@@ -120,7 +120,7 @@ model MylistGroup {
 }
 
 model MylistGroupEvent {
-  id String @id
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -159,7 +159,7 @@ model MylistGroupMylistInclsion {
 }
 
 model MylistGroupMylistInclsionEvent {
-  id String @id
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -182,7 +182,7 @@ enum MylistGroupMylistInclsionEventType {
 }
 
 model Session {
-  id String @id
+  id String @id @default(cuid())
 
   secret String @db.VarChar(64)
 
@@ -197,7 +197,7 @@ model Session {
 }
 
 model Tag {
-  id     String @id
+  id     String @id @default(cuid())
   serial Int    @unique @default(autoincrement())
 
   createdAt   DateTime @default(now())
@@ -215,7 +215,7 @@ model Tag {
 }
 
 model TagEvent {
-  id String @id
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -253,7 +253,7 @@ model TagName {
 }
 
 model TagNameEvent {
-  id String @id
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -295,7 +295,7 @@ model TagParent {
 }
 
 model TagParentEvent {
-  id String @id
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -318,7 +318,7 @@ enum TagParentEventType {
 }
 
 model User {
-  id   String @id
+  id   String @id @default(cuid())
   name String @unique @db.Citext
 
   email            String  @unique()
@@ -365,7 +365,7 @@ enum UserRole {
 }
 
 model Video {
-  id     String @id
+  id     String @id @default(cuid())
   serial Int    @unique @default(autoincrement())
 
   createdAt DateTime @default(now())
@@ -385,7 +385,7 @@ model Video {
 }
 
 model VideoEvent {
-  id String @id
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -422,7 +422,7 @@ model VideoTitle {
 }
 
 model VideoTitleEvent {
-  id String @id
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -460,7 +460,7 @@ model VideoThumbnail {
 }
 
 model VideoThumbnailEvent {
-  id String @id
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -504,7 +504,7 @@ model VideoTag {
 }
 
 model VideoTagEvent {
-  id String @id
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -527,7 +527,7 @@ enum VideoTagEventType {
 }
 
 model Semitag {
-  id String @id
+  id String @id @default(cuid())
 
   name String
 
@@ -559,7 +559,7 @@ model SemitagChecking {
 }
 
 model SemitagEvent {
-  id String @id
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -582,7 +582,7 @@ enum SemitagEventType {
 }
 
 model NicovideoVideoSource {
-  id String @id
+  id String @id @default(cuid())
 
   sourceId String @unique @db.Citext
 
@@ -598,7 +598,7 @@ model NicovideoVideoSource {
 }
 
 model NicovideoVideoSourceEvent {
-  id String @id
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
