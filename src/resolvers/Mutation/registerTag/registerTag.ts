@@ -17,7 +17,7 @@ import { MutationResolvers, RegisterTagFailedMessage } from "../../graphql.js";
 import { parseGqlID2, parseGqlIDs2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
-import { register as registerTagInNeo4j } from "./neo4j.js";
+import { registerTagInNeo4j } from "./neo4j.js";
 
 export const register = async (
   prisma: ResolverDeps["prisma"],
@@ -253,7 +253,10 @@ export const registerTag = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prism
     }
 
     const tag = result.data;
-    await registerTagInNeo4j({ prisma, neo4j, logger }, tag.id);
+    const neo4jResult = await registerTagInNeo4j({ prisma, neo4j }, tag.id);
+    if (neo4jResult.status === "error") {
+      logger.error({ error: neo4jResult.error, path: info.path }, "Failed to update in neo4j");
+    }
 
     return {
       __typename: "RegisterTagSucceededPayload",

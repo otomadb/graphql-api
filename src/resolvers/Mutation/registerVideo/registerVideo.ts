@@ -16,7 +16,7 @@ import { MutationResolvers, RegisterVideoFailedMessage, RegisterVideoInputSource
 import { parseGqlIDs2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { VideoModel } from "../../Video/model.js";
-import { register as registerInNeo4j } from "./neo4j.js";
+import { registerVideoInNeo4j as registerInNeo4j } from "./neo4j.js";
 
 export const register = async (
   prisma: ResolverDeps["prisma"],

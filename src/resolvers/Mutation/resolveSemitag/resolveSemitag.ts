@@ -6,26 +6,7 @@ import { MutationResolvers, ResolveSemitagFailedMessage } from "../../graphql.js
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { SemitagResolvingModel } from "../../Semitag/model.js";
-
-export const resolveSemitagInNeo4j = async (
-  neo4jDriver: ResolverDeps["neo4j"],
-  { videoId, tagId }: { videoId: string; tagId: string }
-) => {
-  const session = neo4jDriver.session();
-  try {
-    await session.run(
-      `
-      MERGE (v:Video {id: $video_id})
-      MERGE (t:Tag {id: $tag_id})
-      MERGE r=(v)-[:TAGGED_BY]->(t)
-      RETURN r
-      `,
-      { tag_id: tagId, video_id: videoId }
-    );
-  } finally {
-    await session.close();
-  }
-};
+import { resolve as resolveSemitagInNeo4j } from "./neo4j.js";
 
 export const resolve = async (
   prisma: ResolverDeps["prisma"],
@@ -74,8 +55,8 @@ export const resolve = async (
   return ok({ videoTagId, note: null, semitagId: checkedSemitag.id });
 };
 
-export const resolveSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
-  (async (_, { input: { id: semitagGqlId, tagId: tagGqlId } }, { user }) => {
+export const resolveSemitag = ({ prisma, logger, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+  (async (_, { input: { id: semitagGqlId, tagId: tagGqlId } }, { user }, info) => {
     if (!user || (user?.role !== UserRole.EDITOR && user?.role !== UserRole.ADMINISTRATOR))
       return {
         __typename: "ResolveSemitagFailedPayload",
@@ -131,8 +112,15 @@ export const resolveSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       }
     }
 
+    const data = result.data;
+
+    const neo4jResult = await resolveSemitagInNeo4j({ prisma, neo4j, logger }, data.videoTagId);
+    if (neo4jResult.status === "error") {
+      logger.error({ error: neo4jResult.error, path: info.path }, "Failed to update in neo4j");
+    }
+
     return {
       __typename: "ResolveSemitagSucceededPayload",
-      resolving: new SemitagResolvingModel(result.data),
+      resolving: new SemitagResolvingModel(data),
     };
   }) satisfies MutationResolvers["resovleSemitag"];
