@@ -35,6 +35,7 @@ describe("User.likes", () => {
       }),
       prisma.mylist.create({
         data: {
+          id: "m1",
           title: "Mylist 1",
           holderId: "u1",
           isLikeList: true,
@@ -69,6 +70,7 @@ describe("User.likes", () => {
       }),
       prisma.mylist.create({
         data: {
+          id: "m1",
           title: "Mylist 1",
           holderId: "u1",
           isLikeList: true,
@@ -94,6 +96,7 @@ describe("User.likes", () => {
       }),
       prisma.mylist.create({
         data: {
+          id: "m1",
           title: "Mylist 1",
           holderId: "u1",
           isLikeList: true,
@@ -128,6 +131,7 @@ describe("User.likes", () => {
       }),
       prisma.mylist.create({
         data: {
+          id: "m1",
           title: "Mylist 1",
           holderId: "u1",
           isLikeList: true,

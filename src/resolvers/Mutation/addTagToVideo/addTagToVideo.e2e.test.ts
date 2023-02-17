@@ -1,4 +1,5 @@
 import { PrismaClient, VideoTagEvent, VideoTagEventType } from "@prisma/client";
+import { ulid } from "ulid";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
@@ -40,7 +41,7 @@ describe("Mutation.addTagToVideo", () => {
         data: { id: "v1" },
       }),
       prisma.videoTag.create({
-        data: { videoId: "v1", tagId: "t1", isRemoved: false },
+        data: { id: ulid(), videoId: "v1", tagId: "t1", isRemoved: false },
       }),
     ]);
 
@@ -126,7 +127,7 @@ describe("Mutation.addTagToVideo", () => {
         data: { id: "v1" },
       }),
       prisma.videoTag.create({
-        data: { videoId: "v1", tagId: "t1", isRemoved: true },
+        data: { id: ulid(), videoId: "v1", tagId: "t1", isRemoved: true },
       }),
     ]);
 

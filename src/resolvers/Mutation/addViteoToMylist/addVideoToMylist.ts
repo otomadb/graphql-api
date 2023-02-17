@@ -1,5 +1,6 @@
 import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
+import { ulid } from "ulid";
 
 import { ensureContextUser } from "../../ensureContextUser.js";
 import { MutationResolvers } from "../../graphql.js";
@@ -20,7 +21,7 @@ export const addVideoToMylist = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "
         throw new GraphQLError(`mylist "${mylistGqlId}" is not holded by you`);
 
       const registration = await prisma.mylistRegistration.create({
-        data: { videoId, mylistId, note },
+        data: { id: ulid(), videoId, mylistId, note },
         include: { video: true, mylist: true },
       });
 

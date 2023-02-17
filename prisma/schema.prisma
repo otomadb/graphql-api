@@ -60,7 +60,7 @@ enum MylistEventType {
 }
 
 model MylistRegistration {
-  id String @id @default(cuid())
+  id String @id
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -140,7 +140,7 @@ enum MylistGroupEventType {
 }
 
 model MylistGroupMylistInclsion {
-  id String @id @default(cuid())
+  id String @id
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -197,7 +197,7 @@ model Session {
 }
 
 model Tag {
-  id     String @id
+  id     String @id @default(cuid())
   serial Int    @unique @default(autoincrement())
 
   createdAt   DateTime @default(now())
@@ -235,7 +235,7 @@ enum TagEventType {
 }
 
 model TagName {
-  id String @id @default(cuid())
+  id String @id
 
   name String
 
@@ -276,7 +276,7 @@ enum TagNameEventType {
 }
 
 model TagParent {
-  id String @id @default(cuid())
+  id String @id
 
   isExplicit Boolean
 
@@ -365,7 +365,7 @@ enum UserRole {
 }
 
 model Video {
-  id     String @id
+  id     String @id @default(cuid())
   serial Int    @unique @default(autoincrement())
 
   createdAt DateTime @default(now())
@@ -405,7 +405,7 @@ enum VideoEventType {
 }
 
 model VideoTitle {
-  id String @id @default(cuid())
+  id String @id
 
   title     String
   isPrimary Boolean
@@ -445,7 +445,7 @@ enum VideoTitleEventType {
 }
 
 model VideoThumbnail {
-  id String @id @default(cuid())
+  id String @id
 
   imageUrl  String
   isPrimary Boolean
@@ -483,7 +483,7 @@ enum VideoThumbnailEventType {
 }
 
 model VideoTag {
-  id String @id @default(cuid())
+  id String @id
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -544,7 +544,7 @@ model Semitag {
 }
 
 model SemitagChecking {
-  id String @id @default(cuid())
+  id String @id
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())

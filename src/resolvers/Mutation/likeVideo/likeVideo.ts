@@ -1,4 +1,5 @@
 import { Mylist, MylistRegistration, Video } from "@prisma/client";
+import { ulid } from "ulid";
 
 import { err, ok, Result } from "../../../utils/Result.js";
 import { LikeVideoFailedMessage, MutationResolvers } from "../../graphql.js";
@@ -29,6 +30,7 @@ export const like = async (
   if (!ext) {
     const registration = await prisma.mylistRegistration.create({
       data: {
+        id: ulid(),
         videoId: video.id,
         mylistId: mylist.id,
         isRemoved: false,

@@ -76,8 +76,10 @@ export const register = async (
             isChecked: true,
             checking: {
               create: {
+                id: ulid(),
                 videoTag: {
                   create: {
+                    id: ulid(),
                     tag: { connect: { id: tagId } },
                     video: { connect: { id: semitag.videoId } },
                     events: { create: { userId, type: VideoTagEventType.ATTACH, payload: {} } },
