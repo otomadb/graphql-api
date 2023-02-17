@@ -1,5 +1,4 @@
 import { Tag, UserRole, Video, VideoTag, VideoTagEventType } from "@prisma/client";
-import { Driver as Neo4jDriver } from "neo4j-driver";
 import { ulid } from "ulid";
 
 import { Result } from "../../../utils/Result.js";
@@ -8,26 +7,7 @@ import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 import { VideoModel } from "../../Video/model.js";
-
-export const addTagToVideoInNeo4j = async (
-  neo4jDriver: Neo4jDriver,
-  { videoId, tagId }: { videoId: string; tagId: string }
-) => {
-  const session = neo4jDriver.session();
-  try {
-    await session.run(
-      `
-      MERGE (v:Video {id: $video_id})
-      MERGE (t:Tag {id: $tag_id})
-      MERGE r=(v)-[:TAGGED_BY]->(t)
-      RETURN r
-    `,
-      { tag_id: tagId, video_id: videoId }
-    );
-  } finally {
-    await session.close();
-  }
-};
+import { addTagToVideoInNeo4j } from "./neo4j.js";
 
 export const add = async (
   prisma: ResolverDeps["prisma"],
@@ -81,8 +61,8 @@ export const add = async (
   }
 };
 
-export const addTagToVideo = ({ neo4j, prisma }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  (async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { user }) => {
+export const addTagToVideo = ({ neo4j, prisma, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+  (async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { user }, info) => {
     if (!user || (user?.role !== UserRole.EDITOR && user?.role !== UserRole.ADMINISTRATOR))
       return {
         __typename: "AddTagToVideoFailedPayload",
@@ -119,10 +99,11 @@ export const addTagToVideo = ({ neo4j, prisma }: Pick<ResolverDeps, "prisma" | "
     }
 
     const tagging = result.data;
-    await addTagToVideoInNeo4j(neo4j, {
-      tagId: tagging.tagId,
-      videoId: tagging.videoId,
-    });
+
+    const neo4jResult = await addTagToVideoInNeo4j({ prisma, neo4j }, tagging.id);
+    if (neo4jResult.status === "error") {
+      logger.error({ error: neo4jResult.error, path: info.path }, "Failed to update in neo4j");
+    }
 
     return {
       __typename: "AddTagToVideoSucceededPayload",

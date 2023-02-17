@@ -12,7 +12,7 @@ import { VideoTitleModel } from "../VideoTitle/model.js";
 import { resolveSimilarVideos } from "./similarVideos.js";
 import { resolveTags } from "./tags.js";
 
-export const resolveVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
+export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
   ({
     id: ({ id }): string => buildGqlId("Video", id),
 
@@ -53,7 +53,7 @@ export const resolveVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "n
         .findUnique({ where: { videoId_tagId: { videoId, tagId: parseGqlID("Tag", tagGqlId) } } })
         .then((v) => !!v && !v.isRemoved),
 
-    similarVideos: resolveSimilarVideos({ neo4j }),
+    similarVideos: resolveSimilarVideos({ neo4j, logger }),
 
     nicovideoSources: async ({ id: videoId }) =>
       prisma.nicovideoVideoSource

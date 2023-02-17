@@ -16,32 +16,7 @@ import { MutationResolvers, RegisterVideoFailedMessage, RegisterVideoInputSource
 import { parseGqlIDs2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { VideoModel } from "../../Video/model.js";
-
-export const registerVideoInNeo4j = async (
-  neo4j: ResolverDeps["neo4j"],
-  rels: { videoId: string; tagId: string }[]
-) => {
-  const session = neo4j.session();
-  try {
-    const tx = session.beginTransaction();
-    for (const rel of rels) {
-      const tagId = rel.videoId;
-      const videoId = rel.tagId;
-      tx.run(
-        `
-          MERGE (v:Video {id: $video_id})
-          MERGE (t:Tag {id: $tag_id})
-          MERGE r=(v)-[:TAGGED_BY]->(t)
-          RETURN r
-          `,
-        { tag_id: tagId, video_id: videoId }
-      );
-    }
-    await tx.commit();
-  } finally {
-    await session.close();
-  }
-};
+import { registerVideoInNeo4j as registerInNeo4j } from "./neo4j.js";
 
 export const register = async (
   prisma: ResolverDeps["prisma"],
@@ -188,7 +163,7 @@ export const register = async (
   };
 };
 
-export const registerVideo = ({ prisma }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
+export const registerVideo = ({ prisma, logger, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
   // registerVideoScaffold(deps)
   (async (_parent, { input }, { user }) => {
     if (!user || (user.role !== UserRole.EDITOR && user.role !== UserRole.ADMINISTRATOR))
@@ -238,6 +213,8 @@ export const registerVideo = ({ prisma }: Pick<ResolverDeps, "prisma" | "neo4j">
     }
 
     const video = result.data;
+    await registerInNeo4j({ prisma, logger, neo4j }, video.id);
+
     return {
       __typename: "RegisterVideoSucceededPayload",
       video: new VideoModel(video),

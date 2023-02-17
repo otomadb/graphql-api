@@ -40,6 +40,7 @@ import {
 import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
 import { resolveVideoEvent, resolveVideoRegisterEvent } from "./VideoEvent/index.js";
+import { resolveVideoSimilarity } from "./VideoSimilarity/index.js";
 import { resolveVideoTag } from "./VideoTag/index.js";
 import {
   resolveVideoTagAttachEvent,
@@ -103,6 +104,7 @@ export const resolvers = (deps: ResolverDeps) =>
     Video: resolveVideo(deps),
     VideoEvent: resolveVideoEvent(),
     VideoRegisterEvent: resolveVideoRegisterEvent(deps),
+    VideoSimilarity: resolveVideoSimilarity(deps),
     VideoTag: resolveVideoTag(deps),
     VideoTagAttachEvent: resolveVideoTagAttachEvent(deps),
     VideoTagDetachEvent: resolveVideoTagDetachEvent(deps),

@@ -7,26 +7,7 @@ import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
 import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
 import { VideoModel } from "../../Video/model.js";
-
-export const undoLikeVideoInNeo4j = async (
-  neo4j: ResolverDeps["neo4j"],
-  { mylistId, videoId }: { mylistId: string; videoId: string }
-) => {
-  const session = neo4j.session();
-  try {
-    await session.run(
-      `
-        MATCH (l:Mylist {id: $mylist_id })
-        MATCH (v:Video {id: $video_id })
-        MATCH (l)-[r:CONTAINS_VIDEO]->(v)
-        DELETE r
-        `,
-      { mylist_id: mylistId, video_id: videoId }
-    );
-  } finally {
-    await session.close();
-  }
-};
+import { undoLikeVideoInNeo4j } from "./neo4j.js";
 
 export const undo = async (
   prisma: ResolverDeps["prisma"],
@@ -57,8 +38,8 @@ export const undo = async (
   return ok(registration);
 };
 
-export const undoLikeVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  (async (_, { input: { videoId: videoGqlId } }, { user }) => {
+export const undoLikeVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+  (async (_, { input: { videoId: videoGqlId } }, { user }, info) => {
     if (!user) return { __typename: "UndoLikeVideoFailedPayload", message: UndoLikeVideoFailedMessage.Forbidden };
 
     const videoId = parseGqlID2("Video", videoGqlId);
@@ -92,7 +73,10 @@ export const undoLikeVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "
     }
 
     const registration = result.data;
-    await undoLikeVideoInNeo4j(neo4j, { mylistId: registration.mylistId, videoId: registration.videoId });
+    const neo4jResult = await undoLikeVideoInNeo4j({ prisma, neo4j }, registration.id);
+    if (neo4jResult.status === "error") {
+      logger.error({ error: neo4jResult.error, path: info.path }, "Failed to update in neo4j");
+    }
 
     return {
       __typename: "UndoLikeVideoSucceededPayload",

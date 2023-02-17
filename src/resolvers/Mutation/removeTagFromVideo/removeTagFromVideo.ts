@@ -1,5 +1,4 @@
 import { Tag, UserRole, Video, VideoTag, VideoTagEventType } from "@prisma/client";
-import { Driver as Neo4jDriver } from "neo4j-driver";
 
 import { Result } from "../../../utils/Result.js";
 import { MutationResolvers, RemoveTagFromVideoFailedMessage } from "../../graphql.js";
@@ -7,23 +6,7 @@ import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 import { VideoModel } from "../../Video/model.js";
-
-export const removeInNeo4j = async (driver: Neo4jDriver, { videoId, tagId }: { videoId: string; tagId: string }) => {
-  const session = driver.session();
-  try {
-    await session.run(
-      `
-      MATCH (v:Video {id: $video_id})
-      MATCH (t:Tag {id: $tag_id})
-      MATCH (v)-[r:TAGGED_BY]->(t)
-      DELETE r
-      `,
-      { tag_id: tagId, video_id: videoId }
-    );
-  } finally {
-    await session.close();
-  }
-};
+import { removeInNeo4j } from "./neo4j.js";
 
 export const remove = async (
   prisma: ResolverDeps["prisma"],
@@ -54,8 +37,8 @@ export const remove = async (
   return { status: "ok", data: tagging };
 };
 
-export const removeTagFromVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  (async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { user }) => {
+export const removeTagFromVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+  (async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { user }, info) => {
     if (!user || (user?.role !== UserRole.EDITOR && user?.role !== UserRole.ADMINISTRATOR))
       return {
         __typename: "RemoveTagFromVideoFailedPayload",
@@ -107,7 +90,11 @@ export const removeTagFromVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma
     }
 
     const tagging = result.data;
-    await removeInNeo4j(neo4j, { videoId: tagging.video.id, tagId: tagging.tag.id });
+
+    const neo4jResult = await removeInNeo4j({ prisma, neo4j }, tagging.id);
+    if (neo4jResult.status === "error") {
+      logger.error({ error: neo4jResult.error, path: info.path }, "Failed to update in neo4j");
+    }
 
     return {
       __typename: "RemoveTagFromVideoSucceededPayload",

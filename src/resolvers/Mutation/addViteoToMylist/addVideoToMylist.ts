@@ -1,38 +1,18 @@
 import { UserRole } from "@prisma/client";
 import { GraphQLError } from "graphql";
-import { Driver as Neo4jDriver } from "neo4j-driver";
 
 import { ensureContextUser } from "../../ensureContextUser.js";
 import { MutationResolvers } from "../../graphql.js";
 import { parseGqlID } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
+import { addVideoToMylistInNeo4j } from "./neo4j.js";
 
-export const addMylistRegistrationInNeo4j = async (
-  neo4jDriver: Neo4jDriver,
-  { mylistId, videoId }: { videoId: string; mylistId: string }
-) => {
-  const session = neo4jDriver.session();
-  try {
-    await session.run(
-      `
-        MERGE (l:Mylist {id: $mylist_id })
-        MERGE (v:Video {id: $video_id })
-        MERGE (l)-[r:CONTAINS_VIDEO]->(v)
-        RETURN r
-        `,
-      { mylist_id: mylistId, video_id: videoId }
-    );
-  } finally {
-    await session.close();
-  }
-};
-
-export const addVideoToMylist = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
+export const addVideoToMylist = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
   ensureContextUser(
     prisma,
     UserRole.NORMAL,
-    async (_parent, { input: { mylistId: mylistGqlId, note, videoId: videoGqlId } }, { userId }) => {
+    async (_parent, { input: { mylistId: mylistGqlId, note, videoId: videoGqlId } }, { userId }, info) => {
       const mylistId = parseGqlID("Mylist", mylistGqlId);
       const videoId = parseGqlID("Video", videoGqlId);
 
@@ -44,10 +24,10 @@ export const addVideoToMylist = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" 
         include: { video: true, mylist: true },
       });
 
-      await addMylistRegistrationInNeo4j(neo4j, {
-        videoId: registration.video.id,
-        mylistId: registration.mylist.id,
-      });
+      const neo4jResult = await addVideoToMylistInNeo4j({ prisma, neo4j }, registration.id);
+      if (neo4jResult.status === "error") {
+        logger.error({ error: neo4jResult.error, path: info.path }, "Failed to update in neo4j");
+      }
 
       return {
         registration: new MylistRegistrationModel(registration),

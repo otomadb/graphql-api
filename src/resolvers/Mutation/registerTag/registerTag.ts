@@ -17,29 +17,7 @@ import { MutationResolvers, RegisterTagFailedMessage } from "../../graphql.js";
 import { parseGqlID2, parseGqlIDs2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
-
-export const registerTagInNeo4j = async (neo4j: ResolverDeps["neo4j"], rels: { videoId: string; tagId: string }[]) => {
-  const session = neo4j.session();
-  try {
-    const tx = session.beginTransaction();
-    for (const rel of rels) {
-      const tagId = rel.videoId;
-      const videoId = rel.tagId;
-      tx.run(
-        `
-          MERGE (v:Video {id: $video_id})
-          MERGE (t:Tag {id: $tag_id})
-          MERGE r=(v)-[:TAGGED_BY]->(t)
-          RETURN r
-          `,
-        { tag_id: tagId, video_id: videoId }
-      );
-    }
-    await tx.commit();
-  } finally {
-    await session.close();
-  }
-};
+import { registerTagInNeo4j } from "./neo4j.js";
 
 export const register = async (
   prisma: ResolverDeps["prisma"],
@@ -216,7 +194,7 @@ export const logGraphQLResolveInfo = (info: GraphQLResolveInfo) => ({
   variables: info.variableValues,
 });
 
-export const registerTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+export const registerTag = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
   (async (_: unknown, { input }, { user }, info) => {
     if (!user || (user.role !== UserRole.EDITOR && user.role !== UserRole.ADMINISTRATOR))
       return {
@@ -273,7 +251,13 @@ export const registerTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "n
           };
       }
     }
+
     const tag = result.data;
+    const neo4jResult = await registerTagInNeo4j({ prisma, neo4j }, tag.id);
+    if (neo4jResult.status === "error") {
+      logger.error({ error: neo4jResult.error, path: info.path }, "Failed to update in neo4j");
+    }
+
     return {
       __typename: "RegisterTagSucceededPayload",
       tag: new TagModel(tag),
