@@ -31,7 +31,7 @@ export const resolve = async (
   const session = neo4j.session();
   try {
     const tx = session.beginTransaction();
-    updateWholeVideoTags({ prisma, tx }, videotagId);
+    await updateWholeVideoTags({ prisma, tx }, videotagId);
     await tx.commit();
     return ok(true);
   } catch (e) {

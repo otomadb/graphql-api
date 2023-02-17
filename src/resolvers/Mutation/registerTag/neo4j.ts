@@ -10,7 +10,7 @@ export const registerTagInNeo4j = async (
   try {
     const tx = session.beginTransaction();
     for (const { id } of await prisma.videoTag.findMany({ where: { tagId } })) {
-      updateWholeVideoTags({ prisma, tx }, id);
+      await updateWholeVideoTags({ prisma, tx }, id);
     }
 
     const parents = await prisma.tagParent.findMany({ where: { childId: tagId } });
