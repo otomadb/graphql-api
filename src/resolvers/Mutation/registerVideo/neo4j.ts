@@ -9,22 +9,22 @@ export const register = async (
     const tx = session.beginTransaction();
 
     const videotags = await prisma.videoTag.findMany({ where: { videoId } });
-    for (const { id, videoId, tagId } of videotags) {
+    for (const { videoId, tagId } of videotags) {
       tx.run(
         `
         MERGE (v:Video {id: $video_id})
         MERGE (t:Tag {id: $tag_id})
-        MERGE r=(v)-[:TAGGED_BY {id: $videotag_id}]->(t)
+        MERGE r=(v)-[:TAGGED_BY]->(t)
         RETURN r
         `,
         {
           tag_id: tagId,
           video_id: videoId,
-          videotag_id: id,
         }
       );
     }
 
+    /* TODO: SemitagをNeo4j内でどう扱うかは未定
     const semitags = await prisma.semitag.findMany({ where: { videoId } });
     for (const { videoId, id, name } of semitags) {
       tx.run(
@@ -42,6 +42,7 @@ export const register = async (
         }
       );
     }
+    */
 
     await tx.commit();
   } catch (e) {
