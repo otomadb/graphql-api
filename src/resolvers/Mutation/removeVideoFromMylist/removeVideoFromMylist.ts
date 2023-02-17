@@ -1,5 +1,4 @@
 import { Mylist, MylistRegistration, Video } from "@prisma/client";
-import { Driver as Neo4jDriver } from "neo4j-driver";
 
 import { err, ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, RemoveVideoFromMylistFailedMessage } from "../../graphql.js";
@@ -7,26 +6,7 @@ import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
 import { VideoModel } from "../../Video/model.js";
-
-export const removeMylistRegistrationInNeo4j = async (
-  neo4jDriver: Neo4jDriver,
-  { mylistId, videoId }: { mylistId: string; videoId: string }
-) => {
-  const session = neo4jDriver.session();
-  try {
-    await session.run(
-      `
-        MATCH (l:Mylist {id: $mylist_id })
-        MATCH (v:Video {id: $video_id })
-        MATCH (l)-[r:CONTAINS_VIDEO]->(v)
-        DELETE r
-        `,
-      { mylist_id: mylistId, video_id: videoId }
-    );
-  } finally {
-    await session.close();
-  }
-};
+import { removeMylistRegistrationInNeo4j } from "./neo4j.js";
 
 export const remove = async (
   prisma: ResolverDeps["prisma"],
@@ -58,8 +38,8 @@ export const remove = async (
   return ok(registration);
 };
 
-export const removeVideoFromMylist = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
-  (async (_, { input: { mylistId: mylistGqlId, videoId: videoGqlId } }, { user }) => {
+export const removeVideoFromMylist = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+  (async (_, { input: { mylistId: mylistGqlId, videoId: videoGqlId } }, { user }, info) => {
     if (!user)
       return {
         __typename: "RemoveVideoFromMylistFailedPayload",
@@ -116,10 +96,10 @@ export const removeVideoFromMylist = ({ prisma, neo4j }: Pick<ResolverDeps, "pri
     }
 
     const registration = result.data;
-    await removeMylistRegistrationInNeo4j(neo4j, {
-      mylistId: registration.mylist.id,
-      videoId: registration.video.id,
-    });
+    const neo4jResult = await removeMylistRegistrationInNeo4j({ prisma, neo4j }, registration.id);
+    if (neo4jResult.status === "error") {
+      logger.error({ error: neo4jResult.error, path: info.path }, "Failed to update in neo4j");
+    }
 
     return {
       __typename: "RemoveVideoFromMylistSucceededPayload",

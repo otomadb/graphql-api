@@ -12,7 +12,7 @@ export const registerVideoInNeo4j = async (
 
     const videotags = await prisma.videoTag.findMany({ where: { videoId } });
     for (const { id } of videotags) {
-      updateWholeVideoTags({ prisma, tx }, id);
+      await updateWholeVideoTags({ prisma, tx }, id);
     }
 
     /* TODO: SemitagをNeo4j内でどう扱うかは未定

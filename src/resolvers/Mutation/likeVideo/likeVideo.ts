@@ -5,26 +5,7 @@ import { LikeVideoFailedMessage, MutationResolvers } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
-
-export const addMylistRegistrationInNeo4j = async (
-  neo4j: ResolverDeps["neo4j"],
-  { mylistId, videoId }: { videoId: string; mylistId: string }
-) => {
-  const session = neo4j.session();
-  try {
-    await session.run(
-      `
-        MERGE (l:Mylist {id: $mylist_id })
-        MERGE (v:Video {id: $video_id })
-        MERGE (l)-[r:CONTAINS_VIDEO]->(v)
-        RETURN r
-        `,
-      { mylist_id: mylistId, video_id: videoId }
-    );
-  } finally {
-    await session.close();
-  }
-};
+import { likeVideoInNeo4j } from "./neo4j.js";
 
 export const like = async (
   prisma: ResolverDeps["prisma"],
@@ -73,7 +54,7 @@ export const like = async (
   }
 };
 
-export const likeVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
+export const likeVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
   (async (_parent, { input: { videoId: videoGqlId } }, { user }, info) => {
     if (!user)
       return {
@@ -100,7 +81,11 @@ export const likeVideo = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4
     }
 
     const registration = result.data;
-    await addMylistRegistrationInNeo4j(neo4j, { videoId: registration.videoId, mylistId: registration.mylistId });
+
+    const neo4jResult = await likeVideoInNeo4j({ prisma, neo4j }, registration.id);
+    if (neo4jResult.status === "error") {
+      logger.error({ error: neo4jResult.error, path: info.path }, "Failed to update in neo4j");
+    }
 
     return {
       __typename: "LikeVideoSucceededPayload",

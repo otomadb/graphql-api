@@ -114,7 +114,7 @@ export const resolveSemitag = ({ prisma, logger, neo4j }: Pick<ResolverDeps, "pr
 
     const data = result.data;
 
-    const neo4jResult = await resolveSemitagInNeo4j({ prisma, neo4j, logger }, data.videoTagId);
+    const neo4jResult = await resolveSemitagInNeo4j({ prisma, neo4j }, data.videoTagId);
     if (neo4jResult.status === "error") {
       logger.error({ error: neo4jResult.error, path: info.path }, "Failed to update in neo4j");
     }
