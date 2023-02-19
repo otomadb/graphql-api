@@ -10,6 +10,7 @@
     "object-shorthand": [2, "always"],
     "quote-props": [2, "consistent"],
     "eqeqeq": 2,
+    "no-process-env": 2,
     /* unused-imports */
     "unused-imports/no-unused-imports": [2],
     /* simple-import-sort */
@@ -35,6 +36,12 @@
       "plugins": ["@typescript-eslint"],
       "parser": "@typescript-eslint/parser",
       "rules": {}
+    },
+    {
+      "files": ["*.test.ts", "*.test.tsx"],
+      "rules": {
+        "no-process-env": 0
+      }
     }
   ]
 }

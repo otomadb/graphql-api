@@ -67,6 +67,15 @@ export type ResolverDeps = {
   prisma: PrismaClient;
   neo4j: Neo4jDriver;
   logger: Logger;
+  config: {
+    session: {
+      cookie: {
+        name: string;
+        domain: string | undefined;
+        sameSite: "none" | "strict";
+      };
+    };
+  };
 };
 
 export const resolvers = (deps: ResolverDeps) =>

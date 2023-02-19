@@ -1,3 +1,5 @@
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable no-process-env */
 import { createServer } from "node:http";
 
 import { usePrometheus } from "@envelop/prometheus";
@@ -43,11 +45,24 @@ const yoga = createYoga<ServerContext, UserContext>({
   graphiql: process.env.ENABLE_GRAPHIQL === "true",
   schema: createSchema({
     typeDefs,
-    resolvers: makeResolvers({ neo4j: neo4jDriver, prisma: prismaClient, logger }),
+    resolvers: makeResolvers({
+      neo4j: neo4jDriver,
+      prisma: prismaClient,
+      logger,
+      config: {
+        session: {
+          cookie: {
+            name: "otomadb_session",
+            domain: process.env.DOMAIN,
+            sameSite: process.env.ENABLE_SAME_SITE_NONE === "true" ? "none" : "strict",
+          },
+        },
+      },
+    }),
   }),
   async context({ req }) {
     // from cookie
-    const resultExtractSession = extractSessionFromReq(req);
+    const resultExtractSession = extractSessionFromReq(req, "otomadb_session");
     if (resultExtractSession.status === "error") {
       switch (resultExtractSession.error.type) {
         case "INVALID_FORM":

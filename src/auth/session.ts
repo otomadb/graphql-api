@@ -5,13 +5,12 @@ import { IncomingMessage } from "http";
 
 import { err, ok, Result } from "../utils/Result.js";
 
-export const OTOMADB_SESSION_COOKIE_NAME = "otomadb_session";
-
 export const extractSessionFromReq = (
-  req: IncomingMessage
+  req: IncomingMessage,
+  cookieName: string
 ): Result<{ type: "NO_COOKIE" } | { type: "INVALID_FORM"; cookie: string }, { id: string; secret: string }> => {
   const cookies = parseCookie(req.headers.cookie || "");
-  const sessionCookie = cookies?.[OTOMADB_SESSION_COOKIE_NAME];
+  const sessionCookie = cookies?.[cookieName];
   if (!sessionCookie) return err({ type: "NO_COOKIE" });
 
   const [sessionId, sessionSecret] = sessionCookie.split("-");

@@ -1,7 +1,7 @@
 import { Session } from "@prisma/client";
 import { serialize as serializeCookie } from "cookie";
 
-import { extractSessionFromReq, OTOMADB_SESSION_COOKIE_NAME } from "../../../auth/session.js";
+import { extractSessionFromReq } from "../../../auth/session.js";
 import { Result } from "../../../utils/Result.js";
 import { MutationResolvers, SignoutFailedMessage } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
@@ -21,9 +21,9 @@ export const expire = async (
   return { status: "ok", data: session };
 };
 
-export const signout = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const signout = ({ prisma, logger, config }: Pick<ResolverDeps, "prisma" | "logger" | "config">) =>
   (async (_parent, _args, { req, res }) => {
-    const resultExtractSession = extractSessionFromReq(req);
+    const resultExtractSession = extractSessionFromReq(req, config.session.cookie.name);
     if (resultExtractSession.status === "error") {
       switch (resultExtractSession.error.type) {
         case "NO_COOKIE":
@@ -50,11 +50,11 @@ export const signout = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logge
 
     res.setHeader(
       "Set-Cookie",
-      serializeCookie(OTOMADB_SESSION_COOKIE_NAME, "", {
-        domain: process.env.DOMAIN,
+      serializeCookie(config.session.cookie.name, "", {
+        domain: config.session.cookie.domain,
         httpOnly: true,
         secure: true,
-        sameSite: process.env.ENABLE_SAME_SITE_NONE === "true" ? "none" : "strict",
+        sameSite: config.session.cookie.sameSite,
         path: "/",
       })
     );
