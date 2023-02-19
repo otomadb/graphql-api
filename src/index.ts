@@ -104,16 +104,16 @@ const yoga = createYoga<ServerContext, UserContext>({
       requestSummary: true,
     }),
     useLogger({
-      logFn(a, b) {
-        switch (a) {
+      logFn(event, data) {
+        switch (event) {
           case "execute-end":
             logger.info(
               {
-                operation: b.args.operationName,
-                variables: b.args.variableValues,
-                result: b.result,
-                user: b.args.contextValue.user,
-                query: print(b.args.document),
+                operation: data.args.operationName,
+                variables: data.args.variableValues,
+                result: data.result,
+                user: data.args.contextValue.user,
+                query: print(data.args.document),
               },
               "GraphQL Executed"
             );
