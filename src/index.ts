@@ -3,6 +3,7 @@
 import { createServer } from "node:http";
 
 import { usePrometheus } from "@envelop/prometheus";
+import { useDisableIntrospection } from "@graphql-yoga/plugin-disable-introspection";
 import { PrismaClient } from "@prisma/client";
 import { print } from "graphql";
 import { createSchema, createYoga, useLogger } from "graphql-yoga";
@@ -112,6 +113,7 @@ const yoga = createYoga<ServerContext, UserContext>({
     };
   },
   plugins: [
+    ...(process.env.ENABLE_INTROSPECTION === "true" ? [] : [useDisableIntrospection()]),
     usePrometheus({
       execute: true,
       errors: true,
