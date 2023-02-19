@@ -2,7 +2,8 @@ import { createServer } from "node:http";
 
 import { usePrometheus } from "@envelop/prometheus";
 import { PrismaClient } from "@prisma/client";
-import { createSchema, createYoga } from "graphql-yoga";
+import { print } from "graphql";
+import { createSchema, createYoga, useLogger } from "graphql-yoga";
 import neo4j from "neo4j-driver";
 import { pino } from "pino";
 
@@ -102,29 +103,24 @@ const yoga = createYoga<ServerContext, UserContext>({
       requestCount: true,
       requestSummary: true,
     }),
-    /*
     useLogger({
-      logFn(a, b) {
-        switch (a) {
-          case "execute-start":
-            console.log(b);
-            break;
+      logFn(event, data) {
+        switch (event) {
           case "execute-end":
-            console.log(b);
             logger.info(
               {
-                operation: b.args.operationName,
-                variables: b.args.variableValues,
-                user: b.args.contextValue.user,
-                result: b.result,
+                operation: data.args.operationName,
+                variables: data.args.variableValues,
+                result: data.result,
+                user: data.args.contextValue.user,
+                query: print(data.args.document),
               },
-              "Executed graphql"
+              "GraphQL Executed"
             );
             break;
         }
       },
     }),
-    */
   ],
 });
 
