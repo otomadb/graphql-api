@@ -20,7 +20,7 @@ import { signout } from "./signout/signout.js";
 import { signup } from "./signup/signup.js";
 import { undoLikeVideo } from "./undoLikeVideo/undoLikeVideo.js";
 
-export const resolveMutation = (deps: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+export const resolveMutation = (deps: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "config">) =>
   ({
     addMylistToMylistGroup: addMylistToMylistGroup(deps),
     addSemitagToVideo: addSemitagToVideo(deps),

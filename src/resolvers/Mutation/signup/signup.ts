@@ -2,7 +2,7 @@ import { MylistShareRange, User, UserRole } from "@prisma/client";
 import { hash } from "argon2";
 import { serialize as serializeCookie } from "cookie";
 
-import { createSession, OTOMADB_SESSION_COOKIE_NAME } from "../../../auth/session.js";
+import { createSession } from "../../../auth/session.js";
 import { Result } from "../../../utils/Result.js";
 import { MutationResolvers, SignupFailedMessage } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
@@ -57,7 +57,7 @@ export const registerNewUser = async (
   };
 };
 
-export const signup = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const signup = ({ prisma, config }: Pick<ResolverDeps, "prisma" | "config">) =>
   (async (_parent, { input: { name, displayName, email, password: rawPassword } }, { res }) => {
     const result = await registerNewUser(prisma, { name, displayName, email, password: rawPassword });
     if (result.status === "error") {
@@ -74,11 +74,11 @@ export const signup = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
 
     res.setHeader(
       "Set-Cookie",
-      serializeCookie(OTOMADB_SESSION_COOKIE_NAME, session, {
-        domain: process.env.DOMAIN,
+      serializeCookie(config.session.cookie.name, session, {
+        domain: config.session.cookie.domain,
         httpOnly: true,
         secure: true,
-        sameSite: process.env.ENABLE_SAME_SITE_NONE === "true" ? "none" : "strict",
+        sameSite: config.session.cookie.sameSite,
         path: "/",
       })
     );

@@ -2,7 +2,7 @@ import { User } from "@prisma/client";
 import { verify } from "argon2";
 import { serialize as serializeCookie } from "cookie";
 
-import { createSession, OTOMADB_SESSION_COOKIE_NAME } from "../../../auth/session.js";
+import { createSession } from "../../../auth/session.js";
 import { Result } from "../../../utils/Result.js";
 import { MutationResolvers, SigninFailedMessage } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
@@ -21,7 +21,7 @@ export const verifyUser = async (
   return { status: "ok", data: user };
 };
 
-export const signin = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const signin = ({ prisma, config }: Pick<ResolverDeps, "prisma" | "config">) =>
   (async (_parent, { input: { username, password } }, { res }) => {
     const result = await verifyUser(prisma, { username, password });
     if (result.status === "error") {
@@ -39,11 +39,11 @@ export const signin = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
 
     res.setHeader(
       "Set-Cookie",
-      serializeCookie(OTOMADB_SESSION_COOKIE_NAME, session, {
-        domain: process.env.DOMAIN,
+      serializeCookie(config.session.cookie.name, session, {
+        domain: config.session.cookie.domain,
         httpOnly: true,
         secure: true,
-        sameSite: process.env.ENABLE_SAME_SITE_NONE === "true" ? "none" : "strict",
+        sameSite: config.session.cookie.sameSite,
         path: "/",
       })
     );
