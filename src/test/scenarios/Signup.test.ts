@@ -4,7 +4,7 @@ import { parse } from "graphql";
 import { createSchema, createYoga } from "graphql-yoga";
 import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
-import { mock, mockDeep, mockReset, DeepMockProxy } from "vitest-mock-extended";
+import { DeepMockProxy, mockDeep, mockReset } from "vitest-mock-extended";
 
 import { ServerContext, UserContext } from "../../resolvers/context.js";
 import { typeDefs } from "../../resolvers/graphql.js";
