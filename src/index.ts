@@ -13,7 +13,7 @@ import { pino } from "pino";
 import { extractSessionFromReq, verifySession } from "./auth/session.js";
 import { ServerContext, UserContext } from "./resolvers/context.js";
 import { typeDefs } from "./resolvers/graphql.js";
-import { resolvers as makeResolvers } from "./resolvers/index.js";
+import { makeResolvers } from "./resolvers/index.js";
 
 const logger = pino({
   transport: {

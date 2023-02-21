@@ -78,7 +78,7 @@ export type ResolverDeps = {
   };
 };
 
-export const resolvers = (deps: ResolverDeps) =>
+export const makeResolvers = (deps: ResolverDeps) =>
   ({
     Mutation: resolveMutation(deps),
     Mylist: resolveMylist(deps),
