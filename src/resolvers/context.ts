@@ -8,7 +8,6 @@ export type ServerContext = {
 };
 
 export type UserContext = {
-  userId: User["id"] | null;
   user: {
     id: User["id"];
     role: User["role"];

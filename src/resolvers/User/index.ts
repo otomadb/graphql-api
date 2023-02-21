@@ -13,21 +13,21 @@ export const resolveUser = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
     id: ({ id }): string => buildGqlId("Video", id),
     likes: resolveUserLikes({ prisma }),
 
-    mylist: async ({ id: userId }, { id: gqlMylistId }, { userId: authUserId }) => {
+    mylist: async ({ id: userId }, { id: gqlMylistId }, { user: ctxUser }) => {
       const mylist = await prisma.mylist.findFirst({ where: { id: parseGqlID("Mylist", gqlMylistId) } });
 
       if (!mylist) return null;
-      if (mylist.shareRange === MylistShareRange.PRIVATE && authUserId !== userId) return null; // TODO: 現状ではnullを返すが何らかのエラー型のunionにしても良い気がする
+      if (mylist.shareRange === MylistShareRange.PRIVATE && ctxUser?.id !== userId) return null; // TODO: 現状ではnullを返すが何らかのエラー型のunionにしても良い気がする
 
       return new MylistModel(mylist);
     },
 
-    mylists: async ({ id: userId }, { input }, { userId: authUserId }) => {
-      if (input.range.includes(GraphQLMylistShareRange.Private) && userId !== authUserId)
+    mylists: async ({ id: userId }, { input }, { user: ctxUser }) => {
+      if (input.range.includes(GraphQLMylistShareRange.Private) && userId !== ctxUser?.id)
         throw new GraphQLError(
           `Cannot list "${GraphQLMylistShareRange.Private}" mylists for "${buildGqlId("Video", userId)}"`
         );
-      if (input.range.includes(GraphQLMylistShareRange.KnowLink) && userId !== authUserId)
+      if (input.range.includes(GraphQLMylistShareRange.KnowLink) && userId !== ctxUser?.id)
         throw new GraphQLError(
           `Cannot list "${GraphQLMylistShareRange.KnowLink}" mylists for "${buildGqlId("Video", userId)}"`
         );

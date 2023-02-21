@@ -7,11 +7,11 @@ import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
 
 export const mylist = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
-  (async (_parent, { id }, { userId: authUserId }) => {
+  (async (_parent, { id }, { user }) => {
     const mylist = await prisma.mylist.findFirst({ where: { id: parseGqlID("Mylist", id) } });
 
     if (!mylist) throw new GraphQLError("Mylist Not Found or Private");
-    if (mylist.shareRange === MylistShareRange.PRIVATE && mylist.holderId !== authUserId) {
+    if (mylist.shareRange === MylistShareRange.PRIVATE && mylist.holderId !== user?.id) {
       throw new GraphQLError("This mylist is not holded by you");
     }
 

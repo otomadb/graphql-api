@@ -74,7 +74,6 @@ const yoga = createYoga<ServerContext, UserContext>({
       const session = await verifySession(prismaClient, resultExtractSession.data);
       if (session.status === "ok")
         return {
-          userId: session.data.userId,
           user: { id: session.data.user.id, role: session.data.user.role },
         } satisfies UserContext;
       else {
@@ -89,7 +88,7 @@ const yoga = createYoga<ServerContext, UserContext>({
       }
     }
 
-    return { userId: null, user: null } satisfies UserContext;
+    return { user: null } satisfies UserContext;
 
     /* # TODO: 一旦廃止
     // from authorization

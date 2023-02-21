@@ -3,9 +3,9 @@ import { ResolverDeps } from "../../index.js";
 import { UserModel } from "../../User/model.js";
 
 export const whoami = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
-  (async (_parent, _args, { userId }) => {
-    if (!userId) return null;
+  (async (_parent, _args, { user: ctxUser }) => {
+    if (!ctxUser) return null;
 
-    const user = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
+    const user = await prisma.user.findUniqueOrThrow({ where: { id: ctxUser.id } });
     return new UserModel(user);
   }) satisfies QueryResolvers["whoami"];
