@@ -1,43 +1,33 @@
-import { buildHTTPExecutor, HTTPExecutorOptions } from "@graphql-tools/executor-http";
-import { SyncExecutor } from "@graphql-tools/utils";
+import { buildHTTPExecutor } from "@graphql-tools/executor-http";
 import { PrismaClient } from "@prisma/client";
 import { parse } from "graphql";
 import { createSchema, createYoga } from "graphql-yoga";
-import { mock } from "jest-mock-extended";
 import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
-import { pino } from "pino";
+import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
+import { mock } from "vitest-mock-extended";
 
 import { ServerContext, UserContext } from "../../resolvers/context.js";
 import { typeDefs } from "../../resolvers/graphql.js";
-import { ResolverDeps, resolvers as makeResolvers } from "../../resolvers/index.js";
+import { makeResolvers, ResolverDeps } from "../../resolvers/index.js";
 import { cleanPrisma } from "../cleanPrisma.js";
 
 describe("Signup", () => {
   let prisma: ResolverDeps["prisma"];
   let neo4j: ResolverDeps["neo4j"];
   let logger: ResolverDeps["logger"];
-
-  let executor: SyncExecutor<any, HTTPExecutorOptions>;
+  let config: ResolverDeps["config"];
 
   beforeAll(async () => {
-    prisma = new PrismaClient({ datasources: { db: { url: process.env.TEST_PRISMA_DATABASE_URL! } } });
+    prisma = new PrismaClient({ datasources: { db: { url: process.env.TEST_PRISMA_DATABASE_URL } } });
     await prisma.$connect();
 
     neo4j = createNeo4jDriver(
-      process.env.TEST_NEO4J_URL!,
-      neo4jAuth.basic(process.env.TEST_NEO4J_USERNAME!, process.env.TEST_NEO4J_PASSWORD!)
+      process.env.TEST_NEO4J_URL,
+      neo4jAuth.basic(process.env.TEST_NEO4J_USERNAME, process.env.TEST_NEO4J_PASSWORD)
     );
 
-    logger = pino({ transport: { targets: [{ target: "pino-pretty", level: "trace", options: {} }] } });
-
-    const yoga = createYoga<ServerContext, UserContext>({
-      schema: createSchema({
-        typeDefs,
-        resolvers: makeResolvers({ prisma, neo4j, logger }),
-      }),
-    });
-
-    executor = buildHTTPExecutor({ fetch: yoga.fetch });
+    logger = mock<ResolverDeps["logger"]>();
+    config = mock<ResolverDeps["config"]>();
   });
 
   beforeEach(async () => {
@@ -52,25 +42,32 @@ describe("Signup", () => {
     const req = mock<ServerContext["req"]>();
     const res = mock<ServerContext["res"]>();
 
+    const schema = createSchema({
+      typeDefs,
+      resolvers: makeResolvers({ prisma, neo4j, logger, config }),
+    });
+    const yoga = createYoga<ServerContext, UserContext>({
+      schema,
+    });
+
+    const executor = buildHTTPExecutor({ fetch: yoga.fetch });
+
     const result = await executor({
-      document: parse(
-        /* GraphQL */
-        `
-          mutation signup($input: SignupInput!) {
-            signup(input: $input) {
-              __typename
-              ... on SignupSucceededPayload {
-                user {
-                  id
-                }
-              }
-              ... on SignupFailedPayload {
-                message
+      document: parse(/* GraphQL */ `
+        mutation signup($input: SignupInput!) {
+          signup(input: $input) {
+            __typename
+            ... on SignupSucceededPayload {
+              user {
+                id
               }
             }
+            ... on SignupFailedPayload {
+              message
+            }
           }
-        `
-      ),
+        }
+      `),
       variables: {
         input: {
           name: "testuser1",
