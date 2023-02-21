@@ -69,11 +69,9 @@ export type ResolverDeps = {
   logger: Logger;
   config: {
     session: {
-      cookie: {
-        name: string;
-        domain: string | undefined;
-        sameSite: "none" | "strict";
-      };
+      cookieName(): string;
+      cookieDomain(): string | undefined;
+      cookieSameSite(): "none" | "strict";
     };
   };
 };

@@ -52,11 +52,9 @@ const yoga = createYoga<ServerContext, UserContext>({
       logger,
       config: {
         session: {
-          cookie: {
-            name: "otomadb_session",
-            domain: process.env.DOMAIN,
-            sameSite: process.env.ENABLE_SAME_SITE_NONE === "true" ? "none" : "strict",
-          },
+          cookieName: () => "otomadb_session",
+          cookieDomain: () => process.env.DOMAIN,
+          cookieSameSite: () => (process.env.ENABLE_SAME_SITE_NONE === "true" ? "none" : "strict"),
         },
       },
     }),
