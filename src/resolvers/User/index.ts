@@ -10,7 +10,7 @@ import { resolveUserLikes } from "./likes.js";
 
 export const resolveUser = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
-    id: ({ id }): string => buildGqlId("Video", id),
+    id: ({ id }): string => buildGqlId("User", id),
     likes: resolveUserLikes({ prisma }),
 
     mylist: async ({ id: userId }, { id: gqlMylistId }, { user: ctxUser }) => {
