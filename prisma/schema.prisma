@@ -212,6 +212,8 @@ model Tag {
   videos VideoTag[]
 
   events TagEvent[]
+
+  NicovideoSubmitRequestTagging NicovideoRegistrationRequestTagging[]
 }
 
 model TagEvent {
@@ -356,6 +358,9 @@ model User {
   eventMylistRegistration        MylistRegistrationEvent[]
   eventMylistGroup               MylistGroupEvent[]
   eventMylistGroupMylistInclsion MylistGroupMylistInclsionEvent[]
+
+  NicovideoRegistrationRequests         NicovideoRegistrationRequest[]
+  NicovideoRegistrationRequestCheckings NicovideoRegistrationRequestChecking[]
 }
 
 enum UserRole {
@@ -382,6 +387,8 @@ model Video {
   mylists MylistRegistration[]
 
   events VideoEvent[]
+
+  NicovideoRegistrationRequestCheckings NicovideoRegistrationRequestChecking[]
 }
 
 model VideoEvent {
@@ -615,4 +622,70 @@ model NicovideoVideoSourceEvent {
 
 enum NicovideoVideoSourceEventType {
   CREATE
+}
+
+model NicovideoRegistrationRequest {
+  id String @id
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  requestedBy   User   @relation(fields: [requestedById], references: [id])
+  requestedById String
+
+  sourceId String @unique
+
+  title        String
+  taggings     NicovideoRegistrationRequestTagging[]
+  semitaggings NicovideoRegistrationRequestSemitagging[]
+
+  isChecked Boolean
+  checking  NicovideoRegistrationRequestChecking?
+}
+
+model NicovideoRegistrationRequestTagging {
+  id String @id
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  request   NicovideoRegistrationRequest @relation(fields: [requestId], references: [id])
+  requestId String
+
+  tag   Tag    @relation(fields: [tagId], references: [id])
+  tagId String
+
+  note String?
+}
+
+model NicovideoRegistrationRequestSemitagging {
+  id String @id
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  request   NicovideoRegistrationRequest @relation(fields: [requestId], references: [id])
+  requestId String
+
+  name String
+
+  note String?
+}
+
+model NicovideoRegistrationRequestChecking {
+  id String @id
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  checkedBy   User   @relation(fields: [checkedById], references: [id])
+  checkedById String
+
+  request   NicovideoRegistrationRequest @relation(fields: [requestId], references: [id])
+  requestId String                       @unique
+
+  video   Video?  @relation(fields: [videoId], references: [id])
+  videoId String?
+
+  note String?
 }
