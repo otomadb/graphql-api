@@ -14,6 +14,7 @@ import { registerVideo } from "./registerVideo/registerVideo.js";
 import { rejectSemitag } from "./rejectSemitag/rejectSemitag.js";
 import { removeTagFromVideo } from "./removeTagFromVideo/removeTagFromVideo.js";
 import { removeVideoFromMylist } from "./removeVideoFromMylist/removeVideoFromMylist.js";
+import { resolverRequestNicovideoRegistration as requestNicovideoRegistration } from "./requestNicovideoRegistration/resolver.js";
 import { resolveSemitag } from "./resolveSemitag/resolveSemitag.js";
 import { signin } from "./signin/signin.js";
 import { signout } from "./signout/signout.js";
@@ -34,6 +35,7 @@ export const resolveMutation = (deps: Pick<ResolverDeps, "prisma" | "neo4j" | "l
     rejectSemitag: rejectSemitag(deps),
     removeTagFromVideo: removeTagFromVideo(deps),
     removeVideoFromMylist: removeVideoFromMylist(deps),
+    requestNicovideoRegistration: requestNicovideoRegistration(deps),
     resovleSemitag: resolveSemitag(deps),
     signin: signin(deps),
     signout: signout(deps),

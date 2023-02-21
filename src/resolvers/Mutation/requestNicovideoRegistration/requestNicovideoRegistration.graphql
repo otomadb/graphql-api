@@ -1,0 +1,51 @@
+type Mutation {
+  requestNicovideoRegistration(input: RequestNicovideoRegistrationInput!): RequestNicovideoRegistrationPayload!
+}
+
+input RequestNicovideoRegistrationInput {
+  sourceId: String!
+
+  title: String!
+
+  taggings: [RequestNicovideoRegistrationInputTagging!]!
+  semitaggings: [RequestNicovideoRegistrationInputSemitagging!]!
+}
+
+input RequestNicovideoRegistrationInputTagging {
+  tagId: ID!
+  note: String
+}
+
+input RequestNicovideoRegistrationInputSemitagging {
+  name: String!
+  note: String
+}
+
+union RequestNicovideoRegistrationPayload =
+    RequestNicovideoRegistrationSucceededPayload
+  | RequestNicovideoRegistrationTagNotFoundError
+  | RequestNicovideoRegistrationVideoAlreadyRegisteredError
+  | RequestNicovideoRegistrationErrorFallback
+
+"動画が既に登録されている場合のエラー"
+type RequestNicovideoRegistrationVideoAlreadyRegisteredError {
+  source: NicovideoVideoSource!
+}
+
+"タグが見つからなかった場合のエラー"
+type RequestNicovideoRegistrationTagNotFoundError {
+  tagId: String!
+}
+
+"その他のエラー"
+type RequestNicovideoRegistrationErrorFallback {
+  message: RequestNicovideoRegistrationErrorFallbackMessage!
+}
+
+enum RequestNicovideoRegistrationErrorFallbackMessage {
+  NOT_LOGGED_IN
+}
+
+type RequestNicovideoRegistrationSucceededPayload {
+  request: NicovideoRegistrationRequest!
+}
