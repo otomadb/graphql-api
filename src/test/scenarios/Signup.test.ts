@@ -4,7 +4,7 @@ import { parse } from "graphql";
 import { createSchema, createYoga } from "graphql-yoga";
 import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
-import { mock } from "vitest-mock-extended";
+import { mock, mockDeep, mockReset, DeepMockProxy } from "vitest-mock-extended";
 
 import { ServerContext, UserContext } from "../../resolvers/context.js";
 import { typeDefs } from "../../resolvers/graphql.js";
@@ -15,7 +15,7 @@ describe("Signup", () => {
   let prisma: ResolverDeps["prisma"];
   let neo4j: ResolverDeps["neo4j"];
   let logger: ResolverDeps["logger"];
-  let config: ResolverDeps["config"];
+  let config: DeepMockProxy<ResolverDeps["config"]>;
 
   beforeAll(async () => {
     prisma = new PrismaClient({ datasources: { db: { url: process.env.TEST_PRISMA_DATABASE_URL } } });
@@ -26,21 +26,28 @@ describe("Signup", () => {
       neo4jAuth.basic(process.env.TEST_NEO4J_USERNAME, process.env.TEST_NEO4J_PASSWORD)
     );
 
-    logger = mock<ResolverDeps["logger"]>();
-    config = mock<ResolverDeps["config"]>();
+    logger = mockDeep<ResolverDeps["logger"]>();
+    config = mockDeep<ResolverDeps["config"]>();
   });
 
   beforeEach(async () => {
     await cleanPrisma(prisma);
+
+    mockReset(logger);
+    mockReset(config);
+
+    config.session.cookieName.mockReturnValue("otomadb_session");
+    config.session.cookieDomain.mockReturnValue("otomadb.com");
+    config.session.cookieSameSite.mockReturnValue("strict");
   });
 
   afterAll(async () => {
     await prisma.$disconnect();
   });
 
-  test("signup", async () => {
-    const req = mock<ServerContext["req"]>();
-    const res = mock<ServerContext["res"]>();
+  test("signupに成功する", async () => {
+    const req = mockDeep<ServerContext["req"]>();
+    const res = mockDeep<ServerContext["res"]>();
 
     const schema = createSchema({
       typeDefs,
@@ -80,5 +87,13 @@ describe("Signup", () => {
     });
 
     expect(res.setHeader).toHaveBeenCalledWith("Set-Cookie", expect.any(String));
+    expect(result.data).toStrictEqual({
+      signup: {
+        __typename: "SignupSucceededPayload",
+        user: {
+          id: expect.any(String),
+        },
+      },
+    });
   });
 });
