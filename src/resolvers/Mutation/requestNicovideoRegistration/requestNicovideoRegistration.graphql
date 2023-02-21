@@ -1,5 +1,5 @@
 type Mutation {
-  requestNicovideoRegistration(input: RequestNicovideoRegistrationInput!): RequestNicovideoRegistrationPayload!
+  requestNicovideoRegistration(input: RequestNicovideoRegistrationInput!): RequestNicovideoRegistrationReturnUnion!
 }
 
 input RequestNicovideoRegistrationInput {
@@ -21,29 +21,29 @@ input RequestNicovideoRegistrationInputSemitagging {
   note: String
 }
 
-union RequestNicovideoRegistrationPayload =
-    RequestNicovideoRegistrationSucceededPayload
+union RequestNicovideoRegistrationReturnUnion =
+    MutationAuthenticationError
   | RequestNicovideoRegistrationTagNotFoundError
   | RequestNicovideoRegistrationVideoAlreadyRegisteredError
-  | RequestNicovideoRegistrationErrorFallback
-
-"動画が既に登録されている場合のエラー"
-type RequestNicovideoRegistrationVideoAlreadyRegisteredError {
-  source: NicovideoVideoSource!
-}
+  | RequestNicovideoRegistrationOtherErrorsFallback
+  | RequestNicovideoRegistrationSucceededPayload
 
 "タグが見つからなかった場合のエラー"
 type RequestNicovideoRegistrationTagNotFoundError {
   tagId: String!
 }
 
-"その他のエラー"
-type RequestNicovideoRegistrationErrorFallback {
-  message: RequestNicovideoRegistrationErrorFallbackMessage!
+"動画が既に登録されている場合のエラー"
+type RequestNicovideoRegistrationVideoAlreadyRegisteredError {
+  source: NicovideoVideoSource!
 }
 
-enum RequestNicovideoRegistrationErrorFallbackMessage {
-  NOT_LOGGED_IN
+"その他のエラー"
+type RequestNicovideoRegistrationOtherErrorsFallback {
+  message: RequestNicovideoRegistrationOtherErrorMessage!
+}
+
+enum RequestNicovideoRegistrationOtherErrorMessage {
   INTERNAL_SERVER_ERROR
 }
 

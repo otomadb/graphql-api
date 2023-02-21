@@ -5,7 +5,7 @@ type Query {
 }
 
 input FindNicovideoRegistrationRequestsInput {
-  limit: Int
+  limit: Int! = 10
   skip: Int! = 0
   order: FindNicovideoRegistrationRequestsInputOrder! = { createdAt: DESC }
 

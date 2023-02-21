@@ -4,3 +4,7 @@ enum SortOrder {
   ASC
   DESC
 }
+
+type MutationAuthenticationError {
+  requiredRole: UserRole!
+}

@@ -8,11 +8,11 @@ import { mock, mockReset } from "vitest-mock-extended";
 
 import { ServerContext, UserContext } from "../../resolvers/context.js";
 import {
+  MutationAuthenticationError,
   NicovideoRegistrationRequest,
-  RequestNicovideoRegistrationErrorFallback,
-  RequestNicovideoRegistrationErrorFallbackMessage,
   RequestNicovideoRegistrationSucceededPayload,
   typeDefs,
+  UserRole as GraphQLUserRole,
 } from "../../resolvers/graphql.js";
 import { buildGqlId } from "../../resolvers/id.js";
 import { makeResolvers, ResolverDeps } from "../../resolvers/index.js";
@@ -66,6 +66,9 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
         mutation ($input: RequestNicovideoRegistrationInput!) {
           requestNicovideoRegistration(input: $input) {
             __typename
+            ... on MutationAuthenticationError {
+              requiredRole
+            }
             ... on RequestNicovideoRegistrationTagNotFoundError {
               tagId
             }
@@ -74,7 +77,7 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
                 id
               }
             }
-            ... on RequestNicovideoRegistrationErrorFallback {
+            ... on RequestNicovideoRegistrationOtherErrorsFallback {
               message
             }
             ... on RequestNicovideoRegistrationSucceededPayload {
@@ -91,9 +94,9 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
 
     expect(requestResult.data).toStrictEqual({
       requestNicovideoRegistration: {
-        __typename: "RequestNicovideoRegistrationErrorFallback",
-        message: RequestNicovideoRegistrationErrorFallbackMessage.NotLoggedIn,
-      } satisfies RequestNicovideoRegistrationErrorFallback,
+        __typename: "MutationAuthenticationError",
+        requiredRole: GraphQLUserRole.User,
+      } satisfies MutationAuthenticationError,
     });
   });
 
@@ -132,6 +135,9 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
         mutation Request($input: RequestNicovideoRegistrationInput!) {
           requestNicovideoRegistration(input: $input) {
             __typename
+            ... on MutationAuthenticationError {
+              requiredRole
+            }
             ... on RequestNicovideoRegistrationTagNotFoundError {
               tagId
             }
@@ -140,7 +146,7 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
                 id
               }
             }
-            ... on RequestNicovideoRegistrationErrorFallback {
+            ... on RequestNicovideoRegistrationOtherErrorsFallback {
               message
             }
             ... on RequestNicovideoRegistrationSucceededPayload {

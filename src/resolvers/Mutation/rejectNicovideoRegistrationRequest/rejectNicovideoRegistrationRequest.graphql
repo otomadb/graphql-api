@@ -1,0 +1,40 @@
+type Mutation {
+  rejectNicovideoRegistrationRequest(
+    input: RejectNicovideoRegistrationRequestInput!
+  ): RejectNicovideoRegistrationRequestReturnUnion!
+}
+
+input RejectNicovideoRegistrationRequestInput {
+  requestId: ID!
+  note: String!
+}
+
+union RejectNicovideoRegistrationRequestReturnUnion =
+    MutationAuthenticationError
+  | RejectNicovideoRegistrationRequestRequestNotFoundError
+  | RejectNicovideoRegistrationRequestRequestAlreadyCheckedError
+  | RejectNicovideoRegistrationRequestOtherErrorsFallback
+  | RejectNicovideoRegistrationRequestSucceededPayload
+
+"リクエストが存在しなかった場合のエラー"
+type RejectNicovideoRegistrationRequestRequestNotFoundError {
+  requestId: String!
+}
+
+"リクエストが既に処理されている場合のエラー"
+type RejectNicovideoRegistrationRequestRequestAlreadyCheckedError {
+  request: NicovideoRegistrationRequest!
+}
+
+"その他のエラー"
+type RejectNicovideoRegistrationRequestOtherErrorsFallback {
+  message: RejectNicovideoRegistrationRequestOtherErrorMessage!
+}
+
+enum RejectNicovideoRegistrationRequestOtherErrorMessage {
+  INTERNAL_SERVER_ERROR
+}
+
+type RejectNicovideoRegistrationRequestSucceededPayload {
+  rejecting: NicovideoRegistrationRequestRejecting!
+}

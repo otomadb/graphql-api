@@ -30,23 +30,6 @@ union NicovideoRegistrationRequestChecking =
     NicovideoRegistrationRequestAccepting
   | NicovideoRegistrationRequestRejecting
 
-type NicovideoRegistrationRequestAccepting {
-  request: NicovideoRegistrationRequest!
-
-  note: String
-  video: Video!
-
-  acceptedBy: User!
-}
-
-type NicovideoRegistrationRequestRejecting {
-  request: NicovideoRegistrationRequest!
-
-  note: String
-
-  rejectedBy: User!
-}
-
 type NicovideoRegistrationRequestConnection {
   nodes: [NicovideoRegistrationRequest!]!
 }

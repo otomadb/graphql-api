@@ -1,0 +1,7 @@
+type NicovideoRegistrationRequestRejecting {
+  request: NicovideoRegistrationRequest!
+
+  note: String
+
+  rejectedBy: User!
+}

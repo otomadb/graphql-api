@@ -1,4 +1,8 @@
-import { MutationResolvers, RequestNicovideoRegistrationErrorFallbackMessage } from "../../graphql.js";
+import {
+  MutationResolvers,
+  RequestNicovideoRegistrationOtherErrorMessage,
+  UserRole as GraphQLUserRole,
+} from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { NicovideoRegistrationRequestModel } from "../../NicovideoRegistrationRequest/model.js";
 import { NicovideoVideoSourceModel } from "../../NicovideoVideoSource/model.js";
@@ -8,9 +12,9 @@ export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<Re
   (async (_, { input: { title, sourceId, taggings, semitaggings } }, { user }, info) => {
     if (!user)
       return {
-        __typename: "RequestNicovideoRegistrationErrorFallback",
-        message: RequestNicovideoRegistrationErrorFallbackMessage.NotLoggedIn,
-      };
+        __typename: "MutationAuthenticationError",
+        requiredRole: GraphQLUserRole.User,
+      } as const;
 
     const result = await requestRegistration(prisma, {
       userId: user.id,
@@ -22,22 +26,22 @@ export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<Re
 
     if (result.status === "error") {
       switch (result.error.message) {
-        case "VIDEO_ALREADY_REGISTERED":
-          return {
-            __typename: "RequestNicovideoRegistrationVideoAlreadyRegisteredError",
-            source: new NicovideoVideoSourceModel(result.error.source),
-          };
         case "TAG_NOT_FOUND":
           return {
             __typename: "RequestNicovideoRegistrationTagNotFoundError",
             tagId: result.error.tagId,
-          };
+          } as const;
+        case "VIDEO_ALREADY_REGISTERED":
+          return {
+            __typename: "RequestNicovideoRegistrationVideoAlreadyRegisteredError",
+            source: new NicovideoVideoSourceModel(result.error.source),
+          } as const;
         case "INTERNAL_SERVER_ERROR":
           logger.error({ error: result.error.error, path: info.path }, "Something error happens");
           return {
-            __typename: "RequestNicovideoRegistrationErrorFallback",
-            message: RequestNicovideoRegistrationErrorFallbackMessage.InternalServerError,
-          };
+            __typename: "RequestNicovideoRegistrationOtherErrorsFallback",
+            message: RequestNicovideoRegistrationOtherErrorMessage.InternalServerError,
+          } as const;
       }
     }
 
@@ -45,5 +49,5 @@ export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<Re
     return {
       __typename: "RequestNicovideoRegistrationSucceededPayload",
       request: new NicovideoRegistrationRequestModel(request),
-    };
+    } as const;
   }) satisfies MutationResolvers["requestNicovideoRegistration"];

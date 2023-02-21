@@ -1,4 +1,4 @@
-/* eslint sort-keys: 2 */
+/* eslint sort-keys: [2, "asc", {caseSensitive: false}] */
 
 import { type Resolvers } from "../graphql.js";
 import { ResolverDeps } from "../index.js";
