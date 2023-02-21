@@ -21,47 +21,53 @@ export const requestRegistration = async (
   }
 ): Promise<
   Result<
-    { message: "TAG_NOT_FOUND"; tagId: string } | { message: "VIDEO_ALREADY_REGISTERED"; source: NicovideoVideoSource },
+    | { message: "TAG_NOT_FOUND"; tagId: string }
+    | { message: "VIDEO_ALREADY_REGISTERED"; source: NicovideoVideoSource }
+    | { message: "INTERNAL_SERVER_ERROR"; error: unknown },
     NicovideoRegistrationRequest
   >
 > => {
-  for (const { id } of taggings) {
-    const tag = await prisma.tag.findUnique({ where: { id } });
-    if (!tag) return err({ message: "TAG_NOT_FOUND", tagId: id });
-  }
+  try {
+    for (const { id } of taggings) {
+      const tag = await prisma.tag.findUnique({ where: { id } });
+      if (!tag) return err({ message: "TAG_NOT_FOUND", tagId: id });
+    }
 
-  const videoSource = await prisma.nicovideoVideoSource.findUnique({ where: { sourceId } });
-  if (videoSource) {
-    return err({ message: "VIDEO_ALREADY_REGISTERED", source: videoSource });
-  }
+    const videoSource = await prisma.nicovideoVideoSource.findUnique({ where: { sourceId } });
+    if (videoSource) {
+      return err({ message: "VIDEO_ALREADY_REGISTERED", source: videoSource });
+    }
 
-  const request = await prisma.nicovideoRegistrationRequest.create({
-    data: {
-      id: ulid(),
-      title,
-      sourceId,
-      requestedById: userId,
-      isChecked: false,
-      taggings: {
-        createMany: {
-          data: taggings.map(({ id: tagId, note }) => ({
-            id: ulid(),
-            tagId,
-            note,
-          })),
+    const request = await prisma.nicovideoRegistrationRequest.create({
+      data: {
+        id: ulid(),
+        title,
+        sourceId,
+        requestedById: userId,
+        isChecked: false,
+        taggings: {
+          createMany: {
+            data: taggings.map(({ id: tagId, note }) => ({
+              id: ulid(),
+              tagId,
+              note,
+            })),
+          },
+        },
+        semitaggings: {
+          createMany: {
+            data: semitaggings.map(({ name, note }) => ({
+              id: ulid(),
+              name,
+              note,
+            })),
+          },
         },
       },
-      semitaggings: {
-        createMany: {
-          data: semitaggings.map(({ name, note }) => ({
-            id: ulid(),
-            name,
-            note,
-          })),
-        },
-      },
-    },
-  });
+    });
 
-  return ok(request);
+    return ok(request);
+  } catch (e) {
+    return err({ message: "INTERNAL_SERVER_ERROR", error: e });
+  }
 };

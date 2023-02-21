@@ -44,6 +44,7 @@ type RequestNicovideoRegistrationErrorFallback {
 
 enum RequestNicovideoRegistrationErrorFallbackMessage {
   NOT_LOGGED_IN
+  INTERNAL_SERVER_ERROR
 }
 
 type RequestNicovideoRegistrationSucceededPayload {

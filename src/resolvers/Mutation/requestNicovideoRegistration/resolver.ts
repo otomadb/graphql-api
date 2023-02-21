@@ -4,8 +4,8 @@ import { NicovideoRegistrationRequestModel } from "../../NicovideoRegistrationRe
 import { NicovideoVideoSourceModel } from "../../NicovideoVideoSource/model.js";
 import { requestRegistration } from "./request.js";
 
-export const resolverRequestNicovideoRegistration = ({ prisma }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_, { input: { title, sourceId, taggings, semitaggings } }, { user }) => {
+export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+  (async (_, { input: { title, sourceId, taggings, semitaggings } }, { user }, info) => {
     if (!user)
       return {
         __typename: "RequestNicovideoRegistrationErrorFallback",
@@ -31,6 +31,12 @@ export const resolverRequestNicovideoRegistration = ({ prisma }: Pick<ResolverDe
           return {
             __typename: "RequestNicovideoRegistrationTagNotFoundError",
             tagId: result.error.tagId,
+          };
+        case "INTERNAL_SERVER_ERROR":
+          logger.error({ error: result.error.error, path: info.path }, "Something error happens");
+          return {
+            __typename: "RequestNicovideoRegistrationErrorFallback",
+            message: RequestNicovideoRegistrationErrorFallbackMessage.InternalServerError,
           };
       }
     }

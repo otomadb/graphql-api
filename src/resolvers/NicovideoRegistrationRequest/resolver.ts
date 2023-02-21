@@ -1,11 +1,12 @@
 import { Resolvers } from "../graphql.js";
-import { GraphQLNotExistsInDBError } from "../id.js";
+import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
 import { ResolverDeps } from "../index.js";
 import { TagModel } from "../Tag/model.js";
 import { UserModel } from "../User/model.js";
 
 export const resolverNicovideoRegistrationRequest = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
+    id: ({ dbId: requestId }) => buildGqlId("NicovideoRegistrationRequest", requestId),
     taggings: ({ dbId: requestId }) => {
       return prisma.nicovideoRegistrationRequestTagging
         .findMany({ where: { requestId }, select: { tag: true, note: true } })

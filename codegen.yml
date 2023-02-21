@@ -21,6 +21,7 @@ generates:
         MylistTagInclusion: ./MylistTagInclusion/model.js#MylistTagInclusionModel
         MylistVideoRecommendation: ./MylistVideoRecommendation/model.js#MylistVideoRecommendationModel
         NicovideoOriginalSourceTag: ./NicovideoOriginalSourceTag/model.js#NicovideoOriginalSourceTagModel
+        NicovideoRegistrationRequest: ./NicovideoRegistrationRequest/model.js#NicovideoRegistrationRequestModel
         NicovideoVideoSource: ./NicovideoVideoSource/model.js#NicovideoVideoSourceModel
         NicovideoVideoSourceCreateEvent: ./NicovideoVideoSourceEvent/model.js#NicovideoVideoSourceEventModel
         NicovideoVideoSourceEvent: ./NicovideoVideoSourceEvent/model.js#NicovideoVideoSourceEventModel
