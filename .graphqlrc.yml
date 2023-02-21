@@ -1,4 +1,4 @@
 schema: ./schema.graphql
 documents:
   - src/**/*.graphql
-  - src/**/*.test.ts
+  - src/test/scenarios/*.test.ts

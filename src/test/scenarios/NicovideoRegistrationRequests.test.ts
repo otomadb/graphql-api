@@ -14,6 +14,7 @@ import {
   RequestNicovideoRegistrationSucceededPayload,
   typeDefs,
 } from "../../resolvers/graphql.js";
+import { buildGqlId } from "../../resolvers/id.js";
 import { makeResolvers, ResolverDeps } from "../../resolvers/index.js";
 import { cleanPrisma } from "../cleanPrisma.js";
 
@@ -49,7 +50,10 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
     await neo4j.close();
   });
 
-  test("ユーザーがログインしていない場合は，リクエスト出来ない", async () => {
+  /**
+   * そもそもユーザがログインしていないならリクエストが失敗する
+   */
+  test("シナリオ1", async () => {
     const schema = createSchema({
       typeDefs,
       resolvers: makeResolvers({ prisma, neo4j, logger, config }),
@@ -93,7 +97,10 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
     });
   });
 
-  test("ユーザーがログインしている場合，リクエストに成功する", async () => {
+  /**
+   * ユーザu1でログインしていればリクエストに成功する
+   */
+  test("シナリオ2", async () => {
     await prisma.$transaction([
       prisma.user.create({
         data: {
@@ -104,6 +111,12 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
           password: "password",
           role: UserRole.NORMAL,
         },
+      }),
+      prisma.tag.createMany({
+        data: [
+          { id: "t1", meaningless: false },
+          { id: "t2", meaningless: false },
+        ],
       }),
     ]);
 
@@ -138,8 +151,21 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
           }
         }
       `),
-      variables: { input: { sourceId: "sm9", title: "タイトル 1", taggings: [], semitaggings: [] } },
-      context: { user: { id: "u1", role: UserRole.NORMAL } } as UserContext, // TODO: satisfiesに
+      variables: {
+        input: {
+          sourceId: "sm9",
+          title: "タイトル1",
+          taggings: [
+            { tagId: "t1", note: "a" },
+            { tagId: "t2", note: "b" },
+          ],
+          semitaggings: [
+            { name: "Semitag 1", note: "c" },
+            { name: "Semitag 2", note: "d" },
+          ],
+        },
+      },
+      context: { user: { id: "u1", role: UserRole.NORMAL } } satisfies UserContext,
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -148,5 +174,76 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
         request: { id: expect.any(String) } as NicovideoRegistrationRequest,
       } satisfies RequestNicovideoRegistrationSucceededPayload,
     });
+
+    const getRequestsResult = await executor({
+      document: parse(/* GraphQL */ `
+        query GetRequest($id: ID!) {
+          NicovideoRegistrationRequest(id: $id) {
+            id
+            title
+            sourceId
+            taggings {
+              tag {
+                id
+              }
+              note
+            }
+            semitaggings {
+              name
+              note
+            }
+            requestedBy {
+              id
+            }
+          }
+        }
+      `),
+      variables: { id: requestResult.data.requestNicovideoRegistration.request.id },
+    });
+    expect(getRequestsResult.data.NicovideoRegistrationRequest).toStrictEqual({
+      id: requestResult.data.requestNicovideoRegistration.request.id,
+      requestedBy: {
+        id: buildGqlId("User", "u1"),
+      },
+      sourceId: "sm9",
+      title: "タイトル1",
+      taggings: expect.arrayContaining([
+        {
+          tag: { id: buildGqlId("Tag", "t1") },
+          note: "a",
+        },
+        {
+          tag: { id: buildGqlId("Tag", "t2") },
+          note: "b",
+        },
+      ]),
+      semitaggings: expect.arrayContaining([
+        {
+          name: "Semitag 1",
+          note: "c",
+        },
+        {
+          name: "Semitag 2",
+          note: "d",
+        },
+      ]),
+    });
+
+    const findRequestsResult = await executor({
+      document: parse(/* GraphQL */ `
+        query FindRequests {
+          findNicovideoRegistrationRequests(input: {}) {
+            nodes {
+              id
+            }
+          }
+        }
+      `),
+      variables: { input: {} },
+    });
+    expect(findRequestsResult.data.findNicovideoRegistrationRequests.nodes).toHaveLength(1);
+    expect(findRequestsResult.data.findNicovideoRegistrationRequests.nodes).toStrictEqual(
+      expect.arrayContaining([{ id: requestResult.data.requestNicovideoRegistration.request.id }])
+    );
   });
 });

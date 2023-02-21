@@ -14,6 +14,7 @@ import { findVideo } from "./findVideo/findVideos.js";
 import { findVideos } from "./findVideos/findVideos.js";
 import { mylist } from "./mylist/mylist.js";
 import { mylistGroup } from "./mylistGroup/mylistGroup.js";
+import { queryNicovideoRegistrationRequest } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequest.js";
 import { nicovideoVideoSource } from "./nicovideoVideoSource/nicovideoVideoSource.js";
 import { searchTags } from "./searchTags/searchTags.js";
 import { searchVideos } from "./searchVideos/searchVideos.js";
@@ -37,6 +38,7 @@ export const resolveQuery = (deps: Pick<ResolverDeps, "prisma">) =>
     findVideos: findVideos(deps),
     mylist: mylist(deps),
     mylistGroup: mylistGroup(deps),
+    NicovideoRegistrationRequest: queryNicovideoRegistrationRequest(deps),
     nicovideoVideoSource: nicovideoVideoSource(deps),
     searchTags: searchTags(deps),
     searchVideos: searchVideos(deps),
