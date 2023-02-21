@@ -13,7 +13,7 @@ import { pino } from "pino";
 import { extractSessionFromReq, verifySession } from "./auth/session.js";
 import { ServerContext, UserContext } from "./resolvers/context.js";
 import { typeDefs } from "./resolvers/graphql.js";
-import { resolvers as makeResolvers } from "./resolvers/index.js";
+import { makeResolvers } from "./resolvers/index.js";
 
 const logger = pino({
   transport: {
@@ -52,11 +52,9 @@ const yoga = createYoga<ServerContext, UserContext>({
       logger,
       config: {
         session: {
-          cookie: {
-            name: "otomadb_session",
-            domain: process.env.DOMAIN,
-            sameSite: process.env.ENABLE_SAME_SITE_NONE === "true" ? "none" : "strict",
-          },
+          cookieName: () => "otomadb_session",
+          cookieDomain: () => process.env.DOMAIN,
+          cookieSameSite: () => (process.env.ENABLE_SAME_SITE_NONE === "true" ? "none" : "strict"),
         },
       },
     }),

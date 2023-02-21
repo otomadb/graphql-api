@@ -69,16 +69,14 @@ export type ResolverDeps = {
   logger: Logger;
   config: {
     session: {
-      cookie: {
-        name: string;
-        domain: string | undefined;
-        sameSite: "none" | "strict";
-      };
+      cookieName(): string;
+      cookieDomain(): string | undefined;
+      cookieSameSite(): "none" | "strict";
     };
   };
 };
 
-export const resolvers = (deps: ResolverDeps) =>
+export const makeResolvers = (deps: ResolverDeps) =>
   ({
     Mutation: resolveMutation(deps),
     Mylist: resolveMylist(deps),

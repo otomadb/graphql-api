@@ -74,11 +74,11 @@ export const signup = ({ prisma, config }: Pick<ResolverDeps, "prisma" | "config
 
     res.setHeader(
       "Set-Cookie",
-      serializeCookie(config.session.cookie.name, session, {
-        domain: config.session.cookie.domain,
+      serializeCookie(config.session.cookieName(), session, {
+        domain: config.session.cookieDomain(),
         httpOnly: true,
         secure: true,
-        sameSite: config.session.cookie.sameSite,
+        sameSite: config.session.cookieSameSite(),
         path: "/",
       })
     );

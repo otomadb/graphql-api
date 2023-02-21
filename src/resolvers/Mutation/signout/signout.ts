@@ -23,7 +23,7 @@ export const expire = async (
 
 export const signout = ({ prisma, logger, config }: Pick<ResolverDeps, "prisma" | "logger" | "config">) =>
   (async (_parent, _args, { req, res }) => {
-    const resultExtractSession = extractSessionFromReq(req, config.session.cookie.name);
+    const resultExtractSession = extractSessionFromReq(req, config.session.cookieName());
     if (resultExtractSession.status === "error") {
       switch (resultExtractSession.error.type) {
         case "NO_COOKIE":
@@ -50,11 +50,11 @@ export const signout = ({ prisma, logger, config }: Pick<ResolverDeps, "prisma" 
 
     res.setHeader(
       "Set-Cookie",
-      serializeCookie(config.session.cookie.name, "", {
-        domain: config.session.cookie.domain,
+      serializeCookie(config.session.cookieName(), "", {
+        domain: config.session.cookieDomain(),
         httpOnly: true,
         secure: true,
-        sameSite: config.session.cookie.sameSite,
+        sameSite: config.session.cookieSameSite(),
         path: "/",
       })
     );
