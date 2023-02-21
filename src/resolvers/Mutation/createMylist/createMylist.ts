@@ -1,17 +1,18 @@
-import { UserRole } from "@prisma/client";
+import { GraphQLError } from "graphql";
 
-import { ensureContextUser } from "../../ensureContextUser.js";
 import { MutationResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
 
 export const createMylist = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
-  ensureContextUser(prisma, UserRole.NORMAL, async (_parent, { input: { title, range } }, { userId }) => {
+  (async (_parent, { input: { title, range } }, { user }) => {
+    if (!user) throw new GraphQLError("you must be logged in"); // TODO: must be error payload
+
     const mylist = await prisma.mylist.create({
       data: {
         title,
         shareRange: range,
-        holderId: userId,
+        holderId: user.id,
         isLikeList: false,
       },
     });
