@@ -1,0 +1,17 @@
+type Query {
+  findNicovideoRegistrationRequests(
+    input: findNicovideoRegistrationRequestsInput!
+  ): NicovideoRegistrationRequestConnection!
+}
+
+input findNicovideoRegistrationRequestsInput {
+  limit: Int!
+  skip: Int! = 0
+  order: findNicovideoRegistrationRequestsInputOrder! = { createdAt: DESC }
+
+  checked: Boolean
+}
+
+input findNicovideoRegistrationRequestsInputOrder {
+  createdAt: SortOrder
+}

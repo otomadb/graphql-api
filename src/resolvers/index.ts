@@ -14,6 +14,7 @@ import { resolveMylistRegistration } from "./MylistRegistration/index.js";
 import { resolveMylistTagInclusion } from "./MylistTagInclusion/index.js";
 import { resolveMylistVideoRecommendation } from "./MylistVideoRecommendation/index.js";
 import { resolveNicovideoOriginalSourceTag } from "./NicovideoOriginalSourceTag/index.js";
+import { resolverNicovideoRegistrationRequest } from "./NicovideoRegistrationRequest/resolver.js";
 import { resolveNicovideoVideoSource } from "./NicovideoVideoSource/index.js";
 import {
   resolveNicovideoVideoSourceCreateEvent,
@@ -87,6 +88,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     MylistTagInclusion: resolveMylistTagInclusion(deps),
     MylistVideoRecommendation: resolveMylistVideoRecommendation(deps),
     NicovideoOriginalSourceTag: resolveNicovideoOriginalSourceTag(deps),
+    NicovideoRegistrationRequest: resolverNicovideoRegistrationRequest(deps),
     NicovideoVideoSource: resolveNicovideoVideoSource(deps),
     NicovideoVideoSourceCreateEvent: resolveNicovideoVideoSourceCreateEvent(deps),
     NicovideoVideoSourceEvent: resolveNicovideoVideoSourceEvent(),

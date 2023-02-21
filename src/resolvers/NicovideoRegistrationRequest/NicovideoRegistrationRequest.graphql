@@ -46,3 +46,7 @@ type NicovideoRegistrationRequestRejecting {
 
   rejectedBy: User!
 }
+
+type NicovideoRegistrationRequestConnection {
+  nodes: [NicovideoRegistrationRequest!]!
+}
