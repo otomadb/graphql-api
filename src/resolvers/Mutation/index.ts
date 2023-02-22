@@ -10,7 +10,7 @@ import { createMylist } from "./createMylist/createMylist.js";
 import { createMylistGroup } from "./createMylistGroup/createMylistGroup.js";
 import { likeVideo } from "./likeVideo/likeVideo.js";
 import { registerTag } from "./registerTag/registerTag.js";
-import { registerVideo } from "./registerVideo/registerVideo.js";
+import { resolverRegisterVideo } from "./registerVideo/resolver.js";
 import { rejectSemitag } from "./rejectSemitag/rejectSemitag.js";
 import { removeTagFromVideo } from "./removeTagFromVideo/removeTagFromVideo.js";
 import { removeVideoFromMylist } from "./removeVideoFromMylist/removeVideoFromMylist.js";
@@ -30,7 +30,7 @@ export const resolveMutation = (deps: Pick<ResolverDeps, "prisma" | "neo4j" | "l
     createMylistGroup: createMylistGroup(deps),
     likeVideo: likeVideo(deps),
     registerTag: registerTag(deps),
-    registerVideo: registerVideo(deps),
+    registerVideo: resolverRegisterVideo(deps),
     rejectSemitag: rejectSemitag(deps),
     removeTagFromVideo: removeTagFromVideo(deps),
     removeVideoFromMylist: removeVideoFromMylist(deps),
