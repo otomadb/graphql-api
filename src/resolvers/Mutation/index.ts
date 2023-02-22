@@ -4,7 +4,7 @@ import { type Resolvers } from "../graphql.js";
 import { ResolverDeps } from "../index.js";
 import { addMylistToMylistGroup } from "./addMylistToMylistGroup/addMylistToMylistGroup.js";
 import { addSemitagToVideo } from "./addSemitagToVideo/addSemitagToVideo.js";
-import { addTagToVideo } from "./addTagToVideo/addTagToVideo.js";
+import { resolverAddTagToVideo } from "./addTagToVideo/resolver.js";
 import { addVideoToMylist } from "./addViteoToMylist/addVideoToMylist.js";
 import { createMylist } from "./createMylist/createMylist.js";
 import { createMylistGroup } from "./createMylistGroup/createMylistGroup.js";
@@ -24,7 +24,7 @@ export const resolveMutation = (deps: Pick<ResolverDeps, "prisma" | "neo4j" | "l
   ({
     addMylistToMylistGroup: addMylistToMylistGroup(deps),
     addSemitagToVideo: addSemitagToVideo(deps),
-    addTagToVideo: addTagToVideo(deps),
+    addTagToVideo: resolverAddTagToVideo(deps),
     addVideoToMylist: addVideoToMylist(deps),
     createMylist: createMylist(deps),
     createMylistGroup: createMylistGroup(deps),
