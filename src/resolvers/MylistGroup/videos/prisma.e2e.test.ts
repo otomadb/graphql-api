@@ -2,11 +2,11 @@ import { PrismaClient } from "@prisma/client";
 import { ulid } from "ulid";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
-import { cleanPrisma } from "../../test/cleanPrisma.js";
-import { ResolverDeps } from "../index.js";
-import { getVideos } from "./videos.js";
+import { cleanPrisma } from "../../../test/cleanPrisma.js";
+import { ResolverDeps } from "../../index.js";
+import { getVideos } from "./prisma.js";
 
-describe("MylistGroup.videos", () => {
+describe("Get whole videos in mylist group in prisma", () => {
   let prisma: ResolverDeps["prisma"];
 
   beforeAll(async () => {

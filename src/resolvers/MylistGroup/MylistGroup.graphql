@@ -11,17 +11,6 @@ type MylistGroup implements Node {
   videos(input: MylistGroupVideosInput!): [MylistGroupVideoAggregation!]!
 }
 
-input MylistGroupMylistsInput {
-  limit: Int! = 10
-  skip: Int! = 0
-  order: MylistGroupMylistsInputOrder! = { createdAt: DESC }
-}
-
-input MylistGroupMylistsInputOrder {
-  createdAt: SortOrder
-  updatedAt: SortOrder
-}
-
 input MylistGroupVideosInput {
   limit: Int! = 10
   skip: Int! = 0
