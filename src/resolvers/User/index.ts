@@ -6,7 +6,7 @@ import { buildGqlId, parseGqlID } from "../id.js";
 import { ResolverDeps } from "../index.js";
 import { MylistModel } from "../Mylist/model.js";
 import { parseSortOrder } from "../parseSortOrder.js";
-import { resolveUserLikes } from "./likes.js";
+import { resolveUserLikes } from "./likes/resolver.js";
 
 export const resolveUser = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({

@@ -1,10 +1,10 @@
 import { MylistShareRange, PrismaClient } from "@prisma/client";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
-import { cleanPrisma } from "../../test/cleanPrisma.js";
-import { Err, err, Ok, ok } from "../../utils/Result.js";
-import { ResolverDeps } from "../index.js";
-import { get } from "./likes.js";
+import { cleanPrisma } from "../../../test/cleanPrisma.js";
+import { Err, err, Ok, ok } from "../../../utils/Result.js";
+import { ResolverDeps } from "../../index.js";
+import { get } from "./get.js";
 
 describe("User.likes", () => {
   let prisma: ResolverDeps["prisma"];
