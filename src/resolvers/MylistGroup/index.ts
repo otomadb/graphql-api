@@ -3,7 +3,7 @@ import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
 import { ResolverDeps } from "../index.js";
 import { UserModel } from "../User/model.js";
 import { resolveMylists } from "./mylists.js";
-import { resolveMylistGroupVideo } from "./videos.js";
+import { resolverMylistGroupVideo } from "./videos/resolver.js";
 
 export const resolveMylistGroup = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
@@ -17,5 +17,5 @@ export const resolveMylistGroup = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
         }),
 
     mylists: resolveMylists({ prisma }),
-    videos: resolveMylistGroupVideo({ prisma }),
+    videos: resolverMylistGroupVideo({ prisma }),
   } satisfies Resolvers["MylistGroup"]);
