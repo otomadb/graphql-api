@@ -8,3 +8,30 @@ enum SortOrder {
 type MutationAuthenticationError {
   requiredRole: UserRole!
 }
+
+"MylistのIDとして無効なIDを入力した場合のエラー"
+type MutationInvalidMylistIdError {
+  "無効なID"
+  mylistId: String!
+}
+
+"VideoのIDとして無効なIDを入力した場合のエラー"
+type MutationInvalidVideoIdError {
+  "無効なID"
+  videoId: String!
+}
+
+"Videoが見つからない場合のエラー"
+type MutationVideoNotFoundError {
+  videoId: String!
+}
+
+"Mylistが見つからない場合のエラー"
+type MutationMylistNotFoundError {
+  mylistId: String!
+}
+
+"Mylistの所有者が違う場合のエラー"
+type MutationWrongMylistHolderError {
+  mylistId: String!
+}
