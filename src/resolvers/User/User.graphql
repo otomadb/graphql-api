@@ -4,7 +4,6 @@ type User implements Node {
   displayName: String!
   icon: String
 
-  likes: Mylist
   mylist(id: ID!): Mylist
 
   mylists(input: UserMylistsInput!): MylistConnection!

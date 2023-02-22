@@ -6,10 +6,10 @@ import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { DeepMockProxy, mockDeep, mockReset } from "vitest-mock-extended";
 
-import { ServerContext, UserContext } from "../../resolvers/context.js";
-import { typeDefs } from "../../resolvers/graphql.js";
-import { makeResolvers, ResolverDeps } from "../../resolvers/index.js";
-import { cleanPrisma } from "../cleanPrisma.js";
+import { cleanPrisma } from "../../../test/cleanPrisma.js";
+import { ServerContext, UserContext } from "../../context.js";
+import { typeDefs } from "../../graphql.js";
+import { makeResolvers, ResolverDeps } from "../../index.js";
 
 describe("Signup", () => {
   let prisma: ResolverDeps["prisma"];

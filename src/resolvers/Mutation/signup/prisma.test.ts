@@ -3,9 +3,9 @@ import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest"
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import { ResolverDeps } from "../../index.js";
-import { registerNewUser } from "./signup.js";
+import { registerNewUser } from "./prisma.js";
 
-describe("Mutation.signup()", () => {
+describe("Register user in Prisma", () => {
   let prisma: ResolverDeps["prisma"];
 
   beforeAll(async () => {

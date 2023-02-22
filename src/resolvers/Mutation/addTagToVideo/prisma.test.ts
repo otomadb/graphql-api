@@ -5,9 +5,9 @@ import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest"
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import { Ok } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
-import { add } from "./addTagToVideo.js";
+import { add } from "./prisma.js";
 
-describe("Mutation.addTagToVideo", () => {
+describe("Add tag in Prisma", () => {
   let prisma: ResolverDeps["prisma"];
 
   beforeAll(async () => {
