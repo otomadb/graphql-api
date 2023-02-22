@@ -24,3 +24,9 @@ input UserMylistsInputOrder {
   createdAt: SortOrder
   updatedAt: SortOrder
 }
+
+enum UserRole {
+  USER
+  EDITOR
+  ADMINISTRATOR
+}
