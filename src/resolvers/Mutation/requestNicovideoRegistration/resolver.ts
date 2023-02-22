@@ -13,7 +13,7 @@ import { NicovideoVideoSourceModel } from "../../NicovideoVideoSource/model.js";
 import { requestRegistration } from "./request.js";
 
 export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_, { input: { title, sourceId, taggings: gqlTaggings, semitaggings } }, { user }, info) => {
+  (async (_, { input: { title, thumbnailUrl, sourceId, taggings: gqlTaggings, semitaggings } }, { user }, info) => {
     if (!user)
       return {
         __typename: "MutationAuthenticationError",
@@ -35,6 +35,7 @@ export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<Re
     const result = await requestRegistration(prisma, {
       userId: user.id,
       title,
+      thumbnailUrl,
       sourceId,
       taggings,
       semitaggings: semitaggings.map(({ name, note }) => ({ name, note: note || null })),

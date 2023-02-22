@@ -7,6 +7,8 @@ type NicovideoRegistrationRequest {
   sourceId: String!
 
   title: String!
+  thumbnailUrl: String!
+
   taggings: [NicovideoRegistrationRequestTagging]!
   semitaggings: [NicovideoRegistrationRequestSemitagging]!
 

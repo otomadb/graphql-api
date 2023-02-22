@@ -15,6 +15,10 @@ export class NicovideoRegistrationRequestModel {
     return this.request.title;
   }
 
+  get thumbnailUrl() {
+    return this.request.thumbnailUrl;
+  }
+
   get checked() {
     return this.request.isChecked;
   }

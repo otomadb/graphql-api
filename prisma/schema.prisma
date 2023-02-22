@@ -636,6 +636,7 @@ model NicovideoRegistrationRequest {
   sourceId String @unique
 
   title        String
+  thumbnailUrl String
   taggings     NicovideoRegistrationRequestTagging[]
   semitaggings NicovideoRegistrationRequestSemitagging[]
 

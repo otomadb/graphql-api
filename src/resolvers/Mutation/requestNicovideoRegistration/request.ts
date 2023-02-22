@@ -8,6 +8,7 @@ export const requestRegistration = async (
   prisma: ResolverDeps["prisma"],
   {
     title,
+    thumbnailUrl,
     userId,
     sourceId,
     taggings,
@@ -15,6 +16,7 @@ export const requestRegistration = async (
   }: {
     title: string;
     sourceId: string;
+    thumbnailUrl: string;
     userId: string;
     taggings: { tagId: string; note: string | null }[];
     semitaggings: { name: string; note: string | null }[];
@@ -42,6 +44,7 @@ export const requestRegistration = async (
       data: {
         id: ulid(),
         title,
+        thumbnailUrl,
         sourceId,
         requestedById: userId,
         isChecked: false,

@@ -6,6 +6,7 @@ input RequestNicovideoRegistrationInput {
   sourceId: String!
 
   title: String!
+  thumbnailUrl: String!
 
   taggings: [RequestNicovideoRegistrationInputTagging!]!
   semitaggings: [RequestNicovideoRegistrationInputSemitagging!]!

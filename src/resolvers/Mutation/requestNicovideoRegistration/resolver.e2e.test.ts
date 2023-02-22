@@ -85,7 +85,15 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
           }
         }
       `),
-      variables: { input: { sourceId: "sm9", title: "タイトル 1", taggings: [], semitaggings: [] } },
+      variables: {
+        input: {
+          sourceId: "sm9",
+          title: "タイトル 1",
+          thumbnailUrl: "https://example.com/thumbnail.jpg",
+          taggings: [],
+          semitaggings: [],
+        },
+      },
       context: { user: null },
     });
 
@@ -151,6 +159,7 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
         input: {
           sourceId: "sm9",
           title: "タイトル1",
+          thumbnailUrl: "https://example.com/thumbnail.jpg",
           taggings: [
             { tagId: buildGqlId("Tag", "t1"), note: "a" },
             { tagId: buildGqlId("Tag", "t2"), note: "b" },
@@ -178,6 +187,7 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
             id
             title
             sourceId
+            thumbnailUrl
             taggings {
               tag {
                 id
@@ -203,6 +213,7 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
       },
       sourceId: "sm9",
       title: "タイトル1",
+      thumbnailUrl: "https://example.com/thumbnail.jpg",
       taggings: expect.arrayContaining([
         {
           tag: { id: buildGqlId("Tag", "t1") },
