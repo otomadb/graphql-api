@@ -12,7 +12,7 @@ import { likeVideo } from "./likeVideo/likeVideo.js";
 import { registerTag } from "./registerTag/registerTag.js";
 import { resolverRegisterVideo } from "./registerVideo/resolver.js";
 import { rejectSemitag } from "./rejectSemitag/rejectSemitag.js";
-import { removeTagFromVideo } from "./removeTagFromVideo/removeTagFromVideo.js";
+import { resolverRemoveTagFromVideo } from "./removeTagFromVideo/resolver.js";
 import { removeVideoFromMylist } from "./removeVideoFromMylist/removeVideoFromMylist.js";
 import { resolveSemitag } from "./resolveSemitag/resolveSemitag.js";
 import { signin } from "./signin/signin.js";
@@ -32,7 +32,7 @@ export const resolveMutation = (deps: Pick<ResolverDeps, "prisma" | "neo4j" | "l
     registerTag: registerTag(deps),
     registerVideo: resolverRegisterVideo(deps),
     rejectSemitag: rejectSemitag(deps),
-    removeTagFromVideo: removeTagFromVideo(deps),
+    removeTagFromVideo: resolverRemoveTagFromVideo(deps),
     removeVideoFromMylist: removeVideoFromMylist(deps),
     resovleSemitag: resolveSemitag(deps),
     signin: signin(deps),

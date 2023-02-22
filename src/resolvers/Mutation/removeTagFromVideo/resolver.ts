@@ -1,43 +1,18 @@
-import { Tag, UserRole, Video, VideoTag, VideoTagEventType } from "@prisma/client";
+import { UserRole } from "@prisma/client";
 
-import { Result } from "../../../utils/Result.js";
 import { MutationResolvers, RemoveTagFromVideoFailedMessage } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 import { VideoModel } from "../../Video/model.js";
 import { removeInNeo4j } from "./neo4j.js";
+import { remove } from "./prisma.js";
 
-export const remove = async (
-  prisma: ResolverDeps["prisma"],
-  { authUserId, videoId, tagId }: { authUserId: string; videoId: string; tagId: string }
-): Promise<Result<"NO_VIDEO" | "NO_TAG" | "NO_TAGGING" | "REMOVED_TAGGING", VideoTag & { video: Video; tag: Tag }>> => {
-  if ((await prisma.video.findUnique({ where: { id: videoId } })) === null)
-    return { status: "error", error: "NO_VIDEO" };
-  if ((await prisma.tag.findUnique({ where: { id: tagId } })) === null) return { status: "error", error: "NO_TAG" };
-
-  const extTagging = await prisma.videoTag.findUnique({ where: { videoId_tagId: { tagId, videoId } } });
-  if (extTagging === null) return { status: "error", error: "NO_TAGGING" };
-  if (extTagging.isRemoved) return { status: "error", error: "REMOVED_TAGGING" };
-
-  const tagging = await prisma.videoTag.update({
-    where: { id: extTagging.id },
-    data: {
-      isRemoved: true,
-      events: {
-        create: {
-          userId: authUserId,
-          type: VideoTagEventType.DETACH,
-          payload: {},
-        },
-      },
-    },
-    include: { tag: true, video: true },
-  });
-  return { status: "ok", data: tagging };
-};
-
-export const removeTagFromVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+export const resolverRemoveTagFromVideo = ({
+  prisma,
+  neo4j,
+  logger,
+}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
   (async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { user }, info) => {
     if (!user || (user?.role !== UserRole.EDITOR && user?.role !== UserRole.ADMINISTRATOR))
       return {
