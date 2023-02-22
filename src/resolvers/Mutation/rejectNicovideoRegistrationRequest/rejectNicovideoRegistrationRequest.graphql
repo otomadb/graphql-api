@@ -11,15 +11,11 @@ input RejectNicovideoRegistrationRequestInput {
 
 union RejectNicovideoRegistrationRequestReturnUnion =
     MutationAuthenticationError
-  | RejectNicovideoRegistrationRequestRequestNotFoundError
+  | MutationNicovideoRegistrationRequestNotFoundError
+  | MutationInvalidNicovideoRegistrationRequestIdError
   | RejectNicovideoRegistrationRequestRequestAlreadyCheckedError
   | RejectNicovideoRegistrationRequestOtherErrorsFallback
   | RejectNicovideoRegistrationRequestSucceededPayload
-
-"リクエストが存在しなかった場合のエラー"
-type RejectNicovideoRegistrationRequestRequestNotFoundError {
-  requestId: String!
-}
 
 "リクエストが既に処理されている場合のエラー"
 type RejectNicovideoRegistrationRequestRequestAlreadyCheckedError {

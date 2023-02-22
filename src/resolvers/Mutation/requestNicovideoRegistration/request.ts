@@ -16,7 +16,7 @@ export const requestRegistration = async (
     title: string;
     sourceId: string;
     userId: string;
-    taggings: { id: string; note: string | null }[];
+    taggings: { tagId: string; note: string | null }[];
     semitaggings: { name: string; note: string | null }[];
   }
 ): Promise<
@@ -28,7 +28,7 @@ export const requestRegistration = async (
   >
 > => {
   try {
-    for (const { id } of taggings) {
+    for (const { tagId: id } of taggings) {
       const tag = await prisma.tag.findUnique({ where: { id } });
       if (!tag) return err({ message: "TAG_NOT_FOUND", tagId: id });
     }
@@ -47,7 +47,7 @@ export const requestRegistration = async (
         isChecked: false,
         taggings: {
           createMany: {
-            data: taggings.map(({ id: tagId, note }) => ({
+            data: taggings.map(({ tagId, note }) => ({
               id: ulid(),
               tagId,
               note,

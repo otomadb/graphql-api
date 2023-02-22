@@ -10,9 +10,9 @@ import { mock, mockReset } from "vitest-mock-extended";
 import { ServerContext, UserContext } from "../../resolvers/context.js";
 import {
   MutationAuthenticationError,
+  MutationNicovideoRegistrationRequestNotFoundError,
   NicovideoRegistrationRequest,
   RejectNicovideoRegistrationRequestRequestAlreadyCheckedError,
-  RejectNicovideoRegistrationRequestRequestNotFoundError,
   RejectNicovideoRegistrationRequestSucceededPayload,
   RequestNicovideoRegistrationSucceededPayload,
   typeDefs,
@@ -74,7 +74,7 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
               ... on MutationAuthenticationError {
                 requiredRole
               }
-              ... on RequestNicovideoRegistrationTagNotFoundError {
+              ... on MutationTagNotFoundError {
                 tagId
               }
               ... on RequestNicovideoRegistrationVideoAlreadyRegisteredError {
@@ -136,7 +136,7 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
               ... on MutationAuthenticationError {
                 requiredRole
               }
-              ... on RequestNicovideoRegistrationTagNotFoundError {
+              ... on MutationTagNotFoundError {
                 tagId
               }
               ... on RequestNicovideoRegistrationVideoAlreadyRegisteredError {
@@ -160,8 +160,8 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
             sourceId: "sm9",
             title: "タイトル1",
             taggings: [
-              { tagId: "t1", note: "a" },
-              { tagId: "t2", note: "b" },
+              { tagId: buildGqlId("Tag", "t1"), note: "a" },
+              { tagId: buildGqlId("Tag", "t2"), note: "b" },
             ],
             semitaggings: [
               { name: "Semitag 1", note: "c" },
@@ -289,7 +289,7 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
               ... on MutationAuthenticationError {
                 requiredRole
               }
-              ... on RejectNicovideoRegistrationRequestRequestNotFoundError {
+              ... on MutationNicovideoRegistrationRequestNotFoundError {
                 requestId
               }
               ... on RejectNicovideoRegistrationRequestRequestAlreadyCheckedError {
@@ -316,7 +316,7 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
         `),
         variables: {
           input: {
-            requestId: "r1",
+            requestId: buildGqlId("NicovideoRegistrationRequest", "r1"),
             note: "a",
           },
         },
@@ -377,7 +377,7 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
               ... on MutationAuthenticationError {
                 requiredRole
               }
-              ... on RejectNicovideoRegistrationRequestRequestNotFoundError {
+              ... on MutationNicovideoRegistrationRequestNotFoundError {
                 requestId
               }
               ... on RejectNicovideoRegistrationRequestRequestAlreadyCheckedError {
@@ -404,7 +404,7 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
         `),
         variables: {
           input: {
-            requestId: "r1",
+            requestId: buildGqlId("NicovideoRegistrationRequest", "r1"),
             note: "a",
           },
         },
@@ -465,7 +465,7 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
               ... on MutationAuthenticationError {
                 requiredRole
               }
-              ... on RejectNicovideoRegistrationRequestRequestNotFoundError {
+              ... on MutationNicovideoRegistrationRequestNotFoundError {
                 requestId
               }
               ... on RejectNicovideoRegistrationRequestRequestAlreadyCheckedError {
@@ -492,7 +492,7 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
         `),
         variables: {
           input: {
-            requestId: "r1",
+            requestId: buildGqlId("NicovideoRegistrationRequest", "r1"),
             note: "a",
           },
         },
@@ -544,7 +544,7 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
               ... on MutationAuthenticationError {
                 requiredRole
               }
-              ... on RejectNicovideoRegistrationRequestRequestNotFoundError {
+              ... on MutationNicovideoRegistrationRequestNotFoundError {
                 requestId
               }
               ... on RejectNicovideoRegistrationRequestRequestAlreadyCheckedError {
@@ -571,7 +571,7 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
         `),
         variables: {
           input: {
-            requestId: "r1",
+            requestId: buildGqlId("NicovideoRegistrationRequest", "r1"),
             note: "a",
           },
         },
@@ -580,9 +580,9 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
 
       expect(requestResult.data).toStrictEqual({
         rejectNicovideoRegistrationRequest: {
-          __typename: "RejectNicovideoRegistrationRequestRequestNotFoundError",
+          __typename: "MutationNicovideoRegistrationRequestNotFoundError",
           requestId: "r1",
-        } satisfies RejectNicovideoRegistrationRequestRequestNotFoundError,
+        } satisfies MutationNicovideoRegistrationRequestNotFoundError,
       });
     });
 
@@ -632,7 +632,7 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
               ... on MutationAuthenticationError {
                 requiredRole
               }
-              ... on RejectNicovideoRegistrationRequestRequestNotFoundError {
+              ... on MutationNicovideoRegistrationRequestNotFoundError {
                 requestId
               }
               ... on RejectNicovideoRegistrationRequestRequestAlreadyCheckedError {
@@ -659,7 +659,7 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
         `),
         variables: {
           input: {
-            requestId: "r1",
+            requestId: buildGqlId("NicovideoRegistrationRequest", "r1"),
             note: "a",
           },
         },

@@ -23,15 +23,11 @@ input RequestNicovideoRegistrationInputSemitagging {
 
 union RequestNicovideoRegistrationReturnUnion =
     MutationAuthenticationError
-  | RequestNicovideoRegistrationTagNotFoundError
+  | MutationInvalidTagIdError
+  | MutationTagNotFoundError
   | RequestNicovideoRegistrationVideoAlreadyRegisteredError
   | RequestNicovideoRegistrationOtherErrorsFallback
   | RequestNicovideoRegistrationSucceededPayload
-
-"タグが見つからなかった場合のエラー"
-type RequestNicovideoRegistrationTagNotFoundError {
-  tagId: String!
-}
 
 "動画が既に登録されている場合のエラー"
 type RequestNicovideoRegistrationVideoAlreadyRegisteredError {
