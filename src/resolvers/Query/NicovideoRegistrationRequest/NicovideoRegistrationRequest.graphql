@@ -1,3 +1,0 @@
-type Query {
-  NicovideoRegistrationRequest(id: ID!): NicovideoRegistrationRequest!
-}

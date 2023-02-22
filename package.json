@@ -18,6 +18,7 @@
     "test": "vitest",
     "test:migration": "PRISMA_DATABASE_URL=$TEST_PRISMA_DATABASE_URL prisma migrate reset --force",
     "typecheck": "tsc --noEmit",
+    "lint": "run-s 'lint:*'",
     "lint:eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:prettier": "prettier --check ./**/*.{js,mjs,ts,json,yml,md,graphql}",
     "lint:schema": "graphql-schema-linter ./schema.graphql",

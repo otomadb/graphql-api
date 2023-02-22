@@ -182,7 +182,7 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
       const getRequestsResult = await executor({
         document: parse(/* GraphQL */ `
           query GetRequest($id: ID!) {
-            NicovideoRegistrationRequest(id: $id) {
+            getNicovideoRegistrationRequest(id: $id) {
               id
               title
               sourceId
@@ -204,7 +204,7 @@ describe("ニコニコ動画の動画リクエスト関連", () => {
         `),
         variables: { id: requestResult.data.requestNicovideoRegistration.request.id },
       });
-      expect(getRequestsResult.data.NicovideoRegistrationRequest).toStrictEqual({
+      expect(getRequestsResult.data.getNicovideoRegistrationRequest).toStrictEqual({
         id: requestResult.data.requestNicovideoRegistration.request.id,
         requestedBy: {
           id: buildGqlId("User", "u1"),
