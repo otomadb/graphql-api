@@ -6,6 +6,7 @@ import { addMylistToMylistGroup } from "./addMylistToMylistGroup/addMylistToMyli
 import { addSemitagToVideo } from "./addSemitagToVideo/addSemitagToVideo.js";
 import { resolverAddTagToVideo } from "./addTagToVideo/resolver.js";
 import { addVideoToMylist } from "./addViteoToMylist/addVideoToMylist.js";
+import { resolverChangeMylistShareRange } from "./changeMylistShareRange/resolver.js";
 import { createMylist } from "./createMylist/createMylist.js";
 import { createMylistGroup } from "./createMylistGroup/createMylistGroup.js";
 import { likeVideo } from "./likeVideo/likeVideo.js";
@@ -26,6 +27,7 @@ export const resolveMutation = (deps: Pick<ResolverDeps, "prisma" | "neo4j" | "l
     addSemitagToVideo: addSemitagToVideo(deps),
     addTagToVideo: resolverAddTagToVideo(deps),
     addVideoToMylist: addVideoToMylist(deps),
+    changeMylistShareRange: resolverChangeMylistShareRange(deps),
     createMylist: createMylist(deps),
     createMylistGroup: createMylistGroup(deps),
     likeVideo: likeVideo(deps),
