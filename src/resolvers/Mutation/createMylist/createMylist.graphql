@@ -1,5 +1,5 @@
 type Mutation {
-  createMylist(input: CreateMylistInput!): CreateMylistPayload!
+  createMylist(input: CreateMylistInput!): CreateMylistReturnUnion!
 }
 
 input CreateMylistInput {
@@ -7,6 +7,20 @@ input CreateMylistInput {
   range: MylistShareRange!
 }
 
-type CreateMylistPayload {
+union CreateMylistReturnUnion =
+    MutationAuthenticationError
+  | CreateMylistOtherErrorsFallback
+  | CreateMylistSucceededPayload
+
+"その他のエラー"
+type CreateMylistOtherErrorsFallback {
+  message: CreateMylistOtherErrorMessage!
+}
+
+enum CreateMylistOtherErrorMessage {
+  INTERNAL_SERVER_ERROR
+}
+
+type CreateMylistSucceededPayload {
   mylist: Mylist!
 }
