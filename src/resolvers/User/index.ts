@@ -6,12 +6,12 @@ import { buildGqlId, parseGqlID } from "../id.js";
 import { ResolverDeps } from "../index.js";
 import { MylistModel } from "../Mylist/model.js";
 import { parseSortOrder } from "../parseSortOrder.js";
-import { resolveUserLikes } from "./likes/resolver.js";
+import { resolverUserLikes } from "./likes/resolver.js";
 
 export const resolveUser = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
     id: ({ id }): string => buildGqlId("Video", id),
-    likes: resolveUserLikes({ prisma }),
+    likes: resolverUserLikes({ prisma }),
 
     mylist: async ({ id: userId }, { id: gqlMylistId }, { user: ctxUser }) => {
       const mylist = await prisma.mylist.findFirst({ where: { id: parseGqlID("Mylist", gqlMylistId) } });
