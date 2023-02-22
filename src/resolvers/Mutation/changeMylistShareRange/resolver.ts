@@ -7,19 +7,28 @@ import {
   MutationWrongMylistHolderError,
   UserRole as GraphQLUserRole,
 } from "../../graphql.js";
+import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
 import { update } from "./prisma.js";
 
 export const resolverChangeMylistShareRange = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { input: { mylistId, range } }, { user: ctxUser }, info) => {
+  (async (_parent, { input: { mylistId: mylistGqlId, range } }, { user: ctxUser }, info) => {
     if (!ctxUser)
       return {
         __typename: "MutationAuthenticationError",
         requiredRole: GraphQLUserRole.User,
       } satisfies MutationAuthenticationError;
 
-    const result = await update(prisma, { mylistId, userId: ctxUser.id, range });
+    const mylistId = parseGqlID2("Mylist", mylistGqlId);
+    if (mylistId.status === "error") {
+      return {
+        __typename: "MutationInvalidMylistIdError",
+        mylistId: mylistGqlId,
+      };
+    }
+
+    const result = await update(prisma, { mylistId: mylistId.data, userId: ctxUser.id, range });
     if (result.status === "error") {
       switch (result.error.message) {
         case "MYLIST_NOT_FOUND":
