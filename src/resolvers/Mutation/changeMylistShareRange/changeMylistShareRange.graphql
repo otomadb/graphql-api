@@ -1,0 +1,29 @@
+type Mutation {
+  changeMylistShareRange(input: ChangeMylistShareRangeInput!): ChangeMylistShareReturnUnion!
+}
+
+input ChangeMylistShareRangeInput {
+  mylistId: ID!
+  range: MylistShareRange!
+}
+
+union ChangeMylistShareReturnUnion =
+    MutationAuthenticationError
+  | MutationInvalidMylistIdError
+  | MutationMylistNotFoundError
+  | MutationWrongMylistHolderError
+  | ChangeMylistShareRangeOtherErrorsFallback
+  | ChangeMylistShareRangeSucceededPayload
+
+"その他のエラー"
+type ChangeMylistShareRangeOtherErrorsFallback {
+  message: ChangeMylistShareRangeOtherErrorMessage!
+}
+
+enum ChangeMylistShareRangeOtherErrorMessage {
+  INTERNAL_SERVER_ERROR
+}
+
+type ChangeMylistShareRangeSucceededPayload {
+  mylist: Mylist!
+}
