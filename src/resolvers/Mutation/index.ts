@@ -12,9 +12,11 @@ import { createMylistGroup } from "./createMylistGroup/createMylistGroup.js";
 import { likeVideo } from "./likeVideo/likeVideo.js";
 import { registerTag } from "./registerTag/registerTag.js";
 import { resolverRegisterVideo } from "./registerVideo/resolver.js";
+import { resolverRejectRequestNicovideoRegistration } from "./rejectNicovideoRegistrationRequest/resolver.js";
 import { rejectSemitag } from "./rejectSemitag/rejectSemitag.js";
 import { resolverRemoveTagFromVideo } from "./removeTagFromVideo/resolver.js";
 import { removeVideoFromMylist } from "./removeVideoFromMylist/removeVideoFromMylist.js";
+import { resolverRequestNicovideoRegistration as requestNicovideoRegistration } from "./requestNicovideoRegistration/resolver.js";
 import { resolveSemitag } from "./resolveSemitag/resolveSemitag.js";
 import { signin } from "./signin/signin.js";
 import { signout } from "./signout/signout.js";
@@ -33,9 +35,11 @@ export const resolveMutation = (deps: Pick<ResolverDeps, "prisma" | "neo4j" | "l
     likeVideo: likeVideo(deps),
     registerTag: registerTag(deps),
     registerVideo: resolverRegisterVideo(deps),
+    rejectNicovideoRegistrationRequest: resolverRejectRequestNicovideoRegistration(deps),
     rejectSemitag: rejectSemitag(deps),
     removeTagFromVideo: resolverRemoveTagFromVideo(deps),
     removeVideoFromMylist: removeVideoFromMylist(deps),
+    requestNicovideoRegistration: requestNicovideoRegistration(deps),
     resovleSemitag: resolveSemitag(deps),
     signin: signin(deps),
     signout: signout(deps),

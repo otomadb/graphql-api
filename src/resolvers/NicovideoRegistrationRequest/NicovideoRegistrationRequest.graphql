@@ -1,0 +1,37 @@
+type NicovideoRegistrationRequest {
+  id: ID!
+  title: String!
+
+  requestedBy: User!
+
+  sourceId: String!
+
+  title: String!
+  thumbnailUrl: String!
+
+  taggings: [NicovideoRegistrationRequestTagging]!
+  semitaggings: [NicovideoRegistrationRequestSemitagging]!
+
+  checked: Boolean!
+  checking: NicovideoRegistrationRequestChecking
+}
+
+type NicovideoRegistrationRequestTagging {
+  tag: Tag!
+
+  note: String
+}
+
+type NicovideoRegistrationRequestSemitagging {
+  name: String!
+
+  note: String
+}
+
+union NicovideoRegistrationRequestChecking =
+    NicovideoRegistrationRequestAccepting
+  | NicovideoRegistrationRequestRejecting
+
+type NicovideoRegistrationRequestConnection {
+  nodes: [NicovideoRegistrationRequest!]!
+}

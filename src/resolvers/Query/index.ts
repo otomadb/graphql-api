@@ -1,9 +1,11 @@
-/* eslint sort-keys: 2 */
+/* eslint sort-keys: [2, "asc", {caseSensitive: false}] */
 
 import { type Resolvers } from "../graphql.js";
 import { ResolverDeps } from "../index.js";
 import { fetchNicovideo } from "./fetchNicovideo/fetchNicovideo.js";
 import { findMylist } from "./findMylist/findMylist.js";
+import { resolverFindNicovideoRegistrationRequest } from "./findNicovideoRegistrationRequest/resolver.js";
+import { findNicovideoRegistrationRequests } from "./findNicovideoRegistrationRequests/findNicovideoRegistrationRequests.js";
 import { findNicovideoVideoSource } from "./findNicovideoVideoSource/findNicovideoVideoSource.js";
 import { findSemitags } from "./findSemitags/findSemitags.js";
 import { findTag } from "./findTag/findTag.js";
@@ -11,6 +13,7 @@ import { findTags } from "./findTags/findTags.js";
 import { findUser } from "./findUser/findUser.js";
 import { findVideo } from "./findVideo/findVideos.js";
 import { findVideos } from "./findVideos/findVideos.js";
+import { getNicovideoRegistrationRequest } from "./getNicovideoRegistrationRequest/getNicovideoRegistrationRequest.js";
 import { mylist } from "./mylist/mylist.js";
 import { mylistGroup } from "./mylistGroup/mylistGroup.js";
 import { nicovideoVideoSource } from "./nicovideoVideoSource/nicovideoVideoSource.js";
@@ -26,6 +29,8 @@ export const resolveQuery = (deps: Pick<ResolverDeps, "prisma">) =>
   ({
     fetchNicovideo: fetchNicovideo(),
     findMylist: findMylist(deps),
+    findNicovideoRegistrationRequest: resolverFindNicovideoRegistrationRequest(deps),
+    findNicovideoRegistrationRequests: findNicovideoRegistrationRequests(deps),
     findNicovideoVideoSource: findNicovideoVideoSource(deps),
     findSemitags: findSemitags(deps),
     findTag: findTag(deps),
@@ -33,6 +38,7 @@ export const resolveQuery = (deps: Pick<ResolverDeps, "prisma">) =>
     findUser: findUser(deps),
     findVideo: findVideo(deps),
     findVideos: findVideos(deps),
+    getNicovideoRegistrationRequest: getNicovideoRegistrationRequest(deps),
     mylist: mylist(deps),
     mylistGroup: mylistGroup(deps),
     nicovideoVideoSource: nicovideoVideoSource(deps),

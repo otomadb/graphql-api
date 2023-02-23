@@ -1,0 +1,49 @@
+type Mutation {
+  requestNicovideoRegistration(input: RequestNicovideoRegistrationInput!): RequestNicovideoRegistrationReturnUnion!
+}
+
+input RequestNicovideoRegistrationInput {
+  sourceId: String!
+
+  title: String!
+  thumbnailUrl: String!
+
+  taggings: [RequestNicovideoRegistrationInputTagging!]!
+  semitaggings: [RequestNicovideoRegistrationInputSemitagging!]!
+}
+
+input RequestNicovideoRegistrationInputTagging {
+  tagId: ID!
+  note: String
+}
+
+input RequestNicovideoRegistrationInputSemitagging {
+  name: String!
+  note: String
+}
+
+union RequestNicovideoRegistrationReturnUnion =
+    MutationAuthenticationError
+  | MutationInvalidTagIdError
+  | MutationTagNotFoundError
+  | RequestNicovideoRegistrationVideoAlreadyRegisteredError
+  | RequestNicovideoRegistrationOtherErrorsFallback
+  | RequestNicovideoRegistrationSucceededPayload
+
+"動画が既に登録されている場合のエラー"
+type RequestNicovideoRegistrationVideoAlreadyRegisteredError {
+  source: NicovideoVideoSource!
+}
+
+"その他のエラー"
+type RequestNicovideoRegistrationOtherErrorsFallback {
+  message: RequestNicovideoRegistrationOtherErrorMessage!
+}
+
+enum RequestNicovideoRegistrationOtherErrorMessage {
+  INTERNAL_SERVER_ERROR
+}
+
+type RequestNicovideoRegistrationSucceededPayload {
+  request: NicovideoRegistrationRequest!
+}
