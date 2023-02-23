@@ -4,6 +4,7 @@ import { type Resolvers } from "../graphql.js";
 import { ResolverDeps } from "../index.js";
 import { fetchNicovideo } from "./fetchNicovideo/fetchNicovideo.js";
 import { findMylist } from "./findMylist/findMylist.js";
+import { resolverFindNicovideoRegistrationRequest } from "./findNicovideoRegistrationRequest/resolver.js";
 import { findNicovideoRegistrationRequests } from "./findNicovideoRegistrationRequests/findNicovideoRegistrationRequests.js";
 import { findNicovideoVideoSource } from "./findNicovideoVideoSource/findNicovideoVideoSource.js";
 import { findSemitags } from "./findSemitags/findSemitags.js";
@@ -28,6 +29,7 @@ export const resolveQuery = (deps: Pick<ResolverDeps, "prisma">) =>
   ({
     fetchNicovideo: fetchNicovideo(),
     findMylist: findMylist(deps),
+    findNicovideoRegistrationRequest: resolverFindNicovideoRegistrationRequest(deps),
     findNicovideoRegistrationRequests: findNicovideoRegistrationRequests(deps),
     findNicovideoVideoSource: findNicovideoVideoSource(deps),
     findSemitags: findSemitags(deps),

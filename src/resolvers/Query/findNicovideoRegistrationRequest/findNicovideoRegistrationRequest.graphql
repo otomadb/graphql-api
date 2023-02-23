@@ -1,0 +1,8 @@
+type Query {
+  findNicovideoRegistrationRequest(input: FindNicovideoRegistrationRequestInput): NicovideoRegistrationRequest
+}
+
+input FindNicovideoRegistrationRequestInput {
+  id: ID
+  sourceId: String
+}
