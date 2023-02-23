@@ -8,6 +8,8 @@ export type NodeType =
   | "MylistGroupMylistInclusion"
   | "MylistRegistration"
   | "NicovideoRegistrationRequest"
+  | "NicovideoRegistrationRequestSemitagging"
+  | "NicovideoRegistrationRequestTagging"
   | "NicovideoVideoSource"
   | "NicovideoVideoSourceEvent"
   | "Semitag"

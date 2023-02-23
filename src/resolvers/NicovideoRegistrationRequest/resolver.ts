@@ -9,15 +9,24 @@ export const resolverNicovideoRegistrationRequest = ({ prisma }: Pick<ResolverDe
     id: ({ dbId: requestId }) => buildGqlId("NicovideoRegistrationRequest", requestId),
     taggings: ({ dbId: requestId }) => {
       return prisma.nicovideoRegistrationRequestTagging
-        .findMany({ where: { requestId }, select: { tag: true, note: true } })
-        .then((r) => r.map(({ tag, note }) => ({ tag: new TagModel(tag), note })));
+        .findMany({ where: { requestId }, include: { tag: true } })
+        .then((r) =>
+          r.map(({ id, tag, note }) => ({
+            id: buildGqlId("NicovideoRegistrationRequestTagging", id),
+            tag: new TagModel(tag),
+            note,
+          }))
+        );
     },
     semitaggings: ({ dbId: requestId }) => {
-      return prisma.nicovideoRegistrationRequestSemitagging
-        .findMany({ where: { requestId }, select: { name: true, note: true } })
-        .then((r) => r.map(({ name, note }) => ({ name, note })));
+      return prisma.nicovideoRegistrationRequestSemitagging.findMany({ where: { requestId } }).then((r) =>
+        r.map(({ id, name, note }) => ({
+          id: buildGqlId("NicovideoRegistrationRequestSemitagging", id),
+          name,
+          note,
+        }))
+      );
     },
-
     requestedBy: ({ requestedById }) =>
       prisma.user
         .findUniqueOrThrow({ where: { id: requestedById } })
