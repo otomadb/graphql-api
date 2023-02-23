@@ -9,22 +9,22 @@ type NicovideoRegistrationRequest {
   title: String!
   thumbnailUrl: String!
 
-  taggings: [NicovideoRegistrationRequestTagging]!
-  semitaggings: [NicovideoRegistrationRequestSemitagging]!
+  taggings: [NicovideoRegistrationRequestTagging!]!
+  semitaggings: [NicovideoRegistrationRequestSemitagging!]!
 
   checked: Boolean!
   checking: NicovideoRegistrationRequestChecking
 }
 
 type NicovideoRegistrationRequestTagging {
+  id: ID!
   tag: Tag!
-
   note: String
 }
 
 type NicovideoRegistrationRequestSemitagging {
+  id: ID!
   name: String!
-
   note: String
 }
 
