@@ -1,8 +1,15 @@
 import { UserRole } from "@prisma/client";
 
 import { isValidNicovideoSourceId } from "../../../utils/isValidNicovideoSourceId.js";
-import { MutationResolvers, RegisterVideoFailedMessage, RegisterVideoInputSourceType } from "../../graphql.js";
-import { parseGqlIDs2 } from "../../id.js";
+import {
+  MutationInvalidNicovideoRegistrationRequestIdError,
+  MutationNicovideoRegistrationRequestAlreadyCheckedError,
+  MutationNicovideoRegistrationRequestNotFoundError,
+  MutationResolvers,
+  RegisterVideoFailedMessage,
+  RegisterVideoInputSourceType,
+} from "../../graphql.js";
+import { parseGqlID3, parseGqlIDs2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { VideoModel } from "../../Video/model.js";
 import { registerVideoInNeo4j as registerInNeo4j } from "./neo4j.js";
@@ -25,6 +32,14 @@ export const resolverRegisterVideo = ({ prisma, logger, neo4j }: Pick<ResolverDe
       };
     }
 
+    const requestId = input.requestId ? parseGqlID3("NicovideoRegistrationRequest", input.requestId) : null;
+    if (requestId?.status === "error") {
+      return {
+        __typename: "MutationInvalidNicovideoRegistrationRequestIdError",
+        requestId: requestId.error.invalidId,
+      } satisfies MutationInvalidNicovideoRegistrationRequestIdError;
+    }
+
     // ニコニコ動画の動画IDチェック
     const nicovideoSourceIds = input.sources
       .filter((v) => v.type === RegisterVideoInputSourceType.Nicovideo)
@@ -45,10 +60,21 @@ export const resolverRegisterVideo = ({ prisma, logger, neo4j }: Pick<ResolverDe
       tagIds: tagIds.data,
       semitagNames: input.semitags,
       nicovideoSourceIds,
+      requestId: requestId?.data ?? null,
     });
 
     if (result.status === "error") {
       switch (result.error.type) {
+        case "REQUEST_NOT_FOUND":
+          return {
+            __typename: "MutationNicovideoRegistrationRequestNotFoundError",
+            requestId: result.error.requestId,
+          } satisfies MutationNicovideoRegistrationRequestNotFoundError;
+        case "REQUEST_ALREADY_CHECKED":
+          return {
+            __typename: "MutationNicovideoRegistrationRequestAlreadyCheckedError",
+            requestId: result.error.requestId,
+          } satisfies MutationNicovideoRegistrationRequestAlreadyCheckedError;
         default:
           return {
             __typename: "RegisterVideoFailedPayload",

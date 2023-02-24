@@ -9,6 +9,7 @@ input RegisterVideoInput {
   primaryThumbnail: String!
   sources: [RegisterVideoInputSource!]!
   semitags: [String!]! = []
+  requestId: ID
 }
 
 enum RegisterVideoInputSourceType {
@@ -21,7 +22,12 @@ input RegisterVideoInputSource {
   sourceId: String!
 }
 
-union RegisterVideoPayload = RegisterVideoSucceededPayload | RegisterVideoFailedPayload
+union RegisterVideoPayload =
+    RegisterVideoSucceededPayload
+  | MutationInvalidNicovideoRegistrationRequestIdError
+  | MutationNicovideoRegistrationRequestNotFoundError
+  | MutationNicovideoRegistrationRequestAlreadyCheckedError
+  | RegisterVideoFailedPayload
 
 type RegisterVideoSucceededPayload {
   video: Video!
