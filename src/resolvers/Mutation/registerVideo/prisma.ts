@@ -1,5 +1,7 @@
 import {
+  NicovideoRegistrationRequest,
   NicovideoVideoSourceEventType,
+  Prisma,
   SemitagEventType,
   Video,
   VideoEventType,
@@ -9,8 +11,46 @@ import {
 } from "@prisma/client";
 import { ulid } from "ulid";
 
-import { Result } from "../../../utils/Result.js";
+import { err, ok, Result } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
+
+export const getRequestCheck = async (
+  prisma: ResolverDeps["prisma"],
+  { requestId, videoId, userId }: { requestId: string | null; userId: string; videoId: string }
+): Promise<
+  Result<
+    | { type: "REQUEST_NOT_FOUND"; requestId: string }
+    | { type: "REQUEST_ALREADY_CHECKED"; requestId: string }
+    | { type: "INTERNAL_SERVER_ERROR"; error: unknown },
+    Prisma.Prisma__NicovideoRegistrationRequestClient<NicovideoRegistrationRequest, never>[]
+  >
+> => {
+  if (!requestId) return ok([]);
+
+  try {
+    const request = await prisma.nicovideoRegistrationRequest.findUnique({ where: { id: requestId } });
+    if (!request) return err({ type: "REQUEST_NOT_FOUND", requestId });
+    if (request.isChecked) return err({ type: "REQUEST_ALREADY_CHECKED", requestId });
+
+    return ok([
+      prisma.nicovideoRegistrationRequest.update({
+        where: { id: requestId },
+        data: {
+          isChecked: true,
+          checking: {
+            create: {
+              id: ulid(),
+              video: { connect: { id: videoId } },
+              checkedBy: { connect: { id: userId } },
+            },
+          },
+        },
+      }),
+    ]);
+  } catch (e) {
+    return err({ type: "INTERNAL_SERVER_ERROR", error: e });
+  }
+};
 
 export const register = async (
   prisma: ResolverDeps["prisma"],
@@ -22,6 +62,7 @@ export const register = async (
     tagIds,
     semitagNames,
     nicovideoSourceIds: nicovideoVideoSourceIds,
+    nicovideoRequestId,
   }: {
     authUserId: string;
 
@@ -34,8 +75,18 @@ export const register = async (
     semitagNames: string[];
 
     nicovideoSourceIds: string[];
+
+    nicovideoRequestId: string | null;
   }
-): Promise<Result<{ type: "NO_TAG" }, Video>> => {
+): Promise<
+  Result<
+    | { type: "NO_TAG" }
+    | { type: "REQUEST_NOT_FOUND"; requestId: string }
+    | { type: "REQUEST_ALREADY_CHECKED"; requestId: string }
+    | { type: "INTERNAL_SERVER_ERROR"; error: unknown },
+    Video
+  >
+> => {
   const videoId = ulid();
   const dataTitles = [
     { id: ulid(), title: primaryTitle, isPrimary: true },
@@ -65,6 +116,9 @@ export const register = async (
     id: ulid(),
     sourceId: sourceId.toLowerCase(),
   }));
+
+  const checkRequest = await getRequestCheck(prisma, { requestId: nicovideoRequestId, videoId, userId: authUserId });
+  if (checkRequest.status === "error") return checkRequest;
 
   const [video] = await prisma.$transaction([
     prisma.video.create({
@@ -149,10 +203,8 @@ export const register = async (
         })),
       ],
     }),
+    ...checkRequest.data,
   ]);
 
-  return {
-    status: "ok",
-    data: video,
-  };
+  return ok(video);
 };
