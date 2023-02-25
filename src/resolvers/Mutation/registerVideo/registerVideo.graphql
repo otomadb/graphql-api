@@ -9,7 +9,8 @@ input RegisterVideoInput {
   primaryThumbnail: String!
   sources: [RegisterVideoInputSource!]!
   semitags: [String!]! = []
-  requestId: ID
+
+  nicovideoRequestId: ID
 }
 
 enum RegisterVideoInputSourceType {

@@ -32,11 +32,13 @@ export const resolverRegisterVideo = ({ prisma, logger, neo4j }: Pick<ResolverDe
       };
     }
 
-    const requestId = input.requestId ? parseGqlID3("NicovideoRegistrationRequest", input.requestId) : null;
-    if (requestId?.status === "error") {
+    const nicovideoRequestId = input.nicovideoRequestId
+      ? parseGqlID3("NicovideoRegistrationRequest", input.nicovideoRequestId)
+      : null;
+    if (nicovideoRequestId?.status === "error") {
       return {
         __typename: "MutationInvalidNicovideoRegistrationRequestIdError",
-        requestId: requestId.error.invalidId,
+        requestId: nicovideoRequestId.error.invalidId,
       } satisfies MutationInvalidNicovideoRegistrationRequestIdError;
     }
 
@@ -60,7 +62,7 @@ export const resolverRegisterVideo = ({ prisma, logger, neo4j }: Pick<ResolverDe
       tagIds: tagIds.data,
       semitagNames: input.semitags,
       nicovideoSourceIds,
-      requestId: requestId?.data ?? null,
+      nicovideoRequestId: nicovideoRequestId?.data ?? null,
     });
 
     if (result.status === "error") {

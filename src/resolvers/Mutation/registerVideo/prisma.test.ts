@@ -166,7 +166,7 @@ describe("Register video by Prisma", () => {
       tagIds: ["t1", "t2"],
       semitagNames: ["Semitag 1", "Semitag 2"],
       nicovideoSourceIds: ["sm1"],
-      requestId: null,
+      nicovideoRequestId: null,
     });
     expect(actual).toStrictEqual({
       status: "ok",
@@ -479,7 +479,7 @@ describe("Register video by Prisma", () => {
       semitagNames: [],
       nicovideoSourceIds: [],
 
-      requestId: "r1",
+      nicovideoRequestId: "r1",
     })) as Ok<Awaited<ReturnType<typeof register>>>;
     expect(actual.status).not.toBe("error");
 

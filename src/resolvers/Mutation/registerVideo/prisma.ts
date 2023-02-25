@@ -62,7 +62,7 @@ export const register = async (
     tagIds,
     semitagNames,
     nicovideoSourceIds: nicovideoVideoSourceIds,
-    requestId,
+    nicovideoRequestId,
   }: {
     authUserId: string;
 
@@ -76,7 +76,7 @@ export const register = async (
 
     nicovideoSourceIds: string[];
 
-    requestId: string | null;
+    nicovideoRequestId: string | null;
   }
 ): Promise<
   Result<
@@ -117,7 +117,7 @@ export const register = async (
     sourceId: sourceId.toLowerCase(),
   }));
 
-  const checkRequest = await getRequestCheck(prisma, { requestId, videoId, userId: authUserId });
+  const checkRequest = await getRequestCheck(prisma, { requestId: nicovideoRequestId, videoId, userId: authUserId });
   if (checkRequest.status === "error") return checkRequest;
 
   const [video] = await prisma.$transaction([
