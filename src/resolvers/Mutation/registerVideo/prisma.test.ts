@@ -21,9 +21,9 @@ import {
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import { Ok } from "../../../utils/Result.js";
+import { Err, err, Ok } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
-import { register } from "./prisma.js";
+import { getRequestCheck, register } from "./prisma.js";
 
 describe("Register video by Prisma", () => {
   let prisma: ResolverDeps["prisma"];
@@ -39,6 +39,104 @@ describe("Register video by Prisma", () => {
 
   afterAll(async () => {
     await prisma.$disconnect();
+  });
+
+  describe("getRequestCheck()", () => {
+    test("リクエストが存在しない場合", async () => {
+      await prisma.$transaction([
+        prisma.user.create({
+          data: {
+            id: "u1",
+            name: "user1",
+            displayName: "User1",
+            email: "user1@example.com",
+            password: "password",
+          },
+        }),
+        prisma.video.create({ data: { id: "v1" } }),
+      ]);
+
+      const actual = await getRequestCheck(prisma, {
+        requestId: "r1",
+        userId: "u1",
+        videoId: "v1",
+      });
+      expect(actual).toStrictEqual(
+        err({
+          type: "REQUEST_NOT_FOUND",
+          requestId: "r1",
+        }) satisfies Err<Awaited<ReturnType<typeof getRequestCheck>>>
+      );
+    });
+
+    test("リクエストが既にチェック済みの場合", async () => {
+      await prisma.$transaction([
+        prisma.user.create({
+          data: {
+            id: "u1",
+            name: "user1",
+            displayName: "User1",
+            email: "user1@example.com",
+            password: "password",
+          },
+        }),
+        prisma.video.create({ data: { id: "v1" } }),
+        prisma.nicovideoRegistrationRequest.create({
+          data: {
+            id: "r1",
+            isChecked: true,
+            sourceId: "sm1",
+            thumbnailUrl: "https://example.com",
+            title: "title",
+            requestedById: "u1",
+          },
+        }),
+      ]);
+
+      const actual = await getRequestCheck(prisma, {
+        requestId: "r1",
+        userId: "u1",
+        videoId: "v1",
+      });
+      expect(actual).toStrictEqual(
+        err({
+          type: "REQUEST_ALREADY_CHECKED",
+          requestId: "r1",
+        }) satisfies Err<Awaited<ReturnType<typeof getRequestCheck>>>
+      );
+    });
+
+    test("正常系", async () => {
+      await prisma.$transaction([
+        prisma.user.create({
+          data: {
+            id: "u1",
+            name: "user1",
+            displayName: "User1",
+            email: "user1@example.com",
+            password: "password",
+          },
+        }),
+        prisma.video.create({ data: { id: "v1" } }),
+        prisma.nicovideoRegistrationRequest.create({
+          data: {
+            id: "r1",
+            isChecked: false,
+            sourceId: "sm1",
+            thumbnailUrl: "https://example.com",
+            title: "title",
+            requestedById: "u1",
+          },
+        }),
+      ]);
+
+      const actual = await getRequestCheck(prisma, {
+        requestId: "r1",
+        userId: "u1",
+        videoId: "v1",
+      });
+      expect(actual.status).not.toBe("error");
+    });
   });
 
   test("動画の追加", async () => {
@@ -68,6 +166,7 @@ describe("Register video by Prisma", () => {
       tagIds: ["t1", "t2"],
       semitagNames: ["Semitag 1", "Semitag 2"],
       nicovideoSourceIds: ["sm1"],
+      nicovideoRequestId: null,
     });
     expect(actual).toStrictEqual({
       status: "ok",
@@ -345,5 +444,51 @@ describe("Register video by Prisma", () => {
         } satisfies NicovideoVideoSourceEvent),
       ])
     );
+  });
+
+  test("リクエストの受理", async () => {
+    await prisma.$transaction([
+      prisma.user.create({
+        data: {
+          id: "u1",
+          name: "user1",
+          displayName: "User1",
+          email: "user1@example.com",
+          password: "password",
+        },
+      }),
+      prisma.nicovideoRegistrationRequest.create({
+        data: {
+          id: "r1",
+          isChecked: false,
+          sourceId: "sm1",
+          thumbnailUrl: "https://example.com",
+          title: "title",
+          requestedById: "u1",
+        },
+      }),
+    ]);
+
+    const actual = (await register(prisma, {
+      authUserId: "u1",
+      primaryTitle: "Video 1",
+      primaryThumbnail: "https://example.com/1.jpg",
+
+      extraTitles: [],
+      tagIds: [],
+      semitagNames: [],
+      nicovideoSourceIds: [],
+
+      nicovideoRequestId: "r1",
+    })) as Ok<Awaited<ReturnType<typeof register>>>;
+    expect(actual.status).not.toBe("error");
+
+    const actualR1 = await prisma.nicovideoRegistrationRequest.findUniqueOrThrow({ where: { id: "r1" } });
+    expect(actualR1.isChecked).toBe(true);
+
+    const actualR1Check = await prisma.nicovideoRegistrationRequestChecking.findUniqueOrThrow({
+      where: { requestId: "r1" },
+    });
+    expect(actualR1Check.videoId).toBe(actual.data.id);
   });
 });
