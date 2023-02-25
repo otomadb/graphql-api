@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "run-p 'dev:*'",
     "dev:tsup": "tsup --watch",
-    "dev:codegen": "npm run codegen -- --watch",
     "dev:nodemon": "nodemon -w dist/index.js dist/index.js",
     "prebuild": "run-p 'prebuild:*'",
     "prebuild:codegen": "npm run codegen",
