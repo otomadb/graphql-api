@@ -10,6 +10,7 @@ on:
       - package-lock.json
       - Dockerfile.migration
   pull_request:
+  merge_group:
 
 jobs:
   build:
