@@ -6,7 +6,7 @@ ADD https://github.com/krallin/tini/releases/download/v0.19.0/tini /bin/tini
 RUN chmod +x /bin/tini
 
 ## install all node.js dependencies
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json .npmrc ./
 RUN npm ci
 
 COPY ./prisma ./prisma
