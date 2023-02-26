@@ -1,0 +1,4 @@
+type Query {
+  tag(id: ID!): Tag! @deprecated
+  getTag(id: ID!): Tag!
+}

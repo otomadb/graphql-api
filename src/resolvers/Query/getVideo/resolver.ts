@@ -3,7 +3,7 @@ import { GraphQLNotExistsInDBError, parseGqlID } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { VideoModel } from "../../Video/model.js";
 
-export const video = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const getVideo = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async (_parent, { id }) =>
     prisma.video
       .findUniqueOrThrow({ where: { id: parseGqlID("Video", id) } })

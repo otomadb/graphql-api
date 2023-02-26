@@ -69,41 +69,7 @@ services:
         source: neo4j_logs
         target: /logs
 
-  prometheus:
-    image: prom/prometheus:v2.4.0
-    ports:
-      - target: 9090
-        published: 9090
-    volumes:
-      - type: bind
-        source: ./prometheus/prod/prometheus.yml
-        target: /etc/prometheus/prometheus.yml
-      - type: volume
-        source: prometheus_data
-        target: /prometheus
-
-  grafana:
-    image: grafana/grafana:9.3.2
-    ports:
-      - target: 3000
-        published: 9000
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=password
-    volumes:
-      - type: bind
-        source: ./grafana/prod/dashboards
-        target: /etc/grafana/dashboards
-      - type: bind
-        source: ./grafana/prod/provisioning
-        target: /etc/grafana/provisioning
-      - type: volume
-        source: grafana_data
-        target: /etc/grafana/dashboards
-
 volumes:
   postgres_data:
   neo4j_data:
   neo4j_logs:
-  grafana_data:
-  prometheus_data:

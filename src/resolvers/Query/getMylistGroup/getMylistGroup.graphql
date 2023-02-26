@@ -1,0 +1,4 @@
+type Query {
+  mylistGroup(id: ID!): MylistGroup! @deprecated
+  getMylistGroup(id: ID!): MylistGroup!
+}

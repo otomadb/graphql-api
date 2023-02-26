@@ -7,6 +7,10 @@ import { UserModel } from "../User/model.js";
 export const resolverNicovideoRegistrationRequest = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
     id: ({ dbId: requestId }) => buildGqlId("NicovideoRegistrationRequest", requestId),
+
+    originalUrl: ({ sourceId }) => `https://www.nicovideo.jp/watch/${sourceId}`,
+    embedUrl: ({ sourceId }) => `https://embed.nicovideo.jp/watch/${sourceId}`,
+
     taggings: ({ dbId: requestId }) => {
       return prisma.nicovideoRegistrationRequestTagging
         .findMany({ where: { requestId }, include: { tag: true } })

@@ -12,6 +12,7 @@ on:
       - ".npmrc"
       - "prisma/**"
   pull_request:
+  merge_group:
 
 jobs:
   build:

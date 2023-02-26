@@ -1,3 +1,0 @@
-type Query {
-  nicovideoVideoSource(id: ID!): NicovideoVideoSource!
-}
