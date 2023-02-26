@@ -5,10 +5,12 @@ on:
     branches:
       - main
     paths:
-      - prisma/**
-      - package.json
-      - package-lock.json
-      - Dockerfile.migration
+      - "Dockerfile.migration"
+      - ".dockerignore"
+      - "package.json"
+      - "package-lock.json"
+      - ".npmrc"
+      - "prisma/**"
   pull_request:
   merge_group:
 
