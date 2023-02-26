@@ -1,0 +1,4 @@
+type Query {
+  nicovideoVideoSource(id: ID!): NicovideoVideoSource! @deprecated
+  getNicovideoVideoSource(id: ID!): NicovideoVideoSource!
+}

@@ -1,0 +1,4 @@
+type Query {
+  video(id: ID!): Video! @deprecated
+  getVideo(id: ID!): Video!
+}
