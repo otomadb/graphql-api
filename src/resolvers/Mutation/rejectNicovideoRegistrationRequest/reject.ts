@@ -43,7 +43,10 @@ export const reject = async (
       }),
       prisma.nicovideoRegistrationRequest.update({
         where: { id: requestId },
-        data: { isChecked: true },
+        data: {
+          isChecked: true,
+          events: { create: { userId, type: "REJECT" } },
+        },
       }),
     ]);
 

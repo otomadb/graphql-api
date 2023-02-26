@@ -44,6 +44,7 @@ export const getRequestCheck = async (
               checkedBy: { connect: { id: userId } },
             },
           },
+          events: { create: { userId, type: "ACCEPT" } },
         },
       }),
     ]);
