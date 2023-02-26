@@ -1,4 +1,6 @@
 import {
+  NicovideoRegistrationRequestEvent,
+  NicovideoRegistrationRequestEventType,
   NicovideoVideoSource,
   NicovideoVideoSourceEvent,
   NicovideoVideoSourceEventType,
@@ -490,5 +492,19 @@ describe("Register video by Prisma", () => {
       where: { requestId: "r1" },
     });
     expect(actualR1Check.videoId).toBe(actual.data.id);
+
+    const actualR1Events = await prisma.nicovideoRegistrationRequestEvent.findMany({
+      where: { requestId: "r1" },
+    });
+    expect(actualR1Events).toHaveLength(1);
+    expect(actualR1Events[0]).toStrictEqual({
+      id: expect.any(String),
+      userId: "u1",
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
+      requestId: "r1",
+      payload: null,
+      type: NicovideoRegistrationRequestEventType.ACCEPT,
+    } satisfies NicovideoRegistrationRequestEvent);
   });
 });
