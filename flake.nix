@@ -26,7 +26,7 @@
         pkgs = import nixpkgs {
           inherit system;
           overlays = with inputs; [
-            devshell.overlay
+            devshell.overlays.default
           ];
         };
         prisma-engines = inputs.prisma-engines.packages.${system}.prisma-engines;
