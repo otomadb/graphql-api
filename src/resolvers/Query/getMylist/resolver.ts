@@ -6,7 +6,7 @@ import { parseGqlID } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
 
-export const mylist = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const getMylist = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async (_parent, { id }, { user }) => {
     const mylist = await prisma.mylist.findFirst({ where: { id: parseGqlID("Mylist", id) } });
 
@@ -16,4 +16,4 @@ export const mylist = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
     }
 
     return new MylistModel(mylist);
-  }) satisfies QueryResolvers["mylist"];
+  }) satisfies QueryResolvers["getMylist"];
