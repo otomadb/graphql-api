@@ -361,6 +361,7 @@ model User {
 
   NicovideoRegistrationRequests         NicovideoRegistrationRequest[]
   NicovideoRegistrationRequestCheckings NicovideoRegistrationRequestChecking[]
+  NicovideoRegistrationRequestEvents    NicovideoRegistrationRequestEvent[]
 }
 
 enum UserRole {
@@ -642,6 +643,8 @@ model NicovideoRegistrationRequest {
 
   isChecked Boolean
   checking  NicovideoRegistrationRequestChecking?
+
+  events NicovideoRegistrationRequestEvent[]
 }
 
 model NicovideoRegistrationRequestTagging {
@@ -689,4 +692,27 @@ model NicovideoRegistrationRequestChecking {
   videoId String?
 
   note String?
+}
+
+model NicovideoRegistrationRequestEvent {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  request   NicovideoRegistrationRequest @relation(fields: [requestId], references: [id])
+  requestId String
+
+  type    NicovideoRegistrationRequestEventType
+  payload Json?
+}
+
+enum NicovideoRegistrationRequestEventType {
+  REQUEST
+
+  ACCEPT
+  REJECT
 }
