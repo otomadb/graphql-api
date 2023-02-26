@@ -105,6 +105,27 @@
         "type": "github"
       }
     },
+    "gitignore": {
+      "inputs": {
+        "nixpkgs": [
+          "prisma-engines",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1660459072,
+        "narHash": "sha256-8DFJjXG8zqoONA1vXtgeKXy68KdJL5UaXR8NtVMUbx8=",
+        "owner": "hercules-ci",
+        "repo": "gitignore.nix",
+        "rev": "a20de23b925fd8264fd7fad6454652e142fd7f73",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "gitignore.nix",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1674459583,
@@ -128,22 +149,23 @@
         "flake-utils": [
           "flake-utils"
         ],
+        "gitignore": "gitignore",
         "nixpkgs": [
           "nixpkgs"
         ],
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1673883190,
-        "narHash": "sha256-Nxpv3ibhHTFiO0hqSrT1hqTK9Vb0P8Svu5riufCChwI=",
+        "lastModified": 1675947761,
+        "narHash": "sha256-TFLwpKh+FsstcpvBfTw7CNcQOGGSNI9qf8WJ6v75uL8=",
         "owner": "prisma",
         "repo": "prisma-engines",
-        "rev": "ceb5c99003b99c9ee2c1d2e618e359c14aef2ea5",
+        "rev": "aead147aa326ccb985dcfed5b065b4fdabd44b19",
         "type": "github"
       },
       "original": {
         "owner": "prisma",
-        "ref": "4.9.0",
+        "ref": "4.10.1",
         "repo": "prisma-engines",
         "type": "github"
       }
