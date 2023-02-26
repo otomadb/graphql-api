@@ -70,7 +70,7 @@ services:
         target: /logs
 
   prometheus:
-    image: prom/prometheus:v2.4.0
+    image: prom/prometheus:v2.42.0
     ports:
       - target: 9090
         published: 9090
