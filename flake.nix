@@ -40,6 +40,8 @@
             hadolint
             nodejs-19_x
             openssl
+            pgcli
+            postgresql_15
             treefmt
           ];
           env = [
