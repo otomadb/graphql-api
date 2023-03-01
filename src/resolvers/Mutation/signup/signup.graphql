@@ -16,6 +16,7 @@ union SignupPayload =
   | SignupEmailAlreadyExistsError
   | SignupEmailValidationError
   | SignupPasswordValidationError
+  | SignupOtherErrorsFallback
   | SignupSucceededPayload
 
 type SignupNameAlreadyExistsError {
