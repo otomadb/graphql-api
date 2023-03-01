@@ -6,12 +6,24 @@ import { parseGqlID } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
 
-export const getMylist = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
-  (async (_parent, { id }, { user }) => {
+export const getMylist = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+  (async (_parent, { id }, { user: ctxUser }, info) => {
     const mylist = await prisma.mylist.findFirst({ where: { id: parseGqlID("Mylist", id) } });
 
-    if (!mylist) throw new GraphQLError("Mylist Not Found or Private");
-    if (mylist.shareRange === MylistShareRange.PRIVATE && mylist.holderId !== user?.id) {
+    if (!mylist) {
+      logger.error({ path: info.path, args: { id } }, "Not found");
+      throw new GraphQLError("Mylist Not Found or Private");
+    }
+    if (mylist.shareRange === MylistShareRange.PRIVATE && mylist.holderId !== ctxUser?.id) {
+      logger.error(
+        {
+          path: info.path,
+          args: { id },
+          holderId: mylist.holderId,
+          userId: ctxUser?.id,
+        },
+        "Private mylist accessed by other user"
+      );
       throw new GraphQLError("This mylist is not holded by you");
     }
 
