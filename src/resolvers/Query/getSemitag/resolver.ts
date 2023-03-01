@@ -3,11 +3,12 @@ import { GraphQLNotExistsInDBError, parseGqlID } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { SemitagModel } from "../../Semitag/model.js";
 
-export const getSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
-  (async (_parent, { id }) =>
+export const getSemitag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+  (async (_parent, { id }, { user: ctxUser }, info) =>
     prisma.semitag
       .findUniqueOrThrow({ where: { id: parseGqlID("Semitag", id) } })
       .then((v) => new SemitagModel(v))
       .catch(() => {
+        logger.error({ path: info.path, args: { id }, userId: ctxUser?.id }, "Not found");
         throw new GraphQLNotExistsInDBError("Semitag", id);
       })) satisfies QueryResolvers["getSemitag"];
