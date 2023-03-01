@@ -58,7 +58,7 @@ export const registerNewUser = async (
       email,
       password: hashedPassword,
       icon: null,
-      isEmailConfirmed: true,
+      isEmailConfirmed: false,
       role: isExistAdmin ? UserRole.NORMAL : UserRole.ADMINISTRATOR,
       mylists: {
         create: {
