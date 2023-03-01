@@ -1,4 +1,5 @@
-import { buildHTTPExecutor } from "@graphql-tools/executor-http";
+import { buildHTTPExecutor, HTTPExecutorOptions } from "@graphql-tools/executor-http";
+import { SyncExecutor } from "@graphql-tools/utils";
 import { PrismaClient } from "@prisma/client";
 import { parse } from "graphql";
 import { createSchema, createYoga } from "graphql-yoga";
@@ -16,6 +17,7 @@ describe("Signup", () => {
   let neo4j: ResolverDeps["neo4j"];
   let logger: ResolverDeps["logger"];
   let config: DeepMockProxy<ResolverDeps["config"]>;
+  let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
 
   beforeAll(async () => {
     prisma = new PrismaClient({ datasources: { db: { url: process.env.TEST_PRISMA_DATABASE_URL } } });
@@ -28,6 +30,10 @@ describe("Signup", () => {
 
     logger = mockDeep<ResolverDeps["logger"]>();
     config = mockDeep<ResolverDeps["config"]>();
+
+    const schema = createSchema({ typeDefs, resolvers: makeResolvers({ prisma, neo4j, logger, config }) });
+    const yoga = createYoga<ServerContext, UserContext>({ schema });
+    executor = buildHTTPExecutor({ fetch: yoga.fetch });
   });
 
   beforeEach(async () => {
@@ -49,16 +55,6 @@ describe("Signup", () => {
     const req = mockDeep<ServerContext["req"]>();
     const res = mockDeep<ServerContext["res"]>();
 
-    const schema = createSchema({
-      typeDefs,
-      resolvers: makeResolvers({ prisma, neo4j, logger, config }),
-    });
-    const yoga = createYoga<ServerContext, UserContext>({
-      schema,
-    });
-
-    const executor = buildHTTPExecutor({ fetch: yoga.fetch });
-
     const result = await executor({
       document: parse(/* GraphQL */ `
         mutation signup($input: SignupInput!) {
@@ -68,9 +64,6 @@ describe("Signup", () => {
               user {
                 id
               }
-            }
-            ... on SignupFailedPayload {
-              message
             }
           }
         }

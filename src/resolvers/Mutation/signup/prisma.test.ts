@@ -2,6 +2,7 @@ import { PrismaClient, UserRole } from "@prisma/client";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
+import { Err, err, Ok, ok } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 import { registerNewUser } from "./prisma.js";
 
@@ -21,30 +22,96 @@ describe("Register user in Prisma", () => {
     await prisma.$disconnect();
   });
 
-  test("既に同じnameを持つユーザが作成済みならエラーを返却", async () => {
-    await prisma.user.create({
-      data: {
-        id: "u1",
-        name: "testuser",
-        displayName: "Test User",
-        email: "testuser@example.net",
-        isEmailConfirmed: true,
-        password: "password",
-        role: UserRole.NORMAL,
-      },
-    });
+  test("既に同じnameが登録済み", async () => {
+    await prisma.$transaction([
+      prisma.user.create({
+        data: {
+          id: "u1",
+          name: "testuser",
+          displayName: "Test User",
+          email: "testuser@example.net",
+          isEmailConfirmed: true,
+          password: "password",
+          role: UserRole.NORMAL,
+        },
+      }),
+    ]);
 
     const actual = await registerNewUser(prisma, {
       name: "testuser",
+      displayName: "Test User 2",
+      email: "testuser2@example.net",
+      password: "password",
+    });
+
+    expect(actual).toStrictEqual(
+      err({
+        message: "NAME_ALREADY_EXISTS",
+        name: "testuser",
+      }) satisfies Err<Awaited<ReturnType<typeof registerNewUser>>>
+    );
+  });
+
+  test.each(["---", "   test"])(`不適当なname: %s`, async (email) => {
+    const actual = await registerNewUser(prisma, {
+      name: email,
       displayName: "Test User",
       email: "testuser@example.net",
       password: "password",
     });
 
-    expect(actual).toStrictEqual({
-      status: "error",
-      error: "EXISTS_USERNAME",
+    expect(actual).toStrictEqual(
+      err({
+        message: "NAME_WRONG_CHARACTER",
+        name: email,
+      }) satisfies Err<Awaited<ReturnType<typeof registerNewUser>>>
+    );
+  });
+
+  test("既に同じemailが登録済み", async () => {
+    await prisma.$transaction([
+      prisma.user.create({
+        data: {
+          id: "u1",
+          name: "testuser",
+          displayName: "Test User",
+          email: "testuser@example.net",
+          isEmailConfirmed: true,
+          password: "password",
+          role: UserRole.NORMAL,
+        },
+      }),
+    ]);
+
+    const actual = await registerNewUser(prisma, {
+      name: "testuser2",
+      displayName: "Test User 2",
+      email: "testuser@example.net",
+      password: "password",
     });
+
+    expect(actual).toStrictEqual(
+      err({
+        message: "EMAIL_ALREADY_EXISTS",
+        email: "testuser@example.net",
+      }) satisfies Err<Awaited<ReturnType<typeof registerNewUser>>>
+    );
+  });
+
+  test.each(["example.com"])(`不適当なemail: %s`, async (email) => {
+    const actual = await registerNewUser(prisma, {
+      name: "testuser",
+      displayName: "Test User",
+      email,
+      password: "password",
+    });
+
+    expect(actual).toStrictEqual(
+      err({
+        message: "EMAIL_INVALID_EMAIL_FORMAT",
+        email,
+      }) satisfies Err<Awaited<ReturnType<typeof registerNewUser>>>
+    );
   });
 
   test("管理者が存在しないなら，管理者ユーザとして作成される", async () => {
@@ -55,43 +122,57 @@ describe("Register user in Prisma", () => {
       password: "password",
     });
 
-    expect(actual).toStrictEqual({
-      status: "ok",
-      data: expect.objectContaining({
+    expect(actual).toStrictEqual(
+      ok({
         id: expect.any(String),
         name: "testuser",
+        displayName: "Test User",
+        email: "testuser@example.net",
+        isEmailConfirmed: false,
+        password: expect.any(String),
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+        icon: null,
         role: UserRole.ADMINISTRATOR,
-      }),
-    });
+      }) satisfies Ok<Awaited<ReturnType<typeof registerNewUser>>>
+    );
   });
 
   test("管理者が存在するなら，通常ユーザとして作成される", async () => {
-    await prisma.user.create({
-      data: {
-        id: "u1",
-        name: "admin",
-        displayName: "Test User",
-        email: "admin@example.net",
-        isEmailConfirmed: true,
-        password: "password",
-        role: UserRole.ADMINISTRATOR,
-      },
-    });
+    await prisma.$transaction([
+      prisma.user.create({
+        data: {
+          id: "u1",
+          name: "testuser",
+          displayName: "Test User",
+          email: "testuser@example.net",
+          isEmailConfirmed: true,
+          password: "password",
+          role: UserRole.ADMINISTRATOR,
+        },
+      }),
+    ]);
 
     const actual = await registerNewUser(prisma, {
-      name: "testuser",
-      displayName: "Test User",
-      email: "testuser@example.net",
+      name: "testuser2",
+      displayName: "Test User 2",
+      email: "testuser2@example.net",
       password: "password",
     });
 
-    expect(actual).toStrictEqual({
-      status: "ok",
-      data: expect.objectContaining({
+    expect(actual).toStrictEqual(
+      ok({
         id: expect.any(String),
-        name: "testuser",
+        name: "testuser2",
+        displayName: "Test User 2",
+        email: "testuser2@example.net",
+        isEmailConfirmed: false,
+        password: expect.any(String),
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+        icon: null,
         role: UserRole.NORMAL,
-      }),
-    });
+      }) satisfies Ok<Awaited<ReturnType<typeof registerNewUser>>>
+    );
   });
 });
