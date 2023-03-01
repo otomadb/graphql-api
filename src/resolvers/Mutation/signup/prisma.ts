@@ -24,54 +24,59 @@ export const registerNewUser = async (
     | { message: "DISPLAY_NAME_INSUFFICIENT_MAX_LENGTH"; displayName: string }
     | { message: "EMAIL_ALREADY_EXISTS"; email: string }
     | { message: "EMAIL_INVALID_EMAIL_FORMAT"; email: string }
-    | { message: "PASSWORD_INSUFFICIENT_MIN_LENGTH"; password: string },
+    | { message: "PASSWORD_INSUFFICIENT_MIN_LENGTH"; password: string }
+    | { message: "INTERNAL_SERVER_ERROR"; error: unknown },
     User
   >
 > => {
-  if (name.length < 3) return err({ message: "NAME_INSUFFICIENT_MIN_LENGTH", name });
-  if (16 < name.length) return err({ message: "NAME_INSUFFICIENT_MAX_LENGTH", name });
-  if (!nameRegex.test(name)) return err({ message: "NAME_WRONG_CHARACTER", name });
+  try {
+    if (name.length < 3) return err({ message: "NAME_INSUFFICIENT_MIN_LENGTH", name });
+    if (16 < name.length) return err({ message: "NAME_INSUFFICIENT_MAX_LENGTH", name });
+    if (!nameRegex.test(name)) return err({ message: "NAME_WRONG_CHARACTER", name });
 
-  if (displayName.length < 1) return err({ message: "DISPLAY_NAME_INSUFFICIENT_MIN_LENGTH", displayName });
-  if (32 < displayName.length) return err({ message: "DISPLAY_NAME_INSUFFICIENT_MAX_LENGTH", displayName });
+    if (displayName.length < 1) return err({ message: "DISPLAY_NAME_INSUFFICIENT_MIN_LENGTH", displayName });
+    if (32 < displayName.length) return err({ message: "DISPLAY_NAME_INSUFFICIENT_MAX_LENGTH", displayName });
 
-  if (!emailRegex.test(email)) return err({ email, message: "EMAIL_INVALID_EMAIL_FORMAT" });
+    if (!emailRegex.test(email)) return err({ email, message: "EMAIL_INVALID_EMAIL_FORMAT" });
 
-  if (password.length < 8) return err({ message: "PASSWORD_INSUFFICIENT_MIN_LENGTH", password });
+    if (password.length < 8) return err({ message: "PASSWORD_INSUFFICIENT_MIN_LENGTH", password });
 
-  if (await prisma.user.findUnique({ where: { name } })) return err({ message: "NAME_ALREADY_EXISTS", name });
-  if (await prisma.user.findUnique({ where: { email } })) return err({ message: "EMAIL_ALREADY_EXISTS", email });
+    if (await prisma.user.findUnique({ where: { name } })) return err({ message: "NAME_ALREADY_EXISTS", name });
+    if (await prisma.user.findUnique({ where: { email } })) return err({ message: "EMAIL_ALREADY_EXISTS", email });
 
-  const isExistAdmin = !!(await prisma.user.findFirst({ where: { role: UserRole.ADMINISTRATOR } }));
+    const isExistAdmin = !!(await prisma.user.findFirst({ where: { role: UserRole.ADMINISTRATOR } }));
 
-  const hashedPassword = await hash(password, {
-    type: 2,
-    memoryCost: 15 * 1024,
-    timeCost: 2,
-    parallelism: 1,
-  });
+    const hashedPassword = await hash(password, {
+      type: 2,
+      memoryCost: 15 * 1024,
+      timeCost: 2,
+      parallelism: 1,
+    });
 
-  const newUser = await prisma.user.create({
-    data: {
-      name,
-      displayName,
-      email,
-      password: hashedPassword,
-      icon: null,
-      isEmailConfirmed: false,
-      role: isExistAdmin ? UserRole.NORMAL : UserRole.ADMINISTRATOR,
-      mylists: {
-        create: {
-          isLikeList: true,
-          title: `Favlist for ${name}`,
-          shareRange: MylistShareRange.PRIVATE,
+    const newUser = await prisma.user.create({
+      data: {
+        name,
+        displayName,
+        email,
+        password: hashedPassword,
+        icon: null,
+        isEmailConfirmed: false,
+        role: isExistAdmin ? UserRole.NORMAL : UserRole.ADMINISTRATOR,
+        mylists: {
+          create: {
+            isLikeList: true,
+            title: `Favlist for ${name}`,
+            shareRange: MylistShareRange.PRIVATE,
+          },
         },
       },
-    },
-  });
+    });
 
-  return {
-    status: "ok",
-    data: newUser,
-  };
+    return {
+      status: "ok",
+      data: newUser,
+    };
+  } catch (e) {
+    return err({ message: "INTERNAL_SERVER_ERROR", error: e });
+  }
 };

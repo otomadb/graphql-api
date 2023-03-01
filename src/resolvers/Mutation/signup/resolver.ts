@@ -11,6 +11,8 @@ import {
   SignupNameAlreadyExistsError,
   SignupNameValidationError,
   SignupNameValidationErrorEnum,
+  SignupOtherErrorsFallback,
+  SignupOtherErrorsFallbackEnum,
   SignupPasswordValidationError,
   SignupPasswordValidationErrorEnum,
 } from "../../graphql.js";
@@ -18,8 +20,8 @@ import { ResolverDeps } from "../../index.js";
 import { UserModel } from "../../User/model.js";
 import { registerNewUser } from "./prisma.js";
 
-export const resolverSignup = ({ prisma, config }: Pick<ResolverDeps, "prisma" | "config">) =>
-  (async (_parent, { input: { name, displayName, email, password: rawPassword } }, { res }) => {
+export const resolverSignup = ({ prisma, config, logger }: Pick<ResolverDeps, "prisma" | "config" | "logger">) =>
+  (async (_parent, { input: { name, displayName, email, password: rawPassword } }, { res }, info) => {
     const result = await registerNewUser(prisma, { name, displayName, email, password: rawPassword });
     if (result.status === "error") {
       switch (result.error.message) {
@@ -74,6 +76,12 @@ export const resolverSignup = ({ prisma, config }: Pick<ResolverDeps, "prisma" |
             __typename: "SignupPasswordValidationError",
             enum: SignupPasswordValidationErrorEnum.InsufficientMinLength,
           } satisfies SignupPasswordValidationError;
+        case "INTERNAL_SERVER_ERROR":
+          logger.error({ error: result.error.error, path: info.path }, "Something error happens");
+          return {
+            __typename: "SignupOtherErrorsFallback",
+            enum: SignupOtherErrorsFallbackEnum.InternalServerError,
+          } satisfies SignupOtherErrorsFallback;
       }
     }
 
