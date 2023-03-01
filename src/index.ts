@@ -145,11 +145,11 @@ const yoga = createYoga<ServerContext, UserContext>({
           case "execute-end":
             logger.info(
               {
-                operation: data.args.operationName,
-                variables: data.args.variableValues,
-                result: data.result,
-                user: data.args.contextValue.user,
                 query: print(data.args.document),
+                operation: data.args.operationName,
+                variables: data.args.variableValues || {},
+                user: data.args.contextValue.user,
+                errors: data.result.errors,
               },
               "GraphQL Executed"
             );
