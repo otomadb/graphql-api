@@ -4,7 +4,7 @@ import { hash } from "argon2";
 import { err, Result } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 
-const nameRegex = /^[a-zA-Z_]+$/;
+const nameRegex = /^[a-zA-Z0-9_]+$/;
 
 // https://github.com/colinhacks/zod/blob/a6b44ed8e346af2fabbb62b5164b99a387accd32/src/types.ts#L531
 const emailRegex =
