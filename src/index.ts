@@ -110,7 +110,11 @@ const yoga = createYoga<ServerContext, UserContext>({
     };
   },
   plugins: [
-    ...(process.env.ENABLE_INTROSPECTION === "true" ? [] : [useDisableIntrospection()]),
+    useDisableIntrospection({
+      isDisabled() {
+        return false; // TODO: 何かしら認証を入れる
+      },
+    }),
     usePrometheus({
       execute: true,
       errors: true,
