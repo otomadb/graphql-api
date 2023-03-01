@@ -6,7 +6,7 @@ import { usePrometheus } from "@envelop/prometheus";
 import { useDisableIntrospection } from "@graphql-yoga/plugin-disable-introspection";
 import { PrismaClient } from "@prisma/client";
 import { print } from "graphql";
-import { createSchema, createYoga, useLogger } from "graphql-yoga";
+import { createSchema, createYoga, useLogger, useReadinessCheck } from "graphql-yoga";
 import neo4j from "neo4j-driver";
 import { pino } from "pino";
 
@@ -113,6 +113,24 @@ const yoga = createYoga<ServerContext, UserContext>({
     useDisableIntrospection({
       isDisabled() {
         return false; // TODO: 何かしら認証を入れる
+      },
+    }),
+    useReadinessCheck({
+      check: async () => {
+        try {
+          await Promise.all([
+            prismaClient.$queryRaw`SELECT 1`.catch(async (e) => {
+              logger.error({ error: e }, "Prisma is not ready");
+              throw e;
+            }),
+            neo4jDriver.getServerInfo().catch((e) => {
+              logger.error({ error: e }, "Neo4j is not ready");
+              throw e;
+            }),
+          ]);
+        } catch {
+          return false;
+        }
       },
     }),
     usePrometheus({
