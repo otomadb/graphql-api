@@ -57,8 +57,9 @@ export const fetchNicovideo = () =>
       }; // TODO: もう少し詳細な情報を出しても良い気がする
 
     const {
-      data: { tag, video },
+      data: { video },
     } = parsed.data;
+    const { tags, excludeTags } = filterTags(parsed.data.data.tag.items.map(({ name }) => name));
 
     return {
       source: {
@@ -72,10 +73,27 @@ export const fetchNicovideo = () =>
         countMylists: video.count.mylist,
         countComments: video.count.comment,
 
-        tags: tag.items.map(({ name }) => new NicovideoOriginalSourceTagModel({ name })),
+        tags: tags.map((name) => new NicovideoOriginalSourceTagModel({ name })),
+        excludeTags,
 
         registeredAt: video.registeredAt,
         duration: video.duration,
       },
     };
   }) satisfies QueryResolvers["fetchNicovideo"];
+
+export const filterTags = (names: string[]) => {
+  return {
+    tags: names.filter((n) => !isExcludeTag(n)),
+    excludeTags: names.filter((n) => isExcludeTag(n)),
+  };
+};
+
+export const isExcludeTag = (name: string) => {
+  switch (name.toLowerCase()) {
+    case "音mad":
+      return true;
+    default:
+      return false;
+  }
+};
