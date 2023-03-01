@@ -25,7 +25,7 @@ import { searchTags } from "./searchTags/searchTags.js";
 import { searchVideos } from "./searchVideos/searchVideos.js";
 import { whoami } from "./whoami/whoami.js";
 
-export const resolveQuery = (deps: Pick<ResolverDeps, "prisma">) =>
+export const resolveQuery = (deps: Pick<ResolverDeps, "prisma" | "logger">) =>
   ({
     fetchNicovideo: fetchNicovideo(),
     findMylist: findMylist(deps),
