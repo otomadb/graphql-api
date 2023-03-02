@@ -20,7 +20,8 @@ type Video implements Node {
 
   similarVideos(input: VideoSimilarVideosInput!): VideoSimilarVideosPayload!
 
-  isLiked: Boolean!
+  isLiked: Boolean! @deprecated
+  like: MylistRegistration
 }
 
 type VideoThumbnail {

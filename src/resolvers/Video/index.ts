@@ -3,6 +3,7 @@ import { GraphQLError } from "graphql";
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
 import { ResolverDeps } from "../index.js";
+import { MylistRegistrationModel } from "../MylistRegistration/model.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
 import { SemitagModel } from "../Semitag/model.js";
 import { VideoEventModel } from "../VideoEvent/model.js";
@@ -82,5 +83,12 @@ export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pris
       return prisma.mylistRegistration
         .findFirst({ where: { videoId, mylist: { holderId: user.id }, isRemoved: false } })
         .then((r) => !!r);
+    },
+
+    like: async ({ id: videoId }, _args, { user }) => {
+      if (!user) return null;
+      return prisma.mylistRegistration
+        .findFirst({ where: { videoId, mylist: { holderId: user.id }, isRemoved: false } })
+        .then((r) => MylistRegistrationModel.fromPrisma(r));
     },
   } satisfies Resolvers["Video"]);
