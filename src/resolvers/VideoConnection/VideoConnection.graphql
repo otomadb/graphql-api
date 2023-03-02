@@ -1,0 +1,11 @@
+type VideoConnection {
+  nodes: [Video!]!
+  edges: [VideoEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type VideoEdge {
+  cursor: String!
+  node: Video!
+}

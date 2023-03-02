@@ -28,6 +28,7 @@
   "repository": "https://github.com/otomad-database/api",
   "license": "MIT",
   "dependencies": {
+    "@devoxa/prisma-relay-cursor-connection": "^2.2.2",
     "@envelop/prometheus": "^7.0.4",
     "@graphql-tools/schema": "^9.0.10",
     "@prisma/client": "4.10.1",

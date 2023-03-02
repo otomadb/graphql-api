@@ -1,14 +1,15 @@
 type Query {
-  findVideos(input: FindVideosInput!): VideoConnection!
+  findVideos(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    orderBy: FindVideosOrderBy! = { createdAt: DESC }
+  ): VideoConnection!
 }
 
-input FindVideosInput {
-  limit: Int! = 10
-  skip: Int! = 0
-  order: FindVideosInputOrder! = { createdAt: DESC }
-}
-
-input FindVideosInputOrder {
-  updatedAt: SortOrder
+input FindVideosOrderBy {
   createdAt: SortOrder
 }
