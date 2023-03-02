@@ -9,10 +9,3 @@ type VideoEdge {
   cursor: String!
   node: Video!
 }
-
-type PageInfo {
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-  endCursor: String
-}
