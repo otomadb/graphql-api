@@ -49,6 +49,7 @@ generates:
         TagRegisterEvent: ./TagEvent/model.js#TagEventModel
         User: ./User/model.js#UserModel
         Video: ./Video/model.js#VideoModel
+        VideoConnection: ./VideoConnection/model.js#VideoConnectionModel
         VideoAddNicovideoSourceEvent: ./VideoEvent/model.js#VideoEventModel
         VideoEvent: ./VideoEvent/model.js#VideoEventModel
         VideoRegisterEvent: ./VideoEvent/model.js#VideoEventModel
