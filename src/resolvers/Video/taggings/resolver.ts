@@ -12,6 +12,7 @@ export const resolveTaggings = ({ prisma, logger }: Pick<ResolverDeps, "prisma" 
   (async ({ id: videoId }, { orderBy, ...unparsedConnectionArgs }, { user: ctxUser }, info) => {
     const connectionArgs = z
       .union([
+        z.object({}), // 全てのVideoTagの取得を許容する
         z.object({
           first: z.number(),
           after: z.string().optional(),
