@@ -55,10 +55,6 @@ type VideoSimilarVideosPayload {
   items: [VideoSimilarity!]!
 }
 
-type VideoConnection {
-  nodes: [Video!]!
-}
-
 input VideoEventsInput {
   skip: Int! = 0
   limit: Int! = 10
