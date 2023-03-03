@@ -7,8 +7,6 @@ type Video implements Node {
   thumbnailUrl: String!
   thumbnails: [VideoThumbnail!]!
 
-  tags(input: VideoTagsInput!): [VideoTag!]! @deprecated
-
   hasTag(id: ID!): Boolean!
   events(input: VideoEventsInput!): VideoEventsConnection!
   registeredAt: DateTime!
@@ -26,12 +24,6 @@ type Video implements Node {
 type VideoThumbnail {
   imageUrl: String!
   primary: Boolean!
-}
-
-input VideoTaggingsInput {
-  "nullなら全てを取得する"
-  limit: Int
-  skip: Int! = 0
 }
 
 input VideoSimilarVideosInput {
