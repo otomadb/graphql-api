@@ -11,7 +11,3 @@ input VideoTagEventsInput {
   skip: Int! = 0
   limit: Int! = 10
 }
-
-type VideoTagConnection {
-  nodes: [VideoTag!]!
-}

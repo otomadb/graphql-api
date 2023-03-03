@@ -1,0 +1,15 @@
+type Video {
+  taggings(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    orderBy: VideoTaggingsOrderBy! = { createdAt: DESC }
+  ): VideoTagConnection!
+}
+
+input VideoTaggingsOrderBy {
+  createdAt: SortOrder
+}

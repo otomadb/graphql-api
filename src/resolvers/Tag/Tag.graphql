@@ -7,8 +7,6 @@ type Tag implements Node {
   name: String!
   names: [TagName!]!
 
-  taggedVideos: [Video!]!
-
   explicitParent: Tag
   parents(meaningless: Boolean): [TagParent!]!
   meaningless: Boolean!

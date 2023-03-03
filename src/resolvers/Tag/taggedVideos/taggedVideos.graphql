@@ -1,0 +1,15 @@
+type Tag implements Node {
+  taggedVideos(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    orderBy: TagTaggedVideosOrderBy! = { createdAt: DESC }
+  ): VideoTagConnection!
+}
+
+input TagTaggedVideosOrderBy {
+  createdAt: SortOrder
+}
