@@ -6,11 +6,11 @@ import { ResolverDeps } from "../index.js";
 import { TagEventModel } from "../TagEvent/model.js";
 import { TagNameModel } from "../TagName/model.js";
 import { TagParentModel } from "../TagParent/model.js";
-import { VideoModel } from "../Video/model.js";
 import { TagModel } from "./model.js";
 import { resolvePseudoType } from "./pseudoType.js";
+import { resolveTaggedVideos } from "./taggedVideos/resolver.js";
 
-export const resolveTag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   ({
     id: ({ id }): string => buildGqlId("Tag", id),
     pseudoType: resolvePseudoType({ prisma }),
@@ -37,13 +37,7 @@ export const resolveTag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       return new TagModel(rel.parent);
     },
 
-    taggedVideos: async ({ id: tagId }) => {
-      const videoTags = await prisma.videoTag.findMany({
-        where: { tag: { id: tagId } },
-        include: { video: true },
-      });
-      return videoTags.map(({ video }) => new VideoModel(video));
-    },
+    taggedVideos: resolveTaggedVideos({ prisma, logger }),
 
     canTagTo: async ({ id: tagId }, { videoId: videoGqlId }) =>
       prisma.videoTag

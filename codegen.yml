@@ -49,13 +49,14 @@ generates:
         TagRegisterEvent: ./TagEvent/model.js#TagEventModel
         User: ./User/model.js#UserModel
         Video: ./Video/model.js#VideoModel
-        VideoConnection: ./VideoConnection/model.js#VideoConnectionModel
         VideoAddNicovideoSourceEvent: ./VideoEvent/model.js#VideoEventModel
+        VideoConnection: ./VideoConnection/model.js#VideoConnectionModel
         VideoEvent: ./VideoEvent/model.js#VideoEventModel
         VideoRegisterEvent: ./VideoEvent/model.js#VideoEventModel
         VideoSimilarity: ./VideoSimilarity/model.js#VideoSimilarityModel
         VideoTag: ./VideoTag/model.js#VideoTagModel
         VideoTagAttachEvent: ./VideoTagEvent/model.js#VideoTagEventModel
+        VideoTagConnection: ./VideoTagConnection/model.js#VideoTagConnectionModel
         VideoTagDetachEvent: ./VideoTagEvent/model.js#VideoTagEventModel
         VideoTagEvent: ./VideoTagEvent/model.js#VideoTagEventModel
         VideoTagReattachEvent: ./VideoTagEvent/model.js#VideoTagEventModel
