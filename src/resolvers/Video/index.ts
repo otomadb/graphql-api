@@ -7,10 +7,10 @@ import { MylistRegistrationModel } from "../MylistRegistration/model.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
 import { SemitagModel } from "../Semitag/model.js";
 import { VideoEventModel } from "../VideoEvent/model.js";
-import { VideoTagModel } from "../VideoTag/model.js";
 import { VideoThumbnailModel } from "../VideoThumbnail/model.js";
 import { VideoTitleModel } from "../VideoTitle/model.js";
 import { resolveSimilarVideos } from "./similarVideos.js";
+import { resolveTaggings } from "./taggings/resolver.js";
 import { resolveTags } from "./tags.js";
 
 export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
@@ -37,17 +37,7 @@ export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pris
       prisma.videoThumbnail.findMany({ where: { videoId } }).then((vs) => vs.map((t) => new VideoThumbnailModel(t))),
 
     tags: resolveTags({ prisma }),
-    taggings: async ({ id: videoId }, { input }) => {
-      const nodes = await prisma.videoTag
-        .findMany({
-          where: { videoId, isRemoved: false },
-          take: input.limit?.valueOf(),
-          skip: input.skip.valueOf(),
-          orderBy: { id: "asc" },
-        })
-        .then((ts) => ts.map((t) => new VideoTagModel(t)));
-      return { nodes };
-    },
+    taggings: resolveTaggings({ prisma, logger }),
 
     hasTag: async ({ id: videoId }, { id: tagGqlId }) =>
       prisma.videoTag
