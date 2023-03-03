@@ -11,7 +11,6 @@ import { VideoThumbnailModel } from "../VideoThumbnail/model.js";
 import { VideoTitleModel } from "../VideoTitle/model.js";
 import { resolveSimilarVideos } from "./similarVideos.js";
 import { resolveTaggings } from "./taggings/resolver.js";
-import { resolveTags } from "./tags.js";
 
 export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
   ({
@@ -36,7 +35,6 @@ export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pris
     thumbnails: async ({ id: videoId }) =>
       prisma.videoThumbnail.findMany({ where: { videoId } }).then((vs) => vs.map((t) => new VideoThumbnailModel(t))),
 
-    tags: resolveTags({ prisma }),
     taggings: resolveTaggings({ prisma, logger }),
 
     hasTag: async ({ id: videoId }, { id: tagGqlId }) =>
