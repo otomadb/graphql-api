@@ -29,6 +29,7 @@ generates:
         NicovideoVideoSourceEvent: ./NicovideoVideoSourceEvent/model.js#NicovideoVideoSourceEventModel
         Semitag: ./Semitag/model.js#SemitagModel
         SemitagAttachEvent: ./SemitagEvent/model.js#SemitagEventModel
+        SemitagConnection: ./SemitagConnection/model.js#SemitagConnectionModel
         SemitagEvent: ./SemitagEvent/model.js#SemitagEventModel
         SemitagRejectEvent: ./SemitagEvent/model.js#SemitagEventModel
         SemitagRejecting: ./Semitag/model.js#SemitagRejectingModel
