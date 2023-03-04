@@ -239,14 +239,13 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
     const findRequestsResult = await executor({
       document: parse(/* GraphQL */ `
         query FindRequests {
-          findNicovideoRegistrationRequests(input: {}) {
+          findNicovideoRegistrationRequests(first: 2) {
             nodes {
               id
             }
           }
         }
       `),
-      variables: { input: {} },
     });
     expect(findRequestsResult.data.findNicovideoRegistrationRequests.nodes).toHaveLength(1);
     expect(findRequestsResult.data.findNicovideoRegistrationRequests.nodes).toStrictEqual(
