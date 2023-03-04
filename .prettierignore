@@ -11,3 +11,9 @@ src/db/migrations/
 # codegen
 schema.graphql
 src/resolvers/graphql.ts
+
+# ESLint
+.eslint-report.json
+
+# GraphQL Schema Linter
+.graphql-schema-linter-report.json

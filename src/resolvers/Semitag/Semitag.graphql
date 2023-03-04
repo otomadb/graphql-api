@@ -27,10 +27,6 @@ type SemitagRejecting {
   semitag: Semitag!
 }
 
-type SemitagConnection {
-  nodes: [Semitag!]!
-}
-
 input SemitagEventsInput {
   skip: Int! = 0
   limit: Int! = 10
