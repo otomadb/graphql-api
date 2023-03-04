@@ -11,3 +11,6 @@ src/db/migrations/
 # codegen
 schema.graphql
 src/resolvers/graphql.ts
+
+# ESLint
+.eslint-report.json

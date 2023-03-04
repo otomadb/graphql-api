@@ -18,11 +18,19 @@ jobs:
           node-version: 19
           cache: npm
       - run: npm ci
+
+      - run: npm run lint:prettier
+
+      - run: npm run lint:eslint:report
+      - name: Annotate ESLint results
+        uses: ataylorme/eslint-annotate-action@v2
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          report-json: ".eslint-report.json"
+
       - run: npm run codegen
       - run: npm run prisma:client
       - run: npm run lint:schema
-      - run: npm run lint:eslint
-      - run: npm run lint:prettier
 
   typecheck:
     name: Type Check
