@@ -27,3 +27,6 @@ dist/
 # ESLint
 .eslintcache
 .eslint-report.json
+
+# GraphQL Schema Linter
+.graphql-schema-linter-report.json

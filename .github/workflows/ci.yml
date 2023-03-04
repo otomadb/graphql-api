@@ -29,8 +29,7 @@ jobs:
           report-json: ".eslint-report.json"
 
       - run: npm run codegen
-      - run: npm run prisma:client
-      - run: npm run lint:schema
+      - run: npm run lint:graphql-schema-linter:report
 
   typecheck:
     name: Type Check
