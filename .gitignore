@@ -23,3 +23,7 @@ src/resolvers/graphql.ts
 
 # tsc
 dist/
+
+# ESLint
+.eslintcache
+.eslint-report.json
