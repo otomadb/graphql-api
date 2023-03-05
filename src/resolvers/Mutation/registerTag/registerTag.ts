@@ -12,7 +12,7 @@ import {
 import { GraphQLResolveInfo } from "graphql";
 import { ulid } from "ulid";
 
-import { err, Result } from "../../../utils/Result.js";
+import { err, ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, RegisterTagFailedMessage } from "../../graphql.js";
 import { parseGqlID2, parseGqlIDs2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
@@ -181,10 +181,7 @@ export const register = async (
       }),
       ...transactionSemitag,
     ]);
-    return {
-      status: "ok",
-      data: tag,
-    };
+    return ok(tag);
   } catch (e) {
     return err({ type: "UNKNOWN", error: e });
   }

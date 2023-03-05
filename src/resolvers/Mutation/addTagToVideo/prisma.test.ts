@@ -3,7 +3,7 @@ import { ulid } from "ulid";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import { Ok } from "../../../utils/Result.js";
+import { Ok, OkData } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 import { add } from "./prisma.js";
 
@@ -75,20 +75,20 @@ describe("Add tag in Prisma", () => {
       }),
     ]);
 
-    const actual = await add(prisma, {
+    const actual = (await add(prisma, {
       authUserId: "u1",
       videoId: "v1",
       tagId: "t1",
-    });
-    expect(actual).toStrictEqual({
-      status: "ok",
-      data: expect.objectContaining({
+    })) as Ok<Awaited<ReturnType<typeof add>>>;
+    expect(actual.status).toBe("ok");
+    expect(actual.data).toStrictEqual(
+      expect.objectContaining({
         id: expect.any(String),
         videoId: "v1",
         tagId: "t1",
         isRemoved: false,
-      }),
-    } satisfies Ok<Awaited<ReturnType<typeof add>>>);
+      }) satisfies OkData<typeof actual>
+    );
 
     const videoTagId = (actual as Ok<Awaited<ReturnType<typeof add>>>).data.id;
 
@@ -131,20 +131,20 @@ describe("Add tag in Prisma", () => {
       }),
     ]);
 
-    const actual = await add(prisma, {
+    const actual = (await add(prisma, {
       authUserId: "u1",
       videoId: "v1",
       tagId: "t1",
-    });
-    expect(actual).toStrictEqual({
-      status: "ok",
-      data: expect.objectContaining({
+    })) as Ok<Awaited<ReturnType<typeof add>>>;
+    expect(actual.status).toBe("ok");
+    expect(actual.data).toStrictEqual(
+      expect.objectContaining({
         id: expect.any(String),
         videoId: "v1",
         tagId: "t1",
         isRemoved: false,
-      }),
-    } satisfies Ok<Awaited<ReturnType<typeof add>>>);
+      }) satisfies OkData<typeof actual>
+    );
 
     const videoTagId = (actual as Ok<Awaited<ReturnType<typeof add>>>).data.id;
 

@@ -2,7 +2,7 @@ import { Session } from "@prisma/client";
 import { serialize as serializeCookie } from "cookie";
 
 import { extractSessionFromReq } from "../../../auth/session.js";
-import { Result } from "../../../utils/Result.js";
+import { ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, SignoutFailedMessage } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { SessionModel } from "../../Session/model.js";
@@ -18,7 +18,7 @@ export const expire = async (
     where: { id: sessionId },
     data: { isExpired: true },
   });
-  return { status: "ok", data: session };
+  return ok(session);
 };
 
 export const signout = ({ prisma, logger, config }: Pick<ResolverDeps, "prisma" | "logger" | "config">) =>

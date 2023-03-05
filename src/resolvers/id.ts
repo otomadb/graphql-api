@@ -51,7 +51,7 @@ export function parseGqlID2(type: NodeType, gqlId: string): Result<"INVALID_ID",
   const [t, i] = split;
   if (t !== type) return { status: "error", error: "INVALID_ID" };
 
-  return { status: "ok", data: i };
+  return ok(i);
 }
 
 export function parseGqlID3(type: NodeType, gqlId: string): Result<{ type: "INVALID_ID"; invalidId: string }, string> {
@@ -80,7 +80,7 @@ export function parseGqlIDs2(
       status: "error",
       error: { type: "INVALID_ID", wrongGqlIds },
     };
-  return { status: "ok", data: ids };
+  return ok(ids);
 }
 
 export function parseGqlIDs(type: NodeType, gqlIds: string[]): string[] {

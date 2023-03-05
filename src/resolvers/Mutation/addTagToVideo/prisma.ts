@@ -1,7 +1,7 @@
 import { Tag, Video, VideoTag, VideoTagEventType } from "@prisma/client";
 import { ulid } from "ulid";
 
-import { Result } from "../../../utils/Result.js";
+import { ok, Result } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 
 export const add = async (
@@ -28,10 +28,7 @@ export const add = async (
       include: { video: true, tag: true },
     });
 
-    return {
-      status: "ok",
-      data: tagging,
-    };
+    return ok(tagging);
   } else {
     // attach
     const id = ulid();
@@ -52,6 +49,6 @@ export const add = async (
       include: { video: true, tag: true },
     });
 
-    return { status: "ok", data: tagging };
+    return ok(tagging);
   }
 };

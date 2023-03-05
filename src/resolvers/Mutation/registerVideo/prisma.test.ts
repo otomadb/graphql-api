@@ -23,7 +23,7 @@ import {
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import { Err, err, Ok } from "../../../utils/Result.js";
+import { Err, err, Ok, OkData } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 import { getRequestCheck, register } from "./prisma.js";
 
@@ -160,7 +160,7 @@ describe("Register video by Prisma", () => {
       }),
     ]);
 
-    const actual = await register(prisma, {
+    const actual = (await register(prisma, {
       authUserId: "u1",
       primaryTitle: "Video 1",
       extraTitles: ["Video 1.1", "Video 1.2"],
@@ -169,13 +169,13 @@ describe("Register video by Prisma", () => {
       semitagNames: ["Semitag 1", "Semitag 2"],
       nicovideoSourceIds: ["sm1"],
       nicovideoRequestId: null,
-    });
-    expect(actual).toStrictEqual({
-      status: "ok",
-      data: expect.objectContaining({
+    })) as Ok<Awaited<ReturnType<typeof register>>>;
+    expect(actual.status).toBe("ok");
+    expect(actual).toStrictEqual(
+      expect.objectContaining({
         id: expect.any(String),
-      }),
-    } satisfies Awaited<ReturnType<typeof register>>);
+      }) satisfies OkData<typeof actual>
+    );
 
     const videoId = (actual as Ok<Awaited<ReturnType<typeof register>>>).data.id;
     const video = await prisma.video.findUniqueOrThrow({

@@ -1,6 +1,6 @@
 import { Tag, Video, VideoTag, VideoTagEventType } from "@prisma/client";
 
-import { Result } from "../../../utils/Result.js";
+import { ok, Result } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 
 export const remove = async (
@@ -29,5 +29,5 @@ export const remove = async (
     },
     include: { tag: true, video: true },
   });
-  return { status: "ok", data: tagging };
+  return ok(tagging);
 };

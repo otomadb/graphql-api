@@ -3,7 +3,7 @@ import { ulid } from "ulid";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import { Err, Ok } from "../../../utils/Result.js";
+import { Err, Ok, OkData } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 import { remove } from "./prisma.js";
 
@@ -172,20 +172,20 @@ describe("Remove tag in Prisma", () => {
       }),
     ]);
 
-    const actual = await remove(prisma, {
+    const actual = (await remove(prisma, {
       authUserId: "u1",
       videoId: "v1",
       tagId: "t1",
-    });
-    expect(actual).toStrictEqual({
-      status: "ok",
-      data: expect.objectContaining({
+    })) as Ok<Awaited<ReturnType<typeof remove>>>;
+    expect(actual.status).toBe("ok");
+    expect(actual.data).toStrictEqual(
+      expect.objectContaining({
         id: expect.any(String),
         videoId: "v1",
         tagId: "t1",
         isRemoved: true,
-      }),
-    });
+      }) satisfies OkData<typeof actual>
+    );
 
     const videoTagId = (actual as Ok<Awaited<ReturnType<typeof remove>>>).data.id;
 

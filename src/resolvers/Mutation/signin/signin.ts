@@ -3,7 +3,7 @@ import { verify } from "argon2";
 import { serialize as serializeCookie } from "cookie";
 
 import { createSession } from "../../../auth/session.js";
-import { Result } from "../../../utils/Result.js";
+import { ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, SigninFailedMessage } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { UserModel } from "../../User/model.js";
@@ -18,7 +18,7 @@ export const verifyUser = async (
 
   if (!(await verify(user.password, password))) return { status: "error", error: "USER_NOT_FOUND" };
 
-  return { status: "ok", data: user };
+  return ok(user);
 };
 
 export const signin = ({ prisma, config }: Pick<ResolverDeps, "prisma" | "config">) =>
