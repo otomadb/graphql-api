@@ -1,4 +1,4 @@
-import { Prisma, Tag, TagEventType, TagNameEventType } from "@prisma/client";
+import { Tag, TagEventType, TagNameEventType } from "@prisma/client";
 import { ulid } from "ulid";
 
 import { err, ok, Result } from "../../../utils/Result.js";
@@ -19,13 +19,38 @@ export const register = async (
   try {
     const tagId = ulid();
 
-    const dataNames = [
-      { id: ulid(), name: primaryName, isPrimary: true },
-      ...extraNames.map((extraName) => ({
-        id: ulid(),
-        name: extraName,
-        isPrimary: false,
-      })),
+    const $names = [
+      prisma.tagName.create({
+        data: {
+          id: ulid(),
+          tagId,
+          name: primaryName,
+          isPrimary: true,
+          events: {
+            createMany: {
+              data: [
+                { userId, type: TagNameEventType.CREATE, payload: {} },
+                { userId, type: TagNameEventType.SET_PRIMARY, payload: {} },
+              ],
+            },
+          },
+        },
+      }),
+      ...extraNames.map((extraName) =>
+        prisma.tagName.create({
+          data: {
+            id: ulid(),
+            tagId,
+            name: extraName,
+            isPrimary: false,
+            events: {
+              createMany: {
+                data: [{ userId, type: TagNameEventType.CREATE, payload: {} }],
+              },
+            },
+          },
+        })
+      ),
     ];
 
     const [tag] = await prisma.$transaction([
@@ -33,7 +58,6 @@ export const register = async (
         data: {
           id: tagId,
           meaningless: true,
-          names: { createMany: { data: dataNames } },
           events: {
             create: {
               userId,
@@ -43,25 +67,7 @@ export const register = async (
           },
         },
       }),
-      prisma.tagNameEvent.createMany({
-        data: [
-          ...dataNames.map(
-            ({ id }) =>
-              ({
-                userId,
-                type: TagNameEventType.CREATE,
-                tagNameId: id,
-                payload: {},
-              } satisfies Prisma.TagNameEventCreateManyInput)
-          ),
-          {
-            userId,
-            tagNameId: dataNames[0].id,
-            type: TagNameEventType.SET_PRIMARY,
-            payload: {},
-          },
-        ],
-      }),
+      ...$names,
     ]);
     return ok(tag);
   } catch (e) {
