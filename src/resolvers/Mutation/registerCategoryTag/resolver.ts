@@ -10,7 +10,7 @@ import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 import { register } from "./register.js";
 
-export const registerCategoryTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+export const registerCategoryTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async (_: unknown, { input }, { user }, info) => {
     if (!user || user.role !== UserRole.ADMINISTRATOR)
       return {
