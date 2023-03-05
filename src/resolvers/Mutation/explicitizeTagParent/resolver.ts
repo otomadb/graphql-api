@@ -9,7 +9,7 @@ import {
 import { parseGqlID3 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagParentModel } from "../../TagParent/model.js";
-import { create } from "./prisma.js";
+import { explicitize } from "./prisma.js";
 
 export const resolverExplicitizeTagParent = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async (_parent, { input: { relationId: relationGqlId } }, { user: ctxUser }, info) => {
@@ -27,7 +27,7 @@ export const resolverExplicitizeTagParent = ({ prisma, logger }: Pick<ResolverDe
       } satisfies ResolversTypes["MutationInvalidTagParentIdError"];
     }
 
-    const result = await create(prisma, {
+    const result = await explicitize(prisma, {
       userId: ctxUser.id,
       relationId: relationId.data,
     });

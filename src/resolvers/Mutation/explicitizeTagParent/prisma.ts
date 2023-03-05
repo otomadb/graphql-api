@@ -3,7 +3,7 @@ import { TagParent } from "@prisma/client";
 import { err, ok, Result } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 
-export const create = async (
+export const explicitize = async (
   prisma: ResolverDeps["prisma"],
   { userId, relationId }: { userId: string; relationId: string }
 ): Promise<
