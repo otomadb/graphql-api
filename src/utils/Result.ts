@@ -1,9 +1,9 @@
-type OkPayload<TData> = { status: "ok"; data: TData };
-export type Ok<TResult> = TResult extends OkPayload<infer TData> ? OkPayload<TData> : never;
-export const ok = <TData>(data: TData): OkPayload<TData> => ({ status: "ok", data });
+export const ok = <TData>(data: TData) => ({ status: "ok", data } as const);
+export type Ok<TResult> = TResult extends ReturnType<typeof ok<infer TErr>> ? ReturnType<typeof ok<TErr>> : never;
+export type OkData<TResult> = Ok<TResult>["data"];
 
-type ErrPayload<TErr> = { status: "error"; error: TErr };
-export type Err<TResult> = TResult extends ErrPayload<infer TErr> ? ErrPayload<TErr> : never;
-export const err = <TErr>(error: TErr): ErrPayload<TErr> => ({ status: "error", error });
+export const err = <TErr>(error: TErr) => ({ status: "error", error } as const);
+export type Err<TResult> = TResult extends ReturnType<typeof err<infer TErr>> ? ReturnType<typeof err<TErr>> : never;
+export type ErrError<TResult> = Err<TResult>["error"];
 
-export type Result<TErr, TData> = ErrPayload<TErr> | OkPayload<TData>;
+export type Result<TErr, TData> = ReturnType<typeof err<TErr>> | ReturnType<typeof ok<TData>>;
