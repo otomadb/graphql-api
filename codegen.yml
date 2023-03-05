@@ -1,11 +1,13 @@
 # codegen.yml
-schema:
-  - ./src/resolvers/**/*.graphql
 generates:
   ./schema.graphql:
+    schema:
+      - ./src/resolvers/**/*.graphql
     plugins:
       - schema-ast
   ./src/resolvers/graphql.ts:
+    schema:
+      - ./schema.graphql
     config:
       avoidOptionals:
         defaultValue: true
@@ -77,3 +79,16 @@ generates:
       - typescript
       - typescript-resolvers
       - "./codegen-plugins/typedefs.mjs"
+  ./src/resolvers/:
+    schema:
+      - ./schema.graphql
+    documents:
+      - src/**/*.e2e.test!(.codegen).ts
+    preset: near-operation-file
+    presetConfig:
+      baseTypesPath: 'graphql.js'
+      extension: '.codegen.ts'
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typed-document-node"

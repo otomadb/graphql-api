@@ -20,6 +20,7 @@ dumps
 # codegen
 schema.graphql
 src/resolvers/graphql.ts
+src/resolvers/**/*.e2e.test.codegen.ts
 
 # tsc
 dist/

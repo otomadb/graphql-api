@@ -11,6 +11,10 @@ import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import { ServerContext, UserContext } from "../../context.js";
 import { typeDefs } from "../../graphql.js";
 import { makeResolvers, ResolverDeps } from "../../index.js";
+import {
+  Mutation_Signup_SuccessfulMutation,
+  Mutation_Signup_SuccessfulMutationVariables,
+} from "./resolver.e2e.test.codegen.js";
 
 describe("Signup", () => {
   let prisma: ResolverDeps["prisma"];
@@ -55,9 +59,9 @@ describe("Signup", () => {
     const req = mockDeep<ServerContext["req"]>();
     const res = mockDeep<ServerContext["res"]>();
 
-    const result = await executor({
+    const result = await executor<Mutation_Signup_SuccessfulMutation, Mutation_Signup_SuccessfulMutationVariables>({
       document: parse(/* GraphQL */ `
-        mutation signup($input: SignupInput!) {
+        mutation Mutation_Signup_Successful($input: SignupInput!) {
           signup(input: $input) {
             __typename
             ... on SignupSucceededPayload {
