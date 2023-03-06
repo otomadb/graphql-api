@@ -3,7 +3,7 @@ import { ulid } from "ulid";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import { Err, isErr, isOk, Ok, OkData } from "../../../utils/Result.js";
+import { isErr, isOk, OkData, ReturnErr, ReturnOk } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 import { add } from "./prisma.js";
 
@@ -49,7 +49,7 @@ describe("Add tag in Prisma", () => {
       authUserId: "u1",
       videoId: "v1",
       tagId: "t1",
-    })) as Err<Awaited<ReturnType<typeof add>>>;
+    })) as ReturnErr<typeof add>;
     expect(isErr(actual)).toBe(true);
     expect(actual.error).toBe("EXISTS_TAGGING");
   });
@@ -77,7 +77,7 @@ describe("Add tag in Prisma", () => {
       authUserId: "u1",
       videoId: "v1",
       tagId: "t1",
-    })) as Ok<Awaited<ReturnType<typeof add>>>;
+    })) as ReturnOk<typeof add>;
     expect(isOk(actual)).toBe(true);
     expect(actual.data).toStrictEqual(
       expect.objectContaining({
@@ -87,8 +87,7 @@ describe("Add tag in Prisma", () => {
         isRemoved: false,
       }) satisfies OkData<typeof actual>
     );
-
-    const videoTagId = (actual as Ok<Awaited<ReturnType<typeof add>>>).data.id;
+    const videoTagId = actual.data.id;
 
     const videoTagEvents = await prisma.videoTagEvent.findMany({ where: { videoTagId } });
     expect(videoTagEvents).toHaveLength(1);
@@ -133,7 +132,7 @@ describe("Add tag in Prisma", () => {
       authUserId: "u1",
       videoId: "v1",
       tagId: "t1",
-    })) as Ok<Awaited<ReturnType<typeof add>>>;
+    })) as ReturnOk<typeof add>;
     expect(isOk(actual)).toBe(true);
     expect(actual.data).toStrictEqual(
       expect.objectContaining({
@@ -144,7 +143,7 @@ describe("Add tag in Prisma", () => {
       }) satisfies OkData<typeof actual>
     );
 
-    const videoTagId = (actual as Ok<Awaited<ReturnType<typeof add>>>).data.id;
+    const videoTagId = actual.data.id;
 
     const videoTagEvents = await prisma.videoTagEvent.findMany({ where: { videoTagId } });
     expect(videoTagEvents).toHaveLength(1);

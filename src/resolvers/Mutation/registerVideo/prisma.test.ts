@@ -23,7 +23,7 @@ import {
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import { Err, ErrError, isErr, isOk, Ok, OkData } from "../../../utils/Result.js";
+import { ErrError, isErr, isOk, OkData, ReturnErr, ReturnOk } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 import { getRequestCheck, register } from "./prisma.js";
 
@@ -62,7 +62,7 @@ describe("Register video by Prisma", () => {
         requestId: "r1",
         userId: "u1",
         videoId: "v1",
-      })) as Err<Awaited<ReturnType<typeof getRequestCheck>>>;
+      })) as ReturnErr<typeof getRequestCheck>;
       expect(isErr(actual)).toBe(true);
       expect(actual.error).toStrictEqual({
         type: "REQUEST_NOT_FOUND",
@@ -98,7 +98,7 @@ describe("Register video by Prisma", () => {
         requestId: "r1",
         userId: "u1",
         videoId: "v1",
-      })) as Err<Awaited<ReturnType<typeof getRequestCheck>>>;
+      })) as ReturnErr<typeof getRequestCheck>;
       expect(isErr(actual)).toBe(true);
       expect(actual.error).toStrictEqual({
         type: "REQUEST_ALREADY_CHECKED",
@@ -134,7 +134,7 @@ describe("Register video by Prisma", () => {
         requestId: "r1",
         userId: "u1",
         videoId: "v1",
-      })) as Ok<Awaited<ReturnType<typeof getRequestCheck>>>;
+      })) as ReturnOk<typeof getRequestCheck>;
       expect(isOk(actual)).toBe(true);
     });
   });
@@ -167,7 +167,7 @@ describe("Register video by Prisma", () => {
       semitagNames: ["Semitag 1", "Semitag 2"],
       nicovideoSourceIds: ["sm1"],
       nicovideoRequestId: null,
-    })) as Ok<Awaited<ReturnType<typeof register>>>;
+    })) as ReturnOk<typeof register>;
     expect(isOk(actual)).toBe(true);
     expect(actual.data).toStrictEqual(
       expect.objectContaining({
@@ -175,7 +175,7 @@ describe("Register video by Prisma", () => {
       }) satisfies OkData<typeof actual>
     );
 
-    const videoId = (actual as Ok<Awaited<ReturnType<typeof register>>>).data.id;
+    const videoId = actual.data.id;
     const video = await prisma.video.findUniqueOrThrow({
       where: { id: videoId },
       include: {
@@ -480,7 +480,7 @@ describe("Register video by Prisma", () => {
       nicovideoSourceIds: [],
 
       nicovideoRequestId: "r1",
-    })) as Ok<Awaited<ReturnType<typeof register>>>;
+    })) as ReturnOk<typeof register>;
     expect(isOk(actual)).toBe(true);
 
     const actualR1 = await prisma.nicovideoRegistrationRequest.findUniqueOrThrow({ where: { id: "r1" } });
