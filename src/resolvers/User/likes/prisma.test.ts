@@ -82,7 +82,7 @@ describe("Get user likes by Prisma", () => {
 
     const actual = (await get(prisma, { holderId: "u1", authUserId: "u2" })) as ReturnErr<typeof get>;
     expect(isErr(actual)).toBe(true);
-    expect(actual).toStrictEqual("PRIVATE_NOT_HOLDER" satisfies ErrError<typeof actual>);
+    expect(actual.error).toStrictEqual("PRIVATE_NOT_HOLDER" satisfies ErrError<typeof actual>);
   });
 
   test("いいね欄はKNOW_LINKで，認証していない", async () => {

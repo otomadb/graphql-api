@@ -44,7 +44,7 @@ describe("Register user in Prisma", () => {
       password: "password",
     })) as ReturnErr<typeof registerNewUser>;
     expect(isErr(actual)).toBe(true);
-    expect(actual).toStrictEqual({
+    expect(actual.error).toStrictEqual({
       message: "NAME_ALREADY_EXISTS",
       name: "testuser",
     } satisfies ErrError<typeof actual>);
@@ -86,8 +86,7 @@ describe("Register user in Prisma", () => {
       password: "password",
     })) as ReturnErr<typeof registerNewUser>;
     expect(isErr(actual)).toBe(true);
-
-    expect(actual).toStrictEqual({
+    expect(actual.error).toStrictEqual({
       message: "EMAIL_ALREADY_EXISTS",
       email: "testuser@example.net",
     } satisfies ErrError<typeof actual>);
@@ -101,7 +100,7 @@ describe("Register user in Prisma", () => {
       password: "password",
     })) as ReturnErr<typeof registerNewUser>;
     expect(isErr(actual)).toBe(true);
-    expect(actual).toStrictEqual({
+    expect(actual.error).toStrictEqual({
       message: "EMAIL_INVALID_EMAIL_FORMAT",
       email,
     } satisfies ErrError<typeof actual>);
@@ -115,7 +114,7 @@ describe("Register user in Prisma", () => {
       password: "password",
     })) as ReturnOk<typeof registerNewUser>;
     expect(isOk(actual)).toBe(true);
-    expect(actual).toStrictEqual({
+    expect(actual.data).toStrictEqual({
       id: expect.any(String),
       name: "testuser",
       displayName: "Test User",
