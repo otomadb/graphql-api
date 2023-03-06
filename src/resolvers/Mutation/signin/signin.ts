@@ -3,7 +3,7 @@ import { verify } from "argon2";
 import { serialize as serializeCookie } from "cookie";
 
 import { createSession } from "../../../auth/session.js";
-import { Result } from "../../../utils/Result.js";
+import { err, isErr, ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, SigninFailedMessage } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { UserModel } from "../../User/model.js";
@@ -14,17 +14,17 @@ export const verifyUser = async (
 ): Promise<Result<"USER_NOT_FOUND" | "WRONG_PASSWORD", User>> => {
   const user = await prisma.user.findFirst({ where: { name: username } });
 
-  if (!user) return { status: "error", error: "USER_NOT_FOUND" };
+  if (!user) return err("USER_NOT_FOUND");
 
-  if (!(await verify(user.password, password))) return { status: "error", error: "USER_NOT_FOUND" };
+  if (!(await verify(user.password, password))) return err("WRONG_PASSWORD");
 
-  return { status: "ok", data: user };
+  return ok(user);
 };
 
 export const signin = ({ prisma, config }: Pick<ResolverDeps, "prisma" | "config">) =>
   (async (_parent, { input: { username, password } }, { res }) => {
     const result = await verifyUser(prisma, { username, password });
-    if (result.status === "error") {
+    if (isErr(result)) {
       switch (result.error) {
         case "USER_NOT_FOUND":
           return { __typename: "SigninFailedPayload", message: SigninFailedMessage.UserNotFound };

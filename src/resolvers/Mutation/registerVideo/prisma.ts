@@ -11,7 +11,7 @@ import {
 } from "@prisma/client";
 import { ulid } from "ulid";
 
-import { err, ok, Result } from "../../../utils/Result.js";
+import { err, isErr, ok, Result } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 
 export const getRequestCheck = async (
@@ -119,7 +119,7 @@ export const register = async (
   }));
 
   const checkRequest = await getRequestCheck(prisma, { requestId: nicovideoRequestId, videoId, userId: authUserId });
-  if (checkRequest.status === "error") return checkRequest;
+  if (isErr(checkRequest)) return checkRequest;
 
   const [video] = await prisma.$transaction([
     prisma.video.create({

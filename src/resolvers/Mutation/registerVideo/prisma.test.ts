@@ -23,7 +23,7 @@ import {
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import { Err, err, Ok } from "../../../utils/Result.js";
+import { ErrError, isErr, isOk, OkData, ReturnErr, ReturnOk } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 import { getRequestCheck, register } from "./prisma.js";
 
@@ -58,17 +58,16 @@ describe("Register video by Prisma", () => {
         prisma.video.create({ data: { id: "v1" } }),
       ]);
 
-      const actual = await getRequestCheck(prisma, {
+      const actual = (await getRequestCheck(prisma, {
         requestId: "r1",
         userId: "u1",
         videoId: "v1",
-      });
-      expect(actual).toStrictEqual(
-        err({
-          type: "REQUEST_NOT_FOUND",
-          requestId: "r1",
-        }) satisfies Err<Awaited<ReturnType<typeof getRequestCheck>>>
-      );
+      })) as ReturnErr<typeof getRequestCheck>;
+      expect(isErr(actual)).toBe(true);
+      expect(actual.error).toStrictEqual({
+        type: "REQUEST_NOT_FOUND",
+        requestId: "r1",
+      } satisfies ErrError<typeof actual>);
     });
 
     test("リクエストが既にチェック済みの場合", async () => {
@@ -95,17 +94,16 @@ describe("Register video by Prisma", () => {
         }),
       ]);
 
-      const actual = await getRequestCheck(prisma, {
+      const actual = (await getRequestCheck(prisma, {
         requestId: "r1",
         userId: "u1",
         videoId: "v1",
-      });
-      expect(actual).toStrictEqual(
-        err({
-          type: "REQUEST_ALREADY_CHECKED",
-          requestId: "r1",
-        }) satisfies Err<Awaited<ReturnType<typeof getRequestCheck>>>
-      );
+      })) as ReturnErr<typeof getRequestCheck>;
+      expect(isErr(actual)).toBe(true);
+      expect(actual.error).toStrictEqual({
+        type: "REQUEST_ALREADY_CHECKED",
+        requestId: "r1",
+      } satisfies ErrError<typeof actual>);
     });
 
     test("正常系", async () => {
@@ -132,12 +130,12 @@ describe("Register video by Prisma", () => {
         }),
       ]);
 
-      const actual = await getRequestCheck(prisma, {
+      const actual = (await getRequestCheck(prisma, {
         requestId: "r1",
         userId: "u1",
         videoId: "v1",
-      });
-      expect(actual.status).not.toBe("error");
+      })) as ReturnOk<typeof getRequestCheck>;
+      expect(isOk(actual)).toBe(true);
     });
   });
 
@@ -160,7 +158,7 @@ describe("Register video by Prisma", () => {
       }),
     ]);
 
-    const actual = await register(prisma, {
+    const actual = (await register(prisma, {
       authUserId: "u1",
       primaryTitle: "Video 1",
       extraTitles: ["Video 1.1", "Video 1.2"],
@@ -169,15 +167,15 @@ describe("Register video by Prisma", () => {
       semitagNames: ["Semitag 1", "Semitag 2"],
       nicovideoSourceIds: ["sm1"],
       nicovideoRequestId: null,
-    });
-    expect(actual).toStrictEqual({
-      status: "ok",
-      data: expect.objectContaining({
+    })) as ReturnOk<typeof register>;
+    expect(isOk(actual)).toBe(true);
+    expect(actual.data).toStrictEqual(
+      expect.objectContaining({
         id: expect.any(String),
-      }),
-    } satisfies Awaited<ReturnType<typeof register>>);
+      }) satisfies OkData<typeof actual>
+    );
 
-    const videoId = (actual as Ok<Awaited<ReturnType<typeof register>>>).data.id;
+    const videoId = actual.data.id;
     const video = await prisma.video.findUniqueOrThrow({
       where: { id: videoId },
       include: {
@@ -482,8 +480,8 @@ describe("Register video by Prisma", () => {
       nicovideoSourceIds: [],
 
       nicovideoRequestId: "r1",
-    })) as Ok<Awaited<ReturnType<typeof register>>>;
-    expect(actual.status).not.toBe("error");
+    })) as ReturnOk<typeof register>;
+    expect(isOk(actual)).toBe(true);
 
     const actualR1 = await prisma.nicovideoRegistrationRequest.findUniqueOrThrow({ where: { id: "r1" } });
     expect(actualR1.isChecked).toBe(true);

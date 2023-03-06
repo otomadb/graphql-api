@@ -1,5 +1,6 @@
 import { UserRole } from "@prisma/client";
 
+import { isErr } from "../../../utils/Result.js";
 import {
   MutationAuthenticationError,
   MutationNicovideoRegistrationRequestNotFoundError,
@@ -26,7 +27,7 @@ export const resolverRejectRequestNicovideoRegistration = ({
       } satisfies MutationAuthenticationError;
 
     const requestId = parseGqlID2("NicovideoRegistrationRequest", requestGqlId);
-    if (requestId.status === "error") {
+    if (isErr(requestId)) {
       return {
         __typename: "MutationNicovideoRegistrationRequestNotFoundError",
         requestId: requestGqlId,
@@ -34,7 +35,7 @@ export const resolverRejectRequestNicovideoRegistration = ({
     }
 
     const result = await reject(prisma, { userId: user.id, requestId: requestId.data, note });
-    if (result.status === "error") {
+    if (isErr(result)) {
       switch (result.error.message) {
         case "REQUEST_NOT_FOUND":
           return {

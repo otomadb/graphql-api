@@ -1,3 +1,4 @@
+import { isErr } from "../../../utils/Result.js";
 import {
   AddVideoToMylistOtherErrorMessage,
   AddVideoToMylistOtherErrorsFallback,
@@ -25,14 +26,14 @@ export const addVideoToMylist = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "
       } satisfies MutationAuthenticationError;
 
     const mylistId = parseGqlID2("Mylist", mylistGqlId);
-    if (mylistId.status === "error")
+    if (isErr(mylistId))
       return {
         __typename: "MutationInvalidMylistIdError",
         mylistId: mylistGqlId,
       } satisfies MutationInvalidMylistIdError;
 
     const videoId = parseGqlID2("Video", videoGqlId);
-    if (videoId.status === "error")
+    if (isErr(videoId))
       return {
         __typename: "MutationInvalidVideoIdError",
         videoId: videoGqlId,
@@ -44,7 +45,7 @@ export const addVideoToMylist = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "
       videoId: videoId.data,
       note: note ?? null,
     });
-    if (result.status === "error") {
+    if (isErr(result)) {
       switch (result.error.message) {
         case "MYLIST_NOT_FOUND":
           return {
@@ -77,7 +78,7 @@ export const addVideoToMylist = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "
 
     const registration = result.data;
     const neo4jResult = await addVideoToMylistInNeo4j({ prisma, neo4j }, registration.id);
-    if (neo4jResult.status === "error") {
+    if (isErr(neo4jResult)) {
       logger.error({ error: neo4jResult.error, path: info.path }, "Failed to update in neo4j");
     }
 
