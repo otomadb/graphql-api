@@ -46,10 +46,10 @@ export function parseGqlID(type: NodeType, gqlId: string): string {
 
 export function parseGqlID2(type: NodeType, gqlId: string): Result<"INVALID_ID", string> {
   const split = Buffer.from(gqlId, "base64url").toString().split(":");
-  if (split.length !== 2) return { status: "error", error: "INVALID_ID" };
+  if (split.length !== 2) return err("INVALID_ID");
 
   const [t, i] = split;
-  if (t !== type) return { status: "error", error: "INVALID_ID" };
+  if (t !== type) return err("INVALID_ID");
 
   return ok(i);
 }
@@ -75,11 +75,7 @@ export function parseGqlIDs2(
     if (isErr(p)) wrongGqlIds.push(gqlId);
     else ids.push(p.data);
   }
-  if (0 < wrongGqlIds.length)
-    return {
-      status: "error",
-      error: { type: "INVALID_ID", wrongGqlIds },
-    };
+  if (0 < wrongGqlIds.length) return err({ type: "INVALID_ID", wrongGqlIds });
   return ok(ids);
 }
 

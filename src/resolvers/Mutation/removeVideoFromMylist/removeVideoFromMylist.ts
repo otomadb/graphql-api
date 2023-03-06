@@ -1,6 +1,7 @@
 import { Mylist, MylistRegistration, Video } from "@prisma/client";
 
 import { err, ok, Result } from "../../../utils/Result.js";
+import { isErr } from "../../../utils/Result.js";
 import { MutationResolvers, RemoveVideoFromMylistFailedMessage } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";

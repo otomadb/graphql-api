@@ -1,7 +1,7 @@
 import { Tag, Video, VideoTag, VideoTagEventType } from "@prisma/client";
 import { ulid } from "ulid";
 
-import { ok, Result } from "../../../utils/Result.js";
+import { err, ok, Result } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 
 export const add = async (
@@ -9,7 +9,7 @@ export const add = async (
   { authUserId: userId, videoId, tagId }: { authUserId: string; videoId: string; tagId: string }
 ): Promise<Result<"EXISTS_TAGGING", VideoTag & { video: Video; tag: Tag }>> => {
   const exists = await prisma.videoTag.findUnique({ where: { videoId_tagId: { tagId, videoId } } });
-  if (exists && !exists.isRemoved) return { status: "error", error: "EXISTS_TAGGING" };
+  if (exists && !exists.isRemoved) return err("EXISTS_TAGGING");
 
   if (exists) {
     // reattach

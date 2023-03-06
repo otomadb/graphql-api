@@ -1,7 +1,7 @@
 import { SemitagEventType, UserRole, VideoTagEventType } from "@prisma/client";
 import { ulid } from "ulid";
 
-import { isErr, ok, Result } from "../../../utils/Result.js";
+import { err, isErr, ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, ResolveSemitagFailedMessage } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
@@ -18,18 +18,18 @@ export const resolve = async (
   >
 > => {
   const checkedSemitag = await prisma.semitag.findUnique({ where: { id: semitagId } });
-  if (!checkedSemitag) return { status: "error", error: "SEMITAG_NOT_FOUND" };
-  if (checkedSemitag.isChecked) return { status: "error", error: "SEMITAG_ALREADY_CHECKED" };
+  if (!checkedSemitag) return err("SEMITAG_NOT_FOUND");
+  if (checkedSemitag.isChecked) return err("SEMITAG_ALREADY_CHECKED");
 
   const checkedTag = await prisma.tag.findUnique({ where: { id: tagId } });
-  if (!checkedTag) return { status: "error", error: "TAG_NOT_FOUND" };
+  if (!checkedTag) return err("TAG_NOT_FOUND");
 
   if (
     await prisma.videoTag.findUnique({
       where: { videoId_tagId: { tagId: checkedTag.id, videoId: checkedSemitag.videoId } },
     })
   )
-    return { status: "error", error: "VIDEO_ALREADY_TAGGED" };
+    return err("SEMITAG_ALREADY_CHECKED");
 
   const videoTagId = ulid();
   await prisma.semitag.update({

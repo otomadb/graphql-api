@@ -1,3 +1,4 @@
+import { isErr } from "../../../utils/Result.js";
 import { CreateMylistOtherErrorMessage, MutationResolvers, UserRole as GraphQLUserRole } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";

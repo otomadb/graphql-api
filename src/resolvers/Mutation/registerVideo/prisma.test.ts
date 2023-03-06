@@ -23,7 +23,7 @@ import {
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import { Err, err, Ok, OkData } from "../../../utils/Result.js";
+import { Err, err, isOk, Ok, OkData } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 import { getRequestCheck, register } from "./prisma.js";
 
@@ -132,12 +132,12 @@ describe("Register video by Prisma", () => {
         }),
       ]);
 
-      const actual = await getRequestCheck(prisma, {
+      const actual = (await getRequestCheck(prisma, {
         requestId: "r1",
         userId: "u1",
         videoId: "v1",
-      });
-      expect(actual.status).not.toBe("error");
+      })) as Ok<Awaited<ReturnType<typeof getRequestCheck>>>;
+      expect(isOk(actual)).toBe(true);
     });
   });
 
@@ -170,7 +170,7 @@ describe("Register video by Prisma", () => {
       nicovideoSourceIds: ["sm1"],
       nicovideoRequestId: null,
     })) as Ok<Awaited<ReturnType<typeof register>>>;
-    expect(actual.status).toBe("ok");
+    expect(isOk(actual)).toBe(true);
     expect(actual).toStrictEqual(
       expect.objectContaining({
         id: expect.any(String),
@@ -483,7 +483,7 @@ describe("Register video by Prisma", () => {
 
       nicovideoRequestId: "r1",
     })) as Ok<Awaited<ReturnType<typeof register>>>;
-    expect(actual.status).not.toBe("error");
+    expect(isOk(actual)).toBe(true);
 
     const actualR1 = await prisma.nicovideoRegistrationRequest.findUniqueOrThrow({ where: { id: "r1" } });
     expect(actualR1.isChecked).toBe(true);

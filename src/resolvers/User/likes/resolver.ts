@@ -1,3 +1,4 @@
+import { isErr } from "../../../utils/Result.js";
 import { UserResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";

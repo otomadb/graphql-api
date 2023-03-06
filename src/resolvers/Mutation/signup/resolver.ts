@@ -1,6 +1,7 @@
 import { serialize as serializeCookie } from "cookie";
 
 import { createSession } from "../../../auth/session.js";
+import { isErr } from "../../../utils/Result.js";
 import {
   MutationResolvers,
   SignupDisplayNameValidationError,
