@@ -1,7 +1,7 @@
 import { SemitagEventType, UserRole, VideoTagEventType } from "@prisma/client";
 import { ulid } from "ulid";
 
-import { ok, Result } from "../../../utils/Result.js";
+import { isErr, ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, ResolveSemitagFailedMessage } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
@@ -65,14 +65,14 @@ export const resolveSemitag = ({ prisma, logger, neo4j }: Pick<ResolverDeps, "pr
       };
 
     const semitagId = parseGqlID2("Semitag", semitagGqlId);
-    if (semitagId.status === "error")
+    if (isErr(semitagId))
       return {
         __typename: "ResolveSemitagFailedPayload",
         message: ResolveSemitagFailedMessage.InvalidSemitagId,
       };
 
     const tagId = parseGqlID2("Semitag", tagGqlId);
-    if (tagId.status === "error")
+    if (isErr(tagId))
       return {
         __typename: "ResolveSemitagFailedPayload",
         message: ResolveSemitagFailedMessage.InvalidTagId,
@@ -83,7 +83,7 @@ export const resolveSemitag = ({ prisma, logger, neo4j }: Pick<ResolverDeps, "pr
       semitagId: semitagId.data,
       tagId: tagId.data,
     });
-    if (result.status === "error") {
+    if (isErr(result)) {
       switch (result.error) {
         case "SEMITAG_NOT_FOUND":
           return {
@@ -116,7 +116,7 @@ export const resolveSemitag = ({ prisma, logger, neo4j }: Pick<ResolverDeps, "pr
     const data = result.data;
 
     const neo4jResult = await resolveSemitagInNeo4j({ prisma, neo4j }, data.videoTagId);
-    if (neo4jResult.status === "error") {
+    if (isErr(neo4jResult)) {
       logger.error({ error: neo4jResult.error, path: info.path }, "Failed to update in neo4j");
     }
 

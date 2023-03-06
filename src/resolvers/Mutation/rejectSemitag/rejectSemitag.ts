@@ -1,7 +1,7 @@
 import { SemitagEventType, UserRole } from "@prisma/client";
 import { ulid } from "ulid";
 
-import { ok, Result } from "../../../utils/Result.js";
+import { isErr, ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, RejectSemitagFailedMessage } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
@@ -40,7 +40,7 @@ export const rejectSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       };
 
     const semitagId = parseGqlID2("Semitag", semitagGqlId);
-    if (semitagId.status === "error")
+    if (isErr(semitagId))
       return {
         __typename: "RejectSemitagFailedPayload",
         message: RejectSemitagFailedMessage.InvalidSemitagId,
@@ -50,7 +50,7 @@ export const rejectSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       userId: user.id,
       semitagId: semitagId.data,
     });
-    if (result.status === "error") {
+    if (isErr(result)) {
       switch (result.error) {
         case "SEMITAG_NOT_FOUND":
           return {

@@ -2,7 +2,7 @@ import { Session } from "@prisma/client";
 import { serialize as serializeCookie } from "cookie";
 
 import { extractSessionFromReq } from "../../../auth/session.js";
-import { ok, Result } from "../../../utils/Result.js";
+import { isErr, ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, SignoutFailedMessage } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { SessionModel } from "../../Session/model.js";
@@ -24,7 +24,7 @@ export const expire = async (
 export const signout = ({ prisma, logger, config }: Pick<ResolverDeps, "prisma" | "logger" | "config">) =>
   (async (_parent, _args, { req, res }) => {
     const resultExtractSession = extractSessionFromReq(req, config.session.cookieName());
-    if (resultExtractSession.status === "error") {
+    if (isErr(resultExtractSession)) {
       switch (resultExtractSession.error.type) {
         case "NO_COOKIE":
           logger.warn("Cookie not found");
@@ -39,7 +39,7 @@ export const signout = ({ prisma, logger, config }: Pick<ResolverDeps, "prisma" 
     // TODO: 不正なsessionのチェック
 
     const result = await expire(prisma, id);
-    if (result.status === "error") {
+    if (isErr(result)) {
       switch (result.error) {
         case "SESSION_NOT_FOUND":
           return { __typename: "SignoutFailedPayload", message: SignoutFailedMessage.SessionNotFound };

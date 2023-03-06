@@ -1,3 +1,4 @@
+import { isErr } from "../../../utils/Result.js";
 import {
   MutationAuthenticationError,
   MutationInvalidTagIdError,
@@ -23,7 +24,7 @@ export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<Re
     const taggings: { tagId: string; note: string | null }[] = [];
     for (const { tagId, note } of gqlTaggings) {
       const parsed = parseGqlID2("Tag", tagId);
-      if (parsed.status === "error") {
+      if (isErr(parsed)) {
         return {
           __typename: "MutationInvalidTagIdError",
           tagId,
@@ -41,7 +42,7 @@ export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<Re
       semitaggings: semitaggings.map(({ name, note }) => ({ name, note: note || null })),
     });
 
-    if (result.status === "error") {
+    if (isErr(result)) {
       switch (result.error.message) {
         case "TAG_NOT_FOUND":
           return {

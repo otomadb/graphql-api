@@ -7,7 +7,7 @@ export const resolverUserLikes = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async ({ id: userId }, _args, { user }) => {
     const result = await get(prisma, { holderId: userId, authUserId: user?.id || null });
 
-    if (result.status === "error")
+    if (isErr(result))
       switch (result.error) {
         case "NO_LIKELIST":
           // TODO: logging

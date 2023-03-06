@@ -12,7 +12,7 @@ import {
 import { GraphQLResolveInfo } from "graphql";
 import { ulid } from "ulid";
 
-import { err, ok, Result } from "../../../utils/Result.js";
+import { err, isErr, ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, RegisterTagFailedMessage } from "../../graphql.js";
 import { parseGqlID2, parseGqlIDs2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
@@ -202,14 +202,14 @@ export const registerTag = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prism
       };
 
     const explicitParent = input.explicitParent ? parseGqlID2("Tag", input.explicitParent) : null;
-    if (explicitParent?.status === "error")
+    if (explicitParent && isErr(explicitParent))
       return {
         __typename: "RegisterTagFailedPayload",
         message: RegisterTagFailedMessage.InvalidTagId, // TODO: 詳細なエラーを返すようにする
       };
 
     const resolveSemitags = parseGqlIDs2("Semitag", input.resolveSemitags);
-    if (resolveSemitags?.status === "error")
+    if (resolveSemitags && isErr(resolveSemitags))
       return {
         __typename: "RegisterTagFailedPayload",
         message: RegisterTagFailedMessage.InvalidSemitagId, // TODO: 詳細なエラーを返すようにする
@@ -225,7 +225,7 @@ export const registerTag = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prism
       meaningless: input.meaningless,
     });
 
-    if (result.status === "error") {
+    if (isErr(result)) {
       switch (result.error.type) {
         case "COLLIDE_BETWEEN_EXPLICIT_PARENT_AND_IMPLICIT_PARENTS":
           return {
@@ -253,7 +253,7 @@ export const registerTag = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prism
 
     const tag = result.data;
     const neo4jResult = await registerTagInNeo4j({ prisma, neo4j }, tag.id);
-    if (neo4jResult.status === "error") {
+    if (isErr(neo4jResult)) {
       logger.error({ error: neo4jResult.error, path: info.path }, "Failed to update in neo4j");
     }
 

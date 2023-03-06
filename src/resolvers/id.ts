@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
 
-import { err, ok, Result } from "../utils/Result.js";
+import { err, isErr, ok, Result } from "../utils/Result.js";
 
 export type NodeType =
   | "Mylist"
@@ -72,7 +72,7 @@ export function parseGqlIDs2(
     wrongGqlIds: string[] = [];
   for (const gqlId of gqlIds) {
     const p = parseGqlID2(type, gqlId);
-    if (p.status === "error") wrongGqlIds.push(gqlId);
+    if (isErr(p)) wrongGqlIds.push(gqlId);
     else ids.push(p.data);
   }
   if (0 < wrongGqlIds.length)

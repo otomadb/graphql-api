@@ -24,7 +24,7 @@ export const verifyUser = async (
 export const signin = ({ prisma, config }: Pick<ResolverDeps, "prisma" | "config">) =>
   (async (_parent, { input: { username, password } }, { res }) => {
     const result = await verifyUser(prisma, { username, password });
-    if (result.status === "error") {
+    if (isErr(result)) {
       switch (result.error) {
         case "USER_NOT_FOUND":
           return { __typename: "SigninFailedPayload", message: SigninFailedMessage.UserNotFound };

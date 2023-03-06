@@ -65,12 +65,12 @@ export const likeVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma"
       };
 
     const videoId = parseGqlID2("Video", videoGqlId);
-    if (videoId.status === "error") {
+    if (isErr(videoId)) {
       return { __typename: "LikeVideoFailedPayload", message: LikeVideoFailedMessage.InvalidVideoId };
     }
 
     const result = await like(prisma, { userId: user.id, videoId: videoId.data });
-    if (result.status === "error") {
+    if (isErr(result)) {
       switch (result.error) {
         case "VIDEO_NOT_FOUND":
           return { __typename: "LikeVideoFailedPayload", message: LikeVideoFailedMessage.VideoNotFound };
@@ -85,7 +85,7 @@ export const likeVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma"
     const registration = result.data;
 
     const neo4jResult = await likeVideoInNeo4j({ prisma, neo4j }, registration.id);
-    if (neo4jResult.status === "error") {
+    if (isErr(neo4jResult)) {
       logger.error({ error: neo4jResult.error, path: info.path }, "Failed to update in neo4j");
     }
 
