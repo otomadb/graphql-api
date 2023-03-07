@@ -72,7 +72,7 @@ export function parseGqlIDs3(
   for (const gqlId of gqlIds) {
     const id = parseGqlID3(type, gqlId);
     if (isErr(id)) return id;
-    if (ids.includes(id.data)) return err({ type: "DUPLICATED", duplicatedId: id.data });
+    if (ids.includes(id.data)) return err({ type: "DUPLICATED", duplicatedId: gqlId });
     ids.push(id.data);
   }
   return ok(ids);

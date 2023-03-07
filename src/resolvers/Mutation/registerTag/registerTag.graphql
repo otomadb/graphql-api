@@ -25,18 +25,22 @@ union RegisterTagReturnUnion =
   | RegisterTagOtherErrorsFallback
   | RegisterTagSucceededPayload
 
+"明示的な親タグのIDと非明示的な親タグのIDが重複している"
 type RegisterTagTagIdCollidedBetweenExplicitAndImplicitError {
   tagId: String!
 }
 
+"非明示的な親タグのIDが重複している"
 type RegisterTagImplicitParentIdsDuplicatedError {
   tagId: String!
 }
 
+"解決されるSemitagのIDが重複している"
 type RegisterTagResolveSemitagIdsDuplicatedError {
   semitagId: String!
 }
 
+"解決されるSemitagが既にチェック済みである"
 type RegisterTagResolveSemitagAlreadyCheckedError {
   semitagId: String!
 }

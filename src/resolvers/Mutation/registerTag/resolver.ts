@@ -7,7 +7,7 @@ import {
   ResolversTypes,
   UserRole as GqlUserRole,
 } from "../../graphql.js";
-import { parseGqlID3, parseGqlIDs3 } from "../../id.js";
+import { buildGqlId, parseGqlID3, parseGqlIDs3 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 import { registerTagInNeo4j } from "./neo4j.js";
@@ -63,7 +63,7 @@ export const resolverRegisterTag = ({ prisma, neo4j, logger }: Pick<ResolverDeps
     if (explicitParentId.data && implicitParentIds.data.includes(explicitParentId.data)) {
       return {
         __typename: "RegisterTagTagIdCollidedBetweenExplicitAndImplicitError",
-        tagId: explicitParentId.data,
+        tagId: buildGqlId("Tag", explicitParentId.data),
       } satisfies ResolversTypes["RegisterTagTagIdCollidedBetweenExplicitAndImplicitError"];
     }
 
