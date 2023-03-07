@@ -9,6 +9,7 @@ import { addVideoToMylist } from "./addViteoToMylist/addVideoToMylist.js";
 import { resolverChangeMylistShareRange } from "./changeMylistShareRange/resolver.js";
 import { createMylist } from "./createMylist/createMylist.js";
 import { createMylistGroup } from "./createMylistGroup/createMylistGroup.js";
+import { resolverExplicitizeTagParent } from "./explicitizeTagParent/resolver.js";
 import { likeVideo } from "./likeVideo/likeVideo.js";
 import { registerCategoryTag } from "./registerCategoryTag/resolver.js";
 import { registerTag } from "./registerTag/registerTag.js";
@@ -34,6 +35,7 @@ export const resolveMutation = (deps: Pick<ResolverDeps, "prisma" | "neo4j" | "l
     changeMylistShareRange: resolverChangeMylistShareRange(deps),
     createMylist: createMylist(deps),
     createMylistGroup: createMylistGroup(deps),
+    explicitizeTagParent: resolverExplicitizeTagParent(deps),
     likeVideo: likeVideo(deps),
     registerCategoryTag: registerCategoryTag(deps),
     registerTag: registerTag(deps),

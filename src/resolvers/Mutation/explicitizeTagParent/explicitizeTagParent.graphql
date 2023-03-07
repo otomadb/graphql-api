@@ -1,0 +1,35 @@
+type Mutation {
+  "非明示的なタグの親子関係を明示的に昇格する"
+  explicitizeTagParent(input: ExplicitizeTagParentInput!): ExplicitizeTagParentReturnUnion!
+}
+
+input ExplicitizeTagParentInput {
+  "親子関係のID"
+  relationId: ID!
+}
+
+union ExplicitizeTagParentReturnUnion =
+    MutationAuthenticationError
+  | MutationInvalidTagParentIdError
+  | MutationTagParentNotFoundError
+  | ExplicitizeTagAlreadyExplicitError
+  | ExplicitizeTagOtherErrorsFallback
+  | ExplicitizeTagSucceededPayload
+
+"その他のエラー"
+type ExplicitizeTagAlreadyExplicitError {
+  already: TagParent!
+}
+
+"その他のエラー"
+type ExplicitizeTagOtherErrorsFallback {
+  message: ExplicitizeTagOtherErrorMessage!
+}
+
+enum ExplicitizeTagOtherErrorMessage {
+  INTERNAL_SERVER_ERROR
+}
+
+type ExplicitizeTagSucceededPayload {
+  relation: TagParent!
+}
