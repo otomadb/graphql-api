@@ -1,0 +1,41 @@
+type Mutation {
+  registerTagParentRelation(input: RegisterTagParentRelationInput!): RegisterTagParentRelationResultUnion!
+}
+
+input RegisterTagParentRelationInput {
+  parentId: ID!
+  childId: ID!
+  explicit: Boolean!
+}
+
+union RegisterTagParentRelationResultUnion =
+    MutationAuthenticationError
+  | MutationInvalidTagIdError
+  | MutationTagNotFoundError
+  | RegisterTagParentRelationRelationAlreadyRegisteredError
+  | RegisterTagParentRelationChildTagAlreadyHadExplicitParentError
+  | RegisterTagParentRelationOtherErrorsFallback
+  | RegisterTagParentRelationSucceededPayload
+
+"既に登録されていた場合のエラー"
+type RegisterTagParentRelationRelationAlreadyRegisteredError {
+  relation: TagParent!
+}
+
+"子タグに既に明示的な親子関係が存在する場合のエラー"
+type RegisterTagParentRelationChildTagAlreadyHadExplicitParentError {
+  relation: TagParent!
+}
+
+"その他のエラー"
+type RegisterTagParentRelationOtherErrorsFallback {
+  message: RegisterTagParentRelationOtherErrorMessage!
+}
+
+enum RegisterTagParentRelationOtherErrorMessage {
+  INTERNAL_SERVER_ERROR
+}
+
+type RegisterTagParentRelationSucceededPayload {
+  relation: TagParent!
+}
