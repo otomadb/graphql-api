@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
 
-import { err, ok, Result } from "../utils/Result.js";
+import { err, isErr, ok, Result } from "../utils/Result.js";
 
 export type NodeType =
   | "Mylist"
@@ -46,12 +46,12 @@ export function parseGqlID(type: NodeType, gqlId: string): string {
 
 export function parseGqlID2(type: NodeType, gqlId: string): Result<"INVALID_ID", string> {
   const split = Buffer.from(gqlId, "base64url").toString().split(":");
-  if (split.length !== 2) return { status: "error", error: "INVALID_ID" };
+  if (split.length !== 2) return err("INVALID_ID");
 
   const [t, i] = split;
-  if (t !== type) return { status: "error", error: "INVALID_ID" };
+  if (t !== type) return err("INVALID_ID");
 
-  return { status: "ok", data: i };
+  return ok(i);
 }
 
 export function parseGqlID3(type: NodeType, gqlId: string): Result<{ type: "INVALID_ID"; invalidId: string }, string> {
@@ -72,15 +72,11 @@ export function parseGqlIDs2(
     wrongGqlIds: string[] = [];
   for (const gqlId of gqlIds) {
     const p = parseGqlID2(type, gqlId);
-    if (p.status === "error") wrongGqlIds.push(gqlId);
+    if (isErr(p)) wrongGqlIds.push(gqlId);
     else ids.push(p.data);
   }
-  if (0 < wrongGqlIds.length)
-    return {
-      status: "error",
-      error: { type: "INVALID_ID", wrongGqlIds },
-    };
-  return { status: "ok", data: ids };
+  if (0 < wrongGqlIds.length) return err({ type: "INVALID_ID", wrongGqlIds });
+  return ok(ids);
 }
 
 export function parseGqlIDs(type: NodeType, gqlIds: string[]): string[] {
