@@ -8,12 +8,10 @@ export const register = async (
   prisma: ResolverDeps["prisma"],
   {
     userId,
-    extraNames,
     primaryName,
   }: {
     userId: string;
     primaryName: string;
-    extraNames: string[];
   }
 ): Promise<Result<{ type: "UNKNOWN"; error: unknown }, Tag>> => {
   try {
@@ -36,21 +34,6 @@ export const register = async (
           },
         },
       }),
-      ...extraNames.map((extraName) =>
-        prisma.tagName.create({
-          data: {
-            id: ulid(),
-            tagId,
-            name: extraName,
-            isPrimary: false,
-            events: {
-              createMany: {
-                data: [{ userId, type: TagNameEventType.CREATE, payload: {} }],
-              },
-            },
-          },
-        })
-      ),
     ];
 
     const [tag] = await prisma.$transaction([
