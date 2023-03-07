@@ -57,12 +57,11 @@ export const register = async (
 
     const tagId = ulid();
 
-    const transactionSemitag: Prisma.Prisma__SemitagClient<Semitag>[] = [];
+    const $semitags: Prisma.Prisma__SemitagClient<Semitag>[] = [];
     for (const semitagId of semitagIds) {
       const semitag = await prisma.semitag.findUnique({ where: { id: semitagId }, select: { videoId: true } });
       if (!semitag) return err({ type: "SEMITAG_NOT_FOUND", id: semitagId });
-
-      transactionSemitag.push(
+      $semitags.push(
         prisma.semitag.update({
           where: { id: semitagId },
           data: {
@@ -86,94 +85,80 @@ export const register = async (
       );
     }
 
-    const dataNames = [
-      { id: ulid(), name: primaryName, isPrimary: true },
-      ...extraNames.map((extraName) => ({
+    const $primaryName = prisma.tagName.create({
+      data: {
+        id: ulid(),
+        name: primaryName,
+        isPrimary: true,
+        tagId,
+        events: {
+          createMany: {
+            data: [
+              { userId, type: TagNameEventType.CREATE, payload: {} },
+              { userId, type: TagNameEventType.SET_PRIMARY, payload: {} },
+            ],
+          },
+        },
+      },
+    });
+    const $extraNames = prisma.tagName.createMany({
+      data: extraNames.map((extraName) => ({
         id: ulid(),
         name: extraName,
         isPrimary: false,
+        tagId,
+        events: {
+          createMany: {
+            data: [{ userId, type: TagNameEventType.CREATE, payload: {} }],
+          },
+        },
       })),
-    ];
-    const dataExplicitParent = explicitParentId ? { id: ulid(), parentId: explicitParentId, isExplicit: true } : null;
-    const dataImplicitParents = implicitParentIds.map((implicitParentId) => ({
-      id: ulid(),
-      parentId: implicitParentId,
-      isExplicit: false,
-    }));
+    });
+    const $explicitParent = explicitParentId
+      ? prisma.tagParent.create({
+          data: {
+            id: ulid(),
+            parentId: explicitParentId,
+            childId: tagId,
+            isExplicit: true,
+            events: {
+              createMany: {
+                data: [
+                  { userId, type: TagParentEventType.CREATE, payload: {} },
+                  { userId, type: TagParentEventType.SET_PRIMARY, payload: {} },
+                ],
+              },
+            },
+          },
+        })
+      : null;
+    const $implicitParents = prisma.tagParent.createMany({
+      data: implicitParentIds.map((implicitParentId) => ({
+        id: ulid(),
+        parentId: implicitParentId,
+        childId: tagId,
+        isExplicit: false,
+        events: {
+          createMany: {
+            data: [{ userId, type: TagParentEventType.CREATE, payload: {} }],
+          },
+        },
+      })),
+    });
 
     const [tag] = await prisma.$transaction([
       prisma.tag.create({
         data: {
           id: tagId,
           meaningless,
-          names: { createMany: { data: dataNames } },
-          parents: {
-            createMany: {
-              data: [...(dataExplicitParent ? [dataExplicitParent] : []), ...dataImplicitParents],
-            },
-          },
-          events: {
-            create: {
-              userId,
-              type: TagEventType.REGISTER,
-              payload: {},
-            },
-          },
+          events: { create: { userId, type: TagEventType.REGISTER, payload: {} } },
         },
       }),
-      prisma.tagNameEvent.createMany({
-        data: [
-          ...dataNames.map(
-            ({ id }) =>
-              ({
-                userId,
-                type: TagNameEventType.CREATE,
-                tagNameId: id,
-                payload: {},
-              } satisfies Prisma.TagNameEventCreateManyInput)
-          ),
-          {
-            userId,
-            tagNameId: dataNames[0].id,
-            type: TagNameEventType.SET_PRIMARY,
-            payload: {},
-          },
-        ],
-      }),
-      ...(dataExplicitParent
-        ? [
-            prisma.tagParentEvent.createMany({
-              data: [
-                {
-                  userId,
-                  type: TagParentEventType.CREATE,
-                  tagParentId: dataExplicitParent.id,
-                  payload: {},
-                },
-                {
-                  userId,
-                  type: TagParentEventType.SET_PRIMARY,
-                  tagParentId: dataExplicitParent.id,
-                  payload: {},
-                },
-              ],
-            }),
-          ]
-        : []),
-      prisma.tagParentEvent.createMany({
-        data: [
-          ...dataImplicitParents.map(
-            ({ id }) =>
-              ({
-                userId,
-                type: TagParentEventType.CREATE,
-                tagParentId: id,
-                payload: {},
-              } satisfies Prisma.TagParentEventCreateManyInput)
-          ),
-        ],
-      }),
-      ...transactionSemitag,
+      $primaryName,
+      $extraNames,
+      ...($explicitParent ? [$explicitParent] : []),
+      $implicitParents,
+      ...$semitags,
     ]);
     return ok(tag);
   } catch (e) {
