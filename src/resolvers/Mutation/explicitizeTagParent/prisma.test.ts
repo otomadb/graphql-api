@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import { Err, ErrError, Ok, OkData } from "../../../utils/Result.js";
+import { ErrError, OkData, ReturnErr, ReturnOk } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 import { explicitize } from "./prisma.js";
 
@@ -38,12 +38,12 @@ describe("Register video by Prisma", () => {
     const actual = (await explicitize(prisma, {
       userId: "u1",
       relationId: "r1",
-    })) as Err<Awaited<ReturnType<typeof explicitize>>>;
+    })) as ReturnErr<typeof explicitize>;
     expect(actual.status).toBe("error");
     expect(actual.error).toStrictEqual({
       type: "NOT_EXISTS",
       id: "r1",
-    } satisfies ErrError<Awaited<ReturnType<typeof explicitize>>>);
+    } satisfies ErrError<typeof actual>);
   });
 
   test("既に明示的な親子関係が存在する", async () => {
@@ -76,7 +76,7 @@ describe("Register video by Prisma", () => {
     const actual = (await explicitize(prisma, {
       userId: "u1",
       relationId: "r1",
-    })) as Err<Awaited<ReturnType<typeof explicitize>>>;
+    })) as ReturnErr<typeof explicitize>;
     expect(actual.status).toBe("error");
     expect(actual.error).toStrictEqual({
       type: "IS_EXPLICIT",
@@ -84,7 +84,7 @@ describe("Register video by Prisma", () => {
         id: "r1",
         isExplicit: true,
       }),
-    } satisfies ErrError<Awaited<ReturnType<typeof explicitize>>>);
+    } satisfies ErrError<typeof actual>);
   });
 
   test("非明示的な親子関係を昇格する", async () => {
@@ -117,13 +117,13 @@ describe("Register video by Prisma", () => {
     const actual = (await explicitize(prisma, {
       userId: "u1",
       relationId: "r1",
-    })) as Ok<Awaited<ReturnType<typeof explicitize>>>;
+    })) as ReturnOk<typeof explicitize>;
     expect(actual.status).toBe("ok");
     expect(actual.data).toStrictEqual(
       expect.objectContaining({
         id: "r1",
         isExplicit: true,
-      }) satisfies OkData<Awaited<ReturnType<typeof explicitize>>>
+      }) satisfies OkData<typeof actual>
     );
   });
 });
