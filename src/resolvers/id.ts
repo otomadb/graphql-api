@@ -64,6 +64,20 @@ export function parseGqlID3(type: NodeType, gqlId: string): Result<{ type: "INVA
   return ok(i);
 }
 
+export function parseGqlIDs3(
+  type: NodeType,
+  gqlIds: string[]
+): Result<{ type: "INVALID_ID"; invalidId: string } | { type: "DUPLICATED"; duplicatedId: string }, string[]> {
+  const ids: string[] = [];
+  for (const gqlId of gqlIds) {
+    const id = parseGqlID3(type, gqlId);
+    if (isErr(id)) return id;
+    if (ids.includes(id.data)) return err({ type: "DUPLICATED", duplicatedId: id.data });
+    ids.push(id.data);
+  }
+  return ok(ids);
+}
+
 export function parseGqlIDs2(
   type: NodeType,
   gqlIds: string[]
