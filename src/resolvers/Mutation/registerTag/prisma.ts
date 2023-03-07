@@ -1,6 +1,4 @@
 import {
-  Prisma,
-  Semitag,
   SemitagEventType,
   Tag,
   TagEventType,
@@ -18,7 +16,6 @@ export const register = async (
   {
     userId,
     extraNames,
-    meaningless,
     primaryName,
     explicitParentId,
     implicitParentIds,
@@ -28,8 +25,6 @@ export const register = async (
     primaryName: string;
     extraNames: string[];
 
-    meaningless: boolean;
-
     explicitParentId: string | null;
     implicitParentIds: string[];
 
@@ -37,60 +32,22 @@ export const register = async (
   }
 ): Promise<
   Result<
-    | { type: "COLLIDE_BETWEEN_EXPLICIT_PARENT_AND_IMPLICIT_PARENTS"; id: string }
-    | { type: "DUPLICATE_IN_IMPLICIT_PARENTS"; id: string }
-    | { type: "DUPLICATE_IN_SEMITAG_IDS"; id: string }
+    | { type: "TAG_NOT_FOUND"; id: string }
     | { type: "SEMITAG_NOT_FOUND"; id: string }
+    | { type: "SEMITAG_ALREADY_CHECKED"; id: string }
     | { type: "UNKNOWN"; error: unknown },
     Tag
   >
 > => {
   try {
-    if (explicitParentId && implicitParentIds.includes(explicitParentId))
-      return err({ type: "COLLIDE_BETWEEN_EXPLICIT_PARENT_AND_IMPLICIT_PARENTS", id: explicitParentId });
-
-    const duplicatedImplicitId = implicitParentIds.find((id, i, arr) => arr.indexOf(id) !== i);
-    if (duplicatedImplicitId) return err({ type: "DUPLICATE_IN_IMPLICIT_PARENTS", id: duplicatedImplicitId });
-
-    const duplicatedSemitagId = semitagIds.find((id, i, arr) => arr.indexOf(id) !== i);
-    if (duplicatedSemitagId) return err({ type: "DUPLICATE_IN_SEMITAG_IDS", id: duplicatedSemitagId });
-
     const tagId = ulid();
-
-    const $semitags: Prisma.Prisma__SemitagClient<Semitag>[] = [];
-    for (const semitagId of semitagIds) {
-      const semitag = await prisma.semitag.findUnique({ where: { id: semitagId }, select: { videoId: true } });
-      if (!semitag) return err({ type: "SEMITAG_NOT_FOUND", id: semitagId });
-      $semitags.push(
-        prisma.semitag.update({
-          where: { id: semitagId },
-          data: {
-            events: { create: { userId, type: SemitagEventType.RESOLVE, payload: {} } },
-            isChecked: true,
-            checking: {
-              create: {
-                id: ulid(),
-                videoTag: {
-                  create: {
-                    id: ulid(),
-                    tag: { connect: { id: tagId } },
-                    video: { connect: { id: semitag.videoId } },
-                    events: { create: { userId, type: VideoTagEventType.ATTACH, payload: {} } },
-                  },
-                },
-              },
-            },
-          },
-        })
-      );
-    }
 
     const $primaryName = prisma.tagName.create({
       data: {
+        tagId,
         id: ulid(),
         name: primaryName,
         isPrimary: true,
-        tagId,
         events: {
           createMany: {
             data: [
@@ -101,24 +58,29 @@ export const register = async (
         },
       },
     });
-    const $extraNames = prisma.tagName.createMany({
-      data: extraNames.map((extraName) => ({
-        id: ulid(),
-        name: extraName,
-        isPrimary: false,
-        tagId,
-        events: {
-          createMany: {
-            data: [{ userId, type: TagNameEventType.CREATE, payload: {} }],
+    const $extraNames = extraNames.map((extraName) =>
+      prisma.tagName.create({
+        data: {
+          tagId,
+          id: ulid(),
+          name: extraName,
+          isPrimary: false,
+          events: {
+            createMany: {
+              data: [{ userId, type: TagNameEventType.CREATE, payload: {} }],
+            },
           },
         },
-      })),
-    });
-    const $explicitParent = explicitParentId
+      })
+    );
+
+    const explicitParent = explicitParentId ? await prisma.tag.findUnique({ where: { id: explicitParentId } }) : null;
+    if (explicitParentId && !explicitParent) return err({ type: "TAG_NOT_FOUND", id: explicitParentId });
+    const $explicitParent = explicitParent
       ? prisma.tagParent.create({
           data: {
             id: ulid(),
-            parentId: explicitParentId,
+            parentId: explicitParent.id,
             childId: tagId,
             isExplicit: true,
             events: {
@@ -132,32 +94,68 @@ export const register = async (
           },
         })
       : null;
-    const $implicitParents = prisma.tagParent.createMany({
-      data: implicitParentIds.map((implicitParentId) => ({
-        id: ulid(),
-        parentId: implicitParentId,
-        childId: tagId,
-        isExplicit: false,
-        events: {
-          createMany: {
-            data: [{ userId, type: TagParentEventType.CREATE, payload: {} }],
+
+    const implicitParents = await prisma.tag.findMany({ where: { id: { in: implicitParentIds } } });
+    const missingImplicitParentid = implicitParentIds.find(
+      (id) => !implicitParents.find((implicitParent) => implicitParent.id === id)
+    );
+    if (missingImplicitParentid) return err({ type: "TAG_NOT_FOUND", id: missingImplicitParentid });
+    const $implicitParents = implicitParents.map(({ id: parentId }) =>
+      prisma.tagParent.create({
+        data: {
+          id: ulid(),
+          parentId,
+          childId: tagId,
+          isExplicit: false,
+          events: {
+            createMany: {
+              data: [{ userId, type: TagParentEventType.CREATE, payload: {} }],
+            },
           },
         },
-      })),
-    });
+      })
+    );
+
+    const semitags = await prisma.semitag.findMany({ where: { id: { in: semitagIds } } });
+    const missingSemitagId = semitagIds.find((id) => !semitags.find((semitag) => semitag.id === id));
+    if (missingSemitagId) return err({ type: "SEMITAG_NOT_FOUND", id: missingSemitagId });
+    const checkedSemitag = semitags.find((semitag) => semitag.isChecked);
+    if (checkedSemitag) return err({ type: "SEMITAG_ALREADY_CHECKED", id: checkedSemitag.id });
+    const $semitags = semitags.map((semitag) =>
+      prisma.semitag.update({
+        where: { id: semitag.id },
+        data: {
+          isChecked: true,
+          events: { create: { userId, type: SemitagEventType.RESOLVE, payload: {} } },
+          checking: {
+            create: {
+              id: ulid(),
+              videoTag: {
+                create: {
+                  id: ulid(),
+                  tag: { connect: { id: tagId } },
+                  video: { connect: { id: semitag.videoId } },
+                  events: { create: { userId, type: VideoTagEventType.ATTACH, payload: {} } },
+                },
+              },
+            },
+          },
+        },
+      })
+    );
 
     const [tag] = await prisma.$transaction([
       prisma.tag.create({
         data: {
           id: tagId,
-          meaningless,
+          meaningless: false,
           events: { create: { userId, type: TagEventType.REGISTER, payload: {} } },
         },
       }),
       $primaryName,
-      $extraNames,
+      ...$extraNames,
       ...($explicitParent ? [$explicitParent] : []),
-      $implicitParents,
+      ...$implicitParents,
       ...$semitags,
     ]);
     return ok(tag);

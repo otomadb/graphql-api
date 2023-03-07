@@ -31,3 +31,13 @@ input SemitagEventsInput {
   skip: Int! = 0
   limit: Int! = 10
 }
+
+"SemitagのIDとして無効なIDを入力した場合のエラー"
+type MutationInvalidSemitagIdError {
+  semitagId: String!
+}
+
+"Semitagが見つからない場合のエラー"
+type MutationSemitagNotFoundError {
+  semitagId: String!
+}

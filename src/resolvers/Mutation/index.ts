@@ -12,7 +12,7 @@ import { createMylistGroup } from "./createMylistGroup/createMylistGroup.js";
 import { resolverExplicitizeTagParent } from "./explicitizeTagParent/resolver.js";
 import { likeVideo } from "./likeVideo/likeVideo.js";
 import { registerCategoryTag } from "./registerCategoryTag/resolver.js";
-import { resolverRegisterTag } from "./registerTag/registerTag.js";
+import { resolverRegisterTag } from "./registerTag/resolver.js";
 import { resolverRegisterTagParentRelation } from "./registerTagParentRelation/resolver.js";
 import { resolverRegisterVideo } from "./registerVideo/resolver.js";
 import { resolverRejectRequestNicovideoRegistration } from "./rejectNicovideoRegistrationRequest/resolver.js";
