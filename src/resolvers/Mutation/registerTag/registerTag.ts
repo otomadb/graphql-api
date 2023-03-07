@@ -1,219 +1,34 @@
-import {
-  Prisma,
-  Semitag,
-  SemitagEventType,
-  Tag,
-  TagEventType,
-  TagNameEventType,
-  TagParentEventType,
-  UserRole,
-  VideoTagEventType,
-} from "@prisma/client";
-import { GraphQLResolveInfo } from "graphql";
-import { ulid } from "ulid";
+import { UserRole } from "@prisma/client";
 
-import { err, isErr, ok, Result } from "../../../utils/Result.js";
-import { MutationResolvers, RegisterTagFailedMessage } from "../../graphql.js";
+import { isErr } from "../../../utils/Result.js";
+import { MutationResolvers, RegisterTagFailedMessage, ResolversTypes } from "../../graphql.js";
 import { parseGqlID2, parseGqlIDs2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 import { registerTagInNeo4j } from "./neo4j.js";
+import { register } from "./prisma";
 
-export const register = async (
-  prisma: ResolverDeps["prisma"],
-  {
-    userId,
-    extraNames,
-    meaningless,
-    primaryName,
-    explicitParentId,
-    implicitParentIds,
-    semitagIds,
-  }: {
-    userId: string;
-    primaryName: string;
-    extraNames: string[];
-
-    meaningless: boolean;
-
-    explicitParentId: string | null;
-    implicitParentIds: string[];
-
-    semitagIds: string[];
-  }
-): Promise<
-  Result<
-    | { type: "COLLIDE_BETWEEN_EXPLICIT_PARENT_AND_IMPLICIT_PARENTS"; id: string }
-    | { type: "DUPLICATE_IN_IMPLICIT_PARENTS"; id: string }
-    | { type: "DUPLICATE_IN_SEMITAG_IDS"; id: string }
-    | { type: "SEMITAG_NOT_FOUND"; id: string }
-    | { type: "UNKNOWN"; error: unknown },
-    Tag
-  >
-> => {
-  try {
-    if (explicitParentId && implicitParentIds.includes(explicitParentId))
-      return err({ type: "COLLIDE_BETWEEN_EXPLICIT_PARENT_AND_IMPLICIT_PARENTS", id: explicitParentId });
-
-    const duplicatedImplicitId = implicitParentIds.find((id, i, arr) => arr.indexOf(id) !== i);
-    if (duplicatedImplicitId) return err({ type: "DUPLICATE_IN_IMPLICIT_PARENTS", id: duplicatedImplicitId });
-
-    const duplicatedSemitagId = semitagIds.find((id, i, arr) => arr.indexOf(id) !== i);
-    if (duplicatedSemitagId) return err({ type: "DUPLICATE_IN_SEMITAG_IDS", id: duplicatedSemitagId });
-
-    const tagId = ulid();
-
-    const transactionSemitag: Prisma.Prisma__SemitagClient<Semitag>[] = [];
-    for (const semitagId of semitagIds) {
-      const semitag = await prisma.semitag.findUnique({ where: { id: semitagId }, select: { videoId: true } });
-      if (!semitag) return err({ type: "SEMITAG_NOT_FOUND", id: semitagId });
-
-      transactionSemitag.push(
-        prisma.semitag.update({
-          where: { id: semitagId },
-          data: {
-            events: { create: { userId, type: SemitagEventType.RESOLVE, payload: {} } },
-            isChecked: true,
-            checking: {
-              create: {
-                id: ulid(),
-                videoTag: {
-                  create: {
-                    id: ulid(),
-                    tag: { connect: { id: tagId } },
-                    video: { connect: { id: semitag.videoId } },
-                    events: { create: { userId, type: VideoTagEventType.ATTACH, payload: {} } },
-                  },
-                },
-              },
-            },
-          },
-        })
-      );
-    }
-
-    const dataNames = [
-      { id: ulid(), name: primaryName, isPrimary: true },
-      ...extraNames.map((extraName) => ({
-        id: ulid(),
-        name: extraName,
-        isPrimary: false,
-      })),
-    ];
-    const dataExplicitParent = explicitParentId ? { id: ulid(), parentId: explicitParentId, isExplicit: true } : null;
-    const dataImplicitParents = implicitParentIds.map((implicitParentId) => ({
-      id: ulid(),
-      parentId: implicitParentId,
-      isExplicit: false,
-    }));
-
-    const [tag] = await prisma.$transaction([
-      prisma.tag.create({
-        data: {
-          id: tagId,
-          meaningless,
-          names: { createMany: { data: dataNames } },
-          parents: {
-            createMany: {
-              data: [...(dataExplicitParent ? [dataExplicitParent] : []), ...dataImplicitParents],
-            },
-          },
-          events: {
-            create: {
-              userId,
-              type: TagEventType.REGISTER,
-              payload: {},
-            },
-          },
-        },
-      }),
-      prisma.tagNameEvent.createMany({
-        data: [
-          ...dataNames.map(
-            ({ id }) =>
-              ({
-                userId,
-                type: TagNameEventType.CREATE,
-                tagNameId: id,
-                payload: {},
-              } satisfies Prisma.TagNameEventCreateManyInput)
-          ),
-          {
-            userId,
-            tagNameId: dataNames[0].id,
-            type: TagNameEventType.SET_PRIMARY,
-            payload: {},
-          },
-        ],
-      }),
-      ...(dataExplicitParent
-        ? [
-            prisma.tagParentEvent.createMany({
-              data: [
-                {
-                  userId,
-                  type: TagParentEventType.CREATE,
-                  tagParentId: dataExplicitParent.id,
-                  payload: {},
-                },
-                {
-                  userId,
-                  type: TagParentEventType.SET_PRIMARY,
-                  tagParentId: dataExplicitParent.id,
-                  payload: {},
-                },
-              ],
-            }),
-          ]
-        : []),
-      prisma.tagParentEvent.createMany({
-        data: [
-          ...dataImplicitParents.map(
-            ({ id }) =>
-              ({
-                userId,
-                type: TagParentEventType.CREATE,
-                tagParentId: id,
-                payload: {},
-              } satisfies Prisma.TagParentEventCreateManyInput)
-          ),
-        ],
-      }),
-      ...transactionSemitag,
-    ]);
-    return ok(tag);
-  } catch (e) {
-    return err({ type: "UNKNOWN", error: e });
-  }
-};
-
-export const logGraphQLResolveInfo = (info: GraphQLResolveInfo) => ({
-  parentType: info.parentType.toJSON(),
-  fieldName: info.fieldName,
-  variables: info.variableValues,
-});
-
-export const registerTag = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+export const resolverRegisterTag = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
   (async (_: unknown, { input }, { user }, info) => {
     if (!user || (user.role !== UserRole.EDITOR && user.role !== UserRole.ADMINISTRATOR))
       return {
         __typename: "RegisterTagFailedPayload",
         message: RegisterTagFailedMessage.Forbidden,
-      };
+      } satisfies ResolversTypes["RegisterTagFailedPayload"];
 
     const explicitParent = input.explicitParent ? parseGqlID2("Tag", input.explicitParent) : null;
     if (explicitParent && isErr(explicitParent))
       return {
         __typename: "RegisterTagFailedPayload",
         message: RegisterTagFailedMessage.InvalidTagId, // TODO: 詳細なエラーを返すようにする
-      };
+      } satisfies ResolversTypes["RegisterTagFailedPayload"];
 
     const resolveSemitags = parseGqlIDs2("Semitag", input.resolveSemitags);
     if (resolveSemitags && isErr(resolveSemitags))
       return {
         __typename: "RegisterTagFailedPayload",
         message: RegisterTagFailedMessage.InvalidSemitagId, // TODO: 詳細なエラーを返すようにする
-      };
+      } satisfies ResolversTypes["RegisterTagFailedPayload"];
 
     const result = await register(prisma, {
       userId: user.id,
@@ -231,23 +46,23 @@ export const registerTag = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prism
           return {
             __typename: "RegisterTagFailedPayload",
             message: RegisterTagFailedMessage.InvalidTagId,
-          };
+          } satisfies ResolversTypes["RegisterTagFailedPayload"];
         case "DUPLICATE_IN_IMPLICIT_PARENTS":
           return {
             __typename: "RegisterTagFailedPayload",
             message: RegisterTagFailedMessage.InvalidTagId,
-          };
+          } satisfies ResolversTypes["RegisterTagFailedPayload"];
         case "UNKNOWN":
           logger.error({ error: result.error, path: info.path }, "Resolver unknown error");
           return {
             __typename: "RegisterTagFailedPayload",
             message: RegisterTagFailedMessage.Unknown,
-          };
+          } satisfies ResolversTypes["RegisterTagFailedPayload"];
         default:
           return {
             __typename: "RegisterTagFailedPayload",
             message: RegisterTagFailedMessage.Unknown,
-          };
+          } satisfies ResolversTypes["RegisterTagFailedPayload"];
       }
     }
 
@@ -260,5 +75,5 @@ export const registerTag = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prism
     return {
       __typename: "RegisterTagSucceededPayload",
       tag: new TagModel(tag),
-    };
+    } satisfies ResolversTypes["RegisterTagSucceededPayload"];
   }) satisfies MutationResolvers["registerTag"];
