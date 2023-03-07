@@ -11,7 +11,7 @@ import { buildGqlId, parseGqlID3, parseGqlIDs3 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
 import { registerTagInNeo4j } from "./neo4j.js";
-import { register } from "./prisma";
+import { register } from "./prisma.js";
 
 export const resolverRegisterTag = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
   (async (_: unknown, { input }, { user }, info) => {
