@@ -7,6 +7,8 @@ import { useDisableIntrospection } from "@graphql-yoga/plugin-disable-introspect
 import { PrismaClient } from "@prisma/client";
 import { print } from "graphql";
 import { createSchema, createYoga, useLogger, useReadinessCheck } from "graphql-yoga";
+import { IncomingMessage } from "http";
+import jwt from "jsonwebtoken";
 import neo4j from "neo4j-driver";
 import { pino } from "pino";
 
@@ -14,7 +16,13 @@ import { extractSessionFromReq, verifySession } from "./auth/session.js";
 import { ServerContext, UserContext } from "./resolvers/context.js";
 import { typeDefs } from "./resolvers/graphql.js";
 import { makeResolvers } from "./resolvers/index.js";
-import { isErr, isOk } from "./utils/Result.js";
+import { err, isErr, isOk, ok, Result } from "./utils/Result.js";
+
+const extractTokenFromReq = (req: IncomingMessage): Result<{ type: "NO_TOKEN" }, string> => {
+  const token = req.headers.authorization?.split(" ").at(1);
+  if (!token) return err({ type: "NO_TOKEN" });
+  return ok(token);
+};
 
 const logger = pino({
   transport: {
@@ -58,6 +66,11 @@ const yoga = createYoga<ServerContext, UserContext>({
           cookieSameSite: () => (process.env.ENABLE_SAME_SITE_NONE === "true" ? "none" : "strict"),
         },
       },
+      token: {
+        sign({ userId, duration }) {
+          return jwt.sign({ sub: userId }, "secret", { expiresIn: duration });
+        },
+      },
     }),
   }),
   async context({ req }) {
@@ -85,6 +98,11 @@ const yoga = createYoga<ServerContext, UserContext>({
             break;
         }
       }
+    }
+
+    const token = extractTokenFromReq(req);
+    if (isOk(token)) {
+      const a = await jwt.verify(token.data, "secret");
     }
 
     return { user: null } satisfies UserContext;

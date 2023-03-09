@@ -80,6 +80,9 @@ export type ResolverDeps = {
       cookieSameSite(): "none" | "strict";
     };
   };
+  token: {
+    sign(payload: { userId: string; duration: "1d" }): string;
+  };
 };
 
 export const makeResolvers = (deps: ResolverDeps) =>
