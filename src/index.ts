@@ -4,13 +4,14 @@ import { createServer } from "node:http";
 
 import { usePrometheus } from "@envelop/prometheus";
 import { useDisableIntrospection } from "@graphql-yoga/plugin-disable-introspection";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, UserRole } from "@prisma/client";
 import { print } from "graphql";
 import { createSchema, createYoga, useLogger, useReadinessCheck } from "graphql-yoga";
 import { IncomingMessage } from "http";
 import jwt from "jsonwebtoken";
 import neo4j from "neo4j-driver";
 import { pino } from "pino";
+import z from "zod";
 
 import { extractSessionFromReq, verifySession } from "./auth/session.js";
 import { ServerContext, UserContext } from "./resolvers/context.js";
@@ -22,6 +23,34 @@ const extractTokenFromReq = (req: IncomingMessage): Result<{ type: "NO_TOKEN" },
   const token = req.headers.authorization?.split(" ").at(1);
   if (!token) return err({ type: "NO_TOKEN" });
   return ok(token);
+};
+
+const verifyToken = async (
+  token: string
+): Promise<
+  Result<
+    | { type: "TOKEN_EXPIRED" }
+    | { type: "INVALID_PAYLOAD"; payload: unknown }
+    | { type: "UNKNOWN_ERROR"; error: unknown },
+    UserContext
+  >
+> => {
+  try {
+    const payload = await jwt.verify(token, process.env.JWT_SECRET);
+    const parsed = z.object({ sub: z.string() }).safeParse(payload);
+    if (!parsed.success) return err({ type: "INVALID_PAYLOAD", payload: parsed.error });
+
+    const { sub } = parsed.data;
+    return ok({
+      user: {
+        id: sub,
+        role: UserRole.ADMINISTRATOR, // TODO: 全然嘘だけど一旦これで
+      },
+    } satisfies UserContext);
+  } catch (e) {
+    if (e instanceof jwt.TokenExpiredError) return err({ type: "TOKEN_EXPIRED" });
+    else return err({ type: "UNKNOWN_ERROR", error: e });
+  }
 };
 
 const logger = pino({
@@ -68,7 +97,7 @@ const yoga = createYoga<ServerContext, UserContext>({
       },
       token: {
         sign({ userId, duration }) {
-          return jwt.sign({ sub: userId }, "secret", { expiresIn: duration });
+          return jwt.sign({ sub: userId }, process.env.JWT_SECRET, { expiresIn: duration });
         },
       },
     }),
@@ -102,24 +131,24 @@ const yoga = createYoga<ServerContext, UserContext>({
 
     const token = extractTokenFromReq(req);
     if (isOk(token)) {
-      const a = await jwt.verify(token.data, "secret");
+      const verified = await verifyToken(token.data);
+      if (isOk(verified)) return verified.data;
+      else {
+        switch (verified.error.type) {
+          case "TOKEN_EXPIRED":
+            logger.warn("Token already expired");
+            break;
+          case "INVALID_PAYLOAD":
+            logger.error({ payload: verified.error.payload }, "Token payload is invalid");
+            break;
+          case "UNKNOWN_ERROR":
+            logger.error({ error: verified.error.error }, "Something wrong in verifing token");
+            break;
+        }
+      }
     }
 
     return { user: null } satisfies UserContext;
-
-    /* # TODO: 一旦廃止
-    // from authorization
-    const authToken = req.headers["authorization"]?.split(" ").at(1);
-    if (authToken) {
-      const session = await findSessionFromAuthzToken(prismaClient, authToken);
-      if (session)
-        return {
-          userId: session.id,
-          user: { id: session.data.user.id, role: session.data.user.role },
-        } satisfies UserContext;
-    }
-    return { userId: null } satisfies UserContext;
-    */
   },
   cors: (request) => {
     const origin = request.headers.get("origin");

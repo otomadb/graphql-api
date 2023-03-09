@@ -8,6 +8,8 @@ declare namespace NodeJS {
     // readonly ENABLE_INTROSPECTION?: string;
     readonly ENABLE_SAME_SITE_NONE?: string;
 
+    readonly JWT_SECRET: string;
+
     readonly PRISMA_DATABASE_URL: string;
 
     readonly NEO4J_URL: string;
