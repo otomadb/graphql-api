@@ -42,6 +42,7 @@ import {
   resolveTagNameUnsetPrimaryEvent,
 } from "./TagNameEvent/index.js";
 import { resolveTagParent } from "./TagParent/index.js";
+import { resolverTagParentConnection } from "./TagParentConnection/resolver.js";
 import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
 import { resolverVideoConnection } from "./VideoConnection/resolver.js";
@@ -117,6 +118,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     TagNameSetPrimaryEvent: resolveTagNameSetPrimaryEvent(deps),
     TagNameUnsetPrimaryEvent: resolveTagNameUnsetPrimaryEvent(deps),
     TagParent: resolveTagParent(deps),
+    TagParentConnection: resolverTagParentConnection(),
     TagRegisterEvent: resolveTagRegisterEvent(deps),
     User: resolveUser(deps),
     Video: resolveVideo(deps),

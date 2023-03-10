@@ -44,6 +44,7 @@ generates:
         TagNameSetPrimaryEvent: ./TagNameEvent/model.js#TagNameEventModel
         TagNameUnsetPrimaryEvent: ./TagNameEvent/model.js#TagNameEventModel
         TagParent: ./TagParent/model.js#TagParentModel
+        TagParentConnection: ./TagParentConnection/model.js#TagParentConnectionModel
         TagParentCreateEvent: ./TagParentEvent/model.js#TagParentEventModel
         TagParentEvent: ./TagParentEvent/model.js#TagParentEventModel
         TagParentSetPrimaryEvent: ./TagParentEvent/model.js#TagParentEventModel
