@@ -1,9 +1,10 @@
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection";
+import { MylistShareRange } from "@prisma/client";
 import { GraphQLError } from "graphql";
 import z from "zod";
 
 import { cursorOptions } from "../../connection.js";
-import { UserResolvers } from "../../graphql.js";
+import { MylistShareRange as GqlMylistShareRange, UserResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistConnectionModel } from "../../MylistConnection/model.js";
 import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
@@ -31,19 +32,22 @@ export const resolverUserMylists = ({ prisma, logger }: Pick<ResolverDeps, "pris
       throw new GraphQLError("Wrong args");
     }
 
+    const shareRange: MylistShareRange[] = [
+      ...(range.includes(GqlMylistShareRange.Public) ? [MylistShareRange.PUBLIC] : []),
+      ...(range.includes(GqlMylistShareRange.KnowLink) ? [MylistShareRange.KNOW_LINK] : []),
+      ...(range.includes(GqlMylistShareRange.Private) ? [MylistShareRange.PRIVATE] : []),
+    ];
+
     return findManyCursorConnection(
       (args) =>
         prisma.mylist.findMany({
           ...args,
-          where: { holderId: userId, shareRange: { in: [] } },
+          where: { holderId: userId, shareRange: { in: shareRange } },
           orderBy: { createdAt: parseOrderBy(orderBy.createdAt) },
         }),
       () =>
         prisma.mylist.count({
-          where: {
-            holderId: userId,
-            shareRange: { in: [] },
-          },
+          where: { holderId: userId, shareRange: { in: shareRange } },
         }),
       connectionArgs.data,
       { resolveInfo: info, ...cursorOptions }
