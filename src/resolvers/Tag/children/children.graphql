@@ -1,0 +1,15 @@
+type Tag {
+  children(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    orderBy: TagTaggedVideosOrderBy! = { createdAt: DESC }
+  ): TagParentConnection!
+}
+
+input TagTaggedVideosOrderBy {
+  createdAt: SortOrder
+}
