@@ -1,12 +1,11 @@
 import { MylistShareRange, UserRole } from "@prisma/client";
-import { GraphQLError } from "graphql";
 
-import { MylistShareRange as GraphQLMylistShareRange, Resolvers } from "../graphql.js";
+import { Resolvers } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
 import { ResolverDeps } from "../index.js";
 import { MylistModel } from "../Mylist/model.js";
-import { parseSortOrder } from "../parseSortOrder.js";
 import { resolverUserLikes } from "./likes/resolver.js";
+import { resolverUserMylists } from "./mylists/resolver.js";
 
 export const resolveUser = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
@@ -22,34 +21,8 @@ export const resolveUser = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       return new MylistModel(mylist);
     },
 
-    mylists: async ({ id: userId }, { input }, { user: ctxUser }) => {
-      if (input.range.includes(GraphQLMylistShareRange.Private) && userId !== ctxUser?.id)
-        throw new GraphQLError(
-          `Cannot list "${GraphQLMylistShareRange.Private}" mylists for "${buildGqlId("Video", userId)}"`
-        );
-      if (input.range.includes(GraphQLMylistShareRange.KnowLink) && userId !== ctxUser?.id)
-        throw new GraphQLError(
-          `Cannot list "${GraphQLMylistShareRange.KnowLink}" mylists for "${buildGqlId("Video", userId)}"`
-        );
-
-      const nodes = await prisma.mylist
-        .findMany({
-          where: {
-            holder: { id: userId },
-            shareRange: { in: input.range },
-          },
-          take: input.limit,
-          skip: input.skip,
-          orderBy: {
-            createdAt: parseSortOrder(input.order?.createdAt),
-            updatedAt: parseSortOrder(input.order?.updatedAt),
-          },
-        })
-        .then((ms) => ms.map((m) => new MylistModel(m)));
-
-      return { nodes };
-    },
-
+    mylists: resolverUserMylists({ prisma, logger }),
+    
     isEditor: ({ role }) => role === UserRole.EDITOR || role === UserRole.ADMINISTRATOR,
     isAdministrator: ({ role }) => role === UserRole.ADMINISTRATOR,
   } satisfies Resolvers["User"]);
