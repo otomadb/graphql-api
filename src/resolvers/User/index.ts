@@ -7,7 +7,7 @@ import { MylistModel } from "../Mylist/model.js";
 import { resolverUserLikes } from "./likes/resolver.js";
 import { resolverUserMylists } from "./mylists/resolver.js";
 
-export const resolveUser = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveUser = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   ({
     id: ({ id }): string => buildGqlId("User", id),
     likes: resolverUserLikes({ prisma }),
@@ -22,7 +22,7 @@ export const resolveUser = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
     },
 
     mylists: resolverUserMylists({ prisma, logger }),
-    
+
     isEditor: ({ role }) => role === UserRole.EDITOR || role === UserRole.ADMINISTRATOR,
     isAdministrator: ({ role }) => role === UserRole.ADMINISTRATOR,
   } satisfies Resolvers["User"]);
