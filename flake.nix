@@ -9,7 +9,7 @@
     };
     flake-utils.url = "github:numtide/flake-utils";
     prisma-engines = {
-      url = "github:prisma/prisma-engines/4.10.1";
+      url = "github:prisma/prisma-engines/4.11.0";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
