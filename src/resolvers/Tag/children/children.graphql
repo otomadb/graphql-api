@@ -6,10 +6,10 @@ type Tag {
     last: Int
     before: String
 
-    orderBy: TagTaggedVideosOrderBy! = { createdAt: DESC }
+    orderBy: TagChildrenOrderBy! = { createdAt: DESC }
   ): TagParentConnection!
 }
 
-input TagTaggedVideosOrderBy {
+input TagChildrenOrderBy {
   createdAt: SortOrder
 }
