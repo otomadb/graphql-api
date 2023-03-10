@@ -6,6 +6,7 @@ import { ResolverDeps } from "../index.js";
 import { TagEventModel } from "../TagEvent/model.js";
 import { TagNameModel } from "../TagName/model.js";
 import { TagParentModel } from "../TagParent/model.js";
+import { resolverChildren } from "./children/resolver.js";
 import { TagModel } from "./model.js";
 import { resolvePseudoType } from "./pseudoType.js";
 import { resolveTaggedVideos } from "./taggedVideos/resolver.js";
@@ -36,6 +37,7 @@ export const resolveTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "lo
       if (!rel) return null;
       return new TagModel(rel.parent);
     },
+    children: resolverChildren({ prisma, logger }),
 
     taggedVideos: resolveTaggedVideos({ prisma, logger }),
 
