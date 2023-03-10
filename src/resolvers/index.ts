@@ -7,6 +7,7 @@ import { Logger } from "pino";
 import { type Resolvers } from "./graphql.js";
 import { resolveMutation } from "./Mutation/index.js";
 import { resolveMylist } from "./Mylist/index.js";
+import { resolverMylistConnection } from "./MylistConnection/resolver.js";
 import { resolveMylistGroup } from "./MylistGroup/index.js";
 import { resolveMylistGroupMylistInclusion } from "./MylistGroupMylistInclusion/index.js";
 import { resolveMylistGroupVideoAggregation } from "./MylistGroupVideoAggregation/index.js";
@@ -86,6 +87,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
   ({
     Mutation: resolveMutation(deps),
     Mylist: resolveMylist(deps),
+    MylistConnection: resolverMylistConnection(),
     MylistGroup: resolveMylistGroup(deps),
     MylistGroupMylistInclusion: resolveMylistGroupMylistInclusion(deps),
     MylistGroupVideoAggregation: resolveMylistGroupVideoAggregation(deps),
