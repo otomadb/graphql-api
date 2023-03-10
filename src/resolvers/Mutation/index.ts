@@ -9,8 +9,11 @@ import { addVideoToMylist } from "./addViteoToMylist/addVideoToMylist.js";
 import { resolverChangeMylistShareRange } from "./changeMylistShareRange/resolver.js";
 import { createMylist } from "./createMylist/createMylist.js";
 import { createMylistGroup } from "./createMylistGroup/createMylistGroup.js";
+import { resolverExplicitizeTagParent } from "./explicitizeTagParent/resolver.js";
 import { likeVideo } from "./likeVideo/likeVideo.js";
-import { registerTag } from "./registerTag/registerTag.js";
+import { registerCategoryTag } from "./registerCategoryTag/resolver.js";
+import { resolverRegisterTag } from "./registerTag/resolver.js";
+import { resolverRegisterTagParentRelation } from "./registerTagParentRelation/resolver.js";
 import { resolverRegisterVideo } from "./registerVideo/resolver.js";
 import { resolverRejectRequestNicovideoRegistration } from "./rejectNicovideoRegistrationRequest/resolver.js";
 import { rejectSemitag } from "./rejectSemitag/rejectSemitag.js";
@@ -32,8 +35,11 @@ export const resolveMutation = (deps: Pick<ResolverDeps, "prisma" | "neo4j" | "l
     changeMylistShareRange: resolverChangeMylistShareRange(deps),
     createMylist: createMylist(deps),
     createMylistGroup: createMylistGroup(deps),
+    explicitizeTagParent: resolverExplicitizeTagParent(deps),
     likeVideo: likeVideo(deps),
-    registerTag: registerTag(deps),
+    registerCategoryTag: registerCategoryTag(deps),
+    registerTag: resolverRegisterTag(deps),
+    registerTagParentRelation: resolverRegisterTagParentRelation(deps),
     registerVideo: resolverRegisterVideo(deps),
     rejectNicovideoRegistrationRequest: resolverRejectRequestNicovideoRegistration(deps),
     rejectSemitag: rejectSemitag(deps),

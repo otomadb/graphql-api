@@ -1,6 +1,7 @@
 import { UserRole } from "@prisma/client";
 
 import { isValidNicovideoSourceId } from "../../../utils/isValidNicovideoSourceId.js";
+import { isErr } from "../../../utils/Result.js";
 import {
   MutationInvalidNicovideoRegistrationRequestIdError,
   MutationNicovideoRegistrationRequestAlreadyCheckedError,
@@ -25,7 +26,7 @@ export const resolverRegisterVideo = ({ prisma, logger, neo4j }: Pick<ResolverDe
       };
 
     const tagIds = parseGqlIDs2("Tag", input.tags);
-    if (tagIds.status === "error") {
+    if (isErr(tagIds)) {
       return {
         __typename: "RegisterVideoFailedPayload",
         message: RegisterVideoFailedMessage.InvalidTagId,
@@ -35,7 +36,7 @@ export const resolverRegisterVideo = ({ prisma, logger, neo4j }: Pick<ResolverDe
     const nicovideoRequestId = input.nicovideoRequestId
       ? parseGqlID3("NicovideoRegistrationRequest", input.nicovideoRequestId)
       : null;
-    if (nicovideoRequestId?.status === "error") {
+    if (nicovideoRequestId && isErr(nicovideoRequestId)) {
       return {
         __typename: "MutationInvalidNicovideoRegistrationRequestIdError",
         requestId: nicovideoRequestId.error.invalidId,
@@ -65,7 +66,7 @@ export const resolverRegisterVideo = ({ prisma, logger, neo4j }: Pick<ResolverDe
       nicovideoRequestId: nicovideoRequestId?.data ?? null,
     });
 
-    if (result.status === "error") {
+    if (isErr(result)) {
       switch (result.error.type) {
         case "REQUEST_NOT_FOUND":
           return {

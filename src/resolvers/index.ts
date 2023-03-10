@@ -15,6 +15,7 @@ import { resolveMylistTagInclusion } from "./MylistTagInclusion/index.js";
 import { resolveMylistVideoRecommendation } from "./MylistVideoRecommendation/index.js";
 import { resolveNicovideoOriginalSourceTag } from "./NicovideoOriginalSourceTag/index.js";
 import { resolverNicovideoRegistrationRequest } from "./NicovideoRegistrationRequest/resolver.js";
+import { resolverNicovideoRegistrationRequestConnection } from "./NicovideoRegistrationRequestConnection/resolver.js";
 import { resolverNicovideoRegistrationRequestRejecting } from "./NicovideoRegistrationRequestRejecting/resolver.js";
 import { resolveNicovideoVideoSource } from "./NicovideoVideoSource/index.js";
 import {
@@ -23,6 +24,7 @@ import {
 } from "./NicovideoVideoSourceEvent/index.js";
 import { resolveQuery } from "./Query/index.js";
 import { resolveSemitag, resolveSemitagRejecting, resolveSemitagResolving } from "./Semitag/index.js";
+import { resolverSemitagConnection } from "./SemitagConnection/resolver.js";
 import {
   resolveSemitagEvent,
   resolveSemitagEventAttachEvent,
@@ -39,6 +41,7 @@ import {
   resolveTagNameSetPrimaryEvent,
   resolveTagNameUnsetPrimaryEvent,
 } from "./TagNameEvent/index.js";
+import { resolveTagParent } from "./TagParent/index.js";
 import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
 import { resolverVideoConnection } from "./VideoConnection/resolver.js";
@@ -91,6 +94,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     MylistVideoRecommendation: resolveMylistVideoRecommendation(deps),
     NicovideoOriginalSourceTag: resolveNicovideoOriginalSourceTag(deps),
     NicovideoRegistrationRequest: resolverNicovideoRegistrationRequest(deps),
+    NicovideoRegistrationRequestConnection: resolverNicovideoRegistrationRequestConnection(),
     NicovideoRegistrationRequestRejecting: resolverNicovideoRegistrationRequestRejecting(deps),
     NicovideoVideoSource: resolveNicovideoVideoSource(deps),
     NicovideoVideoSourceCreateEvent: resolveNicovideoVideoSourceCreateEvent(deps),
@@ -98,6 +102,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     Query: resolveQuery(deps),
     Semitag: resolveSemitag(deps),
     SemitagAttachEvent: resolveSemitagEventAttachEvent(deps),
+    SemitagConnection: resolverSemitagConnection(),
     SemitagEvent: resolveSemitagEvent(),
     SemitagRejectEvent: resolveSemitagEventRejectEvent(deps),
     SemitagRejecting: resolveSemitagRejecting(deps),
@@ -111,6 +116,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     TagNameEvent: resolveTagNameEvent(),
     TagNameSetPrimaryEvent: resolveTagNameSetPrimaryEvent(deps),
     TagNameUnsetPrimaryEvent: resolveTagNameUnsetPrimaryEvent(deps),
+    TagParent: resolveTagParent(deps),
     TagRegisterEvent: resolveTagRegisterEvent(deps),
     User: resolveUser(deps),
     Video: resolveVideo(deps),

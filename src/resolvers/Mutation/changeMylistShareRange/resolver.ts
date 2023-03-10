@@ -1,3 +1,4 @@
+import { isErr } from "../../../utils/Result.js";
 import {
   ChangeMylistShareRangeOtherErrorMessage,
   ChangeMylistShareRangeOtherErrorsFallback,
@@ -21,7 +22,7 @@ export const resolverChangeMylistShareRange = ({ prisma, logger }: Pick<Resolver
       } satisfies MutationAuthenticationError;
 
     const mylistId = parseGqlID2("Mylist", mylistGqlId);
-    if (mylistId.status === "error") {
+    if (isErr(mylistId)) {
       return {
         __typename: "MutationInvalidMylistIdError",
         mylistId: mylistGqlId,
@@ -29,7 +30,7 @@ export const resolverChangeMylistShareRange = ({ prisma, logger }: Pick<Resolver
     }
 
     const result = await update(prisma, { mylistId: mylistId.data, userId: ctxUser.id, range });
-    if (result.status === "error") {
+    if (isErr(result)) {
       switch (result.error.message) {
         case "MYLIST_NOT_FOUND":
           return {

@@ -1,0 +1,11 @@
+type SemitagConnection {
+  nodes: [Semitag!]!
+  edges: [SemitagEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type SemitagEdge {
+  cursor: String!
+  node: Semitag!
+}

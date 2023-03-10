@@ -1,0 +1,11 @@
+type NicovideoRegistrationRequestConnection {
+  nodes: [NicovideoRegistrationRequest!]!
+  edges: [NicovideoRegistrationRequestEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type NicovideoRegistrationRequestEdge {
+  cursor: String!
+  node: NicovideoRegistrationRequest!
+}

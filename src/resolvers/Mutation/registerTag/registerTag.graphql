@@ -1,5 +1,5 @@
 type Mutation {
-  registerTag(input: RegisterTagInput!): RegisterTagPayload!
+  registerTag(input: RegisterTagInput!): RegisterTagReturnUnion!
 }
 
 input RegisterTagInput {
@@ -9,26 +9,50 @@ input RegisterTagInput {
   explicitParent: ID
   implicitParents: [ID!]! = []
 
-  meaningless: Boolean! = false
-
   resolveSemitags: [ID!]! = []
 }
 
-union RegisterTagPayload = RegisterTagSucceededPayload | RegisterTagFailedPayload
+union RegisterTagReturnUnion =
+    MutationAuthenticationError
+  | MutationInvalidTagIdError
+  | MutationTagNotFoundError
+  | MutationInvalidSemitagIdError
+  | MutationSemitagNotFoundError
+  | RegisterTagResolveSemitagIdsDuplicatedError
+  | RegisterTagResolveSemitagAlreadyCheckedError
+  | RegisterTagImplicitParentIdsDuplicatedError
+  | RegisterTagTagIdCollidedBetweenExplicitAndImplicitError
+  | RegisterTagOtherErrorsFallback
+  | RegisterTagSucceededPayload
+
+"明示的な親タグのIDと非明示的な親タグのIDが重複している"
+type RegisterTagTagIdCollidedBetweenExplicitAndImplicitError {
+  tagId: String!
+}
+
+"非明示的な親タグのIDが重複している"
+type RegisterTagImplicitParentIdsDuplicatedError {
+  tagId: String!
+}
+
+"解決されるSemitagのIDが重複している"
+type RegisterTagResolveSemitagIdsDuplicatedError {
+  semitagId: String!
+}
+
+"解決されるSemitagが既にチェック済みである"
+type RegisterTagResolveSemitagAlreadyCheckedError {
+  semitagId: String!
+}
+
+type RegisterTagOtherErrorsFallback {
+  message: RegisterTagOtherErrorsFallbackMessage!
+}
+
+enum RegisterTagOtherErrorsFallbackMessage {
+  UNKNOWN
+}
 
 type RegisterTagSucceededPayload {
   tag: Tag!
-}
-
-type RegisterTagFailedPayload {
-  message: RegisterTagFailedMessage!
-}
-
-enum RegisterTagFailedMessage {
-  FORBIDDEN
-
-  INVALID_TAG_ID
-  INVALID_SEMITAG_ID
-
-  UNKNOWN
 }

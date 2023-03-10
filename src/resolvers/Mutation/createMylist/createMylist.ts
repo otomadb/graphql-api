@@ -1,3 +1,4 @@
+import { isErr } from "../../../utils/Result.js";
 import { CreateMylistOtherErrorMessage, MutationResolvers, UserRole as GraphQLUserRole } from "../../graphql.js";
 import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
@@ -12,7 +13,7 @@ export const createMylist = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "
       } as const;
 
     const result = await create(prisma, { title, userId: ctxUser.id, range });
-    if (result.status === "error") {
+    if (isErr(result)) {
       switch (result.error.message) {
         case "INTERNAL_SERVER_ERROR":
           logger.error({ error: result.error.error, path: info.path }, "Something error happens");

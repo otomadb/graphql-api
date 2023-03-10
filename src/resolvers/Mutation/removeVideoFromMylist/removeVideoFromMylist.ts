@@ -1,6 +1,7 @@
 import { Mylist, MylistRegistration, Video } from "@prisma/client";
 
 import { err, ok, Result } from "../../../utils/Result.js";
+import { isErr } from "../../../utils/Result.js";
 import { MutationResolvers, RemoveVideoFromMylistFailedMessage } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
@@ -47,14 +48,14 @@ export const removeVideoFromMylist = ({ prisma, neo4j, logger }: Pick<ResolverDe
       };
 
     const videoId = parseGqlID2("Video", videoGqlId);
-    if (videoId.status === "error")
+    if (isErr(videoId))
       return {
         __typename: "RemoveVideoFromMylistFailedPayload",
         message: RemoveVideoFromMylistFailedMessage.InvalidVideoId,
       };
 
     const mylistId = parseGqlID2("Mylist", mylistGqlId);
-    if (mylistId.status === "error")
+    if (isErr(mylistId))
       return {
         __typename: "RemoveVideoFromMylistFailedPayload",
         message: RemoveVideoFromMylistFailedMessage.InvalidMylistId,
@@ -65,7 +66,7 @@ export const removeVideoFromMylist = ({ prisma, neo4j, logger }: Pick<ResolverDe
       videoId: videoId.data,
       mylistId: mylistId.data,
     });
-    if (result.status === "error") {
+    if (isErr(result)) {
       switch (result.error) {
         case "VIDEO_NOT_FOUND":
           return {
@@ -97,7 +98,7 @@ export const removeVideoFromMylist = ({ prisma, neo4j, logger }: Pick<ResolverDe
 
     const registration = result.data;
     const neo4jResult = await removeMylistRegistrationInNeo4j({ prisma, neo4j }, registration.id);
-    if (neo4jResult.status === "error") {
+    if (isErr(neo4jResult)) {
       logger.error({ error: neo4jResult.error, path: info.path }, "Failed to update in neo4j");
     }
 
