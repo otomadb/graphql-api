@@ -4,7 +4,7 @@ import { ResolverDeps } from "../index.js";
 export const resolvePseudoType = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async ({ id: tagId }) => {
     const parents = await prisma.tagParent.findMany({
-      where: { childId: tagId, parent: { meaningless: true } },
+      where: { childId: tagId, parent: { isCategoryTag: true } },
       include: { parent: { include: { names: true } } },
     });
     const parentNames = parents.reduce(

@@ -17,6 +17,7 @@ export const resolveTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "lo
     id: ({ id }): string => buildGqlId("Tag", id),
     type: resolveTagType({ prisma }),
     pseudoType: resolvePseudoType({ prisma }),
+    meaningless: ({ isCategoryTag: categoryTag }) => categoryTag,
 
     names: async ({ id: tagId }) =>
       prisma.tagName.findMany({ where: { tag: { id: tagId } } }).then((v) => v.map((n) => new TagNameModel(n))),
@@ -26,9 +27,14 @@ export const resolveTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "lo
       return name.name;
     },
 
-    parents: async ({ id: tagId }, { meaningless }) =>
+    parents: async ({ id: tagId }, { categoryTag }) =>
       prisma.tagParent
-        .findMany({ where: { child: { id: tagId }, parent: { meaningless: meaningless || undefined } } })
+        .findMany({
+          where: {
+            child: { id: tagId },
+            parent: { isCategoryTag: categoryTag || undefined },
+          },
+        })
         .then((ps) => ps.map((t) => new TagParentModel(t))),
 
     explicitParent: async ({ id: tagId }) => {

@@ -40,7 +40,7 @@ export const register = async (
       prisma.tag.create({
         data: {
           id: tagId,
-          meaningless: true,
+          isCategoryTag: true,
           events: {
             create: {
               userId,
