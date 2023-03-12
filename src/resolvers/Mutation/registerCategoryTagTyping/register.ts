@@ -30,7 +30,7 @@ export const register = async (
 
     const category = await prisma.tag.findUnique({ where: { id: tagId }, include: { categoryType: true } });
     if (!category) return err({ type: "TAG_NOT_FOUND", id: tagId });
-    if (!category.meaningless) return err({ type: "TAG_NOT_CATEGORY_TAG", tag: category });
+    if (!category.isCategoryTag) return err({ type: "TAG_NOT_CATEGORY_TAG", tag: category });
     if (category.categoryType) return err({ type: "TAG_TYPE_ALREADY", tag: category });
 
     const typing = await prisma.categoryTagTyping.create({

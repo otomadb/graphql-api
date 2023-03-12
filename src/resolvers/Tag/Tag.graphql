@@ -8,8 +8,10 @@ type Tag implements Node {
   names: [TagName!]!
 
   explicitParent: Tag
-  parents(meaningless: Boolean): [TagParent!]!
-  meaningless: Boolean!
+  parents(categoryTag: Boolean): [TagParent!]!
+
+  meaningless: Boolean! @deprecated
+  isCategoryTag: Boolean!
 
   """
   動画に対してタグを付けることができるか

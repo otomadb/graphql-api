@@ -7,7 +7,7 @@ export const resolveTagType = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async ({ id: tagId }) => {
     const typings = await prisma.tagParent
       .findMany({
-        where: { childId: tagId, parent: { meaningless: true } },
+        where: { childId: tagId, parent: { isCategoryTag: true } },
         select: { parent: { select: { categoryType: { select: { type: true } } } } },
       })
       .then((t) =>
