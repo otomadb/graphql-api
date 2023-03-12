@@ -2,7 +2,7 @@ type Tag implements Node {
   id: ID!
   serial: Int!
 
-  pseudoType: PseudoTagType!
+  pseudoType: PseudoTagType! @deprecated
 
   name: String!
   names: [TagName!]!
