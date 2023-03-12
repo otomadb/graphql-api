@@ -12,6 +12,7 @@ import { createMylistGroup } from "./createMylistGroup/createMylistGroup.js";
 import { resolverExplicitizeTagParent } from "./explicitizeTagParent/resolver.js";
 import { likeVideo } from "./likeVideo/likeVideo.js";
 import { registerCategoryTag } from "./registerCategoryTag/resolver.js";
+import { resolverRegisterCategoryTagTyping } from "./registerCategoryTagTyping/resolver.js";
 import { resolverRegisterTag } from "./registerTag/resolver.js";
 import { resolverRegisterTagParentRelation } from "./registerTagParentRelation/resolver.js";
 import { resolverRegisterVideo } from "./registerVideo/resolver.js";
@@ -38,6 +39,7 @@ export const resolveMutation = (deps: Pick<ResolverDeps, "prisma" | "neo4j" | "l
     explicitizeTagParent: resolverExplicitizeTagParent(deps),
     likeVideo: likeVideo(deps),
     registerCategoryTag: registerCategoryTag(deps),
+    registerCategoryTagTyping: resolverRegisterCategoryTagTyping(deps),
     registerTag: resolverRegisterTag(deps),
     registerTagParentRelation: resolverRegisterTagParentRelation(deps),
     registerVideo: resolverRegisterVideo(deps),

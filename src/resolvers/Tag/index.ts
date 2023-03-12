@@ -10,10 +10,12 @@ import { resolverChildren } from "./children/resolver.js";
 import { TagModel } from "./model.js";
 import { resolvePseudoType } from "./pseudoType.js";
 import { resolveTaggedVideos } from "./taggedVideos/resolver.js";
+import { resolveTagType } from "./type/resolver.js";
 
 export const resolveTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   ({
     id: ({ id }): string => buildGqlId("Tag", id),
+    type: resolveTagType({ prisma }),
     pseudoType: resolvePseudoType({ prisma }),
 
     names: async ({ id: tagId }) =>
