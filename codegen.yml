@@ -88,8 +88,8 @@ generates:
       - src/**/*.e2e.test!(.codegen).ts
     preset: near-operation-file
     presetConfig:
-      baseTypesPath: 'graphql.js'
-      extension: '.codegen.ts'
+      baseTypesPath: "graphql.js"
+      extension: ".codegen.ts"
     plugins:
       - "typescript"
       - "typescript-operations"
