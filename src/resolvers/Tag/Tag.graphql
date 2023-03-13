@@ -8,7 +8,6 @@ type Tag implements Node {
   names(primary: Boolean): [TagName!]!
 
   explicitParent: Tag
-  parents(categoryTag: Boolean): [TagParent!]!
 
   meaningless: Boolean! @deprecated
   isCategoryTag: Boolean!
