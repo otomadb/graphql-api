@@ -19,8 +19,10 @@ export const resolveTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "lo
     pseudoType: resolvePseudoType({ prisma }),
     meaningless: ({ isCategoryTag: categoryTag }) => categoryTag,
 
-    names: async ({ id: tagId }) =>
-      prisma.tagName.findMany({ where: { tag: { id: tagId } } }).then((v) => v.map((n) => new TagNameModel(n))),
+    names: async ({ id: tagId }, { primary }) =>
+      prisma.tagName
+        .findMany({ where: { tag: { id: tagId }, isPrimary: primary?.valueOf() } })
+        .then((v) => v.map((n) => new TagNameModel(n))),
     name: async ({ id: tagId }) => {
       const name = await prisma.tagName.findFirst({ where: { tagId } });
       if (!name) throw new GraphQLError(`primary name for tag ${tagId} is not found`);
