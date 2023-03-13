@@ -21,7 +21,6 @@ export const registerCategoryTag = ({ prisma, logger }: Pick<ResolverDeps, "pris
     const result = await register(prisma, {
       userId: user.id,
       primaryName: input.primaryName,
-      extraNames: input.extraNames,
     });
 
     if (result.status === "error") {

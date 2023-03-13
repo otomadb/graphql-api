@@ -1,7 +1,7 @@
 import { MylistShareRange, User, UserRole } from "@prisma/client";
 import { hash } from "argon2";
 
-import { err, Result } from "../../../utils/Result.js";
+import { err, ok, Result } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 
 const nameRegex = /^[a-zA-Z0-9_]+$/;
@@ -72,10 +72,7 @@ export const registerNewUser = async (
       },
     });
 
-    return {
-      status: "ok",
-      data: newUser,
-    };
+    return ok(newUser);
   } catch (e) {
     return err({ message: "INTERNAL_SERVER_ERROR", error: e });
   }

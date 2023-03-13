@@ -1,0 +1,51 @@
+type Mutation {
+  registerCategoryTagTyping(input: RegisterCategoryTagTypingInput!): RegisterCategoryTagTypingResultUnion!
+}
+
+input RegisterCategoryTagTypingInput {
+  tagId: ID!
+  type: TagType!
+}
+
+union RegisterCategoryTagTypingResultUnion =
+    MutationAuthenticationError
+  | MutationInvalidTagIdError
+  | MutationTagNotFoundError
+  | RegisterCategoryTagTypingUnsupportedTagType
+  | RegisterCategoryTagTypingAlreadyTypeExistsError
+  | RegisterCategoryTagTypingNotCategoryTagError
+  | RegisterCategoryTagTypingAlreadyTypedError
+  | RegisterCategoryTagTypingOtherErrorsFallback
+  | RegisterCategoryTagTypingSucceededPayload
+
+type RegisterCategoryTagTypingUnsupportedTagType {
+  type: TagType!
+}
+
+"指定されたタイプのカテゴリータグが既に存在する場合のエラー"
+type RegisterCategoryTagTypingAlreadyTypeExistsError {
+  already: Tag!
+}
+
+"指定されたタグはカテゴリータグでは無い場合のエラー"
+type RegisterCategoryTagTypingNotCategoryTagError {
+  tag: Tag!
+}
+
+"指定されたカテゴリータグに既にタイプがある場合のエラー"
+type RegisterCategoryTagTypingAlreadyTypedError {
+  tag: Tag!
+}
+
+"その他のエラー"
+type RegisterCategoryTagTypingOtherErrorsFallback {
+  message: RegisterCategoryTagTypingOtherErrorMessage!
+}
+
+enum RegisterCategoryTagTypingOtherErrorMessage {
+  INTERNAL_SERVER_ERROR
+}
+
+type RegisterCategoryTagTypingSucceededPayload {
+  tag: Tag!
+}

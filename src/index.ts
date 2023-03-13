@@ -14,6 +14,7 @@ import { extractSessionFromReq, verifySession } from "./auth/session.js";
 import { ServerContext, UserContext } from "./resolvers/context.js";
 import { typeDefs } from "./resolvers/graphql.js";
 import { makeResolvers } from "./resolvers/index.js";
+import { isErr, isOk } from "./utils/Result.js";
 
 const logger = pino({
   transport: {
@@ -62,7 +63,7 @@ const yoga = createYoga<ServerContext, UserContext>({
   async context({ req }) {
     // from cookie
     const resultExtractSession = extractSessionFromReq(req, "otomadb_session");
-    if (resultExtractSession.status === "error") {
+    if (isErr(resultExtractSession)) {
       switch (resultExtractSession.error.type) {
         case "INVALID_FORM":
           logger.warn({ cookie: resultExtractSession.error.cookie }, "Cookie is invalid form for session");
@@ -70,7 +71,7 @@ const yoga = createYoga<ServerContext, UserContext>({
       }
     } else {
       const session = await verifySession(prismaClient, resultExtractSession.data);
-      if (session.status === "ok")
+      if (isOk(session))
         return {
           user: { id: session.data.user.id, role: session.data.user.role },
         } satisfies UserContext;

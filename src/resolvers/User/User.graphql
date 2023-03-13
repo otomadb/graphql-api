@@ -6,22 +6,8 @@ type User implements Node {
 
   mylist(id: ID!): Mylist
 
-  mylists(input: UserMylistsInput!): MylistConnection!
-
   isEditor: Boolean!
   isAdministrator: Boolean!
-}
-
-input UserMylistsInput {
-  limit: Int! = 10
-  skip: Int! = 0
-  order: UserMylistsInputOrder! = { createdAt: ASC }
-  range: [MylistShareRange!]! = [PUBLIC]
-}
-
-input UserMylistsInputOrder {
-  createdAt: SortOrder
-  updatedAt: SortOrder
 }
 
 enum UserRole {

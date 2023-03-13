@@ -1,6 +1,5 @@
 type TagParent {
   id: ID!
-  name: String!
 
   parent: Tag!
   child: Tag!
@@ -13,4 +12,14 @@ type TagParent {
 input TagParentEventsInput {
   skip: Int! = 0
   limit: Int
+}
+
+"TagParentのIDとして不正なIDを入力した場合のMutation用エラー"
+type MutationInvalidTagParentIdError {
+  relationId: String!
+}
+
+"TagParentが見つからない場合のMutation用エラー"
+type MutationTagParentNotFoundError {
+  relationId: String!
 }

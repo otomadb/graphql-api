@@ -1,5 +1,6 @@
 import { UserRole } from "@prisma/client";
 
+import { isErr } from "../../../utils/Result.js";
 import { MutationResolvers, RemoveTagFromVideoFailedMessage } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
@@ -21,14 +22,14 @@ export const resolverRemoveTagFromVideo = ({
       };
 
     const videoId = parseGqlID2("Video", videoGqlId);
-    if (videoId.status === "error")
+    if (isErr(videoId))
       return {
         __typename: "RemoveTagFromVideoFailedPayload",
         message: RemoveTagFromVideoFailedMessage.InvalidVideoId,
       };
 
     const tagId = parseGqlID2("Tag", tagGqlId);
-    if (tagId.status === "error")
+    if (isErr(tagId))
       return {
         __typename: "RemoveTagFromVideoFailedPayload",
         message: RemoveTagFromVideoFailedMessage.InvalidTagId,
@@ -39,7 +40,7 @@ export const resolverRemoveTagFromVideo = ({
       tagId: tagId.data,
       authUserId: user.id,
     });
-    if (result.status === "error") {
+    if (isErr(result)) {
       switch (result.error) {
         case "NO_VIDEO":
           return {
@@ -67,7 +68,7 @@ export const resolverRemoveTagFromVideo = ({
     const tagging = result.data;
 
     const neo4jResult = await removeInNeo4j({ prisma, neo4j }, tagging.id);
-    if (neo4jResult.status === "error") {
+    if (isErr(neo4jResult)) {
       logger.error({ error: neo4jResult.error, path: info.path }, "Failed to update in neo4j");
     }
 

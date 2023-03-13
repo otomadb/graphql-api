@@ -1,6 +1,6 @@
 import { Mylist, MylistRegistration, Video } from "@prisma/client";
 
-import { err, ok, Result } from "../../../utils/Result.js";
+import { err, isErr, ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, UndoLikeVideoFailedMessage } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
@@ -43,11 +43,11 @@ export const undoLikeVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pri
     if (!user) return { __typename: "UndoLikeVideoFailedPayload", message: UndoLikeVideoFailedMessage.Forbidden };
 
     const videoId = parseGqlID2("Video", videoGqlId);
-    if (videoId.status === "error")
+    if (isErr(videoId))
       return { __typename: "UndoLikeVideoFailedPayload", message: UndoLikeVideoFailedMessage.InvalidVideoId };
 
     const result = await undo(prisma, { userId: user.id, videoId: videoId.data });
-    if (result.status === "error") {
+    if (isErr(result)) {
       switch (result.error) {
         case "VIDEO_NOT_FOUND":
           return {
@@ -74,7 +74,7 @@ export const undoLikeVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pri
 
     const registration = result.data;
     const neo4jResult = await undoLikeVideoInNeo4j({ prisma, neo4j }, registration.id);
-    if (neo4jResult.status === "error") {
+    if (isErr(neo4jResult)) {
       logger.error({ error: neo4jResult.error, path: info.path }, "Failed to update in neo4j");
     }
 

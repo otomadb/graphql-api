@@ -44,7 +44,7 @@ describe("findTags", () => {
   test("inputにnameを入れて取得する", async () => {
     const tagId = ulid();
     await prisma.$transaction([
-      prisma.tag.create({ data: { id: tagId, meaningless: false } }),
+      prisma.tag.create({ data: { id: tagId, isCategoryTag: false } }),
       prisma.tagName.create({ data: { id: ulid(), tagId, name: "name", isPrimary: false } }),
     ]);
 
@@ -64,7 +64,7 @@ describe("findTags", () => {
       expect.arrayContaining([
         expect.objectContaining({
           id: tagId,
-          meaningless: false,
+          isCategoryTag: false,
         }),
       ])
     );
@@ -81,10 +81,10 @@ describe("findTags", () => {
       // parent
       prisma.tag.createMany({
         data: [
-          { id: child1Id, meaningless: false },
-          { id: child2Id, meaningless: false },
-          { id: parent1Id, meaningless: false },
-          { id: parent2Id, meaningless: false },
+          { id: child1Id, isCategoryTag: false },
+          { id: child2Id, isCategoryTag: false },
+          { id: parent1Id, isCategoryTag: false },
+          { id: parent2Id, isCategoryTag: false },
         ],
       }),
       prisma.tagName.createMany({
@@ -120,11 +120,11 @@ describe("findTags", () => {
       expect.arrayContaining([
         expect.objectContaining({
           id: child1Id,
-          meaningless: false,
+          isCategoryTag: false,
         }),
         expect.objectContaining({
           id: child2Id,
-          meaningless: false,
+          isCategoryTag: false,
         }),
       ])
     );
@@ -141,10 +141,10 @@ describe("findTags", () => {
       // parent
       prisma.tag.createMany({
         data: [
-          { id: child1Id, meaningless: false },
-          { id: child2Id, meaningless: false },
-          { id: parent1Id, meaningless: false },
-          { id: parent2Id, meaningless: false },
+          { id: child1Id, isCategoryTag: false },
+          { id: child2Id, isCategoryTag: false },
+          { id: parent1Id, isCategoryTag: false },
+          { id: parent2Id, isCategoryTag: false },
         ],
       }),
       prisma.tagName.createMany({
@@ -181,7 +181,7 @@ describe("findTags", () => {
       expect.arrayContaining([
         expect.objectContaining({
           id: child1Id,
-          meaningless: false,
+          isCategoryTag: false,
         }),
       ])
     );

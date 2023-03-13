@@ -57,7 +57,3 @@ input MylistIncludeTagsInputOrder {
 type MylistIncludeTagsPayload {
   items: [MylistTagInclusion!]!
 }
-
-type MylistConnection {
-  nodes: [Mylist!]!
-}

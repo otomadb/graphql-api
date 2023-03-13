@@ -2,7 +2,7 @@ import { MylistShareRange, PrismaClient } from "@prisma/client";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import { Err, err, Ok, ok } from "../../../utils/Result.js";
+import { ErrError, isErr, isOk, OkData, ReturnErr, ReturnOk } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 import { get } from "./prisma.js";
 
@@ -44,8 +44,9 @@ describe("Get user likes by Prisma", () => {
       }),
     ]);
 
-    const actual = await get(prisma, { holderId: "u1", authUserId: null });
-    expect(actual).toStrictEqual(err("PRIVATE_NOT_HOLDER") satisfies Err<Awaited<ReturnType<typeof get>>>);
+    const actual = (await get(prisma, { holderId: "u1", authUserId: null })) as ReturnErr<typeof get>;
+    expect(isErr(actual)).toBe(true);
+    expect(actual.error).toStrictEqual("PRIVATE_NOT_HOLDER" satisfies ErrError<typeof actual>);
   });
 
   test("いいね欄はPRIVATEで，認証しているが，いいね欄の持ち主ではない", async () => {
@@ -79,8 +80,9 @@ describe("Get user likes by Prisma", () => {
       }),
     ]);
 
-    const actual = await get(prisma, { holderId: "u1", authUserId: "u2" });
-    expect(actual).toStrictEqual(err("PRIVATE_NOT_HOLDER") satisfies Err<Awaited<ReturnType<typeof get>>>);
+    const actual = (await get(prisma, { holderId: "u1", authUserId: "u2" })) as ReturnErr<typeof get>;
+    expect(isErr(actual)).toBe(true);
+    expect(actual.error).toStrictEqual("PRIVATE_NOT_HOLDER" satisfies ErrError<typeof actual>);
   });
 
   test("いいね欄はKNOW_LINKで，認証していない", async () => {
@@ -105,8 +107,9 @@ describe("Get user likes by Prisma", () => {
       }),
     ]);
 
-    const actual = await get(prisma, { holderId: "u1", authUserId: null });
-    expect(actual).toStrictEqual(err("PRIVATE_NOT_HOLDER") satisfies Err<Awaited<ReturnType<typeof get>>>);
+    const actual = (await get(prisma, { holderId: "u1", authUserId: null })) as ReturnErr<typeof get>;
+    expect(isErr(actual)).toBe(true);
+    expect(actual.error).toStrictEqual("PRIVATE_NOT_HOLDER" satisfies ErrError<typeof actual>);
   });
 
   test("いいね欄はKNOW_LINKで，認証しているが，いいね欄の持ち主ではない", async () => {
@@ -140,8 +143,9 @@ describe("Get user likes by Prisma", () => {
       }),
     ]);
 
-    const actual = await get(prisma, { holderId: "u1", authUserId: "u2" });
-    expect(actual).toStrictEqual(err("PRIVATE_NOT_HOLDER") satisfies Err<Awaited<ReturnType<typeof get>>>);
+    const actual = (await get(prisma, { holderId: "u1", authUserId: "u2" })) as ReturnErr<typeof get>;
+    expect(isErr(actual)).toBe(true);
+    expect(actual.error).toStrictEqual("PRIVATE_NOT_HOLDER" satisfies ErrError<typeof actual>);
   });
 
   test("いいね欄はPUBLIC", async () => {
@@ -166,15 +170,14 @@ describe("Get user likes by Prisma", () => {
       }),
     ]);
 
-    const actual = await get(prisma, { holderId: "u1", authUserId: null });
-    expect(actual).toStrictEqual(
-      ok(
-        expect.objectContaining({
-          id: "m1",
-          title: "Mylist 1",
-          holderId: "u1",
-        } satisfies Partial<Ok<Awaited<ReturnType<typeof get>>>["data"]>)
-      )
+    const actual = (await get(prisma, { holderId: "u1", authUserId: null })) as ReturnOk<typeof get>;
+    expect(isOk(actual)).toBe(true);
+    expect(actual.data).toStrictEqual(
+      expect.objectContaining({
+        id: "m1",
+        title: "Mylist 1",
+        holderId: "u1",
+      }) satisfies OkData<typeof actual>
     );
   });
 
@@ -209,15 +212,14 @@ describe("Get user likes by Prisma", () => {
       }),
     ]);
 
-    const actual = await get(prisma, { holderId: "u1", authUserId: null });
-    expect(actual).toStrictEqual(
-      ok(
-        expect.objectContaining({
-          id: "m1",
-          title: "Mylist 1",
-          holderId: "u1",
-        } satisfies Partial<Ok<Awaited<ReturnType<typeof get>>>["data"]>)
-      )
+    const actual = (await get(prisma, { holderId: "u1", authUserId: null })) as ReturnOk<typeof get>;
+    expect(isOk(actual)).toBe(true);
+    expect(actual.data).toStrictEqual(
+      expect.objectContaining({
+        id: "m1",
+        title: "Mylist 1",
+        holderId: "u1",
+      }) satisfies OkData<typeof actual>
     );
   });
 });

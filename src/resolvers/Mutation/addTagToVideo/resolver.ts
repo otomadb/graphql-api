@@ -1,5 +1,6 @@
 import { UserRole } from "@prisma/client";
 
+import { isErr } from "../../../utils/Result.js";
 import { AddTagToVideoFailedMessage, MutationResolvers } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
@@ -17,14 +18,14 @@ export const resolverAddTagToVideo = ({ neo4j, prisma, logger }: Pick<ResolverDe
       };
 
     const videoId = parseGqlID2("Video", videoGqlId);
-    if (videoId.status === "error")
+    if (isErr(videoId))
       return {
         __typename: "AddTagToVideoFailedPayload",
         message: AddTagToVideoFailedMessage.InvalidVideoId,
       };
 
     const tagId = parseGqlID2("Tag", tagGqlId);
-    if (tagId.status === "error")
+    if (isErr(tagId))
       return {
         __typename: "AddTagToVideoFailedPayload",
         message: AddTagToVideoFailedMessage.InvalidTagId,
@@ -35,7 +36,7 @@ export const resolverAddTagToVideo = ({ neo4j, prisma, logger }: Pick<ResolverDe
       videoId: videoId.data,
       tagId: tagId.data,
     });
-    if (result.status === "error") {
+    if (isErr(result)) {
       switch (result.error) {
         case "EXISTS_TAGGING":
           return {
@@ -48,7 +49,7 @@ export const resolverAddTagToVideo = ({ neo4j, prisma, logger }: Pick<ResolverDe
     const tagging = result.data;
 
     const neo4jResult = await addTagToVideoInNeo4j({ prisma, neo4j }, tagging.id);
-    if (neo4jResult.status === "error") {
+    if (isErr(neo4jResult)) {
       logger.error({ error: neo4jResult.error, path: info.path }, "Failed to update in neo4j");
     }
 

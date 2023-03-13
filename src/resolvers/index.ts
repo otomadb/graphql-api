@@ -7,6 +7,7 @@ import { Logger } from "pino";
 import { type Resolvers } from "./graphql.js";
 import { resolveMutation } from "./Mutation/index.js";
 import { resolveMylist } from "./Mylist/index.js";
+import { resolverMylistConnection } from "./MylistConnection/resolver.js";
 import { resolveMylistGroup } from "./MylistGroup/index.js";
 import { resolveMylistGroupMylistInclusion } from "./MylistGroupMylistInclusion/index.js";
 import { resolveMylistGroupVideoAggregation } from "./MylistGroupVideoAggregation/index.js";
@@ -41,6 +42,8 @@ import {
   resolveTagNameSetPrimaryEvent,
   resolveTagNameUnsetPrimaryEvent,
 } from "./TagNameEvent/index.js";
+import { resolveTagParent } from "./TagParent/index.js";
+import { resolverTagParentConnection } from "./TagParentConnection/resolver.js";
 import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
 import { resolverVideoConnection } from "./VideoConnection/resolver.js";
@@ -85,6 +88,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
   ({
     Mutation: resolveMutation(deps),
     Mylist: resolveMylist(deps),
+    MylistConnection: resolverMylistConnection(),
     MylistGroup: resolveMylistGroup(deps),
     MylistGroupMylistInclusion: resolveMylistGroupMylistInclusion(deps),
     MylistGroupVideoAggregation: resolveMylistGroupVideoAggregation(deps),
@@ -115,6 +119,8 @@ export const makeResolvers = (deps: ResolverDeps) =>
     TagNameEvent: resolveTagNameEvent(),
     TagNameSetPrimaryEvent: resolveTagNameSetPrimaryEvent(deps),
     TagNameUnsetPrimaryEvent: resolveTagNameUnsetPrimaryEvent(deps),
+    TagParent: resolveTagParent(deps),
+    TagParentConnection: resolverTagParentConnection(),
     TagRegisterEvent: resolveTagRegisterEvent(deps),
     User: resolveUser(deps),
     Video: resolveVideo(deps),

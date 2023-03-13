@@ -1,5 +1,5 @@
 import { Resolvers } from "../graphql.js";
-import { buildGqlId, GraphQLNotExistsInDBError, parseGqlID } from "../id.js";
+import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
 import { ResolverDeps } from "../index.js";
 import { TagModel } from "../Tag/model.js";
 import { TagParentEventModel } from "../TagParentEvent/model.js";
@@ -10,14 +10,14 @@ export const resolveTagParent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
 
     parent: ({ parentId }) =>
       prisma.tag
-        .findUniqueOrThrow({ where: { id: parseGqlID("Tag", parentId) } })
+        .findUniqueOrThrow({ where: { id: parentId } })
         .then((v) => new TagModel(v))
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Tag", parentId);
         }),
     child: ({ childId }) =>
       prisma.tag
-        .findUniqueOrThrow({ where: { id: parseGqlID("Tag", childId) } })
+        .findUniqueOrThrow({ where: { id: childId } })
         .then((v) => new TagModel(v))
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Tag", childId);
