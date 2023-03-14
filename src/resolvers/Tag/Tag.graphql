@@ -5,10 +5,9 @@ type Tag implements Node {
   pseudoType: PseudoTagType! @deprecated
 
   name: String!
-  names: [TagName!]!
+  names(primary: Boolean): [TagName!]!
 
   explicitParent: Tag
-  parents(categoryTag: Boolean): [TagParent!]!
 
   meaningless: Boolean! @deprecated
   isCategoryTag: Boolean!

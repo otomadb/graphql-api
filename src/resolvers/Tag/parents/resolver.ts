@@ -8,21 +8,20 @@ import { ResolverDeps } from "../../index.js";
 import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
 import { TagParentConnectionModel } from "../../TagParentConnection/model.js";
 
-export const resolverChildren = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async ({ id: tagId, isCategoryTag }, { orderBy, ...unparsedConnectionArgs }, { user: ctxUser }, info) => {
+export const resolverParents = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+  (async ({ id: tagId }, { orderBy, categoryTag, ...unparsedConnectionArgs }, { user: ctxUser }, info) => {
     const connectionArgs = z
-      .union(
-        isCategoryTag
-          ? [
-              z.object({ first: z.number(), after: z.string().optional() }),
-              z.object({ last: z.number(), before: z.string().optional() }),
-            ]
-          : [
-              z.object({}), // カテゴリータグでない場合は全取得を許容
-              z.object({ first: z.number(), after: z.string().optional() }),
-              z.object({ last: z.number(), before: z.string().optional() }),
-            ]
-      )
+      .union([
+        z.object({}), // 全取得を許容
+        z.object({
+          first: z.number(),
+          after: z.string().optional(),
+        }),
+        z.object({
+          last: z.number(),
+          before: z.string().optional(),
+        }),
+      ])
       .safeParse(unparsedConnectionArgs);
     if (!connectionArgs.success) {
       logger.error(
@@ -36,14 +35,20 @@ export const resolverChildren = ({ prisma, logger }: Pick<ResolverDeps, "prisma"
       (args) =>
         prisma.tagParent.findMany({
           ...args,
-          where: { parentId: tagId },
+          where: {
+            childId: tagId,
+            parent: { isCategoryTag: categoryTag?.valueOf() },
+          },
           orderBy: { createdAt: parseOrderBy(orderBy.createdAt) },
         }),
       () =>
         prisma.tagParent.count({
-          where: { parentId: tagId },
+          where: {
+            childId: tagId,
+            parent: { isCategoryTag: categoryTag?.valueOf() },
+          },
         }),
       connectionArgs.data,
       { resolveInfo: info, ...cursorOptions }
     ).then((c) => TagParentConnectionModel.fromPrisma(c));
-  }) satisfies TagResolvers["children"];
+  }) satisfies TagResolvers["parents"];

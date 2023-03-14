@@ -5,9 +5,9 @@ import { buildGqlId, parseGqlID } from "../id.js";
 import { ResolverDeps } from "../index.js";
 import { TagEventModel } from "../TagEvent/model.js";
 import { TagNameModel } from "../TagName/model.js";
-import { TagParentModel } from "../TagParent/model.js";
 import { resolverChildren } from "./children/resolver.js";
 import { TagModel } from "./model.js";
+import { resolverParents } from "./parents/resolver.js";
 import { resolvePseudoType } from "./pseudoType.js";
 import { resolveTaggedVideos } from "./taggedVideos/resolver.js";
 import { resolveTagType } from "./type/resolver.js";
@@ -19,23 +19,17 @@ export const resolveTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "lo
     pseudoType: resolvePseudoType({ prisma }),
     meaningless: ({ isCategoryTag: categoryTag }) => categoryTag,
 
-    names: async ({ id: tagId }) =>
-      prisma.tagName.findMany({ where: { tag: { id: tagId } } }).then((v) => v.map((n) => new TagNameModel(n))),
+    names: async ({ id: tagId }, { primary }) =>
+      prisma.tagName
+        .findMany({ where: { tag: { id: tagId }, isPrimary: primary?.valueOf() } })
+        .then((v) => v.map((n) => new TagNameModel(n))),
     name: async ({ id: tagId }) => {
       const name = await prisma.tagName.findFirst({ where: { tagId } });
       if (!name) throw new GraphQLError(`primary name for tag ${tagId} is not found`);
       return name.name;
     },
 
-    parents: async ({ id: tagId }, { categoryTag }) =>
-      prisma.tagParent
-        .findMany({
-          where: {
-            child: { id: tagId },
-            parent: { isCategoryTag: categoryTag || undefined },
-          },
-        })
-        .then((ps) => ps.map((t) => new TagParentModel(t))),
+    parents: resolverParents({ prisma, logger }),
 
     explicitParent: async ({ id: tagId }) => {
       const rel = await prisma.tagParent.findFirst({
