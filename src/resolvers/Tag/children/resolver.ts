@@ -9,18 +9,20 @@ import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
 import { TagParentConnectionModel } from "../../TagParentConnection/model.js";
 
 export const resolverChildren = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async ({ id: tagId }, { orderBy, ...unparsedConnectionArgs }, { user: ctxUser }, info) => {
+  (async ({ id: tagId, isCategoryTag }, { orderBy, ...unparsedConnectionArgs }, { user: ctxUser }, info) => {
     const connectionArgs = z
-      .union([
-        z.object({
-          first: z.number(),
-          after: z.string().optional(),
-        }),
-        z.object({
-          last: z.number(),
-          before: z.string().optional(),
-        }),
-      ])
+      .union(
+        isCategoryTag
+          ? [
+              z.object({ first: z.number(), after: z.string().optional() }),
+              z.object({ last: z.number(), before: z.string().optional() }),
+            ]
+          : [
+              z.object({}), // カテゴリータグでない場合は全取得を許容
+              z.object({ first: z.number(), after: z.string().optional() }),
+              z.object({ last: z.number(), before: z.string().optional() }),
+            ]
+      )
       .safeParse(unparsedConnectionArgs);
     if (!connectionArgs.success) {
       logger.error(
