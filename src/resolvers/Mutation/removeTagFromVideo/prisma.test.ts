@@ -4,7 +4,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest"
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import { ErrError, isErr, isOk, OkData, ReturnErr, ReturnOk } from "../../../utils/Result.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 import { remove } from "./prisma.js";
 
 describe("Remove tag in Prisma", () => {

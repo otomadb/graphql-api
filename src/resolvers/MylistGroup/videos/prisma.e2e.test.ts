@@ -3,7 +3,7 @@ import { ulid } from "ulid";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 import { getVideos } from "./prisma.js";
 
 describe("Get whole videos in mylist group in prisma", () => {

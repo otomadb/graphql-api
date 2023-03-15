@@ -9,8 +9,8 @@ import {
   UserRole as GqlUserRole,
 } from "../../graphql.js";
 import { parseGqlID3 } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
+import { ResolverDeps } from "../../types.js";
 import { register } from "./register.js";
 
 const convertTagType = (g: GqlTagType): Result<GqlTagType, CategoryTagType> => {

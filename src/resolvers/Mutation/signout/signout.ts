@@ -4,8 +4,8 @@ import { serialize as serializeCookie } from "cookie";
 import { extractSessionFromReq } from "../../../auth/session.js";
 import { err, isErr, ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, SignoutFailedMessage } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
 import { SessionModel } from "../../Session/model.js";
+import { ResolverDeps } from "../../types.js";
 
 export const expire = async (
   prisma: ResolverDeps["prisma"],

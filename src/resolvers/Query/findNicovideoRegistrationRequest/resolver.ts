@@ -3,8 +3,8 @@ import z from "zod";
 
 import { QueryResolvers } from "../../graphql.js";
 import { parseGqlID } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { NicovideoRegistrationRequestModel } from "../../NicovideoRegistrationRequest/model.js";
+import { ResolverDeps } from "../../types.js";
 
 export const resolverFindNicovideoRegistrationRequest = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async (_, { input: unparsedInput }, { user: ctxUser }, info) => {

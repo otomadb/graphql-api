@@ -2,8 +2,8 @@ import { MylistShareRange, UserRole } from "@prisma/client";
 
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
-import { ResolverDeps } from "../index.js";
 import { MylistModel } from "../Mylist/model.js";
+import { ResolverDeps } from "../types.js";
 import { resolverUserLikes } from "./likes/resolver.js";
 import { resolverUserMylists } from "./mylists/resolver.js";
 

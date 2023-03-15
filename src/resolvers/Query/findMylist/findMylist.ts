@@ -3,8 +3,8 @@ import { GraphQLError } from "graphql";
 
 import { QueryResolvers } from "../../graphql.js";
 import { parseGqlID } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
+import { ResolverDeps } from "../../types.js";
 
 export const MYLIST_NOT_FOUND_OR_PRIVATE_ERROR = "Mylist Not Found or Private";
 export const MYLIST_NOT_HOLDED_BY_YOU = "This mylist is not holded by you";

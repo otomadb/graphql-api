@@ -2,8 +2,8 @@ import { GraphQLError } from "graphql";
 import z from "zod";
 
 import { QueryResolvers } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
+import { ResolverDeps } from "../../types.js";
 
 const schema = z.union([z.object({ id: z.string() }), z.object({ serial: z.number() })]);
 

@@ -1,7 +1,7 @@
 import { MylistGroupResolvers } from "../graphql.js";
-import { ResolverDeps } from "../index.js";
 import { MylistGroupMylistInclusionModel } from "../MylistGroupMylistInclusion/model.js";
 import { parseSortOrder } from "../parseSortOrder.js";
+import { ResolverDeps } from "../types.js";
 
 export const resolveMylists = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async ({ id }, { input }) => {

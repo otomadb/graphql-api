@@ -1,7 +1,7 @@
 import { Resolvers } from "../graphql.js";
 import { GraphQLNotExistsInDBError } from "../id.js";
-import { ResolverDeps } from "../index.js";
 import { NicovideoRegistrationRequestModel } from "../NicovideoRegistrationRequest/model.js";
+import { ResolverDeps } from "../types.js";
 import { UserModel } from "../User/model.js";
 
 export const resolverNicovideoRegistrationRequestRejecting = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
