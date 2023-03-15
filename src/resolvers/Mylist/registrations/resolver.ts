@@ -4,9 +4,9 @@ import z from "zod";
 
 import { cursorOptions } from "../../connection.js";
 import { MylistResolvers } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
 import { MylistRegistrationConnectionModel } from "../../MylistRegistrationConnection/model.js";
 import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
+import { ResolverDeps } from "../../types.js";
 
 export const resolverMylistRegistrations = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async ({ id: mylistId }, { orderBy, ...unparsedConnectionArgs }, { user: ctxUser }, info) => {
