@@ -5,7 +5,7 @@ import { parse } from "graphql";
 import { createSchema, createYoga } from "graphql-yoga";
 import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
-import { mock, mockReset } from "vitest-mock-extended";
+import { mockDeep, mockReset } from "vitest-mock-extended";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import {
@@ -29,6 +29,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
   let neo4j: ResolverDeps["neo4j"];
   let logger: ResolverDeps["logger"];
   let config: ResolverDeps["config"];
+  let token: ResolverDeps["token"];
 
   let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
 
@@ -41,10 +42,11 @@ describe("Mutation.changeMylistShareRange e2e", () => {
       neo4jAuth.basic(process.env.TEST_NEO4J_USERNAME, process.env.TEST_NEO4J_PASSWORD)
     );
 
-    logger = mock<ResolverDeps["logger"]>();
-    config = mock<ResolverDeps["config"]>();
+    logger = mockDeep<ResolverDeps["logger"]>();
+    config = mockDeep<ResolverDeps["config"]>();
+    token = mockDeep<ResolverDeps["token"]>();
 
-    const schema = createSchema({ typeDefs, resolvers: makeResolvers({ prisma, neo4j, logger, config }) });
+    const schema = createSchema({ typeDefs, resolvers: makeResolvers({ prisma, neo4j, logger, config, token }) });
     const yoga = createYoga<ServerContext, UserContext>({ schema });
     executor = buildHTTPExecutor({ fetch: yoga.fetch });
   });

@@ -28,6 +28,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
   let neo4j: ResolverDeps["neo4j"];
   let logger: ResolverDeps["logger"];
   let config: ResolverDeps["config"];
+  let token: ResolverDeps["token"];
 
   let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
 
@@ -42,8 +43,9 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
 
     logger = mock<ResolverDeps["logger"]>();
     config = mock<ResolverDeps["config"]>();
+    token = mock<ResolverDeps["token"]>();
 
-    const schema = createSchema({ typeDefs, resolvers: makeResolvers({ prisma, neo4j, logger, config }) });
+    const schema = createSchema({ typeDefs, resolvers: makeResolvers({ prisma, neo4j, logger, config, token }) });
     const yoga = createYoga<ServerContext, UserContext>({ schema });
     executor = buildHTTPExecutor({ fetch: yoga.fetch });
   });
