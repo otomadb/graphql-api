@@ -2,14 +2,15 @@ type Tag implements Node {
   id: ID!
   serial: Int!
 
-  pseudoType: PseudoTagType!
+  pseudoType: PseudoTagType! @deprecated
 
   name: String!
-  names: [TagName!]!
+  names(primary: Boolean): [TagName!]!
 
   explicitParent: Tag
-  parents(meaningless: Boolean): [TagParent!]!
-  meaningless: Boolean!
+
+  meaningless: Boolean! @deprecated
+  isCategoryTag: Boolean!
 
   """
   動画に対してタグを付けることができるか

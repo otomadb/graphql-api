@@ -1,0 +1,17 @@
+type User {
+  mylists(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    range: [MylistShareRange!]! = [PUBLIC]
+
+    orderBy: UserMylistsOrderBy! = { createdAt: DESC }
+  ): MylistConnection!
+}
+
+input UserMylistsOrderBy {
+  createdAt: SortOrder
+}

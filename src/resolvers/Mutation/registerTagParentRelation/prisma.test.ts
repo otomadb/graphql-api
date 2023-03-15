@@ -35,11 +35,11 @@ describe("Register tag parent relation in Prisma", () => {
       }),
       /*
       prisma.tag.create({
-        data: { id: "t1", meaningless: false },
+        data: { id: "t1", isCategoryTag: false },
       }),
       */
       prisma.tag.create({
-        data: { id: "t2", meaningless: false },
+        data: { id: "t2", isCategoryTag: false },
       }),
     ]);
 
@@ -68,12 +68,12 @@ describe("Register tag parent relation in Prisma", () => {
         },
       }),
       prisma.tag.create({
-        data: { id: "t1", meaningless: false },
+        data: { id: "t1", isCategoryTag: false },
       }),
 
       /*
       prisma.tag.create({
-        data: { id: "t2", meaningless: false },
+        data: { id: "t2", isCategoryTag: false },
       }),
       */
     ]);
@@ -102,10 +102,10 @@ describe("Register tag parent relation in Prisma", () => {
         },
       }),
       prisma.tag.create({
-        data: { id: "t1", meaningless: false },
+        data: { id: "t1", isCategoryTag: false },
       }),
       prisma.tag.create({
-        data: { id: "t2", meaningless: false },
+        data: { id: "t2", isCategoryTag: false },
       }),
       prisma.tagParent.create({
         data: {
@@ -148,13 +148,13 @@ describe("Register tag parent relation in Prisma", () => {
         },
       }),
       prisma.tag.create({
-        data: { id: "t1", meaningless: false },
+        data: { id: "t1", isCategoryTag: false },
       }),
       prisma.tag.create({
-        data: { id: "t2", meaningless: false },
+        data: { id: "t2", isCategoryTag: false },
       }),
       prisma.tag.create({
-        data: { id: "t3", meaningless: false },
+        data: { id: "t3", isCategoryTag: false },
       }),
       prisma.tagParent.create({
         data: {
@@ -197,10 +197,10 @@ describe("Register tag parent relation in Prisma", () => {
         },
       }),
       prisma.tag.create({
-        data: { id: "t1", meaningless: false },
+        data: { id: "t1", isCategoryTag: false },
       }),
       prisma.tag.create({
-        data: { id: "t2", meaningless: false },
+        data: { id: "t2", isCategoryTag: false },
       }),
     ]);
     const actual = (await register(prisma, {
@@ -232,13 +232,13 @@ describe("Register tag parent relation in Prisma", () => {
         },
       }),
       prisma.tag.create({
-        data: { id: "t1", meaningless: false },
+        data: { id: "t1", isCategoryTag: false },
       }),
       prisma.tag.create({
-        data: { id: "t2", meaningless: false },
+        data: { id: "t2", isCategoryTag: false },
       }),
       prisma.tag.create({
-        data: { id: "t3", meaningless: false },
+        data: { id: "t3", isCategoryTag: false },
       }),
       prisma.tagParent.create({
         data: {

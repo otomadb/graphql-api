@@ -35,7 +35,7 @@ describe("Add tag in Prisma", () => {
         },
       }),
       prisma.tag.create({
-        data: { id: "t1", meaningless: false },
+        data: { id: "t1", isCategoryTag: false },
       }),
       prisma.video.create({
         data: { id: "v1" },
@@ -66,7 +66,7 @@ describe("Add tag in Prisma", () => {
         },
       }),
       prisma.tag.create({
-        data: { id: "t1", meaningless: false },
+        data: { id: "t1", isCategoryTag: false },
       }),
       prisma.video.create({
         data: { id: "v1" },
@@ -118,7 +118,7 @@ describe("Add tag in Prisma", () => {
         },
       }),
       prisma.tag.create({
-        data: { id: "t1", meaningless: false },
+        data: { id: "t1", isCategoryTag: false },
       }),
       prisma.video.create({
         data: { id: "v1" },

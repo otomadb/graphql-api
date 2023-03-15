@@ -148,7 +148,7 @@ export const register = async (
       prisma.tag.create({
         data: {
           id: tagId,
-          meaningless: false,
+          isCategoryTag: false,
           events: { create: { userId, type: TagEventType.REGISTER, payload: {} } },
         },
       }),

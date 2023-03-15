@@ -14,6 +14,7 @@ generates:
       contextType: ./context.js#Context
       mappers:
         Mylist: ./Mylist/model.js#MylistModel
+        MylistConnection: ./MylistConnection/model.js#MylistConnectionModel
         MylistGroup: ./MylistGroup/model.js#MylistGroupModel
         MylistGroupMylistInclusion: ./MylistGroupMylistInclusion/model.js#MylistGroupMylistInclusionModel
         MylistGroupVideoAggregation: ./MylistGroupVideoAggregation/model.js#MylistGroupVideoAggregationModel
@@ -44,6 +45,7 @@ generates:
         TagNameSetPrimaryEvent: ./TagNameEvent/model.js#TagNameEventModel
         TagNameUnsetPrimaryEvent: ./TagNameEvent/model.js#TagNameEventModel
         TagParent: ./TagParent/model.js#TagParentModel
+        TagParentConnection: ./TagParentConnection/model.js#TagParentConnectionModel
         TagParentCreateEvent: ./TagParentEvent/model.js#TagParentEventModel
         TagParentEvent: ./TagParentEvent/model.js#TagParentEventModel
         TagParentSetPrimaryEvent: ./TagParentEvent/model.js#TagParentEventModel
