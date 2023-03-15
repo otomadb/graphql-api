@@ -2,9 +2,9 @@ import { GraphQLError } from "graphql";
 
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
-import { ResolverDeps } from "../index.js";
 import { TagEventModel } from "../TagEvent/model.js";
 import { TagNameModel } from "../TagName/model.js";
+import { ResolverDeps } from "../types.js";
 import { resolverChildren } from "./children/resolver.js";
 import { TagModel } from "./model.js";
 import { resolverParents } from "./parents/resolver.js";

@@ -2,8 +2,8 @@ import { NicovideoVideoSourceEventType } from "@prisma/client";
 
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
-import { ResolverDeps } from "../index.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
+import { ResolverDeps } from "../types.js";
 import { UserModel } from "../User/model.js";
 
 export const resolveNicovideoVideoSourceEventCommonProps = ({ prisma }: Pick<ResolverDeps, "prisma">) =>

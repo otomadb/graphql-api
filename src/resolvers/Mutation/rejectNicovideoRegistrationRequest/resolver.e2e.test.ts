@@ -8,7 +8,6 @@ import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest"
 import { mock, mockReset } from "vitest-mock-extended";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import { ServerContext, UserContext } from "../../context.js";
 import {
   MutationAuthenticationError,
   MutationNicovideoRegistrationRequestNotFoundError,
@@ -20,7 +19,9 @@ import {
   UserRole as GraphQLUserRole,
 } from "../../graphql.js";
 import { buildGqlId } from "../../id.js";
-import { makeResolvers, ResolverDeps } from "../../index.js";
+import { makeResolvers } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
+import { ServerContext, UserContext } from "../../types.js";
 
 describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
   let prisma: ResolverDeps["prisma"];

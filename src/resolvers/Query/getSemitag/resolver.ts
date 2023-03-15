@@ -1,7 +1,7 @@
 import { QueryResolvers } from "../../graphql.js";
 import { GraphQLNotExistsInDBError, parseGqlID } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { SemitagModel } from "../../Semitag/model.js";
+import { ResolverDeps } from "../../types.js";
 
 export const getSemitag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async (_parent, { id }, { user: ctxUser }, info) =>

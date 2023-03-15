@@ -1,5 +1,5 @@
 import { QueryResolvers } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 import { VideoModel } from "../../Video/model.js";
 
 export const searchVideos = ({ prisma }: Pick<ResolverDeps, "prisma">) =>

@@ -4,8 +4,8 @@ import z from "zod";
 
 import { cursorOptions } from "../../connection.js";
 import { VideoResolvers } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
 import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
+import { ResolverDeps } from "../../types.js";
 import { VideoTagConnectionModel } from "../../VideoTagConnection/model.js";
 
 export const resolveTaggings = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>

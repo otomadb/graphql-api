@@ -1,6 +1,6 @@
 import { QueryResolvers } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
+import { ResolverDeps } from "../../types.js";
 
 export const searchTags = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async (_, { input }) => {

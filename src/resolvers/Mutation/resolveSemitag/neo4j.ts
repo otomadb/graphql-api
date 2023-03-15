@@ -1,7 +1,7 @@
 import { TransactionPromise } from "neo4j-driver-core";
 
 import { err, ok, Result } from "../../../utils/Result.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 
 // VideoTagのVideoのタグ全てについて更新を掛けている
 export const updateWholeVideoTags = async (

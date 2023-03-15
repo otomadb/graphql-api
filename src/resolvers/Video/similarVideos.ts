@@ -2,7 +2,7 @@ import { GraphQLError } from "graphql";
 import { Integer } from "neo4j-driver";
 
 import { VideoResolvers } from "../graphql.js";
-import { ResolverDeps } from "../index.js";
+import { ResolverDeps } from "../types.js";
 import { VideoSimilarityModel } from "../VideoSimilarity/model.js";
 
 export const resolveSimilarVideos = ({ neo4j, logger }: Pick<ResolverDeps, "logger" | "neo4j">) =>

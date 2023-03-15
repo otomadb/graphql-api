@@ -1,6 +1,6 @@
 import { MylistResolvers } from "../graphql.js";
-import { ResolverDeps } from "../index.js";
 import { MylistTagInclusionModel } from "../MylistTagInclusion/model.js";
+import { ResolverDeps } from "../types.js";
 
 export const resolveIncludeTags = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async ({ id: mylistId }, { input }) => {

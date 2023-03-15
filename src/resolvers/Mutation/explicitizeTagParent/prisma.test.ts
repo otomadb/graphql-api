@@ -3,7 +3,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest"
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import { ErrError, OkData, ReturnErr, ReturnOk } from "../../../utils/Result.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 import { explicitize } from "./prisma.js";
 
 describe("Register video by Prisma", () => {

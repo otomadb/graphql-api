@@ -9,8 +9,8 @@ import {
   UserRole as GraphQLUserRole,
 } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
+import { ResolverDeps } from "../../types.js";
 import { update } from "./prisma.js";
 
 export const resolverChangeMylistShareRange = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
