@@ -1,0 +1,15 @@
+type User {
+  nicovideoRegistrationRequests(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    orderBy: UserNicovideoRegistrationRequestsOrderBy! = { createdAt: DESC }
+  ): NicovideoRegistrationRequestConnection!
+}
+
+input UserNicovideoRegistrationRequestsOrderBy {
+  createdAt: SortOrder
+}
