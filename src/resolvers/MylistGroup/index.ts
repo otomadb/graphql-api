@@ -1,6 +1,6 @@
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
-import { ResolverDeps } from "../index.js";
+import { ResolverDeps } from "../types.js";
 import { UserModel } from "../User/model.js";
 import { resolveMylists } from "./mylists.js";
 import { resolverMylistGroupVideo } from "./videos/resolver.js";

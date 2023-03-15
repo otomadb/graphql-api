@@ -4,9 +4,9 @@ import z from "zod";
 
 import { cursorOptions } from "../../connection.js";
 import { QueryResolvers } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
 import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
 import { SemitagConnectionModel } from "../../SemitagConnection/model.js";
+import { ResolverDeps } from "../../types.js";
 
 export const findSemitags = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async (_parent, { orderBy, checked, ...unparsedConnectionArgs }, { user: ctxUser }, info) => {

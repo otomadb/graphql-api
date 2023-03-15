@@ -2,7 +2,7 @@ import { MylistShareRange, User, UserRole } from "@prisma/client";
 import { hash } from "argon2";
 
 import { err, ok, Result } from "../../../utils/Result.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 
 const nameRegex = /^[a-zA-Z0-9_]+$/;
 

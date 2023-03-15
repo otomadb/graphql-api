@@ -1,6 +1,6 @@
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
-import { ResolverDeps } from "../index.js";
+import { ResolverDeps } from "../types.js";
 import { UserModel } from "../User/model.js";
 
 export const resolveSession = ({ prisma }: Pick<ResolverDeps, "prisma">) =>

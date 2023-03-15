@@ -1,8 +1,8 @@
 import { Integer } from "neo4j-driver";
 
 import { MylistResolvers } from "../graphql.js";
-import { ResolverDeps } from "../index.js";
 import { MylistVideoRecommendationModel } from "../MylistVideoRecommendation/model.js";
+import { ResolverDeps } from "../types.js";
 
 export const resolveRecommendedVideos = ({ neo4j }: Pick<ResolverDeps, "neo4j">) =>
   (async ({ id: mylistId }, { input }) => {

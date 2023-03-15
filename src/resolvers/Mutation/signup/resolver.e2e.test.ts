@@ -8,9 +8,10 @@ import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest"
 import { DeepMockProxy, mockDeep, mockReset } from "vitest-mock-extended";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import { ServerContext, UserContext } from "../../context.js";
 import { typeDefs } from "../../graphql.js";
-import { makeResolvers, ResolverDeps } from "../../index.js";
+import { makeResolvers } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
+import { ServerContext, UserContext } from "../../types.js";
 
 describe("Signup", () => {
   let prisma: ResolverDeps["prisma"];

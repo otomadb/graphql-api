@@ -5,8 +5,8 @@ import { err, ok, Result } from "../../../utils/Result.js";
 import { isErr } from "../../../utils/Result.js";
 import { LikeVideoFailedMessage, MutationResolvers } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
+import { ResolverDeps } from "../../types.js";
 import { likeVideoInNeo4j } from "./neo4j.js";
 
 export const like = async (

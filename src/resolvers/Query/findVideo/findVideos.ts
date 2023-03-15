@@ -2,7 +2,7 @@ import { GraphQLError } from "graphql";
 import z from "zod";
 
 import { QueryResolvers } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 import { VideoModel } from "../../Video/model.js";
 
 const schema = z.union([z.object({ id: z.string() }), z.object({ serial: z.number() })]);

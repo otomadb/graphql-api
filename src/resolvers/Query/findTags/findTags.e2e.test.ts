@@ -4,7 +4,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest"
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import { SortOrder } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 import { findTags as findTagsScaffold } from "./findTags.js";
 
 describe("findTags", () => {

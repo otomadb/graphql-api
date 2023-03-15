@@ -8,8 +8,8 @@ import {
   UserRole as GqlUserRole,
 } from "../../graphql.js";
 import { buildGqlId, parseGqlID3, parseGqlIDs3 } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
+import { ResolverDeps } from "../../types.js";
 import { registerTagInNeo4j } from "./neo4j.js";
 import { register } from "./prisma.js";
 
