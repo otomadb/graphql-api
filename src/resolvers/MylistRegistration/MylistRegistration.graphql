@@ -7,7 +7,3 @@ type MylistRegistration implements Node {
   updatedAt: DateTime!
   note: String
 }
-
-type MylistRegistrationConnection {
-  nodes: [MylistRegistration!]!
-}

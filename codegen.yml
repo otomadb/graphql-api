@@ -19,6 +19,7 @@ generates:
         MylistGroupMylistInclusion: ./MylistGroupMylistInclusion/model.js#MylistGroupMylistInclusionModel
         MylistGroupVideoAggregation: ./MylistGroupVideoAggregation/model.js#MylistGroupVideoAggregationModel
         MylistRegistration: ./MylistRegistration/model.js#MylistRegistrationModel
+        MylistRegistrationConnection: ./MylistRegistrationConnection/model.js#MylistRegistrationConnectionModel
         MylistTagInclusion: ./MylistTagInclusion/model.js#MylistTagInclusionModel
         MylistVideoRecommendation: ./MylistVideoRecommendation/model.js#MylistVideoRecommendationModel
         NicovideoOriginalSourceTag: ./NicovideoOriginalSourceTag/model.js#NicovideoOriginalSourceTagModel
