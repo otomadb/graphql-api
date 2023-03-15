@@ -11,7 +11,7 @@ import {
   MutationWrongMylistHolderError,
   UserRole as GraphQLUserRole,
 } from "../../graphql.js";
-import { buildGqlId, parseGqlID2 } from "../../id.js";
+import { buildGqlId, parseGqlID3 } from "../../id.js";
 import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
 import { ResolverDeps } from "../../types.js";
 import { add } from "./add.js";
@@ -25,14 +25,14 @@ export const addVideoToMylist = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "
         requiredRole: GraphQLUserRole.User,
       } satisfies MutationAuthenticationError;
 
-    const mylistId = parseGqlID2("Mylist", mylistGqlId);
+    const mylistId = parseGqlID3("Mylist", mylistGqlId);
     if (isErr(mylistId))
       return {
         __typename: "MutationInvalidMylistIdError",
         mylistId: mylistGqlId,
       } satisfies MutationInvalidMylistIdError;
 
-    const videoId = parseGqlID2("Video", videoGqlId);
+    const videoId = parseGqlID3("Video", videoGqlId);
     if (isErr(videoId))
       return {
         __typename: "MutationInvalidVideoIdError",

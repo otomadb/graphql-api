@@ -31,8 +31,12 @@ export const add = async (
     if (!already) return err({ message: "ALREADY_REGISTERED", registration: already });
 
     const registration = await prisma.mylistRegistration.create({
-      data: { id: ulid(), videoId, mylistId, note },
-      include: { video: true, mylist: true },
+      data: {
+        id: ulid(),
+        videoId,
+        mylistId,
+        note,
+      },
     });
     return ok(registration);
   } catch (e) {
