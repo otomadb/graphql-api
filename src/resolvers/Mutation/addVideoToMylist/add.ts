@@ -25,16 +25,16 @@ export const add = async (
     const video = await prisma.video.findUniqueOrThrow({ where: { id: videoId } });
     if (!video) return err({ message: "VIDEO_NOT_FOUND", videoId });
 
-    const already = await prisma.mylistRegistration.findUniqueOrThrow({
-      where: { mylistId_videoId: { mylistId, videoId } },
+    const already = await prisma.mylistRegistration.findUnique({
+      where: { mylistId_videoId: { mylistId: mylist.id, videoId: video.id } },
     });
-    if (!already) return err({ message: "ALREADY_REGISTERED", registration: already });
+    if (already) return err({ message: "ALREADY_REGISTERED", registration: already });
 
     const registration = await prisma.mylistRegistration.create({
       data: {
         id: ulid(),
-        videoId,
-        mylistId,
+        videoId: video.id,
+        mylistId: mylist.id,
         note,
       },
     });
