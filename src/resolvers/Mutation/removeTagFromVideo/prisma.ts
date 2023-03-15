@@ -1,7 +1,7 @@
 import { Tag, Video, VideoTag, VideoTagEventType } from "@prisma/client";
 
 import { err, ok, Result } from "../../../utils/Result.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 
 export const remove = async (
   prisma: ResolverDeps["prisma"],

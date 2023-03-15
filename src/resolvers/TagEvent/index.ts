@@ -2,8 +2,8 @@ import { TagEventType } from "@prisma/client";
 
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
-import { ResolverDeps } from "../index.js";
 import { TagModel } from "../Tag/model.js";
+import { ResolverDeps } from "../types.js";
 import { UserModel } from "../User/model.js";
 
 export const resolveTagEventCommonProps = ({ prisma }: Pick<ResolverDeps, "prisma">) =>

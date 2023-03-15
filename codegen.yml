@@ -11,7 +11,7 @@ generates:
         defaultValue: true
       scalars:
         DateTime: Date
-      contextType: ./context.js#Context
+      contextType: ./types.js#Context
       mappers:
         Mylist: ./Mylist/model.js#MylistModel
         MylistConnection: ./MylistConnection/model.js#MylistConnectionModel

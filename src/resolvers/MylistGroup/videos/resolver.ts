@@ -1,6 +1,6 @@
 import { MylistGroupResolvers } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
 import { MylistGroupVideoAggregationModel } from "../../MylistGroupVideoAggregation/model.js";
+import { ResolverDeps } from "../../types.js";
 import { getVideos } from "./prisma.js";
 
 export const resolverMylistGroupVideo = ({ prisma }: Pick<ResolverDeps, "prisma">) =>

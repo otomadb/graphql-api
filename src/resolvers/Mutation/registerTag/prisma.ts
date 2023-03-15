@@ -9,7 +9,7 @@ import {
 import { ulid } from "ulid";
 
 import { err, ok, Result } from "../../../utils/Result.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 
 export const register = async (
   prisma: ResolverDeps["prisma"],

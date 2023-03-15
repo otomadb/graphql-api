@@ -1,8 +1,8 @@
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
-import { ResolverDeps } from "../index.js";
 import { TagModel } from "../Tag/model.js";
 import { TagParentEventModel } from "../TagParentEvent/model.js";
+import { ResolverDeps } from "../types.js";
 
 export const resolveTagParent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({

@@ -1,9 +1,8 @@
 import { MylistShareRange } from "@prisma/client";
 
-import { MylistShareRange as GQLMylistShareRange } from "../graphql.js";
-import { Resolvers } from "../graphql.js";
+import { MylistShareRange as GQLMylistShareRange, Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError, parseGqlID } from "../id.js";
-import { ResolverDeps } from "../index.js";
+import { ResolverDeps } from "../types.js";
 import { UserModel } from "../User/model.js";
 import { resolveIncludeTags } from "./includesTags.js";
 import { resolveRecommendedVideos } from "./recommendedVideos.js";

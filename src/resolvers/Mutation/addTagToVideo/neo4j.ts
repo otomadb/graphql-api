@@ -1,5 +1,5 @@
 import { err, ok } from "../../../utils/Result.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 import { updateWholeVideoTags } from "../resolveSemitag/neo4j.js";
 
 export const addTagToVideoInNeo4j = async (

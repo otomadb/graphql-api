@@ -12,8 +12,8 @@ import {
   UserRole as GraphQLUserRole,
 } from "../../graphql.js";
 import { buildGqlId, parseGqlID2 } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
+import { ResolverDeps } from "../../types.js";
 import { add } from "./add.js";
 import { addVideoToMylistInNeo4j } from "./neo4j.js";
 

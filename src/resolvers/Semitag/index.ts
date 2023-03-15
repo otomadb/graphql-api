@@ -1,7 +1,7 @@
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
-import { ResolverDeps } from "../index.js";
 import { SemitagEventModel } from "../SemitagEvent/model.js";
+import { ResolverDeps } from "../types.js";
 import { VideoModel } from "../Video/model.js";
 import { VideoTagModel } from "../VideoTag/model.js";
 import { SemitagModel, SemitagRejectingModel, SemitagResolvingModel } from "./model.js";

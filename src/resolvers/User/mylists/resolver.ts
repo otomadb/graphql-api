@@ -5,9 +5,9 @@ import z from "zod";
 
 import { cursorOptions } from "../../connection.js";
 import { MylistShareRange as GqlMylistShareRange, UserResolvers } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
 import { MylistConnectionModel } from "../../MylistConnection/model.js";
 import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
+import { ResolverDeps } from "../../types.js";
 
 export const resolverUserMylists = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async ({ id: userId }, { orderBy, range, ...unparsedConnectionArgs }, { user: ctxUser }, info) => {

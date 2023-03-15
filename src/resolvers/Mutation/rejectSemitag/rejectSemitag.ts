@@ -4,8 +4,8 @@ import { ulid } from "ulid";
 import { err, isErr, ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, RejectSemitagFailedMessage } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { SemitagRejectingModel } from "../../Semitag/model.js";
+import { ResolverDeps } from "../../types.js";
 
 export const reject = async (
   prisma: ResolverDeps["prisma"],

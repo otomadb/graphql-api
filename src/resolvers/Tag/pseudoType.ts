@@ -1,5 +1,5 @@
 import { PseudoTagType, TagResolvers } from "../graphql.js";
-import { ResolverDeps } from "../index.js";
+import { ResolverDeps } from "../types.js";
 
 export const resolvePseudoType = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async ({ id: tagId }) => {

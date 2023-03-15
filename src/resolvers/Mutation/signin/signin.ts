@@ -5,7 +5,7 @@ import { serialize as serializeCookie } from "cookie";
 import { createSession } from "../../../auth/session.js";
 import { err, isErr, ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, SigninFailedMessage } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 import { UserModel } from "../../User/model.js";
 
 export const verifyUser = async (

@@ -1,9 +1,5 @@
 /* eslint sort-keys: 2 */
 
-import { PrismaClient } from "@prisma/client";
-import { Driver as Neo4jDriver } from "neo4j-driver";
-import { Logger } from "pino";
-
 import { type Resolvers } from "./graphql.js";
 import { resolveMutation } from "./Mutation/index.js";
 import { resolveMylist } from "./Mylist/index.js";
@@ -45,6 +41,7 @@ import {
 } from "./TagNameEvent/index.js";
 import { resolveTagParent } from "./TagParent/index.js";
 import { resolverTagParentConnection } from "./TagParentConnection/resolver.js";
+import { ResolverDeps } from "./types.js";
 import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
 import { resolverVideoConnection } from "./VideoConnection/resolver.js";
@@ -71,19 +68,6 @@ import {
   resolveVideoTitleSetPrimaryEvent,
   resolveVideoTitleUnsetPrimaryEvent,
 } from "./VideoTitleEvent/index.js";
-
-export type ResolverDeps = {
-  prisma: PrismaClient;
-  neo4j: Neo4jDriver;
-  logger: Logger;
-  config: {
-    session: {
-      cookieName(): string;
-      cookieDomain(): string | undefined;
-      cookieSameSite(): "none" | "strict";
-    };
-  };
-};
 
 export const makeResolvers = (deps: ResolverDeps) =>
   ({

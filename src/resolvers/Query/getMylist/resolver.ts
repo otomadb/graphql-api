@@ -3,8 +3,8 @@ import { GraphQLError } from "graphql";
 
 import { QueryResolvers } from "../../graphql.js";
 import { parseGqlID } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
+import { ResolverDeps } from "../../types.js";
 
 export const getMylist = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async (_parent, { id }, { user: ctxUser }, info) => {

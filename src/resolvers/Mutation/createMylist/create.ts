@@ -1,7 +1,7 @@
 import { Mylist, MylistShareRange } from "@prisma/client";
 
 import { err, ok, Result } from "../../../utils/Result.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 
 export const create = async (
   prisma: ResolverDeps["prisma"],

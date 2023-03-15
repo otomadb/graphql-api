@@ -3,8 +3,8 @@ import { SemitagEventType } from "@prisma/client";
 import { isErr } from "../../../utils/Result.js";
 import { AddSemitagToVideoFailedMessage, MutationResolvers } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { SemitagModel } from "../../Semitag/model.js";
+import { ResolverDeps } from "../../types.js";
 
 export const addSemitagToVideo = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async (_parent, { input: { videoId: videoGqlId, name: semitagName } }, { user }) => {
