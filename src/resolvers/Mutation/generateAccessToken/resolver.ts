@@ -14,6 +14,12 @@ const convertDuration = (
   switch (duration) {
     case GenerateAccessTokenInputDuration.OneDay:
       return "1d";
+    case GenerateAccessTokenInputDuration.ThreeDays:
+      return "3d";
+    case GenerateAccessTokenInputDuration.OneWeek:
+      return "1w";
+    case GenerateAccessTokenInputDuration.OneMonth:
+      return "1m";
   }
 };
 

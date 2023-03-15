@@ -16,7 +16,7 @@ export type ResolverDeps = {
     };
   };
   token: {
-    sign(payload: { userId: string; duration: "1d" }): string;
+    sign(payload: { userId: string; duration: "1d" | "3d" | "1w" | "1m" }): string;
   };
 };
 
