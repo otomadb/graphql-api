@@ -6,7 +6,7 @@ import {
   ResolversTypes,
   UserRole as GraphQLUserRole,
 } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 
 const convertDuration = (
   duration: GenerateAccessTokenInputDuration
