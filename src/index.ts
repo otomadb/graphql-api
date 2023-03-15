@@ -4,54 +4,18 @@ import { createServer } from "node:http";
 
 import { usePrometheus } from "@envelop/prometheus";
 import { useDisableIntrospection } from "@graphql-yoga/plugin-disable-introspection";
-import { PrismaClient, UserRole } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { print } from "graphql";
 import { createSchema, createYoga, useLogger, useReadinessCheck } from "graphql-yoga";
-import { IncomingMessage } from "http";
-import jwt from "jsonwebtoken";
 import neo4j from "neo4j-driver";
 import { pino } from "pino";
-import z from "zod";
 
 import { extractSessionFromReq, verifySession } from "./auth/session.js";
 import { typeDefs } from "./resolvers/graphql.js";
 import { makeResolvers } from "./resolvers/index.js";
 import { ServerContext, UserContext } from "./resolvers/types.js";
-import { err, isErr, isOk, ok, Result } from "./utils/Result.js";
-
-const extractTokenFromReq = (req: IncomingMessage): Result<{ type: "NO_TOKEN" }, string> => {
-  const token = req.headers.authorization?.split(" ").at(1);
-  if (!token) return err({ type: "NO_TOKEN" });
-  return ok(token);
-};
-
-const verifyToken = async (
-  token: string
-): Promise<
-  Result<
-    | { type: "TOKEN_EXPIRED" }
-    | { type: "INVALID_PAYLOAD"; payload: unknown }
-    | { type: "UNKNOWN_ERROR"; error: unknown },
-    UserContext
-  >
-> => {
-  try {
-    const payload = await jwt.verify(token, process.env.JWT_SECRET);
-    const parsed = z.object({ sub: z.string() }).safeParse(payload);
-    if (!parsed.success) return err({ type: "INVALID_PAYLOAD", payload: parsed.error });
-
-    const { sub } = parsed.data;
-    return ok({
-      user: {
-        id: sub,
-        role: UserRole.ADMINISTRATOR, // TODO: 全然嘘だけど一旦これで
-      },
-    } satisfies UserContext);
-  } catch (e) {
-    if (e instanceof jwt.TokenExpiredError) return err({ type: "TOKEN_EXPIRED" });
-    else return err({ type: "UNKNOWN_ERROR", error: e });
-  }
-};
+import { extractTokenFromReq, signToken, verifyToken } from "./token.js";
+import { isErr, isOk } from "./utils/Result.js";
 
 const logger = pino({
   transport: {
@@ -95,11 +59,7 @@ const yoga = createYoga<ServerContext, UserContext>({
           cookieSameSite: () => (process.env.ENABLE_SAME_SITE_NONE === "true" ? "none" : "strict"),
         },
       },
-      token: {
-        sign({ userId, duration }) {
-          return jwt.sign({ sub: userId }, process.env.JWT_SECRET, { expiresIn: duration });
-        },
-      },
+      token: { sign: signToken },
     }),
   }),
   async context({ req }) {
