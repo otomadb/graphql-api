@@ -1,0 +1,11 @@
+type MylistConnection {
+  nodes: [Mylist!]!
+  edges: [MylistEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type MylistEdge {
+  cursor: String!
+  node: Mylist!
+}

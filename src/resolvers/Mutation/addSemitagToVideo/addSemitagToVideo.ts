@@ -1,5 +1,6 @@
 import { SemitagEventType } from "@prisma/client";
 
+import { isErr } from "../../../utils/Result.js";
 import { AddSemitagToVideoFailedMessage, MutationResolvers } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../index.js";
@@ -14,7 +15,7 @@ export const addSemitagToVideo = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       };
 
     const videoId = parseGqlID2("Video", videoGqlId);
-    if (videoId.status === "error")
+    if (isErr(videoId))
       return {
         __typename: "AddSemitagToVideoFailedPayload",
         message: AddSemitagToVideoFailedMessage.InvalidVideoId,

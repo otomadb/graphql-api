@@ -14,6 +14,7 @@ generates:
       contextType: ./context.js#Context
       mappers:
         Mylist: ./Mylist/model.js#MylistModel
+        MylistConnection: ./MylistConnection/model.js#MylistConnectionModel
         MylistGroup: ./MylistGroup/model.js#MylistGroupModel
         MylistGroupMylistInclusion: ./MylistGroupMylistInclusion/model.js#MylistGroupMylistInclusionModel
         MylistGroupVideoAggregation: ./MylistGroupVideoAggregation/model.js#MylistGroupVideoAggregationModel
@@ -22,12 +23,14 @@ generates:
         MylistVideoRecommendation: ./MylistVideoRecommendation/model.js#MylistVideoRecommendationModel
         NicovideoOriginalSourceTag: ./NicovideoOriginalSourceTag/model.js#NicovideoOriginalSourceTagModel
         NicovideoRegistrationRequest: ./NicovideoRegistrationRequest/model.js#NicovideoRegistrationRequestModel
+        NicovideoRegistrationRequestConnection: ./NicovideoRegistrationRequestConnection/model.js#NicovideoRegistrationRequestConnectionModel
+        NicovideoRegistrationRequestRejecting: ./NicovideoRegistrationRequestRejecting/model.js#NicovideoRegistrationRequestRejectingModel
         NicovideoVideoSource: ./NicovideoVideoSource/model.js#NicovideoVideoSourceModel
         NicovideoVideoSourceCreateEvent: ./NicovideoVideoSourceEvent/model.js#NicovideoVideoSourceEventModel
         NicovideoVideoSourceEvent: ./NicovideoVideoSourceEvent/model.js#NicovideoVideoSourceEventModel
-        NicovideoRegistrationRequestRejecting: ./NicovideoRegistrationRequestRejecting/model.js#NicovideoRegistrationRequestRejectingModel
         Semitag: ./Semitag/model.js#SemitagModel
         SemitagAttachEvent: ./SemitagEvent/model.js#SemitagEventModel
+        SemitagConnection: ./SemitagConnection/model.js#SemitagConnectionModel
         SemitagEvent: ./SemitagEvent/model.js#SemitagEventModel
         SemitagRejectEvent: ./SemitagEvent/model.js#SemitagEventModel
         SemitagRejecting: ./Semitag/model.js#SemitagRejectingModel
@@ -42,6 +45,7 @@ generates:
         TagNameSetPrimaryEvent: ./TagNameEvent/model.js#TagNameEventModel
         TagNameUnsetPrimaryEvent: ./TagNameEvent/model.js#TagNameEventModel
         TagParent: ./TagParent/model.js#TagParentModel
+        TagParentConnection: ./TagParentConnection/model.js#TagParentConnectionModel
         TagParentCreateEvent: ./TagParentEvent/model.js#TagParentEventModel
         TagParentEvent: ./TagParentEvent/model.js#TagParentEventModel
         TagParentSetPrimaryEvent: ./TagParentEvent/model.js#TagParentEventModel

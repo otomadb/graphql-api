@@ -1,17 +1,17 @@
 type Query {
   findNicovideoRegistrationRequests(
-    input: FindNicovideoRegistrationRequestsInput!
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    checked: Boolean
+
+    orderBy: FindNicovideoRegistrationRequestsOrderBy! = { createdAt: DESC }
   ): NicovideoRegistrationRequestConnection!
 }
 
-input FindNicovideoRegistrationRequestsInput {
-  limit: Int! = 10
-  skip: Int! = 0
-  order: FindNicovideoRegistrationRequestsInputOrder! = { createdAt: DESC }
-
-  checked: Boolean
-}
-
-input FindNicovideoRegistrationRequestsInputOrder {
+input FindNicovideoRegistrationRequestsOrderBy {
   createdAt: SortOrder
 }

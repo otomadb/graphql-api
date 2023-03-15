@@ -34,7 +34,3 @@ type NicovideoRegistrationRequestSemitagging {
 union NicovideoRegistrationRequestChecking =
     NicovideoRegistrationRequestAccepting
   | NicovideoRegistrationRequestRejecting
-
-type NicovideoRegistrationRequestConnection {
-  nodes: [NicovideoRegistrationRequest!]!
-}

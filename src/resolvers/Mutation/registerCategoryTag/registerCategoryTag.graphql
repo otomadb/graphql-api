@@ -1,0 +1,25 @@
+type Mutation {
+  registerCategoryTag(input: RegisterCategoryTagInput!): RegisterCategoryTagResultUnion!
+}
+
+input RegisterCategoryTagInput {
+  primaryName: String!
+}
+
+union RegisterCategoryTagResultUnion =
+    MutationAuthenticationError
+  | RegisterCategoryTagOtherErrorsFallback
+  | RegisterCategoryTagSucceededPayload
+
+"その他のエラー"
+type RegisterCategoryTagOtherErrorsFallback {
+  message: RegisterCategoryTagOtherErrorMessage!
+}
+
+enum RegisterCategoryTagOtherErrorMessage {
+  INTERNAL_SERVER_ERROR
+}
+
+type RegisterCategoryTagSucceededPayload {
+  tag: Tag!
+}

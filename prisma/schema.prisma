@@ -200,9 +200,11 @@ model Tag {
   id     String @id @default(cuid())
   serial Int    @unique @default(autoincrement())
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now())
-  meaningless Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  isCategoryTag Boolean            @map("meaningless")
+  categoryType  CategoryTagTyping?
 
   names TagName[]
 
@@ -214,6 +216,32 @@ model Tag {
   events TagEvent[]
 
   NicovideoSubmitRequestTagging NicovideoRegistrationRequestTagging[]
+}
+
+model CategoryTagTyping {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  createdBy   User   @relation(fields: [createdById], references: [id])
+  createdById String
+
+  tag   Tag    @relation(fields: [tagId], references: [id])
+  tagId String @unique
+
+  type CategoryTagType @unique
+}
+
+enum CategoryTagType {
+  COPYRIGHT
+  CHARACTER
+  SERIES
+  MUSIC
+  TACTICS
+  EVENT
+  PHRASE
+  STYLE
 }
 
 model TagEvent {
@@ -362,6 +390,8 @@ model User {
   NicovideoRegistrationRequests         NicovideoRegistrationRequest[]
   NicovideoRegistrationRequestCheckings NicovideoRegistrationRequestChecking[]
   NicovideoRegistrationRequestEvents    NicovideoRegistrationRequestEvent[]
+
+  CategoryTagTyping CategoryTagTyping[]
 }
 
 enum UserRole {

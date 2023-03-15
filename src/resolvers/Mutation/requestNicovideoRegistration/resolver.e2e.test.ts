@@ -122,8 +122,8 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
       }),
       prisma.tag.createMany({
         data: [
-          { id: "t1", meaningless: false },
-          { id: "t2", meaningless: false },
+          { id: "t1", isCategoryTag: false },
+          { id: "t2", isCategoryTag: false },
         ],
       }),
     ]);
@@ -239,14 +239,13 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
     const findRequestsResult = await executor({
       document: parse(/* GraphQL */ `
         query FindRequests {
-          findNicovideoRegistrationRequests(input: {}) {
+          findNicovideoRegistrationRequests(first: 2) {
             nodes {
               id
             }
           }
         }
       `),
-      variables: { input: {} },
     });
     expect(findRequestsResult.data.findNicovideoRegistrationRequests.nodes).toHaveLength(1);
     expect(findRequestsResult.data.findNicovideoRegistrationRequests.nodes).toStrictEqual(

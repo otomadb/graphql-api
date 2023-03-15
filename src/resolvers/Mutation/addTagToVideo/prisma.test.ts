@@ -3,7 +3,7 @@ import { ulid } from "ulid";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import { Ok } from "../../../utils/Result.js";
+import { isErr, isOk, OkData, ReturnErr, ReturnOk } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 import { add } from "./prisma.js";
 
@@ -35,7 +35,7 @@ describe("Add tag in Prisma", () => {
         },
       }),
       prisma.tag.create({
-        data: { id: "t1", meaningless: false },
+        data: { id: "t1", isCategoryTag: false },
       }),
       prisma.video.create({
         data: { id: "v1" },
@@ -45,15 +45,13 @@ describe("Add tag in Prisma", () => {
       }),
     ]);
 
-    const actual = await add(prisma, {
+    const actual = (await add(prisma, {
       authUserId: "u1",
       videoId: "v1",
       tagId: "t1",
-    });
-    expect(actual).toStrictEqual({
-      status: "error",
-      error: "EXISTS_TAGGING",
-    } satisfies Awaited<ReturnType<typeof add>>);
+    })) as ReturnErr<typeof add>;
+    expect(isErr(actual)).toBe(true);
+    expect(actual.error).toBe("EXISTS_TAGGING");
   });
 
   test("初回のタグの動画への付与）", async () => {
@@ -68,29 +66,28 @@ describe("Add tag in Prisma", () => {
         },
       }),
       prisma.tag.create({
-        data: { id: "t1", meaningless: false },
+        data: { id: "t1", isCategoryTag: false },
       }),
       prisma.video.create({
         data: { id: "v1" },
       }),
     ]);
 
-    const actual = await add(prisma, {
+    const actual = (await add(prisma, {
       authUserId: "u1",
       videoId: "v1",
       tagId: "t1",
-    });
-    expect(actual).toStrictEqual({
-      status: "ok",
-      data: expect.objectContaining({
+    })) as ReturnOk<typeof add>;
+    expect(isOk(actual)).toBe(true);
+    expect(actual.data).toStrictEqual(
+      expect.objectContaining({
         id: expect.any(String),
         videoId: "v1",
         tagId: "t1",
         isRemoved: false,
-      }),
-    } satisfies Ok<Awaited<ReturnType<typeof add>>>);
-
-    const videoTagId = (actual as Ok<Awaited<ReturnType<typeof add>>>).data.id;
+      }) satisfies OkData<typeof actual>
+    );
+    const videoTagId = actual.data.id;
 
     const videoTagEvents = await prisma.videoTagEvent.findMany({ where: { videoTagId } });
     expect(videoTagEvents).toHaveLength(1);
@@ -121,7 +118,7 @@ describe("Add tag in Prisma", () => {
         },
       }),
       prisma.tag.create({
-        data: { id: "t1", meaningless: false },
+        data: { id: "t1", isCategoryTag: false },
       }),
       prisma.video.create({
         data: { id: "v1" },
@@ -131,22 +128,22 @@ describe("Add tag in Prisma", () => {
       }),
     ]);
 
-    const actual = await add(prisma, {
+    const actual = (await add(prisma, {
       authUserId: "u1",
       videoId: "v1",
       tagId: "t1",
-    });
-    expect(actual).toStrictEqual({
-      status: "ok",
-      data: expect.objectContaining({
+    })) as ReturnOk<typeof add>;
+    expect(isOk(actual)).toBe(true);
+    expect(actual.data).toStrictEqual(
+      expect.objectContaining({
         id: expect.any(String),
         videoId: "v1",
         tagId: "t1",
         isRemoved: false,
-      }),
-    } satisfies Ok<Awaited<ReturnType<typeof add>>>);
+      }) satisfies OkData<typeof actual>
+    );
 
-    const videoTagId = (actual as Ok<Awaited<ReturnType<typeof add>>>).data.id;
+    const videoTagId = actual.data.id;
 
     const videoTagEvents = await prisma.videoTagEvent.findMany({ where: { videoTagId } });
     expect(videoTagEvents).toHaveLength(1);

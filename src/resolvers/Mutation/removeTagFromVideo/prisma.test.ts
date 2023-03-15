@@ -3,7 +3,7 @@ import { ulid } from "ulid";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import { Err, Ok } from "../../../utils/Result.js";
+import { ErrError, isErr, isOk, OkData, ReturnErr, ReturnOk } from "../../../utils/Result.js";
 import { ResolverDeps } from "../../index.js";
 import { remove } from "./prisma.js";
 
@@ -35,19 +35,17 @@ describe("Remove tag in Prisma", () => {
         },
       }),
       prisma.tag.create({
-        data: { id: "t1", meaningless: false },
+        data: { id: "t1", isCategoryTag: false },
       }),
     ]);
 
-    const actual = await remove(prisma, {
+    const actual = (await remove(prisma, {
       authUserId: "u1",
       videoId: "v1",
       tagId: "t1",
-    });
-    expect(actual).toStrictEqual({
-      status: "error",
-      error: "NO_VIDEO",
-    } satisfies Err<Awaited<ReturnType<typeof remove>>>);
+    })) as ReturnErr<typeof remove>;
+    expect(isErr(actual)).toBe(true);
+    expect(actual.error).toStrictEqual("NO_VIDEO" satisfies ErrError<typeof actual>);
   });
 
   test("対象のタグは存在しない", async () => {
@@ -66,15 +64,13 @@ describe("Remove tag in Prisma", () => {
       }),
     ]);
 
-    const actual = await remove(prisma, {
+    const actual = (await remove(prisma, {
       authUserId: "u1",
       videoId: "v1",
       tagId: "t1",
-    });
-    expect(actual).toStrictEqual({
-      status: "error",
-      error: "NO_TAG",
-    } satisfies Err<Awaited<ReturnType<typeof remove>>>);
+    })) as ReturnErr<typeof remove>;
+    expect(isErr(actual)).toBe(true);
+    expect(actual.error).toStrictEqual("NO_TAG" satisfies ErrError<typeof actual>);
   });
 
   test("動画にタグ付けが存在しない", async () => {
@@ -92,19 +88,17 @@ describe("Remove tag in Prisma", () => {
         data: { id: "v1" },
       }),
       prisma.tag.create({
-        data: { id: "t1", meaningless: false },
+        data: { id: "t1", isCategoryTag: false },
       }),
     ]);
 
-    const actual = await remove(prisma, {
+    const actual = (await remove(prisma, {
       authUserId: "u1",
       videoId: "v1",
       tagId: "t1",
-    });
-    expect(actual).toStrictEqual({
-      status: "error",
-      error: "NO_TAGGING",
-    } satisfies Err<Awaited<ReturnType<typeof remove>>>);
+    })) as ReturnErr<typeof remove>;
+    expect(isErr(actual)).toBe(true);
+    expect(actual.error).toStrictEqual("NO_TAGGING" satisfies ErrError<typeof actual>);
   });
 
   test("動画へのタグ付けはすでに存在するが，削除されている", async () => {
@@ -122,7 +116,7 @@ describe("Remove tag in Prisma", () => {
         data: { id: "v1" },
       }),
       prisma.tag.create({
-        data: { id: "t1", meaningless: false },
+        data: { id: "t1", isCategoryTag: false },
       }),
       prisma.videoTag.create({
         data: {
@@ -134,15 +128,13 @@ describe("Remove tag in Prisma", () => {
       }),
     ]);
 
-    const actual = await remove(prisma, {
+    const actual = (await remove(prisma, {
       authUserId: "u1",
       videoId: "v1",
       tagId: "t1",
-    });
-    expect(actual).toStrictEqual({
-      status: "error",
-      error: "REMOVED_TAGGING",
-    } satisfies Err<Awaited<ReturnType<typeof remove>>>);
+    })) as ReturnErr<typeof remove>;
+    expect(isErr(actual)).toBe(true);
+    expect(actual.error).toStrictEqual("REMOVED_TAGGING" satisfies ErrError<typeof actual>);
   });
 
   test("タグを動画から削除", async () => {
@@ -157,7 +149,7 @@ describe("Remove tag in Prisma", () => {
         },
       }),
       prisma.tag.create({
-        data: { id: "t1", meaningless: false },
+        data: { id: "t1", isCategoryTag: false },
       }),
       prisma.video.create({
         data: { id: "v1" },
@@ -172,22 +164,22 @@ describe("Remove tag in Prisma", () => {
       }),
     ]);
 
-    const actual = await remove(prisma, {
+    const actual = (await remove(prisma, {
       authUserId: "u1",
       videoId: "v1",
       tagId: "t1",
-    });
-    expect(actual).toStrictEqual({
-      status: "ok",
-      data: expect.objectContaining({
+    })) as ReturnOk<typeof remove>;
+    expect(isOk(actual)).toBe(true);
+    expect(actual.data).toStrictEqual(
+      expect.objectContaining({
         id: expect.any(String),
         videoId: "v1",
         tagId: "t1",
         isRemoved: true,
-      }),
-    });
+      }) satisfies OkData<typeof actual>
+    );
 
-    const videoTagId = (actual as Ok<Awaited<ReturnType<typeof remove>>>).data.id;
+    const videoTagId = actual.data.id;
 
     const videoTagEvents = await prisma.videoTagEvent.findMany({ where: { videoTagId } });
     expect(videoTagEvents).toHaveLength(1);

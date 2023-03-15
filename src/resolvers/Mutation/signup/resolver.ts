@@ -1,6 +1,7 @@
 import { serialize as serializeCookie } from "cookie";
 
 import { createSession } from "../../../auth/session.js";
+import { isErr } from "../../../utils/Result.js";
 import {
   MutationResolvers,
   SignupDisplayNameValidationError,
@@ -23,7 +24,7 @@ import { registerNewUser } from "./prisma.js";
 export const resolverSignup = ({ prisma, config, logger }: Pick<ResolverDeps, "prisma" | "config" | "logger">) =>
   (async (_parent, { input: { name, displayName, email, password: rawPassword } }, { res }, info) => {
     const result = await registerNewUser(prisma, { name, displayName, email, password: rawPassword });
-    if (result.status === "error") {
+    if (isErr(result)) {
       switch (result.error.message) {
         case "NAME_ALREADY_EXISTS":
           return {
