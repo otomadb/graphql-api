@@ -7,8 +7,8 @@ import {
   UserRole as GraphQLUserRole,
 } from "../../graphql.js";
 import { parseGqlID3 } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { TagParentModel } from "../../TagParent/model.js";
+import { ResolverDeps } from "../../types.js";
 import { explicitize } from "./prisma.js";
 
 export const resolverExplicitizeTagParent = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>

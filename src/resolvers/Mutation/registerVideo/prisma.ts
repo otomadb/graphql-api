@@ -12,7 +12,7 @@ import {
 import { ulid } from "ulid";
 
 import { err, isErr, ok, Result } from "../../../utils/Result.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 
 export const getRequestCheck = async (
   prisma: ResolverDeps["prisma"],

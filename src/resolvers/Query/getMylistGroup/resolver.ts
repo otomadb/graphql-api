@@ -1,7 +1,7 @@
 import { QueryResolvers } from "../../graphql.js";
 import { GraphQLNotExistsInDBError, parseGqlID } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { MylistGroupModel } from "../../MylistGroup/model.js";
+import { ResolverDeps } from "../../types.js";
 
 export const getMylistGroup = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async (_parent, { id }, { user: ctxUser }, info) =>

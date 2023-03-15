@@ -14,9 +14,9 @@ import { pino } from "pino";
 import z from "zod";
 
 import { extractSessionFromReq, verifySession } from "./auth/session.js";
-import { ServerContext, UserContext } from "./resolvers/context.js";
 import { typeDefs } from "./resolvers/graphql.js";
 import { makeResolvers } from "./resolvers/index.js";
+import { ServerContext, UserContext } from "./resolvers/types.js";
 import { err, isErr, isOk, ok, Result } from "./utils/Result.js";
 
 const extractTokenFromReq = (req: IncomingMessage): Result<{ type: "NO_TOKEN" }, string> => {

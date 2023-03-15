@@ -1,7 +1,7 @@
 import { TransactionPromise } from "neo4j-driver-core";
 
 import { err, ok, Result } from "../../../utils/Result.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 
 export const updateRegisterationInNeo4j = async (
   { prisma, tx }: Pick<ResolverDeps, "prisma"> & { tx: TransactionPromise },

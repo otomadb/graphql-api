@@ -2,7 +2,7 @@ import { NicovideoRegistrationRequest, NicovideoVideoSource } from "@prisma/clie
 import { ulid } from "ulid";
 
 import { err, ok, Result } from "../../../utils/Result.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 
 export const requestRegistration = async (
   prisma: ResolverDeps["prisma"],

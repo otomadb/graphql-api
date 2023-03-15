@@ -1,8 +1,8 @@
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
-import { ResolverDeps } from "../index.js";
 import { MylistModel } from "../Mylist/model.js";
 import { MylistGroupModel } from "../MylistGroup/model.js";
+import { ResolverDeps } from "../types.js";
 
 export const resolveMylistGroupMylistInclusion = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({

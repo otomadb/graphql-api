@@ -8,8 +8,8 @@ import {
   UserRole as GqlUserRole,
 } from "../../graphql.js";
 import { parseGqlID3 } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { TagParentModel } from "../../TagParent/model.js";
+import { ResolverDeps } from "../../types.js";
 import { register } from "./prisma.js";
 
 export const resolverRegisterTagParentRelation = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>

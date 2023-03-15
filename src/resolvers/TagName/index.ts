@@ -1,7 +1,7 @@
 import { Resolvers } from "../graphql.js";
 import { buildGqlId } from "../id.js";
-import { ResolverDeps } from "../index.js";
 import { TagNameEventModel } from "../TagNameEvent/model.js";
+import { ResolverDeps } from "../types.js";
 
 export const resolveTagName = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({

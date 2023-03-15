@@ -1,5 +1,5 @@
 import { QueryResolvers } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 import { UserModel } from "../../User/model.js";
 
 export const whoami = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
