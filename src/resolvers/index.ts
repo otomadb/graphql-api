@@ -8,6 +8,7 @@ import { resolveMylistGroup } from "./MylistGroup/index.js";
 import { resolveMylistGroupMylistInclusion } from "./MylistGroupMylistInclusion/index.js";
 import { resolveMylistGroupVideoAggregation } from "./MylistGroupVideoAggregation/index.js";
 import { resolveMylistRegistration } from "./MylistRegistration/index.js";
+import { resolverMylistRegistrationConnection } from "./MylistRegistrationConnection/resolver.js";
 import { resolveMylistTagInclusion } from "./MylistTagInclusion/index.js";
 import { resolveMylistVideoRecommendation } from "./MylistVideoRecommendation/index.js";
 import { resolveNicovideoOriginalSourceTag } from "./NicovideoOriginalSourceTag/index.js";
@@ -77,6 +78,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     MylistGroupMylistInclusion: resolveMylistGroupMylistInclusion(deps),
     MylistGroupVideoAggregation: resolveMylistGroupVideoAggregation(deps),
     MylistRegistration: resolveMylistRegistration(deps),
+    MylistRegistrationConnection: resolverMylistRegistrationConnection(),
     MylistTagInclusion: resolveMylistTagInclusion(deps),
     MylistVideoRecommendation: resolveMylistVideoRecommendation(deps),
     NicovideoOriginalSourceTag: resolveNicovideoOriginalSourceTag(deps),

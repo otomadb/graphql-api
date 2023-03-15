@@ -1,0 +1,15 @@
+type Mylist {
+  registrations(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    orderBy: MylistRegistrationsOrderBy! = { createdAt: DESC }
+  ): MylistRegistrationConnection!
+}
+
+input MylistRegistrationsOrderBy {
+  createdAt: SortOrder
+}

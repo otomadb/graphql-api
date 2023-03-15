@@ -1,0 +1,11 @@
+type MylistRegistrationConnection {
+  nodes: [MylistRegistration!]!
+  edges: [MylistRegistrationEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type MylistRegistrationEdge {
+  cursor: String!
+  node: MylistRegistration!
+}
