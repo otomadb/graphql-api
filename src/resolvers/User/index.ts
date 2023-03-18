@@ -6,11 +6,13 @@ import { MylistModel } from "../Mylist/model.js";
 import { ResolverDeps } from "../types.js";
 import { resolverUserLikes } from "./likes/resolver.js";
 import { resolverUserMylists } from "./mylists/resolver.js";
+import { resolverUserNicovideoRegistrationRequests } from "./nicovideoRegistrationRequests/resolver.js";
 
 export const resolveUser = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   ({
     id: ({ id }): string => buildGqlId("User", id),
     likes: resolverUserLikes({ prisma }),
+    nicovideoRegistrationRequests: resolverUserNicovideoRegistrationRequests({ prisma, logger }),
 
     mylist: async ({ id: userId }, { id: gqlMylistId }, { user: ctxUser }) => {
       const mylist = await prisma.mylist.findFirst({ where: { id: parseGqlID("Mylist", gqlMylistId) } });
