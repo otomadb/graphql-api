@@ -4,9 +4,9 @@ import z from "zod";
 
 import { cursorOptions } from "../../connection.js";
 import { UserResolvers } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
 import { NicovideoRegistrationRequestConnectionModel } from "../../NicovideoRegistrationRequestConnection/model.js";
 import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
+import { ResolverDeps } from "../../types.js";
 
 export const resolverUserNicovideoRegistrationRequests = ({
   prisma,
