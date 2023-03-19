@@ -82,7 +82,7 @@ describe("Register video by Prisma", () => {
       type: "IS_IMPLICIT",
       relation: expect.objectContaining({
         id: "r1",
-        isExplicit: true,
+        isExplicit: false,
       }),
     } satisfies ErrError<typeof actual>);
   });

@@ -24,7 +24,7 @@ export const implicitize = async (
     const updated = await prisma.tagParent.update({
       where: { id: exists.id },
       data: {
-        isExplicit: true,
+        isExplicit: false,
         events: { create: { type: "UNSET_PRIMARY", userId, payload: {} } },
       },
     });
