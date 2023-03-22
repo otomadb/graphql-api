@@ -6,7 +6,7 @@ type Query {
     last: Int
     before: String
 
-    orderBy: FindSemitagsOrderBy! = { createdAt: DESC }
+    orderBy: FindSemitagsOrderBy! = { name: ASC }
 
     expect: [ID!]! = [] @deprecated
 
@@ -15,6 +15,7 @@ type Query {
 }
 
 input FindSemitagsOrderBy {
+  name: SortOrder
   updatedAt: SortOrder
   createdAt: SortOrder
 }
