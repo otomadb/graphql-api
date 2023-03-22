@@ -3,7 +3,11 @@ import { MylistRegistration } from "@prisma/client";
 export class MylistRegistrationModel {
   constructor(private readonly entity: MylistRegistration) {}
 
-  static fromPrisma(e: MylistRegistration | null) {
+  static fromPrisma(e: MylistRegistration) {
+    return new MylistRegistrationModel(e);
+  }
+
+  static fromPrismaNullable(e: MylistRegistration | null) {
     if (!e) return null;
     return new MylistRegistrationModel(e);
   }

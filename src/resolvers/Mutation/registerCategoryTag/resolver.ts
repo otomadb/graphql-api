@@ -6,8 +6,8 @@ import {
   ResolversTypes,
   UserRole as GqlUserRole,
 } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
+import { ResolverDeps } from "../../types.js";
 import { register } from "./register.js";
 
 export const registerCategoryTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>

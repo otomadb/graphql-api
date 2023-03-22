@@ -1,7 +1,7 @@
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
-import { ResolverDeps } from "../index.js";
 import { TagModel } from "../Tag/model.js";
+import { ResolverDeps } from "../types.js";
 import { VideoModel } from "../Video/model.js";
 import { VideoTagEventModel } from "../VideoTagEvent/model.js";
 

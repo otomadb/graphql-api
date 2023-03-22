@@ -10,9 +10,9 @@ import {
   UserRole as GraphQLUserRole,
 } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { NicovideoRegistrationRequestModel } from "../../NicovideoRegistrationRequest/model.js";
 import { NicovideoRegistrationRequestRejectingModel } from "../../NicovideoRegistrationRequestRejecting/model.js";
+import { ResolverDeps } from "../../types.js";
 import { reject } from "./reject.js";
 
 export const resolverRejectRequestNicovideoRegistration = ({

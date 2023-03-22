@@ -1,12 +1,13 @@
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
-import { ResolverDeps } from "../index.js";
 import { SemitagEventModel } from "../SemitagEvent/model.js";
+import { ResolverDeps } from "../types.js";
 import { VideoModel } from "../Video/model.js";
 import { VideoTagModel } from "../VideoTag/model.js";
 import { SemitagModel, SemitagRejectingModel, SemitagResolvingModel } from "./model.js";
+import { resolverSemitagSuggestTags } from "./suggestTags/resolver.js";
 
-export const resolveSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveSemitag = ({ prisma, meilisearch }: Pick<ResolverDeps, "prisma" | "meilisearch">) =>
   ({
     id: ({ dbId }): string => buildGqlId("Semitag", dbId),
     video: ({ videoId }) =>
@@ -37,6 +38,7 @@ export const resolveSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
       if (!videoTagId) return new SemitagRejectingModel({ note, semitagId });
       return new SemitagResolvingModel({ videoTagId, note, semitagId });
     },
+    suggestTags: resolverSemitagSuggestTags({ meilisearch }),
   } satisfies Resolvers["Semitag"]);
 
 export const resolveSemitagResolving = ({ prisma }: Pick<ResolverDeps, "prisma">) =>

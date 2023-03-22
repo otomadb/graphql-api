@@ -8,9 +8,9 @@ import {
   UserRole as GraphQLUserRole,
 } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { NicovideoRegistrationRequestModel } from "../../NicovideoRegistrationRequest/model.js";
 import { NicovideoVideoSourceModel } from "../../NicovideoVideoSource/model.js";
+import { ResolverDeps } from "../../types.js";
 import { requestRegistration } from "./request.js";
 
 export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>

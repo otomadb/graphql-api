@@ -1,7 +1,7 @@
 /* eslint sort-keys: [2, "asc", {caseSensitive: false}] */
 
 import { type Resolvers } from "../graphql.js";
-import { ResolverDeps } from "../index.js";
+import { ResolverDeps } from "../types.js";
 import { fetchNicovideo } from "./fetchNicovideo/fetchNicovideo.js";
 import { findMylist } from "./findMylist/findMylist.js";
 import { resolverFindNicovideoRegistrationRequest } from "./findNicovideoRegistrationRequest/resolver.js";
@@ -21,11 +21,11 @@ import { getSemitag } from "./getSemitag/resolver.js";
 import { getTag } from "./getTag/resolver.js";
 import { getUser } from "./getUser/resolver.js";
 import { getVideo } from "./getVideo/resolver.js";
-import { searchTags } from "./searchTags/searchTags.js";
-import { searchVideos } from "./searchVideos/searchVideos.js";
+import { searchTags } from "./searchTags/resolver.js";
+import { searchVideos } from "./searchVideos/resolver.js";
 import { whoami } from "./whoami/whoami.js";
 
-export const resolveQuery = (deps: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolveQuery = (deps: ResolverDeps) =>
   ({
     fetchNicovideo: fetchNicovideo(),
     findMylist: findMylist(deps),

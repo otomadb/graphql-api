@@ -4,9 +4,9 @@ import z from "zod";
 
 import { cursorOptions } from "../../connection.js";
 import { TagResolvers } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
 import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
 import { TagParentConnectionModel } from "../../TagParentConnection/model.js";
+import { ResolverDeps } from "../../types.js";
 
 export const resolverParents = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async ({ id: tagId }, { orderBy, categoryTag, ...unparsedConnectionArgs }, { user: ctxUser }, info) => {

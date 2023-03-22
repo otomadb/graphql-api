@@ -17,7 +17,7 @@ import {
   SignupPasswordValidationError,
   SignupPasswordValidationErrorEnum,
 } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 import { UserModel } from "../../User/model.js";
 import { registerNewUser } from "./prisma.js";
 

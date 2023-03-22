@@ -1,9 +1,5 @@
 /* eslint sort-keys: 2 */
 
-import { PrismaClient } from "@prisma/client";
-import { Driver as Neo4jDriver } from "neo4j-driver";
-import { Logger } from "pino";
-
 import { type Resolvers } from "./graphql.js";
 import { resolveMutation } from "./Mutation/index.js";
 import { resolveMylist } from "./Mylist/index.js";
@@ -12,6 +8,7 @@ import { resolveMylistGroup } from "./MylistGroup/index.js";
 import { resolveMylistGroupMylistInclusion } from "./MylistGroupMylistInclusion/index.js";
 import { resolveMylistGroupVideoAggregation } from "./MylistGroupVideoAggregation/index.js";
 import { resolveMylistRegistration } from "./MylistRegistration/index.js";
+import { resolverMylistRegistrationConnection } from "./MylistRegistrationConnection/resolver.js";
 import { resolveMylistTagInclusion } from "./MylistTagInclusion/index.js";
 import { resolveMylistVideoRecommendation } from "./MylistVideoRecommendation/index.js";
 import { resolveNicovideoOriginalSourceTag } from "./NicovideoOriginalSourceTag/index.js";
@@ -44,10 +41,13 @@ import {
 } from "./TagNameEvent/index.js";
 import { resolveTagParent } from "./TagParent/index.js";
 import { resolverTagParentConnection } from "./TagParentConnection/resolver.js";
+import { resolverTagSearchItemByName } from "./TagSearchItemByName/resolver.js";
+import { ResolverDeps } from "./types.js";
 import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
 import { resolverVideoConnection } from "./VideoConnection/resolver.js";
 import { resolveVideoEvent, resolveVideoRegisterEvent } from "./VideoEvent/index.js";
+import { resolverVideoSearchItemByTitle } from "./VideoSearchItemByTitle/resolver.js";
 import { resolveVideoSimilarity } from "./VideoSimilarity/index.js";
 import { resolveVideoTag } from "./VideoTag/index.js";
 import {
@@ -71,19 +71,6 @@ import {
   resolveVideoTitleUnsetPrimaryEvent,
 } from "./VideoTitleEvent/index.js";
 
-export type ResolverDeps = {
-  prisma: PrismaClient;
-  neo4j: Neo4jDriver;
-  logger: Logger;
-  config: {
-    session: {
-      cookieName(): string;
-      cookieDomain(): string | undefined;
-      cookieSameSite(): "none" | "strict";
-    };
-  };
-};
-
 export const makeResolvers = (deps: ResolverDeps) =>
   ({
     Mutation: resolveMutation(deps),
@@ -93,6 +80,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     MylistGroupMylistInclusion: resolveMylistGroupMylistInclusion(deps),
     MylistGroupVideoAggregation: resolveMylistGroupVideoAggregation(deps),
     MylistRegistration: resolveMylistRegistration(deps),
+    MylistRegistrationConnection: resolverMylistRegistrationConnection(),
     MylistTagInclusion: resolveMylistTagInclusion(deps),
     MylistVideoRecommendation: resolveMylistVideoRecommendation(deps),
     NicovideoOriginalSourceTag: resolveNicovideoOriginalSourceTag(deps),
@@ -122,11 +110,13 @@ export const makeResolvers = (deps: ResolverDeps) =>
     TagParent: resolveTagParent(deps),
     TagParentConnection: resolverTagParentConnection(),
     TagRegisterEvent: resolveTagRegisterEvent(deps),
+    TagSearchItemByName: resolverTagSearchItemByName(deps),
     User: resolveUser(deps),
     Video: resolveVideo(deps),
     VideoConnection: resolverVideoConnection(),
     VideoEvent: resolveVideoEvent(),
     VideoRegisterEvent: resolveVideoRegisterEvent(deps),
+    VideoSearchItemByTitle: resolverVideoSearchItemByTitle(deps),
     VideoSimilarity: resolveVideoSimilarity(deps),
     VideoTag: resolveVideoTag(deps),
     VideoTagAttachEvent: resolveVideoTagAttachEvent(deps),

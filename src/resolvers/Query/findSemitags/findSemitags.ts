@@ -1,15 +1,18 @@
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection";
+import { Prisma } from "@prisma/client";
 import { GraphQLError } from "graphql";
 import z from "zod";
 
+import { isErr } from "../../../utils/Result.js";
 import { cursorOptions } from "../../connection.js";
 import { QueryResolvers } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
-import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
+import { parseOrderBy } from "../../parseSortOrder.js";
 import { SemitagConnectionModel } from "../../SemitagConnection/model.js";
+import { ResolverDeps } from "../../types.js";
 
 export const findSemitags = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { orderBy, checked, ...unparsedConnectionArgs }, { user: ctxUser }, info) => {
+  (async (_parent, args, { user: ctxUser }, info) => {
+    const { orderBy: unparsedOrderBy, checked, ...unparsedConnectionArgs } = args;
     const connectionArgs = z
       .union([
         z.object({}),
@@ -24,10 +27,13 @@ export const findSemitags = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "
       ])
       .safeParse(unparsedConnectionArgs);
     if (!connectionArgs.success) {
-      logger.error(
-        { path: info.path, args: { orderBy, ...unparsedConnectionArgs }, userId: ctxUser?.id },
-        "Wrong args"
-      );
+      logger.error({ path: info.path, args: unparsedConnectionArgs, userId: ctxUser?.id }, "Pagination args error");
+      throw new GraphQLError("Pagination args error");
+    }
+
+    const orderBy = parseOrderBy(unparsedOrderBy, ["name", Prisma.SortOrder.desc]);
+    if (isErr(orderBy)) {
+      logger.error({ path: info.path, args: unparsedOrderBy, userId: ctxUser?.id }, "OrderBy args error");
       throw new GraphQLError("Wrong args");
     }
 
@@ -35,7 +41,7 @@ export const findSemitags = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "
       (args) =>
         prisma.semitag.findMany({
           ...args,
-          orderBy: { createdAt: parseOrderBy(orderBy.createdAt) },
+          orderBy: orderBy.data,
           where: { isChecked: checked?.valueOf() },
         }),
       () => prisma.semitag.count(),

@@ -3,8 +3,8 @@ import { GraphQLError } from "graphql";
 
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
-import { ResolverDeps } from "../index.js";
 import { SemitagModel, SemitagRejectingModel, SemitagResolvingModel } from "../Semitag/model.js";
+import { ResolverDeps } from "../types.js";
 import { UserModel } from "../User/model.js";
 
 export const resolveSemitagEventCommonProps = ({ prisma }: Pick<ResolverDeps, "prisma">) =>

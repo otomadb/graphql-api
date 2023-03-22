@@ -1,7 +1,7 @@
 import { isErr } from "../../../utils/Result.js";
 import { UserResolvers } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
+import { ResolverDeps } from "../../types.js";
 import { get } from "./prisma.js";
 
 export const resolverUserLikes = ({ prisma }: Pick<ResolverDeps, "prisma">) =>

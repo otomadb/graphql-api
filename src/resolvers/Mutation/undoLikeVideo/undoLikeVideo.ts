@@ -3,9 +3,9 @@ import { Mylist, MylistRegistration, Video } from "@prisma/client";
 import { err, isErr, ok, Result } from "../../../utils/Result.js";
 import { MutationResolvers, UndoLikeVideoFailedMessage } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
 import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
+import { ResolverDeps } from "../../types.js";
 import { VideoModel } from "../../Video/model.js";
 import { undoLikeVideoInNeo4j } from "./neo4j.js";
 

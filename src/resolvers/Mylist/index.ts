@@ -1,16 +1,14 @@
 import { MylistShareRange } from "@prisma/client";
 
-import { MylistShareRange as GQLMylistShareRange } from "../graphql.js";
-import { Resolvers } from "../graphql.js";
+import { MylistShareRange as GQLMylistShareRange, Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError, parseGqlID } from "../id.js";
-import { ResolverDeps } from "../index.js";
-import { MylistRegistrationModel } from "../MylistRegistration/model.js";
-import { parseSortOrder } from "../parseSortOrder.js";
+import { ResolverDeps } from "../types.js";
 import { UserModel } from "../User/model.js";
 import { resolveIncludeTags } from "./includesTags.js";
 import { resolveRecommendedVideos } from "./recommendedVideos.js";
+import { resolverMylistRegistrations } from "./registrations/resolver.js";
 
-export const resolveMylist = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">) =>
+export const resolveMylist = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
   ({
     id: ({ id }) => buildGqlId("Mylist", id),
     range: ({ shareRange }) => {
@@ -33,20 +31,7 @@ export const resolveMylist = ({ prisma, neo4j }: Pick<ResolverDeps, "prisma" | "
           throw new GraphQLNotExistsInDBError("User", holderId);
         }),
 
-    registrations: async ({ id: mylistId }, { input }) => {
-      const regs = await prisma.mylistRegistration.findMany({
-        where: { mylistId },
-        orderBy: {
-          createdAt: parseSortOrder(input.order?.createdAt),
-          updatedAt: parseSortOrder(input.order?.updatedAt),
-        },
-        take: input.limit,
-        skip: input.skip,
-      });
-      return {
-        nodes: regs.map((reg) => new MylistRegistrationModel(reg)),
-      };
-    },
+    registrations: resolverMylistRegistrations({ prisma, logger }),
 
     isIncludesVideo: async ({ id: mylistId }, { id: videoId }) =>
       prisma.mylistRegistration

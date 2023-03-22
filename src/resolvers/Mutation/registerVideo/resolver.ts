@@ -11,7 +11,7 @@ import {
   RegisterVideoInputSourceType,
 } from "../../graphql.js";
 import { parseGqlID3, parseGqlIDs2 } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 import { VideoModel } from "../../Video/model.js";
 import { registerVideoInNeo4j as registerInNeo4j } from "./neo4j.js";
 import { register } from "./prisma.js";

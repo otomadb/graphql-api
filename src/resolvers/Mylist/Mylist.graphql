@@ -7,8 +7,6 @@ type Mylist implements Node {
   createdAt: DateTime!
   updatedAt: DateTime!
 
-  registrations(input: MylistRegistrationsInput!): MylistRegistrationConnection!
-
   """
   マイリストの中にビデオが追加されているか．
   """
@@ -23,17 +21,6 @@ enum MylistShareRange {
   PUBLIC
   KNOW_LINK
   PRIVATE
-}
-
-input MylistRegistrationsInput {
-  limit: Int! = 10
-  skip: Int! = 0
-  order: MylistRegistrationsInputOrder! = { registeredAt: ASC }
-}
-
-input MylistRegistrationsInputOrder {
-  createdAt: SortOrder
-  updatedAt: SortOrder
 }
 
 input MylistRecommendedVideosInput {

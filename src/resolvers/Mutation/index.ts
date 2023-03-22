@@ -1,11 +1,11 @@
 /* eslint sort-keys: 2 */
 
 import { type Resolvers } from "../graphql.js";
-import { ResolverDeps } from "../index.js";
+import { ResolverDeps } from "../types.js";
 import { addMylistToMylistGroup } from "./addMylistToMylistGroup/addMylistToMylistGroup.js";
 import { addSemitagToVideo } from "./addSemitagToVideo/addSemitagToVideo.js";
 import { resolverAddTagToVideo } from "./addTagToVideo/resolver.js";
-import { addVideoToMylist } from "./addViteoToMylist/addVideoToMylist.js";
+import { addVideoToMylist } from "./addVideoToMylist/addVideoToMylist.js";
 import { resolverChangeMylistShareRange } from "./changeMylistShareRange/resolver.js";
 import { createMylist } from "./createMylist/createMylist.js";
 import { createMylistGroup } from "./createMylistGroup/createMylistGroup.js";

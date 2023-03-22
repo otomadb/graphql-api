@@ -1,4 +1,4 @@
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 
 export const getVideos = async (
   prisma: ResolverDeps["prisma"],
