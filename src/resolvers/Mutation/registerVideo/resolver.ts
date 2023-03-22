@@ -13,12 +13,18 @@ import {
 import { parseGqlID3, parseGqlIDs2 } from "../../id.js";
 import { ResolverDeps } from "../../types.js";
 import { VideoModel } from "../../Video/model.js";
+import { addVideoToMeiliSearch } from "./meilisearch.js";
 import { registerVideoInNeo4j as registerInNeo4j } from "./neo4j.js";
 import { register } from "./prisma.js";
 
-export const resolverRegisterVideo = ({ prisma, logger, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+export const resolverRegisterVideo = ({
+  prisma,
+  logger,
+  neo4j,
+  meilisearch,
+}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "meilisearch">) =>
   // registerVideoScaffold(deps)
-  (async (_parent, { input }, { user }) => {
+  (async (_parent, { input }, { user }, info) => {
     if (!user || (user.role !== UserRole.EDITOR && user.role !== UserRole.ADMINISTRATOR))
       return {
         __typename: "RegisterVideoFailedPayload",
@@ -88,6 +94,11 @@ export const resolverRegisterVideo = ({ prisma, logger, neo4j }: Pick<ResolverDe
 
     const video = result.data;
     await registerInNeo4j({ prisma, logger, neo4j }, video.id);
+
+    const meilisearchResult = await addVideoToMeiliSearch({ prisma, meilisearch }, video.id);
+    if (isErr(meilisearchResult)) {
+      logger.error({ error: meilisearchResult.error, path: info.path }, "Failed to add in meilisearch");
+    }
 
     return {
       __typename: "RegisterVideoSucceededPayload",
