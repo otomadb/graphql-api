@@ -1,0 +1,7 @@
+type Semitag {
+  suggestTags(limit: Int! = 3, skip: Int! = 0): SemitagSuggestTagsPayload!
+}
+
+type SemitagSuggestTagsPayload {
+  items: [TagSearchItemByName!]!
+}
