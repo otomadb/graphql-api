@@ -1,8 +1,8 @@
-export class VideoSearchResultByTitleModel {
+export class VideoSearchItemByTitleModel {
   private constructor(private readonly entity: { titleId: string; videoId: string }) {}
 
   static make(entity: { titleId: string; videoId: string }) {
-    return new VideoSearchResultByTitleModel(entity);
+    return new VideoSearchItemByTitleModel(entity);
   }
 
   get titleId() {

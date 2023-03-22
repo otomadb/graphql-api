@@ -4,7 +4,7 @@ import { TagModel } from "../Tag/model.js";
 import { TagNameModel } from "../TagName/model.js";
 import { ResolverDeps } from "../types.js";
 
-export const resolverTagSearchResultByName = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolverTagSearchItemByName = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   ({
     tag: ({ tagId }, _args, { user: ctxUser }, info) =>
       prisma.tag
@@ -22,4 +22,4 @@ export const resolverTagSearchResultByName = ({ prisma, logger }: Pick<ResolverD
           logger.error({ path: info.path, userId: ctxUser?.id }, "Not found");
           throw new GraphQLNotExistsInDBError("TagName", nameId);
         }),
-  } satisfies Resolvers["TagSearchResultByName"]);
+  } satisfies Resolvers["TagSearchItemByName"]);

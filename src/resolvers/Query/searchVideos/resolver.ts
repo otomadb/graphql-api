@@ -1,6 +1,6 @@
 import { QueryResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../types.js";
-import { VideoSearchResultByTitleModel } from "../../VideoSearchResultByTitle/model.js";
+import { VideoSearchItemByTitleModel } from "../../VideoSearchItemByTitle/model.js";
 
 export const searchVideos = ({ meilisearch }: Pick<ResolverDeps, "meilisearch">) =>
   (async (_, { input }) => {
@@ -15,6 +15,6 @@ export const searchVideos = ({ meilisearch }: Pick<ResolverDeps, "meilisearch">)
       showMatchesPosition: true,
     });
     return {
-      items: hits.map(({ id, video_id }) => VideoSearchResultByTitleModel.make({ titleId: id, videoId: video_id })),
+      items: hits.map(({ id, video_id }) => VideoSearchItemByTitleModel.make({ titleId: id, videoId: video_id })),
     };
   }) satisfies QueryResolvers["searchVideos"];

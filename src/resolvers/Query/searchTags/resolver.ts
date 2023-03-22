@@ -1,5 +1,5 @@
 import { QueryResolvers } from "../../graphql.js";
-import { TagSearchResultByNameModel } from "../../TagSearchResultByName/model.js";
+import { TagSearchItemByNameModel } from "../../TagSearchItemByName/model.js";
 import { ResolverDeps } from "../../types.js";
 
 export const searchTags = ({ meilisearch }: Pick<ResolverDeps, "meilisearch">) =>
@@ -15,6 +15,6 @@ export const searchTags = ({ meilisearch }: Pick<ResolverDeps, "meilisearch">) =
       showMatchesPosition: true,
     });
     return {
-      items: hits.map(({ id, tag_id }) => TagSearchResultByNameModel.make({ nameId: id, tagId: tag_id })),
+      items: hits.map(({ id, tag_id }) => TagSearchItemByNameModel.make({ nameId: id, tagId: tag_id })),
     };
   }) satisfies QueryResolvers["searchTags"];

@@ -10,5 +10,5 @@ input SearchTagInput {
 
 type SearchTagsPayload {
   # count: Int!
-  items: [TagSearchResultByName!]!
+  items: [TagSearchItemByName!]!
 }

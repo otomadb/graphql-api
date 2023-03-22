@@ -1,5 +1,5 @@
 import { Resolvers } from "../graphql.js";
-import { TagSearchResultByNameModel } from "../TagSearchResultByName/model.js";
+import { TagSearchItemByNameModel } from "../TagSearchItemByName/model.js";
 import { ResolverDeps } from "../types.js";
 
 export const resolveNicovideoOriginalSourceTag = ({ meilisearch }: Pick<ResolverDeps, "meilisearch">) =>
@@ -16,7 +16,7 @@ export const resolveNicovideoOriginalSourceTag = ({ meilisearch }: Pick<Resolver
         showMatchesPosition: true,
       });
       return {
-        items: hits.map(({ id, tag_id }) => TagSearchResultByNameModel.make({ nameId: id, tagId: tag_id })),
+        items: hits.map(({ id, tag_id }) => TagSearchItemByNameModel.make({ nameId: id, tagId: tag_id })),
       };
     },
   } satisfies Resolvers["NicovideoOriginalSourceTag"]);

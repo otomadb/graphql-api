@@ -1,8 +1,8 @@
-export class TagSearchResultByNameModel {
+export class TagSearchItemByNameModel {
   private constructor(private readonly entity: { nameId: string; tagId: string }) {}
 
   static make(entity: { nameId: string; tagId: string }) {
-    return new TagSearchResultByNameModel(entity);
+    return new TagSearchItemByNameModel(entity);
   }
 
   get tagId() {

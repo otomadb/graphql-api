@@ -1,4 +1,4 @@
-type VideoSearchResultByTitle {
+type VideoSearchItemByTitle {
   video: Video!
   title: VideoTitle!
 }

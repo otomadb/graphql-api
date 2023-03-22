@@ -1,4 +1,4 @@
-type TagSearchResultByName {
+type TagSearchItemByName {
   tag: Tag!
   name: TagName!
 }

@@ -10,5 +10,5 @@ input NicovideoOriginalSourceTagSearchTagsInput {
 }
 
 type NicovideoOriginalSourceTagSearchTagsPayload {
-  items: [TagSearchResultByName!]!
+  items: [TagSearchItemByName!]!
 }

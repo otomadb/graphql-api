@@ -10,5 +10,5 @@ input SearchVideoInput {
 
 type SearchVideosPayload {
   # count: Int!
-  items: [VideoSearchResultByTitle!]!
+  items: [VideoSearchItemByTitle!]!
 }

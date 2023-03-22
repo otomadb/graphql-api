@@ -4,7 +4,7 @@ import { ResolverDeps } from "../types.js";
 import { VideoModel } from "../Video/model.js";
 import { VideoTitleModel } from "../VideoTitle/model.js";
 
-export const resolverVideoSearchResultByTitle = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolverVideoSearchItemByTitle = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   ({
     video: ({ videoId }, _args, { user: ctxUser }, info) =>
       prisma.video
@@ -22,4 +22,4 @@ export const resolverVideoSearchResultByTitle = ({ prisma, logger }: Pick<Resolv
           logger.error({ path: info.path, userId: ctxUser?.id, error: e }, "Not found");
           throw new GraphQLNotExistsInDBError("VideoTitle", titleId);
         }),
-  } satisfies Resolvers["VideoSearchResultByTitle"]);
+  } satisfies Resolvers["VideoSearchItemByTitle"]);
