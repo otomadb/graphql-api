@@ -46,7 +46,18 @@ services:
     environment:
       NEO4J_AUTH: neo4j/password
 
+  meilisearch:
+    image: getmeili/meilisearch:v1.0
+    ports:
+      - target: 7700
+        published: 7700
+    volumes:
+      - type: volume
+        source: meilisearch_data
+        target: /meili_data
+
 volumes:
   postgres_data:
   neo4j_data:
   neo4j_logs:
+  meilisearch_data:

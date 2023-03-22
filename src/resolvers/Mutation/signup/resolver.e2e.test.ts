@@ -18,6 +18,7 @@ describe("Signup", () => {
   let neo4j: ResolverDeps["neo4j"];
   let logger: ResolverDeps["logger"];
   let config: DeepMockProxy<ResolverDeps["config"]>;
+  let meilisearch: DeepMockProxy<ResolverDeps["meilisearch"]>;
   let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
 
   beforeAll(async () => {
@@ -31,8 +32,9 @@ describe("Signup", () => {
 
     logger = mockDeep<ResolverDeps["logger"]>();
     config = mockDeep<ResolverDeps["config"]>();
+    meilisearch = mockDeep<ResolverDeps["meilisearch"]>();
 
-    const schema = createSchema({ typeDefs, resolvers: makeResolvers({ prisma, neo4j, logger, config }) });
+    const schema = createSchema({ typeDefs, resolvers: makeResolvers({ prisma, neo4j, logger, config, meilisearch }) });
     const yoga = createYoga<ServerContext, UserContext>({ schema });
     executor = buildHTTPExecutor({ fetch: yoga.fetch });
   });

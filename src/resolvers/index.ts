@@ -41,11 +41,13 @@ import {
 } from "./TagNameEvent/index.js";
 import { resolveTagParent } from "./TagParent/index.js";
 import { resolverTagParentConnection } from "./TagParentConnection/resolver.js";
+import { resolverTagSearchItemByName } from "./TagSearchItemByName/resolver.js";
 import { ResolverDeps } from "./types.js";
 import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
 import { resolverVideoConnection } from "./VideoConnection/resolver.js";
 import { resolveVideoEvent, resolveVideoRegisterEvent } from "./VideoEvent/index.js";
+import { resolverVideoSearchItemByTitle } from "./VideoSearchItemByTitle/resolver.js";
 import { resolveVideoSimilarity } from "./VideoSimilarity/index.js";
 import { resolveVideoTag } from "./VideoTag/index.js";
 import {
@@ -108,11 +110,13 @@ export const makeResolvers = (deps: ResolverDeps) =>
     TagParent: resolveTagParent(deps),
     TagParentConnection: resolverTagParentConnection(),
     TagRegisterEvent: resolveTagRegisterEvent(deps),
+    TagSearchItemByName: resolverTagSearchItemByName(deps),
     User: resolveUser(deps),
     Video: resolveVideo(deps),
     VideoConnection: resolverVideoConnection(),
     VideoEvent: resolveVideoEvent(),
     VideoRegisterEvent: resolveVideoRegisterEvent(deps),
+    VideoSearchItemByTitle: resolverVideoSearchItemByTitle(deps),
     VideoSimilarity: resolveVideoSimilarity(deps),
     VideoTag: resolveVideoTag(deps),
     VideoTagAttachEvent: resolveVideoTagAttachEvent(deps),

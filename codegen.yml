@@ -52,12 +52,14 @@ generates:
         TagParentSetPrimaryEvent: ./TagParentEvent/model.js#TagParentEventModel
         TagParentUnsetPrimaryEvent: ./TagParentEvent/model.js#TagParentEventModel
         TagRegisterEvent: ./TagEvent/model.js#TagEventModel
+        TagSearchItemByName: ./TagSearchItemByName/model.js#TagSearchItemByNameModel
         User: ./User/model.js#UserModel
         Video: ./Video/model.js#VideoModel
         VideoAddNicovideoSourceEvent: ./VideoEvent/model.js#VideoEventModel
         VideoConnection: ./VideoConnection/model.js#VideoConnectionModel
         VideoEvent: ./VideoEvent/model.js#VideoEventModel
         VideoRegisterEvent: ./VideoEvent/model.js#VideoEventModel
+        VideoSearchItemByTitle: ./VideoSearchItemByTitle/model.js#VideoSearchItemByTitleModel
         VideoSimilarity: ./VideoSimilarity/model.js#VideoSimilarityModel
         VideoTag: ./VideoTag/model.js#VideoTagModel
         VideoTagAttachEvent: ./VideoTagEvent/model.js#VideoTagEventModel
