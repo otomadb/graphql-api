@@ -10,10 +10,5 @@ input SearchTagInput {
 
 type SearchTagsPayload {
   # count: Int!
-  items: [SearchTagsItem!]!
-}
-
-type SearchTagsItem {
-  matchedName: String!
-  tag: Tag!
+  items: [TagSearchResultByName!]!
 }

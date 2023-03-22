@@ -7,6 +7,7 @@ import { useDisableIntrospection } from "@graphql-yoga/plugin-disable-introspect
 import { PrismaClient } from "@prisma/client";
 import { print } from "graphql";
 import { createSchema, createYoga, useLogger, useReadinessCheck } from "graphql-yoga";
+import { MeiliSearch } from "meilisearch";
 import neo4j from "neo4j-driver";
 import { pino } from "pino";
 
@@ -43,6 +44,10 @@ const neo4jDriver = neo4j.driver(
   neo4j.auth.basic(process.env.NEO4J_USERNAME, process.env.NEO4J_PASSWORD)
 );
 
+const meilisearchClient = new MeiliSearch({
+  host: process.env.MEILISEARCH_URL,
+});
+
 const yoga = createYoga<ServerContext, UserContext>({
   graphiql: process.env.ENABLE_GRAPHIQL === "true",
   schema: createSchema({
@@ -50,6 +55,7 @@ const yoga = createYoga<ServerContext, UserContext>({
     resolvers: makeResolvers({
       neo4j: neo4jDriver,
       prisma: prismaClient,
+      meilisearch: meilisearchClient,
       logger,
       config: {
         session: {

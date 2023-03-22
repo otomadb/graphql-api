@@ -41,6 +41,7 @@ import {
 } from "./TagNameEvent/index.js";
 import { resolveTagParent } from "./TagParent/index.js";
 import { resolverTagParentConnection } from "./TagParentConnection/resolver.js";
+import { resolverTagSearchResultByName } from "./TagSearchResultByName/resolver.js";
 import { ResolverDeps } from "./types.js";
 import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
@@ -108,6 +109,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     TagParent: resolveTagParent(deps),
     TagParentConnection: resolverTagParentConnection(),
     TagRegisterEvent: resolveTagRegisterEvent(deps),
+    TagSearchResultByName: resolverTagSearchResultByName(deps),
     User: resolveUser(deps),
     Video: resolveVideo(deps),
     VideoConnection: resolverVideoConnection(),

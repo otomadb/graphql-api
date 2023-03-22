@@ -52,6 +52,7 @@ generates:
         TagParentSetPrimaryEvent: ./TagParentEvent/model.js#TagParentEventModel
         TagParentUnsetPrimaryEvent: ./TagParentEvent/model.js#TagParentEventModel
         TagRegisterEvent: ./TagEvent/model.js#TagEventModel
+        TagSearchResultByName: ./TagSearchResultByName/model.js#TagSearchResultByNameModel
         User: ./User/model.js#UserModel
         Video: ./Video/model.js#VideoModel
         VideoAddNicovideoSourceEvent: ./VideoEvent/model.js#VideoEventModel

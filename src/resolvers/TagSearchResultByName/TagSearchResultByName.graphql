@@ -1,0 +1,4 @@
+type TagSearchResultByName {
+  tag: Tag!
+  name: TagName!
+}
