@@ -22,7 +22,7 @@ import { getTag } from "./getTag/resolver.js";
 import { getUser } from "./getUser/resolver.js";
 import { getVideo } from "./getVideo/resolver.js";
 import { searchTags } from "./searchTags/resolver.js";
-import { searchVideos } from "./searchVideos/searchVideos.js";
+import { searchVideos } from "./searchVideos/resolver.js";
 import { whoami } from "./whoami/whoami.js";
 
 export const resolveQuery = (deps: ResolverDeps) =>

@@ -59,6 +59,7 @@ generates:
         VideoConnection: ./VideoConnection/model.js#VideoConnectionModel
         VideoEvent: ./VideoEvent/model.js#VideoEventModel
         VideoRegisterEvent: ./VideoEvent/model.js#VideoEventModel
+        VideoSearchResultByTitle: ./VideoSearchResultByTitle/model.js#VideoSearchResultByTitleModel
         VideoSimilarity: ./VideoSimilarity/model.js#VideoSimilarityModel
         VideoTag: ./VideoTag/model.js#VideoTagModel
         VideoTagAttachEvent: ./VideoTagEvent/model.js#VideoTagEventModel

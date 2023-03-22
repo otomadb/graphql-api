@@ -1,0 +1,4 @@
+type VideoSearchResultByTitle {
+  video: Video!
+  title: VideoTitle!
+}

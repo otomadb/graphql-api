@@ -47,6 +47,7 @@ import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
 import { resolverVideoConnection } from "./VideoConnection/resolver.js";
 import { resolveVideoEvent, resolveVideoRegisterEvent } from "./VideoEvent/index.js";
+import { resolverVideoSearchResultByTitle } from "./VideoSearchResultByTitle/resolver.js";
 import { resolveVideoSimilarity } from "./VideoSimilarity/index.js";
 import { resolveVideoTag } from "./VideoTag/index.js";
 import {
@@ -115,6 +116,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     VideoConnection: resolverVideoConnection(),
     VideoEvent: resolveVideoEvent(),
     VideoRegisterEvent: resolveVideoRegisterEvent(deps),
+    VideoSearchResultByTitle: resolverVideoSearchResultByTitle(deps),
     VideoSimilarity: resolveVideoSimilarity(deps),
     VideoTag: resolveVideoTag(deps),
     VideoTagAttachEvent: resolveVideoTagAttachEvent(deps),
