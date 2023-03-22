@@ -27,7 +27,7 @@ import { signout } from "./signout/signout.js";
 import { resolverSignup } from "./signup/resolver.js";
 import { undoLikeVideo } from "./undoLikeVideo/undoLikeVideo.js";
 
-export const resolveMutation = (deps: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "config">) =>
+export const resolveMutation = (deps: ResolverDeps) =>
   ({
     addMylistToMylistGroup: addMylistToMylistGroup(deps),
     addSemitagToVideo: addSemitagToVideo(deps),
