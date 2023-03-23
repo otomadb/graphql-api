@@ -126,12 +126,17 @@ const yoga = createYoga<ServerContext, UserContext>({
       check: async () => {
         try {
           await Promise.all([
-            prismaClient.$queryRaw`SELECT 1`.catch(async (e) => {
-              logger.error({ error: e }, "Prisma is not ready");
-              throw e;
-            }),
+            prismaClient.$queryRaw`SELECT 1`
+              .catch(async (e) => {
+                logger.warn({ error: e }, "Prisma is not ready, reconnecting.");
+                await prismaClient.$connect();
+              })
+              .catch((e) => {
+                logger.error({ error: e }, "Prisma is not ready, reconnecting failed.");
+                throw e;
+              }),
             neo4jDriver.getServerInfo().catch((e) => {
-              logger.error({ error: e }, "Neo4j is not ready");
+              logger.error({ error: e }, "Neo4j is not ready.");
               throw e;
             }),
           ]);
