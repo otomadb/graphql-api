@@ -19,17 +19,12 @@ export const findMylist = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "lo
     const mylist = await prisma.mylist.findFirst({ where: { id: parseGqlID("Mylist", id) } });
 
     if (!mylist) {
-      logger.warn({ path: info.path, args: { input: { id } }, userId: ctxUser?.id }, "Not found");
+      logger.info({ path: info.path, id, userId: ctxUser?.id }, "Not found");
       return null;
     }
     if (mylist.shareRange === MylistShareRange.PRIVATE && mylist.holderId !== ctxUser?.id) {
       logger.warn(
-        {
-          path: info.path,
-          args: { input: { id } },
-          holderId: mylist.holderId,
-          userId: ctxUser?.id,
-        },
+        { path: info.path, id, holderId: mylist.holderId, userId: ctxUser?.id },
         "Private mylist accessed by other user"
       );
       return null;

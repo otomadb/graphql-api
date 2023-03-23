@@ -20,7 +20,7 @@ export const resolverFindNicovideoRegistrationRequest = ({ prisma, logger }: Pic
         where: { id: parseGqlID("NicovideoRegistrationRequest", input.id) },
       });
       if (!req) {
-        logger.warn({ path: info.path, args: { input: unparsedInput }, userId: ctxUser?.id }, "Not found");
+        logger.info({ path: info.path, id: input.id, userId: ctxUser?.id }, "Not found");
         return null;
       }
       return new NicovideoRegistrationRequestModel(req);
@@ -29,7 +29,7 @@ export const resolverFindNicovideoRegistrationRequest = ({ prisma, logger }: Pic
         where: { sourceId: input.sourceId },
       });
       if (!req) {
-        logger.warn({ path: info.path, args: { input: unparsedInput }, userId: ctxUser?.id }, "Not found");
+        logger.info({ path: info.path, sourceId: input.sourceId, userId: ctxUser?.id }, "Not found");
         return null;
       }
       return new NicovideoRegistrationRequestModel(req);

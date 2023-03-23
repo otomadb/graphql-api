@@ -20,14 +20,14 @@ export const findVideo = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "log
     if ("id" in input) {
       const v = await prisma.video.findFirst({ where: { id: input.id } });
       if (!v) {
-        logger.warn({ path: info.path, args: { input: unparsedInput }, userId: ctxUser?.id }, "Not found");
+        logger.info({ path: info.path, id: input.id, userId: ctxUser?.id }, "Not found");
         return null;
       }
       return new VideoModel(v);
     } else {
       const v = await prisma.video.findFirst({ where: { serial: input.serial } });
       if (!v) {
-        logger.warn({ path: info.path, args: { input: unparsedInput }, userId: ctxUser?.id }, "Not found");
+        logger.info({ path: info.path, serial: input.serial, userId: ctxUser?.id }, "Not found");
         return null;
       }
       return new VideoModel(v);

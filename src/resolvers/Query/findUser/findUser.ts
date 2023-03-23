@@ -13,7 +13,7 @@ export const findUser = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logg
 
     const user = await prisma.user.findFirst({ where: { name } });
     if (!user) {
-      logger.warn({ path: info.path, args: { input: { name } }, userId: ctxUser?.id }, "Not found");
+      logger.info({ path: info.path, name, userId: ctxUser?.id }, "Not found");
       throw new GraphQLError("Not Found");
     }
 

@@ -13,7 +13,7 @@ export const findNicovideoVideoSource = ({ prisma, logger }: Pick<ResolverDeps, 
 
     const source = await prisma.nicovideoVideoSource.findFirst({ where: { sourceId } });
     if (!source) {
-      logger.warn({ path: info.path, args: { input: { sourceId } }, userId: ctxUser?.id }, "Not found");
+      logger.info({ path: info.path, sourceId, userId: ctxUser?.id }, "Not found");
       return null;
     }
 

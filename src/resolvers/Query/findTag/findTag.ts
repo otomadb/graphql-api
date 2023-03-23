@@ -20,14 +20,14 @@ export const findTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logge
     if ("id" in input) {
       const t = await prisma.tag.findFirst({ where: { id: input.id } });
       if (!t) {
-        logger.warn({ path: info.path, args: { input: unparsedInput }, userId: ctxUser?.id }, "Not found");
+        logger.info({ path: info.path, id: input.id, userId: ctxUser?.id }, "Not found");
         return null;
       }
       return new TagModel(t);
     } else {
       const t = await prisma.tag.findFirst({ where: { serial: input.serial } });
       if (!t) {
-        logger.warn({ path: info.path, args: { input: unparsedInput }, userId: ctxUser?.id }, "Not found");
+        logger.info({ path: info.path, serial: input.serial, userId: ctxUser?.id }, "Not found");
         return null;
       }
       return new TagModel(t);
