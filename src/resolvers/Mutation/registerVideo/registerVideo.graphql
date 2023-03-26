@@ -1,5 +1,5 @@
 type Mutation {
-  registerVideo(input: RegisterVideoInput!): RegisterVideoPayload!
+  registerVideo(input: RegisterVideoInput!): RegisterVideoPayload! @deprecated
 }
 
 input RegisterVideoInput {
