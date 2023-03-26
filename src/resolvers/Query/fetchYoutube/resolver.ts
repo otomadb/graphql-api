@@ -9,7 +9,7 @@ export const resolverFetchYoutube = () =>
       throw new GraphQLError("Invalid sourceId");
     }
 
-    const url = new URL(`vi/${sourceId}/maxresdefault.jpg`, "https://i.ytimg.com/");
+    const url = new URL(`vi/${sourceId}/hqdefault.jpg`, "https://i.ytimg.com/");
 
     const ok = await fetch(url.toString()).then((res) => res.ok);
     if (!ok) return { source: null };
