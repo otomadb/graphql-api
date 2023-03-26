@@ -22,6 +22,7 @@ import { getSemitag } from "./getSemitag/resolver.js";
 import { getTag } from "./getTag/resolver.js";
 import { getUser } from "./getUser/resolver.js";
 import { getVideo } from "./getVideo/resolver.js";
+import { getYoutubeVideoSource } from "./getYoutubeVideoSource/resolver.js";
 import { searchTags } from "./searchTags/resolver.js";
 import { searchVideos } from "./searchVideos/resolver.js";
 import { whoami } from "./whoami/whoami.js";
@@ -48,6 +49,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
     getTag: getTag(deps),
     getUser: getUser(deps),
     getVideo: getVideo(deps),
+    getYoutubeVideoSource: getYoutubeVideoSource(deps),
     mylist: getMylist(deps),
     mylistGroup: getMylistGroup(deps),
     nicovideoVideoSource: getNicovideoVideoSource(deps),
