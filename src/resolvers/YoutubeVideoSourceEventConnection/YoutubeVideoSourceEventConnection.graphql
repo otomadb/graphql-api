@@ -1,0 +1,11 @@
+type YoutubeVideoSourceEventConnection {
+  nodes: [YoutubeVideoSourceEvent!]!
+  edges: [YoutubeVideoSourceEventEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type YoutubeVideoSourceEventEdge {
+  cursor: String!
+  node: YoutubeVideoSourceEvent!
+}

@@ -29,7 +29,9 @@ export type NodeType =
   | "VideoThumbnail"
   | "VideoThumbnailEvent"
   | "VideoTitle"
-  | "VideoTitleEvent";
+  | "VideoTitleEvent"
+  | "YoutubeVideoSource"
+  | "YoutubeVideoSourceEvent";
 
 export const buildGqlId = (type: NodeType, dbId: string): string =>
   Buffer.from(`${type}:${dbId}`).toString("base64url");
