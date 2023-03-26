@@ -8,7 +8,7 @@ export const resolveYoutubeVideoSource = ({ prisma, logger }: Pick<ResolverDeps,
   ({
     id: ({ id }) => buildGqlId("YoutubeVideoSource", id),
     url: ({ sourceId }) => `https://www.youtube.com/watch?v=${sourceId}`,
-    embedUrl: ({ sourceId }) => `https://i.ytimg.com/vi/${sourceId}/maxresdefault.jpg`,
+    embedUrl: ({ sourceId }) => `https://www.youtube.com/embed/${sourceId}`,
     video: async ({ videoId }) =>
       prisma.video
         .findUniqueOrThrow({ where: { id: videoId } })
