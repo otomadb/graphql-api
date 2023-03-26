@@ -14,6 +14,7 @@ import { findTags } from "./findTags/findTags.js";
 import { findUser } from "./findUser/findUser.js";
 import { findVideo } from "./findVideo/findVideos.js";
 import { findVideos } from "./findVideos/findVideos.js";
+import { resolverFindYoutubeVideoSource } from "./findYoutubeVideoSource/resolver.js";
 import { getMylist } from "./getMylist/resolver.js";
 import { getMylistGroup } from "./getMylistGroup/resolver.js";
 import { getNicovideoRegistrationRequest } from "./getNicovideoRegistrationRequest/getNicovideoRegistrationRequest.js";
@@ -40,6 +41,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
     findUser: findUser(deps),
     findVideo: findVideo(deps),
     findVideos: findVideos(deps),
+    findYoutubeVideoSource: resolverFindYoutubeVideoSource(deps),
     getMylist: getMylist(deps),
     getMylistGroup: getMylistGroup(deps),
     getNicovideoRegistrationRequest: getNicovideoRegistrationRequest(deps),
