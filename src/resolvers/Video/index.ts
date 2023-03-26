@@ -9,6 +9,7 @@ import { ResolverDeps } from "../types.js";
 import { VideoEventModel } from "../VideoEvent/model.js";
 import { VideoThumbnailModel } from "../VideoThumbnail/model.js";
 import { VideoTitleModel } from "../VideoTitle/model.js";
+import { YoutubeVideoSourceModel } from "../YoutubeVideoSource/model.js";
 import { resolveSimilarVideos } from "./similarVideos.js";
 import { resolveTaggings } from "./taggings/resolver.js";
 
@@ -48,6 +49,11 @@ export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pris
       prisma.nicovideoVideoSource
         .findMany({ where: { videoId } })
         .then((ss) => ss.map((s) => new NicovideoVideoSourceModel(s))),
+
+    youtubeSources: async ({ id: videoId }) =>
+      prisma.youtubeVideoSource
+        .findMany({ where: { videoId } })
+        .then((ss) => ss.map((s) => YoutubeVideoSourceModel.fromPrisma(s))),
 
     semitags: ({ id: videoId }, { checked }) =>
       prisma.semitag
