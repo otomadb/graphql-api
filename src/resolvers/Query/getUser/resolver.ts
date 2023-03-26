@@ -11,4 +11,4 @@ export const getUser = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logge
       .catch(() => {
         logger.error({ path: info.path, args: { id }, userId: ctxUser?.id }, "Not found");
         throw new GraphQLNotExistsInDBError("User", id);
-      })) satisfies QueryResolvers["user"];
+      })) satisfies QueryResolvers["getUser"];

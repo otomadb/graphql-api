@@ -11,4 +11,4 @@ export const getVideo = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logg
       .catch(() => {
         logger.error({ path: info.path, args: { id }, userId: ctxUser?.id }, "Not found");
         throw new GraphQLNotExistsInDBError("Video", id);
-      })) satisfies QueryResolvers["video"];
+      })) satisfies QueryResolvers["getVideo"];
