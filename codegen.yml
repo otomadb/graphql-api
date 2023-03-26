@@ -77,6 +77,10 @@ generates:
         VideoTitleEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
         VideoTitleSetPrimaryEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
         VideoTitleUnsetPrimaryEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
+        YoutubeVideoSource: ./YoutubeVideoSource/model.js#YoutubeVideoSourceModel
+        YoutubeVideoSourceCreateEvent: ./YoutubeVideoSourceEvent/model.js#YoutubeVideoSourceEventModel
+        YoutubeVideoSourceEvent: ./YoutubeVideoSourceEvent/model.js#YoutubeVideoSourceEventModel
+        YoutubeVideoSourceEventConnection: ./YoutubeVideoSourceEventConnection/model.js#YoutubeVideoSourceEventConnectionModel
       makeResolverTypeCallable: true
     plugins:
       - typescript
