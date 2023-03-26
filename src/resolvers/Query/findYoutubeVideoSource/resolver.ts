@@ -11,7 +11,7 @@ export const resolverFindYoutubeVideoSource = ({ prisma, logger }: Pick<Resolver
       throw new GraphQLError("source id must be provided");
     }
 
-    const source = await prisma.nicovideoVideoSource.findFirst({ where: { sourceId } });
+    const source = await prisma.youtubeVideoSource.findFirst({ where: { sourceId } });
     if (!source) {
       logger.info({ path: info.path, args: { sourceId }, userId: ctxUser?.id }, "Not found");
       return null;
