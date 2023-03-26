@@ -16,6 +16,7 @@ import { resolverRegisterCategoryTagTyping } from "./registerCategoryTagTyping/r
 import { resolverRegisterTag } from "./registerTag/resolver.js";
 import { resolverRegisterTagParentRelation } from "./registerTagParentRelation/resolver.js";
 import { resolverRegisterVideo } from "./registerVideo/resolver.js";
+import { resolverRegisterVideoFromNicovideo } from "./registerVideoFromNicovideo/resolver.js";
 import { resolverRejectRequestNicovideoRegistration } from "./rejectNicovideoRegistrationRequest/resolver.js";
 import { rejectSemitag } from "./rejectSemitag/rejectSemitag.js";
 import { resolverRemoveTagFromVideo } from "./removeTagFromVideo/resolver.js";
@@ -43,6 +44,7 @@ export const resolveMutation = (deps: ResolverDeps) =>
     registerTag: resolverRegisterTag(deps),
     registerTagParentRelation: resolverRegisterTagParentRelation(deps),
     registerVideo: resolverRegisterVideo(deps),
+    registerVideoFromNicovideo: resolverRegisterVideoFromNicovideo(deps),
     rejectNicovideoRegistrationRequest: resolverRejectRequestNicovideoRegistration(deps),
     rejectSemitag: rejectSemitag(deps),
     removeTagFromVideo: resolverRemoveTagFromVideo(deps),
