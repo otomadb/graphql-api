@@ -70,6 +70,12 @@ import {
   resolveVideoTitleSetPrimaryEvent,
   resolveVideoTitleUnsetPrimaryEvent,
 } from "./VideoTitleEvent/index.js";
+import { resolveYoutubeVideoSource } from "./YoutubeVideoSource/resolver.js";
+import {
+  resolveYoutubeVideoSourceCreateEvent,
+  resolveYoutubeVideoSourceEvent,
+} from "./YoutubeVideoSourceEvent/resolver.js";
+import { resolverYoutubeVideoSourceEventConnection } from "./YoutubeVideoSourceEventConnection/resolver.js";
 
 export const makeResolvers = (deps: ResolverDeps) =>
   ({
@@ -133,4 +139,8 @@ export const makeResolvers = (deps: ResolverDeps) =>
     VideoTitleEvent: resolveVideoTitleEvent(),
     VideoTitleSetPrimaryEvent: resolveVideoTitleSetPrimaryEvent(deps),
     VideoTitleUnsetPrimaryEvent: resolveVideoTitleUnsetPrimaryEvent(deps),
+    YoutubeVideoSource: resolveYoutubeVideoSource(deps),
+    YoutubeVideoSourceCreateEvent: resolveYoutubeVideoSourceCreateEvent(deps),
+    YoutubeVideoSourceEvent: resolveYoutubeVideoSourceEvent(),
+    YoutubeVideoSourceEventConnection: resolverYoutubeVideoSourceEventConnection(),
   } satisfies Resolvers);
