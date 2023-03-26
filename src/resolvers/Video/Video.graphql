@@ -12,6 +12,7 @@ type Video implements Node {
   registeredAt: DateTime!
 
   nicovideoSources: [NicovideoVideoSource!]!
+  youtubeSources: [YoutubeVideoSource!]!
 
   semitags(checked: Boolean): [Semitag!]!
 
