@@ -59,7 +59,7 @@ export const register = async (
   }));
   const dataYoutubeSources = sourceIds.map((sourceId) => ({
     id: ulid(),
-    sourceId: sourceId.toLowerCase(),
+    sourceId,
   }));
 
   const [video] = await prisma.$transaction([
