@@ -6,7 +6,7 @@ import { isErr } from "../../../utils/Result.js";
 import {
   MutationResolvers,
   RegisterVideoFromNicovideoFailedMessage,
-  RegisterVideoFromNicovideoPayload,
+  ResolversTypes,
   UserRole as GraphQLUserRole,
 } from "../../graphql.js";
 import { parseGqlID3, parseGqlIDs3 } from "../../id.js";
@@ -25,7 +25,7 @@ export const resolverRegisterVideoFromNicovideo = ({
       return {
         __typename: "MutationAuthenticationError",
         requiredRole: GraphQLUserRole.User,
-      } satisfies RegisterVideoFromNicovideoPayload;
+      } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
 
     // TagのIDの妥当性及び重複チェック
     const tagIds = parseGqlIDs3("Tag", input.tagIds);
@@ -35,12 +35,12 @@ export const resolverRegisterVideoFromNicovideo = ({
           return {
             __typename: "MutationInvalidTagIdError",
             tagId: tagIds.error.type,
-          } satisfies RegisterVideoFromNicovideoPayload;
+          } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
         case "DUPLICATED":
           return {
             __typename: "RegisterVideoFromNicovideoTagIdsDuplicatedError",
             tagId: tagIds.error.duplicatedId,
-          } satisfies RegisterVideoFromNicovideoPayload;
+          } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
       }
     }
     // Semitagのnameの重複チェック
@@ -49,7 +49,7 @@ export const resolverRegisterVideoFromNicovideo = ({
       return {
         __typename: "RegisterVideoFromNicovideoSemitagNamesDuplicatedError",
         name: semitagNames.error,
-      } satisfies RegisterVideoFromNicovideoPayload;
+      } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
     }
 
     // リクエストIDのチェック
@@ -58,7 +58,7 @@ export const resolverRegisterVideoFromNicovideo = ({
       return {
         __typename: "MutationInvalidNicovideoRegistrationRequestIdError",
         requestId: nicovideoRequestId.error.invalidId,
-      } satisfies RegisterVideoFromNicovideoPayload;
+      } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
     }
 
     // ニコニコ動画の動画IDチェック
@@ -67,7 +67,7 @@ export const resolverRegisterVideoFromNicovideo = ({
         return {
           __typename: "RegisterVideoFromNicovideoInvalidNicovideoSourceIdError",
           sourceID: id,
-        } satisfies RegisterVideoFromNicovideoPayload;
+        } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
     }
 
     const result = await register(prisma, {
@@ -87,22 +87,22 @@ export const resolverRegisterVideoFromNicovideo = ({
           return {
             __typename: "MutationTagNotFoundError",
             tagId: result.error.tagId,
-          } satisfies RegisterVideoFromNicovideoPayload;
+          } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
         case "REQUEST_NOT_FOUND":
           return {
             __typename: "MutationNicovideoRegistrationRequestNotFoundError",
             requestId: result.error.requestId,
-          } satisfies RegisterVideoFromNicovideoPayload;
+          } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
         case "REQUEST_ALREADY_CHECKED":
           return {
             __typename: "MutationNicovideoRegistrationRequestAlreadyCheckedError",
             requestId: result.error.requestId,
-          } satisfies RegisterVideoFromNicovideoPayload;
+          } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
         case "INTERNAL_SERVER_ERROR":
           return {
             __typename: "RegisterVideoFromNicovideoOtherErrorsFallback",
             message: RegisterVideoFromNicovideoFailedMessage.InternalServerError,
-          } satisfies RegisterVideoFromNicovideoPayload;
+          } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
       }
     }
 
@@ -112,5 +112,5 @@ export const resolverRegisterVideoFromNicovideo = ({
     return {
       __typename: "RegisterVideoFromNicovideoSucceededPayload",
       video: new VideoModel(video),
-    };
+    } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
   }) satisfies MutationResolvers["registerVideoFromNicovideo"];
