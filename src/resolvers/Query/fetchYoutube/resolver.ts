@@ -1,11 +1,11 @@
 import { GraphQLError } from "graphql";
 
-import { isValidNicovideoSourceId } from "../../../utils/isValidNicovideoSourceId.js";
+import { isValidYoutubeSourceId } from "../../../utils/isValidYoutubeSourceId.js";
 import { QueryResolvers } from "../../graphql.js";
 
 export const resolverFetchYoutube = () =>
   (async (_parent, { sourceId }) => {
-    if (!isValidNicovideoSourceId(sourceId)) {
+    if (!isValidYoutubeSourceId(sourceId)) {
       throw new GraphQLError("Invalid sourceId");
     }
 
