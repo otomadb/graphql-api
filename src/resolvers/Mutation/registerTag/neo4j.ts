@@ -17,9 +17,9 @@ export const registerTagInNeo4j = async (
     for (const { parentId, childId, isExplicit } of parents) {
       tx.run(
         `
-        MERGE (p:Tag {id: $parent_id})
-        MERGE (c:Tag {id: $child_id})
-        MERGE r=(p)-[:CHILD {explicit: $explicit}]->(c)
+        MERGE (p:Tag {uid: $parent_id})
+        MERGE (c:Tag {uid: $child_id})
+        MERGE (p)-[r:PARENT_OF {explicit: $explicit}]->(c)
         RETURN r
         `,
         {
