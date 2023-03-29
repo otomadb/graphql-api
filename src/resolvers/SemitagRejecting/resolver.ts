@@ -10,7 +10,7 @@ export const resolverSemitagRejecting = ({ prisma }: Pick<ResolverDeps, "prisma"
     semitag: ({ semitagId }) =>
       prisma.semitag
         .findUniqueOrThrow({ where: { id: semitagId } })
-        .then((s) => new SemitagModel(s))
+        .then((s) => SemitagModel.fromPrisma(s))
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Semitag", semitagId);
         }),
