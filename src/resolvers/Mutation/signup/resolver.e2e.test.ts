@@ -1,5 +1,5 @@
 import { buildHTTPExecutor, HTTPExecutorOptions } from "@graphql-tools/executor-http";
-import { SyncExecutor } from "@graphql-tools/utils";
+import { AsyncExecutor } from "@graphql-tools/utils";
 import { PrismaClient } from "@prisma/client";
 import { parse } from "graphql";
 import { createSchema, createYoga } from "graphql-yoga";
@@ -19,7 +19,7 @@ describe("Signup", () => {
   let logger: ResolverDeps["logger"];
   let config: DeepMockProxy<ResolverDeps["config"]>;
   let meilisearch: DeepMockProxy<ResolverDeps["meilisearch"]>;
-  let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
+  let executor: AsyncExecutor<unknown, HTTPExecutorOptions>;
 
   beforeAll(async () => {
     prisma = new PrismaClient({ datasources: { db: { url: process.env.TEST_PRISMA_DATABASE_URL } } });
