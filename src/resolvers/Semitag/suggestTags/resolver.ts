@@ -1,9 +1,9 @@
 import { SemitagResolvers } from "../../graphql.js";
-import { TagSearchItemByNameModel } from "../../TagSearchItemByName/model.js";
+import { SemitagSuggestTagsItemModel } from "../../SemitagSuggestTagsItem/model.js";
 import { ResolverDeps } from "../../types.js";
 
 export const resolverSemitagSuggestTags = ({ meilisearch }: Pick<ResolverDeps, "meilisearch">) =>
-  (async ({ name }, { limit, skip }) => {
+  (async ({ dbId, name }, { limit, skip }) => {
     const index = await meilisearch.getIndex<{
       id: string;
       name: string;
@@ -15,6 +15,12 @@ export const resolverSemitagSuggestTags = ({ meilisearch }: Pick<ResolverDeps, "
       showMatchesPosition: true,
     });
     return {
-      items: hits.map(({ id, tag_id }) => TagSearchItemByNameModel.make({ nameId: id, tagId: tag_id })),
+      items: hits.map(({ id, tag_id }) =>
+        SemitagSuggestTagsItemModel.make({
+          semitagId: dbId,
+          nameId: id,
+          tagId: tag_id,
+        })
+      ),
     };
   }) satisfies SemitagResolvers["suggestTags"];

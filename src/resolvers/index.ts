@@ -29,6 +29,7 @@ import {
   resolveSemitagEventRejectEvent,
   resolveSemitagEventResolveEvent,
 } from "./SemitagEvent/index.js";
+import { resolverSemitagSuggestTagsItem } from "./SemitagSuggestTagsItem/resolver.js";
 import { resolveSession } from "./Session/index.js";
 import { resolveTag } from "./Tag/index.js";
 import { resolveTagEvent, resolveTagRegisterEvent } from "./TagEvent/index.js";
@@ -105,6 +106,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     SemitagRejecting: resolveSemitagRejecting(deps),
     SemitagResolveEvent: resolveSemitagEventResolveEvent(deps),
     SemitagResolving: resolveSemitagResolving(deps),
+    SemitagSuggestTagsItem: resolverSemitagSuggestTagsItem(deps),
     Session: resolveSession(deps),
     Tag: resolveTag(deps),
     TagEvent: resolveTagEvent(),
