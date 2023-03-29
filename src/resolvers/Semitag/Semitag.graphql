@@ -16,17 +16,6 @@ type Semitag implements Node {
 
 union SemitagChecking = SemitagResolving | SemitagRejecting
 
-type SemitagResolving {
-  note: String
-  resolveTo: VideoTag!
-  semitag: Semitag!
-}
-
-type SemitagRejecting {
-  note: String
-  semitag: Semitag!
-}
-
 input SemitagEventsInput {
   skip: Int! = 0
   limit: Int! = 10

@@ -1,10 +1,10 @@
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
 import { SemitagEventModel } from "../SemitagEvent/model.js";
+import { SemitagRejectingModel } from "../SemitagRejecting/model.js";
+import { SemitagResolvingModel } from "../SemitagResolving/model.js";
 import { ResolverDeps } from "../types.js";
 import { VideoModel } from "../Video/model.js";
-import { VideoTagModel } from "../VideoTag/model.js";
-import { SemitagModel, SemitagRejectingModel, SemitagResolvingModel } from "./model.js";
 import { resolverSemitagSuggestTags } from "./suggestTags/resolver.js";
 
 export const resolveSemitag = ({ prisma, meilisearch }: Pick<ResolverDeps, "prisma" | "meilisearch">) =>
@@ -35,40 +35,8 @@ export const resolveSemitag = ({ prisma, meilisearch }: Pick<ResolverDeps, "pris
       if (!checking) return null;
 
       const { videoTagId, note, semitagId } = checking;
-      if (!videoTagId) return new SemitagRejectingModel({ note, semitagId });
-      return new SemitagResolvingModel({ videoTagId, note, semitagId });
+      if (!videoTagId) return SemitagRejectingModel.make({ note, semitagId });
+      return SemitagResolvingModel.make({ videoTagId, note, semitagId });
     },
     suggestTags: resolverSemitagSuggestTags({ meilisearch }),
   } satisfies Resolvers["Semitag"]);
-
-export const resolveSemitagResolving = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
-  ({
-    __isTypeOf: (obj) => obj instanceof SemitagResolvingModel,
-    semitag: ({ semitagId }) =>
-      prisma.semitag
-        .findUniqueOrThrow({ where: { id: semitagId } })
-        .then((s) => new SemitagModel(s))
-        .catch(() => {
-          throw new GraphQLNotExistsInDBError("Semitag", semitagId);
-        }),
-
-    resolveTo: ({ videoTagId }) =>
-      prisma.videoTag
-        .findUniqueOrThrow({ where: { id: videoTagId } })
-        .then((s) => new VideoTagModel(s))
-        .catch(() => {
-          throw new GraphQLNotExistsInDBError("VideoTag", videoTagId);
-        }),
-  } satisfies Resolvers["SemitagResolving"]);
-
-export const resolveSemitagRejecting = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
-  ({
-    __isTypeOf: (obj) => obj instanceof SemitagRejectingModel,
-    semitag: ({ semitagId }) =>
-      prisma.semitag
-        .findUniqueOrThrow({ where: { id: semitagId } })
-        .then((s) => new SemitagModel(s))
-        .catch(() => {
-          throw new GraphQLNotExistsInDBError("Semitag", semitagId);
-        }),
-  } satisfies Resolvers["SemitagRejecting"]);
