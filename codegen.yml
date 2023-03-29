@@ -36,6 +36,7 @@ generates:
         SemitagRejectEvent: ./SemitagEvent/model.js#SemitagEventModel
         SemitagRejecting: ./SemitagRejecting/model.js#SemitagRejectingModel
         SemitagResolveEvent: ./SemitagEvent/model.js#SemitagEventModel
+        SemitagSuggestTagsItem: ./SemitagSuggestTagsItem/model.js#SemitagSuggestTagsItemModel
         SemitagResolving: ./SemitagResolving/model.js#SemitagResolvingModel
         Session: ./Session/model.js#SessionModel
         Tag: ./Tag/model.js#TagModel
