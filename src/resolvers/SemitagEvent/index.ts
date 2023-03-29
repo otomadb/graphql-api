@@ -41,7 +41,7 @@ export const resolveSemitagEventAttachEvent = ({ prisma }: Pick<ResolverDeps, "p
     semitag: ({ semitagId }) =>
       prisma.semitag
         .findUniqueOrThrow({ where: { id: semitagId } })
-        .then((v) => new SemitagModel(v))
+        .then((v) => SemitagModel.fromPrisma(v))
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Semitag", semitagId);
         }),

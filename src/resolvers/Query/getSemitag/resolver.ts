@@ -7,7 +7,7 @@ export const getSemitag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "lo
   (async (_parent, { id }, { user: ctxUser }, info) =>
     prisma.semitag
       .findUniqueOrThrow({ where: { id: parseGqlID("Semitag", id) } })
-      .then((v) => new SemitagModel(v))
+      .then((v) => SemitagModel.fromPrisma(v))
       .catch(() => {
         logger.error({ path: info.path, args: { id }, userId: ctxUser?.id }, "Not found");
         throw new GraphQLNotExistsInDBError("Semitag", id);

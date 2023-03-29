@@ -1,9 +1,9 @@
 import { Semitag } from "@prisma/client";
 
 export class SemitagModel {
-  constructor(private readonly entity: Semitag) {}
+  private constructor(private readonly entity: Semitag) {}
 
-  static fromPrisma(entity: Semitag) {
+  public static fromPrisma(entity: Semitag) {
     return new SemitagModel(entity);
   }
 

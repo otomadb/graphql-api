@@ -58,7 +58,7 @@ export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pris
     semitags: ({ id: videoId }, { checked }) =>
       prisma.semitag
         .findMany({ where: { videoId, isChecked: checked?.valueOf() } })
-        .then((semitags) => semitags.map((semitag) => new SemitagModel(semitag))),
+        .then((semitags) => semitags.map((semitag) => SemitagModel.fromPrisma(semitag))),
 
     events: async ({ id: videoId }, { input }) => {
       const nodes = await prisma.videoEvent

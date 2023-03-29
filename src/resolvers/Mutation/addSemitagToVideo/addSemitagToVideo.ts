@@ -58,6 +58,6 @@ export const addSemitagToVideo = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
 
     return {
       __typename: "AddSemitagToVideoSucceededPayload",
-      semitag: new SemitagModel(semitag),
+      semitag: SemitagModel.fromPrisma(semitag),
     };
   }) satisfies MutationResolvers["addSemitagToVideo"];
