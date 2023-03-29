@@ -18,11 +18,11 @@ import { resolverRegisterTagParentRelation } from "./registerTagParentRelation/r
 import { resolverRegisterVideoFromNicovideo } from "./registerVideoFromNicovideo/resolver.js";
 import { resolverRegisterVideoFromYoutube } from "./registerVideoFromYoutube/resolver.js";
 import { resolverRejectRequestNicovideoRegistration } from "./rejectNicovideoRegistrationRequest/resolver.js";
-import { rejectSemitag } from "./rejectSemitag/rejectSemitag.js";
+import { resolverRejectSemitag } from "./rejectSemitag/resolver.js";
 import { resolverRemoveTagFromVideo } from "./removeTagFromVideo/resolver.js";
 import { removeVideoFromMylist } from "./removeVideoFromMylist/removeVideoFromMylist.js";
 import { resolverRequestNicovideoRegistration as requestNicovideoRegistration } from "./requestNicovideoRegistration/resolver.js";
-import { resolveSemitag } from "./resolveSemitag/resolveSemitag.js";
+import { resolverResolveSemitag } from "./resolveSemitag/resolver.js";
 import { signin } from "./signin/signin.js";
 import { signout } from "./signout/signout.js";
 import { resolverSignup } from "./signup/resolver.js";
@@ -46,11 +46,11 @@ export const resolveMutation = (deps: ResolverDeps) =>
     registerVideoFromNicovideo: resolverRegisterVideoFromNicovideo(deps),
     registerVideoFromYoutube: resolverRegisterVideoFromYoutube(deps),
     rejectNicovideoRegistrationRequest: resolverRejectRequestNicovideoRegistration(deps),
-    rejectSemitag: rejectSemitag(deps),
+    rejectSemitag: resolverRejectSemitag(deps),
     removeTagFromVideo: resolverRemoveTagFromVideo(deps),
     removeVideoFromMylist: removeVideoFromMylist(deps),
     requestNicovideoRegistration: requestNicovideoRegistration(deps),
-    resovleSemitag: resolveSemitag(deps),
+    resovleSemitag: resolverResolveSemitag(deps),
     signin: signin(deps),
     signout: signout(deps),
     signup: resolverSignup(deps),

@@ -41,3 +41,8 @@ type MutationInvalidSemitagIdError {
 type MutationSemitagNotFoundError {
   semitagId: String!
 }
+
+"チェック済みのSemitagに操作を加えようとした場合のエラー"
+type MutationSemitagAlreadyCheckedError {
+  semitag: Semitag!
+}
