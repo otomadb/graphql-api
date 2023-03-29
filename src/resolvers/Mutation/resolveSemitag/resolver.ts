@@ -8,7 +8,8 @@ import {
   UserRole as GqlUserRole,
 } from "../../graphql.js";
 import { parseGqlID3 } from "../../id.js";
-import { SemitagModel, SemitagResolvingModel } from "../../Semitag/model.js";
+import { SemitagModel } from "../../Semitag/model.js";
+import { SemitagResolvingModel } from "../../SemitagResolving/model.js";
 import { ResolverDeps } from "../../types.js";
 import { VideoTagModel } from "../../VideoTag/model.js";
 import { resolve as resolveSemitagInNeo4j } from "./neo4j.js";
@@ -80,6 +81,6 @@ export const resolverResolveSemitag = ({ prisma, logger, neo4j }: Pick<ResolverD
 
     return {
       __typename: "ResolveSemitagSucceededPayload",
-      resolving: new SemitagResolvingModel(data),
+      resolving: SemitagResolvingModel.make(data),
     } satisfies ResolversTypes["ResolveSemitagReturnUnion"];
   }) satisfies MutationResolvers["resovleSemitag"];

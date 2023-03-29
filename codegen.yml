@@ -34,9 +34,9 @@ generates:
         SemitagConnection: ./SemitagConnection/model.js#SemitagConnectionModel
         SemitagEvent: ./SemitagEvent/model.js#SemitagEventModel
         SemitagRejectEvent: ./SemitagEvent/model.js#SemitagEventModel
-        SemitagRejecting: ./Semitag/model.js#SemitagRejectingModel
+        SemitagRejecting: ./SemitagRejecting/model.js#SemitagRejectingModel
         SemitagResolveEvent: ./SemitagEvent/model.js#SemitagEventModel
-        SemitagResolving: ./Semitag/model.js#SemitagResolvingModel
+        SemitagResolving: ./SemitagResolving/model.js#SemitagResolvingModel
         Session: ./Session/model.js#SessionModel
         Tag: ./Tag/model.js#TagModel
         TagEvent: ./TagEvent/model.js#TagEventModel

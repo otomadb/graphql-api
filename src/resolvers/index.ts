@@ -21,7 +21,7 @@ import {
   resolveNicovideoVideoSourceEvent,
 } from "./NicovideoVideoSourceEvent/index.js";
 import { resolveQuery } from "./Query/index.js";
-import { resolveSemitag, resolveSemitagRejecting, resolveSemitagResolving } from "./Semitag/index.js";
+import { resolveSemitag } from "./Semitag/index.js";
 import { resolverSemitagConnection } from "./SemitagConnection/resolver.js";
 import {
   resolveSemitagEvent,
@@ -29,6 +29,8 @@ import {
   resolveSemitagEventRejectEvent,
   resolveSemitagEventResolveEvent,
 } from "./SemitagEvent/index.js";
+import { resolverSemitagRejecting } from "./SemitagRejecting/resolver.js";
+import { resolverSemitagResolving } from "./SemitagResolving/resolver.js";
 import { resolveSession } from "./Session/index.js";
 import { resolveTag } from "./Tag/index.js";
 import { resolveTagEvent, resolveTagRegisterEvent } from "./TagEvent/index.js";
@@ -102,9 +104,9 @@ export const makeResolvers = (deps: ResolverDeps) =>
     SemitagConnection: resolverSemitagConnection(),
     SemitagEvent: resolveSemitagEvent(),
     SemitagRejectEvent: resolveSemitagEventRejectEvent(deps),
-    SemitagRejecting: resolveSemitagRejecting(deps),
+    SemitagRejecting: resolverSemitagRejecting(deps),
     SemitagResolveEvent: resolveSemitagEventResolveEvent(deps),
-    SemitagResolving: resolveSemitagResolving(deps),
+    SemitagResolving: resolverSemitagResolving(deps),
     Session: resolveSession(deps),
     Tag: resolveTag(deps),
     TagEvent: resolveTagEvent(),

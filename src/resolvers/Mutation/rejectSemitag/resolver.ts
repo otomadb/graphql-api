@@ -8,7 +8,8 @@ import {
   UserRole as GqlUserRole,
 } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
-import { SemitagModel, SemitagRejectingModel } from "../../Semitag/model.js";
+import { SemitagModel } from "../../Semitag/model.js";
+import { SemitagRejectingModel } from "../../SemitagRejecting/model.js";
 import { ResolverDeps } from "../../types.js";
 import { reject } from "./prisma.js";
 
@@ -53,6 +54,6 @@ export const resolverRejectSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) 
 
     return {
       __typename: "RejectSemitagSucceededPayload",
-      rejecting: new SemitagRejectingModel(result.data),
+      rejecting: SemitagRejectingModel.make(result.data),
     } satisfies ResolversTypes["RejectSemitagReturnUnion"];
   }) satisfies MutationResolvers["rejectSemitag"];
