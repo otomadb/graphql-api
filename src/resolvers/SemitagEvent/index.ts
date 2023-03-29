@@ -3,7 +3,9 @@ import { GraphQLError } from "graphql";
 
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
-import { SemitagModel, SemitagRejectingModel, SemitagResolvingModel } from "../Semitag/model.js";
+import { SemitagModel } from "../Semitag/model.js";
+import { SemitagRejectingModel } from "../SemitagRejecting/model.js";
+import { SemitagResolvingModel } from "../SemitagResolving/model.js";
 import { ResolverDeps } from "../types.js";
 import { UserModel } from "../User/model.js";
 
@@ -59,7 +61,7 @@ export const resolveSemitagEventResolveEvent = ({ prisma, logger }: Pick<Resolve
       }
 
       const { videoTagId, note } = checking;
-      return new SemitagResolvingModel({ semitagId, videoTagId, note });
+      return SemitagResolvingModel.make({ semitagId, videoTagId, note });
     },
   } satisfies Resolvers["SemitagResolveEvent"]);
 
@@ -74,6 +76,6 @@ export const resolveSemitagEventRejectEvent = ({ prisma, logger }: Pick<Resolver
       }
 
       const { note } = checking;
-      return new SemitagRejectingModel({ semitagId, note });
+      return SemitagRejectingModel.make({ semitagId, note });
     },
   } satisfies Resolvers["SemitagRejectEvent"]);
