@@ -38,7 +38,7 @@
       "rules": {}
     },
     {
-      "files": ["*.test.ts", "*.test.tsx"],
+      "files": ["*.test.ts", "*.test.tsx", "test/**/*.ts"],
       "rules": {
         "no-process-env": 0
       }

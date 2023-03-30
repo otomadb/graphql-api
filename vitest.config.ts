@@ -4,6 +4,6 @@ export default defineConfig({
   test: {
     exclude: [...defaultExclude, "**/.direnv/**"],
     threads: false,
-    setupFiles: ["./test/setup.ts"],
+    globalSetup: ["./test/globalSetup.ts"],
   },
 });
