@@ -15,7 +15,6 @@ export const findSemitags = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "
     const { orderBy: unparsedOrderBy, checked, ...unparsedConnectionArgs } = args;
     const connectionArgs = z
       .union([
-        z.object({}),
         z.object({
           first: z.number(),
           after: z.string().optional(),
@@ -24,6 +23,7 @@ export const findSemitags = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "
           last: z.number(),
           before: z.string().optional(),
         }),
+        z.object({}),
       ])
       .safeParse(unparsedConnectionArgs);
     if (!connectionArgs.success) {
