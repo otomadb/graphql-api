@@ -14,7 +14,7 @@
     "codegen": "graphql-codegen-esm",
     "codegen:watch": "graphql-codegen-esm --watch",
     "prisma:client": "prisma generate",
-    "test": "vitest",
+    "test": "PRISMA_DATABASE_URL=$TEST_PRISMA_DATABASE_URL vitest",
     "test:migration": "PRISMA_DATABASE_URL=$TEST_PRISMA_DATABASE_URL prisma migrate reset --force",
     "typecheck": "tsc --noEmit",
     "lint": "run-s 'lint:*'",
