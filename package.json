@@ -76,7 +76,6 @@
     "prisma": "4.11.0",
     "rollup": "^3.20.2",
     "ts-node": "^10.9.1",
-    "tsup": "^6.5.0",
     "typescript": "^4.9.4",
     "vitest": "^0.29.0",
     "vitest-mock-extended": "^1.0.9"

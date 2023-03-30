@@ -6,7 +6,7 @@ COPY package.json package-lock.json .npmrc ./
 RUN npm ci
 
 ## build
-COPY ./codegen.yml ./tsconfig.json tsup.config.ts ./
+COPY ./codegen.yml ./tsconfig.json rollup.config.ts ./
 COPY ./src ./src
 COPY ./prisma/schema.prisma ./prisma/schema.prisma
 COPY ./codegen-plugins ./codegen-plugins
