@@ -2,7 +2,6 @@
 /* eslint-disable no-process-env */
 import { createServer } from "node:http";
 
-import { usePrometheus } from "@envelop/prometheus";
 import { useDisableIntrospection } from "@graphql-yoga/plugin-disable-introspection";
 import { PrismaClient } from "@prisma/client";
 import { print } from "graphql";
@@ -152,12 +151,14 @@ const yoga = createYoga<ServerContext, UserContext>({
         }
       },
     }),
+    /*
     usePrometheus({
       execute: true,
       errors: true,
       requestCount: true,
       requestSummary: true,
     }),
+    */
     useLogger({
       logFn(event, data) {
         switch (event) {
