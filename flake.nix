@@ -2,17 +2,13 @@
   # main
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
     devshell = {
       url = "github:numtide/devshell";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
-    flake-utils.url = "github:numtide/flake-utils";
-    prisma-engines = {
-      url = "github:prisma/prisma-engines/4.11.0";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
+    prisma-engines.url = "github:prisma/prisma-engines/4.11.0";
   };
 
   outputs = {
@@ -36,13 +32,11 @@
             act
             actionlint
             alejandra
-            dprint
             hadolint
             nodejs-19_x
             openssl
             pgcli
             postgresql_15
-            treefmt
           ];
           env = [
             {
