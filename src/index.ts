@@ -11,9 +11,9 @@ import neo4j from "neo4j-driver";
 import { pino } from "pino";
 
 import { extractSessionFromReq, verifySession } from "./auth/session.js";
-import { typeDefs } from "./resolvers/graphql.js";
 import { makeResolvers } from "./resolvers/index.js";
 import { ServerContext, UserContext } from "./resolvers/types.js";
+import typeDefs from "./schema.graphql";
 import { extractTokenFromReq, signToken, verifyToken } from "./token.js";
 import { isErr, isOk } from "./utils/Result.js";
 
