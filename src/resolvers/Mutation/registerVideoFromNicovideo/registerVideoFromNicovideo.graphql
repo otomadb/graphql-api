@@ -26,6 +26,7 @@ union RegisterVideoFromNicovideoPayload =
   | MutationInvalidNicovideoRegistrationRequestIdError
   | MutationNicovideoRegistrationRequestAlreadyCheckedError
   | RegisterVideoFromNicovideoInvalidNicovideoSourceIdError
+  | RegisterVideoFromNicovideoSemitagTooLongError
   | RegisterVideoFromNicovideoOtherErrorsFallback
   | RegisterVideoFromNicovideoSucceededPayload
 
@@ -36,6 +37,11 @@ type RegisterVideoFromNicovideoTagIdsDuplicatedError {
 
 "仮タグの名前が重複している"
 type RegisterVideoFromNicovideoSemitagNamesDuplicatedError {
+  name: String!
+}
+
+"仮タグの名前が長過ぎる"
+type RegisterVideoFromNicovideoSemitagTooLongError {
   name: String!
 }
 
