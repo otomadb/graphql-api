@@ -24,7 +24,7 @@ describe("Mutation.registerTag e2e", () => {
   let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
 
   beforeAll(async () => {
-    prisma = new PrismaClient({ datasources: { db: { url: process.env.PRISMA_DATABASE_URL } } });
+    prisma = new PrismaClient();
     await prisma.$connect();
 
     neo4j = createNeo4jDriver(

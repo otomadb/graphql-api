@@ -10,7 +10,7 @@ describe("Get whole videos in mylist group in prisma", () => {
   let prisma: ResolverDeps["prisma"];
 
   beforeAll(async () => {
-    prisma = new PrismaClient({ datasources: { db: { url: process.env.PRISMA_DATABASE_URL } } });
+    prisma = new PrismaClient();
     await prisma.$connect();
   });
 
