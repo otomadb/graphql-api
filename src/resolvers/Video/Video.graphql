@@ -12,10 +12,9 @@ type Video implements Node {
   registeredAt: DateTime!
 
   nicovideoSources: [NicovideoVideoSource!]!
+  youtubeSources: [YoutubeVideoSource!]!
 
   semitags(checked: Boolean): [Semitag!]!
-
-  similarVideos(input: VideoSimilarVideosInput!): VideoSimilarVideosPayload!
 
   isLiked: Boolean! @deprecated
   like: MylistRegistration
@@ -24,14 +23,6 @@ type Video implements Node {
 type VideoThumbnail {
   imageUrl: String!
   primary: Boolean!
-}
-
-input VideoSimilarVideosInput {
-  limit: Int! = 10
-}
-
-type VideoSimilarVideosPayload {
-  items: [VideoSimilarity!]!
 }
 
 input VideoEventsInput {

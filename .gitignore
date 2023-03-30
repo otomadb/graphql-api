@@ -16,6 +16,7 @@ logs/
 
 # dumps
 dumps
+dump.sql
 
 # codegen
 schema.graphql

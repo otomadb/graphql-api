@@ -10,10 +10,16 @@ import {
 import { buildGqlId, parseGqlID3, parseGqlIDs3 } from "../../id.js";
 import { TagModel } from "../../Tag/model.js";
 import { ResolverDeps } from "../../types.js";
+import { addTagToMeiliSearch } from "./meilisearch.js";
 import { registerTagInNeo4j } from "./neo4j.js";
 import { register } from "./prisma.js";
 
-export const resolverRegisterTag = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+export const resolverRegisterTag = ({
+  prisma,
+  neo4j,
+  logger,
+  meilisearch,
+}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "meilisearch">) =>
   (async (_: unknown, { input }, { user }, info) => {
     if (!user || (user.role !== UserRole.EDITOR && user.role !== UserRole.ADMINISTRATOR))
       return {
@@ -106,6 +112,11 @@ export const resolverRegisterTag = ({ prisma, neo4j, logger }: Pick<ResolverDeps
     const neo4jResult = await registerTagInNeo4j({ prisma, neo4j }, tag.id);
     if (isErr(neo4jResult)) {
       logger.error({ error: neo4jResult.error, path: info.path }, "Failed to update in neo4j");
+    }
+
+    const meilisearchResult = await addTagToMeiliSearch({ prisma, meilisearch }, tag.id);
+    if (isErr(meilisearchResult)) {
+      logger.error({ error: meilisearchResult.error, path: info.path }, "Failed to add in meilisearch");
     }
 
     return {

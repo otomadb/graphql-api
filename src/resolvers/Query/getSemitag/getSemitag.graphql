@@ -1,4 +1,3 @@
 type Query {
-  semitag(id: ID!): Semitag! @deprecated
   getSemitag(id: ID!): Semitag!
 }

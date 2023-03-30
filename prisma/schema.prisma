@@ -391,7 +391,8 @@ model User {
   NicovideoRegistrationRequestCheckings NicovideoRegistrationRequestChecking[]
   NicovideoRegistrationRequestEvents    NicovideoRegistrationRequestEvent[]
 
-  CategoryTagTyping CategoryTagTyping[]
+  CategoryTagTyping       CategoryTagTyping[]
+  YoutubeVideoSourceEvent YoutubeVideoSourceEvent[]
 }
 
 enum UserRole {
@@ -414,6 +415,7 @@ model Video {
   semitags Semitag[]
 
   nicovideoSources NicovideoVideoSource[]
+  youtubeSources   YoutubeVideoSource[]
 
   mylists MylistRegistration[]
 
@@ -745,4 +747,40 @@ enum NicovideoRegistrationRequestEventType {
 
   ACCEPT
   REJECT
+}
+
+model YoutubeVideoSource {
+  id String @id @default(cuid())
+
+  sourceId String @unique @db.Citext
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  events YoutubeVideoSourceEvent[]
+
+  @@unique([sourceId, videoId])
+}
+
+model YoutubeVideoSourceEvent {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  source   YoutubeVideoSource @relation(fields: [sourceId], references: [id])
+  sourceId String
+
+  type    YoutubeVideoSourceEventType
+  payload Json
+}
+
+enum YoutubeVideoSourceEventType {
+  CREATE
 }

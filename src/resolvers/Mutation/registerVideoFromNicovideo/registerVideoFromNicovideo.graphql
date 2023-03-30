@@ -1,0 +1,59 @@
+type Mutation {
+  registerVideoFromNicovideo(input: RegisterVideoFromNicovideoInput!): RegisterVideoFromNicovideoPayload!
+}
+
+input RegisterVideoFromNicovideoInput {
+  primaryTitle: String!
+  extraTitles: [String!]! = []
+
+  primaryThumbnailUrl: String!
+
+  tagIds: [ID!]!
+  semitagNames: [String!]! = []
+
+  sourceIds: [String!]!
+
+  requestId: ID
+}
+
+union RegisterVideoFromNicovideoPayload =
+    MutationAuthenticationError
+  | MutationInvalidTagIdError
+  | MutationTagNotFoundError
+  | RegisterVideoFromNicovideoTagIdsDuplicatedError
+  | RegisterVideoFromNicovideoSemitagNamesDuplicatedError
+  | MutationNicovideoRegistrationRequestNotFoundError
+  | MutationInvalidNicovideoRegistrationRequestIdError
+  | MutationNicovideoRegistrationRequestAlreadyCheckedError
+  | RegisterVideoFromNicovideoInvalidNicovideoSourceIdError
+  | RegisterVideoFromNicovideoOtherErrorsFallback
+  | RegisterVideoFromNicovideoSucceededPayload
+
+"タグのIDが重複している"
+type RegisterVideoFromNicovideoTagIdsDuplicatedError {
+  tagId: String!
+}
+
+"仮タグの名前が重複している"
+type RegisterVideoFromNicovideoSemitagNamesDuplicatedError {
+  name: String!
+}
+
+"ニコニコ動画のソースIDとして不正な場合のエラー"
+type RegisterVideoFromNicovideoInvalidNicovideoSourceIdError {
+  sourceID: String!
+}
+
+"その他のエラー"
+type RegisterVideoFromNicovideoOtherErrorsFallback {
+  message: RegisterVideoFromNicovideoFailedMessage!
+}
+
+enum RegisterVideoFromNicovideoFailedMessage {
+  INTERNAL_SERVER_ERROR
+}
+
+"成功した場合"
+type RegisterVideoFromNicovideoSucceededPayload {
+  video: Video!
+}

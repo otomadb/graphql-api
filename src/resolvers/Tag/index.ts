@@ -8,7 +8,6 @@ import { ResolverDeps } from "../types.js";
 import { resolverChildren } from "./children/resolver.js";
 import { TagModel } from "./model.js";
 import { resolverParents } from "./parents/resolver.js";
-import { resolvePseudoType } from "./pseudoType.js";
 import { resolveTaggedVideos } from "./taggedVideos/resolver.js";
 import { resolveTagType } from "./type/resolver.js";
 
@@ -16,7 +15,6 @@ export const resolveTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "lo
   ({
     id: ({ id }): string => buildGqlId("Tag", id),
     type: resolveTagType({ prisma }),
-    pseudoType: resolvePseudoType({ prisma }),
     meaningless: ({ isCategoryTag: categoryTag }) => categoryTag,
 
     names: async ({ id: tagId }, { primary }) =>

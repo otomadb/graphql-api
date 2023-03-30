@@ -1,0 +1,14 @@
+type Query {
+  "Youtubeから動画情報を取得する"
+  fetchYoutube("Youtubeの動画ID（Q16KpquGsIcなど）" sourceId: String!): FetchYoutubePayload!
+}
+
+type FetchYoutubePayload {
+  source: YoutubeOriginalSource
+}
+
+type YoutubeOriginalSource {
+  sourceId: String!
+
+  thumbnailUrl: String!
+}

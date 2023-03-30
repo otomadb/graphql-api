@@ -35,10 +35,19 @@ export const resolveTaggings = ({ prisma, logger }: Pick<ResolverDeps, "prisma" 
       (args) =>
         prisma.videoTag.findMany({
           ...args,
-          where: { videoId },
+          where: {
+            videoId,
+            isRemoved: false,
+          },
           orderBy: { createdAt: parseOrderBy(orderBy.createdAt) },
         }),
-      () => prisma.videoTag.count({ where: { videoId } }),
+      () =>
+        prisma.videoTag.count({
+          where: {
+            videoId,
+            isRemoved: false,
+          },
+        }),
       connectionArgs.data,
       { resolveInfo: info, ...cursorOptions }
     ).then((c) => VideoTagConnectionModel.fromPrisma(c));

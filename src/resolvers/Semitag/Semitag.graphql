@@ -16,17 +16,6 @@ type Semitag implements Node {
 
 union SemitagChecking = SemitagResolving | SemitagRejecting
 
-type SemitagResolving {
-  note: String
-  resolveTo: VideoTag!
-  semitag: Semitag!
-}
-
-type SemitagRejecting {
-  note: String
-  semitag: Semitag!
-}
-
 input SemitagEventsInput {
   skip: Int! = 0
   limit: Int! = 10
@@ -40,4 +29,9 @@ type MutationInvalidSemitagIdError {
 "Semitagが見つからない場合のエラー"
 type MutationSemitagNotFoundError {
   semitagId: String!
+}
+
+"チェック済みのSemitagに操作を加えようとした場合のエラー"
+type MutationSemitagAlreadyCheckedError {
+  semitag: Semitag!
 }
