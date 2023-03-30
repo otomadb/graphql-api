@@ -23,23 +23,23 @@ const convertDuration = (
   }
 };
 
-export const resolverGenerateAccessToken = ({ token: jwt }: Pick<ResolverDeps, "token">) =>
-  (async (_parent, { input }, { user: ctxUser }) => {
+export const resolverGenerateAccessToken = ({ token }: Pick<ResolverDeps, "token">) =>
+  (async (_parent, { duration }, { user: ctxUser }) => {
     // TODO: 現状管理者だけアクセストークンが発行できる
     if (!ctxUser || ctxUser.role !== UserRole.ADMINISTRATOR) {
       return {
         __typename: "MutationAuthenticationError",
         requiredRole: GraphQLUserRole.User,
-      } as const;
+      } satisfies ResolversTypes["GenerateAccessTokenReturnUnion"];
     }
 
-    const accessToken = await jwt.sign({
+    const accessToken = await token.sign({
       userId: ctxUser.id,
-      duration: convertDuration(input.duration),
+      duration: convertDuration(duration),
     });
 
     return {
-      __typename: "GenerateAccessTokenSuccessPayload",
+      __typename: "GenerateAccessTokenSucceededPayload",
       accessToken,
-    } satisfies ResolversTypes["GenerateAccessTokenSuccessPayload"];
+    } satisfies ResolversTypes["GenerateAccessTokenReturnUnion"];
   }) satisfies MutationResolvers["generateAccessToken"];

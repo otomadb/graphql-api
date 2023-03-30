@@ -1,9 +1,5 @@
 type Mutation {
-  generateAccessToken(input: GenerateAccessTokenInput!): GenerateAccessTokenReturnUnion!
-}
-
-input GenerateAccessTokenInput {
-  duration: GenerateAccessTokenInputDuration!
+  generateAccessToken(duration: GenerateAccessTokenInputDuration!): GenerateAccessTokenReturnUnion!
 }
 
 enum GenerateAccessTokenInputDuration {
@@ -21,18 +17,18 @@ enum GenerateAccessTokenInputDuration {
 
 union GenerateAccessTokenReturnUnion =
     MutationAuthenticationError
-  | ExplicitizeTagOtherErrorsFallback
-  | GenerateAccessTokenSuccessPayload
+  | GenerateAccessTokenOtherErrorsFallback
+  | GenerateAccessTokenSucceededPayload
 
 "その他のエラー"
-type ExplicitizeTagOtherErrorsFallback {
-  message: ExplicitizeTagOtherErrorMessage!
+type GenerateAccessTokenOtherErrorsFallback {
+  message: GenerateAccessTokenOtherErrorsFallbackMessage!
 }
 
-enum ExplicitizeTagOtherErrorMessage {
+enum GenerateAccessTokenOtherErrorsFallbackMessage {
   INTERNAL_SERVER_ERROR
 }
 
-type GenerateAccessTokenSuccessPayload {
+type GenerateAccessTokenSucceededPayload {
   accessToken: String!
 }
