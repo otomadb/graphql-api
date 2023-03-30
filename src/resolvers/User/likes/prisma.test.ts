@@ -10,7 +10,7 @@ describe("Get user likes by Prisma", () => {
   let prisma: ResolverDeps["prisma"];
 
   beforeAll(async () => {
-    prisma = new PrismaClient({ datasources: { db: { url: process.env.TEST_PRISMA_DATABASE_URL } } });
+    prisma = new PrismaClient({ datasources: { db: { url: process.env.PRISMA_DATABASE_URL } } });
     await prisma.$connect();
   });
 

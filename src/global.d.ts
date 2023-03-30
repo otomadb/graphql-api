@@ -20,9 +20,9 @@ declare namespace NodeJS {
     readonly MEILISEARCH_URL: string;
 
     /* test */
-    readonly TEST_PRISMA_DATABASE_URL: string;
-    readonly TEST_NEO4J_URL: string;
-    readonly TEST_NEO4J_USERNAME: string;
-    readonly TEST_NEO4J_PASSWORD: string;
+    readonly PRISMA_DATABASE_URL: string;
+    readonly NEO4J_URL: string;
+    readonly NEO4J_USERNAME: string;
+    readonly NEO4J_PASSWORD: string;
   }
 }

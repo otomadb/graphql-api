@@ -50,10 +50,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      TEST_PRISMA_DATABASE_URL: postgres://user:pass@localhost:5432/test
-      TEST_NEO4J_URL: bolt://localhost:7687
-      TEST_NEO4J_USERNAME: neo4j
-      TEST_NEO4J_PASSWORD: password
+      PRISMA_DATABASE_URL: postgres://user:pass@localhost:5432/test
+      NEO4J_URL: bolt://localhost:7687
+      NEO4J_USERNAME: neo4j
+      NEO4J_PASSWORD: password
     services:
       postgres:
         image: postgres:15
