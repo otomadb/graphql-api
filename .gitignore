@@ -4,6 +4,8 @@ result
 
 # env
 .env
+.env.*.local
+!.env.*.local.example
 
 # VSCode
 .vscode/settings.json

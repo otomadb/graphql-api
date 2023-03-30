@@ -50,25 +50,27 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      TEST_PRISMA_DATABASE_URL: postgres://user:pass@localhost:5432/test
-      TEST_NEO4J_URL: bolt://localhost:7687
-      TEST_NEO4J_USERNAME: neo4j
-      TEST_NEO4J_PASSWORD: password
+      POSTGRES_USERNAME: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DATABASE: test
+      NEO4J_URL: bolt://localhost:7687
+      NEO4J_USERNAME: neo4j
+      NEO4J_PASSWORD: password
     services:
       postgres:
         image: postgres:15
         ports:
           - 5432:5432
         env:
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: pass
-          POSTGRES_DB: test
+          POSTGRES_USER: ${{ env.POSTGRES_USERNAME }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DATABASE }}
       neo4j:
         image: neo4j:5.5
         ports:
           - 7687:7687
         env:
-          NEO4J_AUTH: neo4j/password
+          NEO4J_AUTH: ${{ env.NEO4J_USERNAME }}/${{ env.NEO4J_PASSWORD }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -78,5 +80,9 @@ jobs:
       - run: npm ci
       - run: npm run codegen
       - run: npm run prisma:client
-      - run: npm run test:migration
       - run: npm run test
+        env:
+          PRISMA_DATABASE_URL: postgres://${{ env.POSTGRES_USERNAME }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DATABASE }}
+          NEO4J_URL: ${{ env.NEO4J_URL }}
+          NEO4J_USERNAME: ${{ env.NEO4J_USERNAME }}
+          NEO4J_PASSWORD: ${{ env.NEO4J_PASSWORD }}

@@ -38,7 +38,7 @@ const logger = pino({
   },
 });
 
-const prismaClient = new PrismaClient({ datasources: { db: { url: process.env.PRISMA_DATABASE_URL } } });
+const prismaClient = new PrismaClient();
 
 const neo4jDriver = neo4j.driver(
   process.env.NEO4J_URL,

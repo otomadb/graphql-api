@@ -11,7 +11,7 @@ describe("Add tag in Prisma", () => {
   let prisma: ResolverDeps["prisma"];
 
   beforeAll(async () => {
-    prisma = new PrismaClient({ datasources: { db: { url: process.env.TEST_PRISMA_DATABASE_URL } } });
+    prisma = new PrismaClient();
     await prisma.$connect();
   });
 
