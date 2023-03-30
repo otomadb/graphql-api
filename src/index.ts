@@ -15,6 +15,7 @@ import { extractSessionFromReq, verifySession } from "./auth/session.js";
 import { typeDefs } from "./resolvers/graphql.js";
 import { makeResolvers } from "./resolvers/index.js";
 import { ServerContext, UserContext } from "./resolvers/types.js";
+import { extractTokenFromReq, signToken, verifyToken } from "./token.js";
 import { isErr, isOk } from "./utils/Result.js";
 
 const logger = pino({
@@ -64,6 +65,7 @@ const yoga = createYoga<ServerContext, UserContext>({
           cookieSameSite: () => (process.env.ENABLE_SAME_SITE_NONE === "true" ? "none" : "strict"),
         },
       },
+      token: { sign: signToken },
     }),
   }),
   async context({ req }) {
@@ -93,21 +95,26 @@ const yoga = createYoga<ServerContext, UserContext>({
       }
     }
 
-    return { user: null } satisfies UserContext;
-
-    /* # TODO: 一旦廃止
-    // from authorization
-    const authToken = req.headers["authorization"]?.split(" ").at(1);
-    if (authToken) {
-      const session = await findSessionFromAuthzToken(prismaClient, authToken);
-      if (session)
-        return {
-          userId: session.id,
-          user: { id: session.data.user.id, role: session.data.user.role },
-        } satisfies UserContext;
+    const token = extractTokenFromReq(req);
+    if (isOk(token)) {
+      const verified = await verifyToken(token.data);
+      if (isOk(verified)) return verified.data;
+      else {
+        switch (verified.error.type) {
+          case "TOKEN_EXPIRED":
+            logger.warn("Token already expired");
+            break;
+          case "INVALID_PAYLOAD":
+            logger.error({ payload: verified.error.payload }, "Token payload is invalid");
+            break;
+          case "UNKNOWN_ERROR":
+            logger.error({ error: verified.error.error }, "Something wrong in verifing token");
+            break;
+        }
+      }
     }
-    return { userId: null } satisfies UserContext;
-    */
+
+    return { user: null } satisfies UserContext;
   },
   cors: (request) => {
     const origin = request.headers.get("origin");

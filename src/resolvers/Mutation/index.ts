@@ -10,6 +10,7 @@ import { resolverChangeMylistShareRange } from "./changeMylistShareRange/resolve
 import { createMylist } from "./createMylist/createMylist.js";
 import { createMylistGroup } from "./createMylistGroup/createMylistGroup.js";
 import { resolverExplicitizeTagParent } from "./explicitizeTagParent/resolver.js";
+import { resolverGenerateAccessToken } from "./generateAccessToken/resolver.js";
 import { likeVideo } from "./likeVideo/likeVideo.js";
 import { registerCategoryTag } from "./registerCategoryTag/resolver.js";
 import { resolverRegisterCategoryTagTyping } from "./registerCategoryTagTyping/resolver.js";
@@ -38,6 +39,7 @@ export const resolveMutation = (deps: ResolverDeps) =>
     createMylist: createMylist(deps),
     createMylistGroup: createMylistGroup(deps),
     explicitizeTagParent: resolverExplicitizeTagParent(deps),
+    generateAccessToken: resolverGenerateAccessToken(deps),
     likeVideo: likeVideo(deps),
     registerCategoryTag: registerCategoryTag(deps),
     registerCategoryTagTyping: resolverRegisterCategoryTagTyping(deps),

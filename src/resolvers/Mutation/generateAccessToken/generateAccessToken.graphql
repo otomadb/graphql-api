@@ -1,0 +1,38 @@
+type Mutation {
+  generateAccessToken(input: GenerateAccessTokenInput!): GenerateAccessTokenReturnUnion!
+}
+
+input GenerateAccessTokenInput {
+  duration: GenerateAccessTokenInputDuration!
+}
+
+enum GenerateAccessTokenInputDuration {
+  "1日"
+  ONE_DAY
+  "3日"
+  THREE_DAYS
+
+  "1週間"
+  ONE_WEEK
+
+  "1ヶ月"
+  ONE_MONTH
+}
+
+union GenerateAccessTokenReturnUnion =
+    MutationAuthenticationError
+  | ExplicitizeTagOtherErrorsFallback
+  | GenerateAccessTokenSuccessPayload
+
+"その他のエラー"
+type ExplicitizeTagOtherErrorsFallback {
+  message: ExplicitizeTagOtherErrorMessage!
+}
+
+enum ExplicitizeTagOtherErrorMessage {
+  INTERNAL_SERVER_ERROR
+}
+
+type GenerateAccessTokenSuccessPayload {
+  accessToken: String!
+}

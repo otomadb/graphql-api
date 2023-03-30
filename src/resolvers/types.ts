@@ -17,6 +17,9 @@ export type ResolverDeps = {
       cookieSameSite(): "none" | "strict";
     };
   };
+  token: {
+    sign(payload: { userId: string; duration: "1d" | "3d" | "1w" | "1m" }): string;
+  };
 };
 
 export type ServerContext = {

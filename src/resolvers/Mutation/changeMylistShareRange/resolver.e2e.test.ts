@@ -21,14 +21,14 @@ import {
 } from "../../graphql.js";
 import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
-import { ResolverDeps } from "../../types.js";
-import { ServerContext, UserContext } from "../../types.js";
+import { ResolverDeps, ServerContext, UserContext } from "../../types.js";
 
 describe("Mutation.changeMylistShareRange e2e", () => {
   let prisma: ResolverDeps["prisma"];
   let neo4j: ResolverDeps["neo4j"];
   let logger: ResolverDeps["logger"];
   let config: ResolverDeps["config"];
+  let token: DeepMockProxy<ResolverDeps["token"]>;
   let meilisearch: DeepMockProxy<ResolverDeps["meilisearch"]>;
 
   let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
@@ -42,11 +42,16 @@ describe("Mutation.changeMylistShareRange e2e", () => {
       neo4jAuth.basic(process.env.TEST_NEO4J_USERNAME, process.env.TEST_NEO4J_PASSWORD)
     );
 
+    logger = mockDeep<ResolverDeps["logger"]>();
+    config = mockDeep<ResolverDeps["config"]>();
     logger = mock<ResolverDeps["logger"]>();
-    config = mock<ResolverDeps["config"]>();
+    token = mockDeep<ResolverDeps["token"]>();
     meilisearch = mockDeep<ResolverDeps["meilisearch"]>();
 
-    const schema = createSchema({ typeDefs, resolvers: makeResolvers({ prisma, neo4j, logger, config, meilisearch }) });
+    const schema = createSchema({
+      typeDefs,
+      resolvers: makeResolvers({ prisma, neo4j, logger, config, meilisearch, token }),
+    });
     const yoga = createYoga<ServerContext, UserContext>({ schema });
     executor = buildHTTPExecutor({ fetch: yoga.fetch });
   });
