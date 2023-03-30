@@ -23,12 +23,12 @@ describe("Signup", () => {
   let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
 
   beforeAll(async () => {
-    prisma = new PrismaClient({ datasources: { db: { url: process.env.TEST_PRISMA_DATABASE_URL } } });
+    prisma = new PrismaClient();
     await prisma.$connect();
 
     neo4j = createNeo4jDriver(
-      process.env.TEST_NEO4J_URL,
-      neo4jAuth.basic(process.env.TEST_NEO4J_USERNAME, process.env.TEST_NEO4J_PASSWORD)
+      process.env.NEO4J_URL,
+      neo4jAuth.basic(process.env.NEO4J_USERNAME, process.env.NEO4J_PASSWORD)
     );
 
     logger = mockDeep<ResolverDeps["logger"]>();
