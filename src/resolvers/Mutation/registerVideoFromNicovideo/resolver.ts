@@ -43,6 +43,15 @@ export const resolverRegisterVideoFromNicovideo = ({
           } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
       }
     }
+
+    // Semitagのnameの重複チェック
+    const toolongSemitag = input.semitagNames.find((v) => 36 < v.length);
+    if (toolongSemitag)
+      return {
+        __typename: "RegisterVideoFromNicovideoSemitagTooLongError",
+        name: toolongSemitag,
+      } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
+
     // Semitagのnameの重複チェック
     const semitagNames = checkDuplicate(input.semitagNames);
     if (isErr(semitagNames)) {
