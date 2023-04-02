@@ -1,5 +1,7 @@
 scalar DateTime
 
+directive @auth(permissions: [String!]) on FIELD_DEFINITION
+
 type PageInfo {
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!

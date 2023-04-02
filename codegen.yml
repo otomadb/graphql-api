@@ -5,6 +5,8 @@ generates:
   ./schema.graphql:
     plugins:
       - schema-ast
+    config:
+      includeDirectives: true
   ./src/resolvers/graphql.ts:
     config:
       avoidOptionals:
