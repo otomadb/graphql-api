@@ -1,20 +1,26 @@
-import typescript from "@rollup/plugin-typescript";
-import terser from "@rollup/plugin-terser";
 import graphql from "@rollup/plugin-graphql";
+import terser from "@rollup/plugin-terser";
+import typescript from "@rollup/plugin-typescript";
+
+// eslint-disable-next-line no-process-env
+const isWatch = process.env.ROLLUP_WATCH;
 
 /** @type {import('rollup').RollupOptions} */
 const config = {
   input: "src/index.ts",
   output: {
-    dir: "dist",
+    file: "dist/index.mjs",
     format: "es",
   },
   plugins: [
-    graphql(),
     typescript({
       exclude: ["**/*.test.ts"],
     }),
-    terser(),
+    // nodeResolve(),
+    // commonjs(),
+    graphql(),
+    // json(),
+    ...(!isWatch ? [terser()] : []),
   ],
 };
 export default config;

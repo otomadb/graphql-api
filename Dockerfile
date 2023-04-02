@@ -5,12 +5,15 @@ WORKDIR /app
 COPY package.json package-lock.json .npmrc ./
 RUN npm ci
 
-## build
-COPY ./codegen.yml ./tsconfig.json rollup.config.ts ./
-COPY ./src ./src
 COPY ./prisma/schema.prisma ./prisma/schema.prisma
-COPY ./codegen-plugins ./codegen-plugins
-RUN npm run build
+RUN npm run prisma:client
+
+COPY ./codegen.yml ./
+COPY ./src ./src
+RUN npm run codegen
+
+COPY ./tsconfig.json rollup.config.js ./
+RUN npm run rollup:build
 
 # Runner
 FROM node:19-slim AS runner

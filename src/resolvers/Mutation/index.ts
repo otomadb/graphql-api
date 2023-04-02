@@ -24,9 +24,6 @@ import { resolverRemoveTagFromVideo } from "./removeTagFromVideo/resolver.js";
 import { removeVideoFromMylist } from "./removeVideoFromMylist/removeVideoFromMylist.js";
 import { resolverRequestNicovideoRegistration as requestNicovideoRegistration } from "./requestNicovideoRegistration/resolver.js";
 import { resolverResolveSemitag } from "./resolveSemitag/resolver.js";
-import { signin } from "./signin/signin.js";
-import { signout } from "./signout/signout.js";
-import { resolverSignup } from "./signup/resolver.js";
 import { undoLikeVideo } from "./undoLikeVideo/undoLikeVideo.js";
 
 export const resolveMutation = (deps: ResolverDeps) =>
@@ -53,8 +50,8 @@ export const resolveMutation = (deps: ResolverDeps) =>
     removeVideoFromMylist: removeVideoFromMylist(deps),
     requestNicovideoRegistration: requestNicovideoRegistration(deps),
     resovleSemitag: resolverResolveSemitag(deps),
-    signin: signin(deps),
-    signout: signout(deps),
-    signup: resolverSignup(deps),
+    // signin: signin(deps),
+    // signout: signout(deps),
+    // signup: resolverSignup(deps),
     undoLikeVideo: undoLikeVideo(deps),
   } satisfies Resolvers["Mutation"]);
