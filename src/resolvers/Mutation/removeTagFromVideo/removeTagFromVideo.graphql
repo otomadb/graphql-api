@@ -1,5 +1,5 @@
 type Mutation {
-  removeTagFromVideo(input: RemoveTagFromVideoInput!): RemoveTagFromVideoPayload!
+  removeTagFromVideo(input: RemoveTagFromVideoInput!): RemoveTagFromVideoPayload! @auth(permissions: ["remove:tagging"])
 }
 
 input RemoveTagFromVideoInput {

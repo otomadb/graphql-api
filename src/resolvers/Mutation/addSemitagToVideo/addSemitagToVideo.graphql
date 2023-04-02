@@ -1,5 +1,5 @@
 type Mutation {
-  addSemitagToVideo(input: AddSemitagToVideoInput!): AddSemitagToVideoPayload!
+  addSemitagToVideo(input: AddSemitagToVideoInput!): AddSemitagToVideoPayload! @auth(permissions: ["create:semitag"])
 }
 
 input AddSemitagToVideoInput {

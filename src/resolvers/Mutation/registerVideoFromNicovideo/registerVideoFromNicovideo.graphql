@@ -1,5 +1,6 @@
 type Mutation {
   registerVideoFromNicovideo(input: RegisterVideoFromNicovideoInput!): RegisterVideoFromNicovideoPayload!
+    @auth(permissions: ["create:video_source"])
 }
 
 input RegisterVideoFromNicovideoInput {

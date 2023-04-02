@@ -1,5 +1,5 @@
 type Mutation {
-  resovleSemitag(semitagId: ID!, tagId: ID!): ResolveSemitagReturnUnion! @auth(permissions: ["semitag:check"])
+  resovleSemitag(semitagId: ID!, tagId: ID!): ResolveSemitagReturnUnion! @auth(permissions: ["check:semitag"])
 }
 
 union ResolveSemitagReturnUnion =

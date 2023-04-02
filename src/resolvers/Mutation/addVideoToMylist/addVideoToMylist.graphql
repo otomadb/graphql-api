@@ -1,5 +1,6 @@
 type Mutation {
   addVideoToMylist(input: AddVideoToMylistInput!): AddVideoToMylistReturnUnion!
+    @auth(permissions: ["update:mylist_registration"])
 }
 
 input AddVideoToMylistInput {
