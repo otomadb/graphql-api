@@ -18,7 +18,7 @@
     "lint:eslint": "eslint . --ext \".js,.jsx,.ts,.tsx\"",
     "lint:eslint:report": "npm run lint:eslint -- --format json --output-file .eslint-report.json",
     "lint:prettier": "prettier --check \"./**/*.{js,mjs,ts,json,yml,md,graphql}\"",
-    "lint:graphql-schema-linter": "graphql-schema-linter ./schema.graphql",
+    "lint:graphql-schema-linter": "graphql-schema-linter ./src/schema.graphql",
     "lint:graphql-schema-linter:report": "npm run --silent lint:graphql-schema-linter -- --format json  > .graphql-schema-linter-report.json",
     "lintfix": "run-s 'lintfix:*' 'fmt'",
     "lintfix:eslint": "npm run lint:eslint -- --fix",
