@@ -12,11 +12,6 @@ export const extractTokenFromReq = (req: IncomingMessage): Result<{ type: "NO_TO
   return ok(token);
 };
 
-export const signToken = ({ userId, duration }: { userId: string; duration: "1d" | "3d" | "1w" | "1m" }) => {
-  // eslint-disable-next-line no-process-env
-  return jwt.sign({ sub: userId }, process.env.JWT_SECRET, { expiresIn: duration });
-};
-
 export const verifyToken = async (
   token: string
 ): Promise<
