@@ -2,7 +2,6 @@
 /* eslint-disable no-process-env */
 import { createServer } from "node:http";
 
-import { usePrometheus } from "@envelop/prometheus";
 import { useDisableIntrospection } from "@graphql-yoga/plugin-disable-introspection";
 import { PrismaClient } from "@prisma/client";
 import { print } from "graphql";
@@ -12,9 +11,9 @@ import neo4j from "neo4j-driver";
 import { pino } from "pino";
 
 import { extractSessionFromReq, verifySession } from "./auth/session.js";
-import { typeDefs } from "./resolvers/graphql.js";
 import { makeResolvers } from "./resolvers/index.js";
 import { ServerContext, UserContext } from "./resolvers/types.js";
+import typeDefs from "./schema.graphql";
 import { extractTokenFromReq, signToken, verifyToken } from "./token.js";
 import { isErr, isOk } from "./utils/Result.js";
 
@@ -152,12 +151,14 @@ const yoga = createYoga<ServerContext, UserContext>({
         }
       },
     }),
+    /*
     usePrometheus({
       execute: true,
       errors: true,
       requestCount: true,
       requestSummary: true,
     }),
+    */
     useLogger({
       logFn(event, data) {
         switch (event) {
