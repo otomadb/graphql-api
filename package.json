@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "run-p 'codegen:watch' 'rollup:watch' 'nodemon'",
-    "nodemon": "nodemon -w dist dist/index.js",
+    "nodemon": "nodemon -w dist dist/index.mjs",
     "rollup:build": "rollup --config ./rollup.config.js",
     "rollup:watch": "rollup --config ./rollup.config.js --watch",
     "codegen": "graphql-codegen-esm",
