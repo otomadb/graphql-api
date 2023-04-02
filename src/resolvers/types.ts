@@ -31,6 +31,7 @@ export type UserContext = {
   user: {
     id: User["id"];
     role: User["role"];
+    permissions: string[];
   } | null;
 };
 

@@ -84,9 +84,23 @@ const yoga = createYoga<ServerContext, UserContext>({
           else res(decoded);
         })
       );
-      if (decoded && typeof decoded.payload === "object" && "sub" in decoded.payload) {
-        const sub = decoded.payload.sub;
-        if (sub) return { user: { id: sub, role: UserRole.NORMAL } } satisfies UserContext;
+      if (decoded && typeof decoded.payload === "object") {
+        const {
+          "sub": userId,
+          "st-perm": { v: permissions },
+        } = decoded.payload;
+
+        if (!userId) {
+          logger.error({ payload: decoded.payload }, "Invalid token payload");
+        } else {
+          return {
+            user: {
+              id: userId,
+              role: UserRole.NORMAL, // TODO: 削除
+              permissions: permissions || [],
+            },
+          } satisfies UserContext;
+        }
       }
     }
 
