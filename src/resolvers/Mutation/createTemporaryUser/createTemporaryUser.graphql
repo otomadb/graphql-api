@@ -1,0 +1,14 @@
+type Mutation {
+  createTemporaryUser(input: CreateTemporaryUserInput!): CreateTemporaryUserReturnUnion!
+}
+
+input CreateTemporaryUserInput {
+  alias: String!
+  displayName: String!
+}
+
+union CreateTemporaryUserReturnUnion = CreateTemporaryUserSucceededPayload
+
+type CreateTemporaryUserSucceededPayload {
+  id: ID!
+}
