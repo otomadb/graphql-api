@@ -4,19 +4,26 @@ import { createServer } from "node:http";
 
 import { usePrometheus } from "@envelop/prometheus";
 import { useDisableIntrospection } from "@graphql-yoga/plugin-disable-introspection";
-import { PrismaClient } from "@prisma/client";
-import { print } from "graphql";
+import { PrismaClient, UserRole } from "@prisma/client";
 import { createSchema, createYoga, useLogger, useReadinessCheck } from "graphql-yoga";
+import { GetPublicKeyOrSecret, Jwt } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+import createJwksClient from "jwks-rsa";
 import { MeiliSearch } from "meilisearch";
 import neo4j from "neo4j-driver";
 import { pino } from "pino";
 
-import { extractSessionFromReq, verifySession } from "./auth/session.js";
 import { typeDefs } from "./resolvers/graphql.js";
 import { makeResolvers } from "./resolvers/index.js";
 import { ServerContext, UserContext } from "./resolvers/types.js";
-import { extractTokenFromReq, signToken, verifyToken } from "./token.js";
-import { isErr, isOk } from "./utils/Result.js";
+import { extractTokenFromReq, signToken } from "./token.js";
+import { isOk } from "./utils/Result.js";
+
+const jwksClient = createJwksClient({ jwksUri: "http://localhost:3000/api/auth/jwt/jwks.json" });
+const getPublicKey: GetPublicKeyOrSecret = async (header, callback) => {
+  const key = await jwksClient.getSigningKey();
+  callback(null, key.getPublicKey());
+};
 
 const logger = pino({
   transport: {
@@ -69,6 +76,21 @@ const yoga = createYoga<ServerContext, UserContext>({
     }),
   }),
   async context({ req }) {
+    const token = extractTokenFromReq(req);
+    if (isOk(token)) {
+      const decoded = await new Promise<Jwt | undefined>((res, rej) =>
+        jwt.verify(token.data, getPublicKey, { complete: true }, (err, decoded) => {
+          if (err) return rej(err);
+          else res(decoded);
+        })
+      );
+      if (decoded && typeof decoded.payload === "object" && "sub" in decoded.payload) {
+        const sub = decoded.payload.sub;
+        if (sub) return { user: { id: sub, role: UserRole.NORMAL } } satisfies UserContext;
+      }
+    }
+
+    /*
     // from cookie
     const resultExtractSession = extractSessionFromReq(req, "otomadb_session");
     if (isErr(resultExtractSession)) {
@@ -114,6 +136,7 @@ const yoga = createYoga<ServerContext, UserContext>({
       }
     }
 
+    */
     return { user: null } satisfies UserContext;
   },
   cors: (request) => {
@@ -164,7 +187,7 @@ const yoga = createYoga<ServerContext, UserContext>({
           case "execute-end":
             logger.info(
               {
-                query: print(data.args.document),
+                // query: print(data.args.document),
                 operation: data.args.operationName,
                 variables: data.args.variableValues || {},
                 user: data.args.contextValue.user,
