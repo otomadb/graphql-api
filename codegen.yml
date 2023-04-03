@@ -2,9 +2,11 @@
 schema:
   - ./src/resolvers/**/*.graphql
 generates:
-  ./schema.graphql:
+  ./src/schema.graphql:
     plugins:
       - schema-ast
+    config:
+      includeDirectives: true
   ./src/resolvers/graphql.ts:
     config:
       avoidOptionals:
@@ -86,4 +88,3 @@ generates:
     plugins:
       - typescript
       - typescript-resolvers
-      - "./codegen-plugins/typedefs.mjs"

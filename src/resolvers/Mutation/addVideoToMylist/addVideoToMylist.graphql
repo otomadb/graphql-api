@@ -1,5 +1,6 @@
 type Mutation {
   addVideoToMylist(input: AddVideoToMylistInput!): AddVideoToMylistReturnUnion!
+    @auth(permissions: ["update:mylist_registration"])
 }
 
 input AddVideoToMylistInput {
@@ -9,8 +10,7 @@ input AddVideoToMylistInput {
 }
 
 union AddVideoToMylistReturnUnion =
-    MutationAuthenticationError
-  | MutationInvalidMylistIdError
+    MutationInvalidMylistIdError
   | MutationInvalidVideoIdError
   | MutationVideoNotFoundError
   | MutationMylistNotFoundError

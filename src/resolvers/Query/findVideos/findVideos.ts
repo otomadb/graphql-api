@@ -9,7 +9,7 @@ import { ResolverDeps } from "../../types.js";
 import { VideoConnectionModel } from "../../VideoConnection/model.js";
 
 export const findVideos = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  ((_parent, { orderBy, ...unparsedConnectionArgs }, { user: ctxUser }, info) => {
+  ((_parent, { orderBy, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([
         z.object({

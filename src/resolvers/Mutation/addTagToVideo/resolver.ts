@@ -1,5 +1,3 @@
-import { UserRole } from "@prisma/client";
-
 import { isErr } from "../../../utils/Result.js";
 import { AddTagToVideoFailedMessage, MutationResolvers } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
@@ -10,13 +8,7 @@ import { addTagToVideoInNeo4j } from "./neo4j.js";
 import { add } from "./prisma.js";
 
 export const resolverAddTagToVideo = ({ neo4j, prisma, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
-  (async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { user }, info) => {
-    if (!user || (user?.role !== UserRole.EDITOR && user?.role !== UserRole.ADMINISTRATOR))
-      return {
-        __typename: "AddTagToVideoFailedPayload",
-        message: AddTagToVideoFailedMessage.Forbidden,
-      };
-
+  (async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { currentUser: user }, info) => {
     const videoId = parseGqlID2("Video", videoGqlId);
     if (isErr(videoId))
       return {

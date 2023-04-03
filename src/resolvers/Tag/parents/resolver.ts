@@ -9,7 +9,7 @@ import { TagParentConnectionModel } from "../../TagParentConnection/model.js";
 import { ResolverDeps } from "../../types.js";
 
 export const resolverParents = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async ({ id: tagId }, { orderBy, categoryTag, ...unparsedConnectionArgs }, { user: ctxUser }, info) => {
+  (async ({ id: tagId }, { orderBy, categoryTag, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([
         z.object({}), // 全取得を許容

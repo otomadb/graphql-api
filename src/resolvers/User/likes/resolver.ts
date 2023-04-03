@@ -5,7 +5,7 @@ import { ResolverDeps } from "../../types.js";
 import { get } from "./prisma.js";
 
 export const resolverUserLikes = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
-  (async ({ id: userId }, _args, { user }) => {
+  (async ({ id: userId }, _args, { currentUser: user }) => {
     const result = await get(prisma, { holderId: userId, authUserId: user?.id || null });
 
     if (isErr(result))

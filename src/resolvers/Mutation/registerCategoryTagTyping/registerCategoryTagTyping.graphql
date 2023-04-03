@@ -1,5 +1,6 @@
 type Mutation {
   registerCategoryTagTyping(input: RegisterCategoryTagTypingInput!): RegisterCategoryTagTypingResultUnion!
+    @auth(permissions: ["create:tag_type"])
 }
 
 input RegisterCategoryTagTypingInput {
@@ -8,8 +9,7 @@ input RegisterCategoryTagTypingInput {
 }
 
 union RegisterCategoryTagTypingResultUnion =
-    MutationAuthenticationError
-  | MutationInvalidTagIdError
+    MutationInvalidTagIdError
   | MutationTagNotFoundError
   | RegisterCategoryTagTypingUnsupportedTagType
   | RegisterCategoryTagTypingAlreadyTypeExistsError

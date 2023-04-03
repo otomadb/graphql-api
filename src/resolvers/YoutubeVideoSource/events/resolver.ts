@@ -11,7 +11,7 @@ import { ResolverDeps } from "../../types.js";
 import { YoutubeVideoSourceEventConnectionModel } from "../../YoutubeVideoSourceEventConnection/model.js";
 
 export const resolveYoutubeVideoSourceEvents = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async ({ id }, { orderBy: unparsedOrderBy, ...unparsedConnectionArgs }, { user: ctxUser }, info) => {
+  (async ({ id }, { orderBy: unparsedOrderBy, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([
         z.object({

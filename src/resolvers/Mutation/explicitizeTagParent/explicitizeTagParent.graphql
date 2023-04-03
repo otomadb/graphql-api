@@ -1,6 +1,7 @@
 type Mutation {
   "非明示的なタグの親子関係を明示的に昇格する"
   explicitizeTagParent(input: ExplicitizeTagParentInput!): ExplicitizeTagParentReturnUnion!
+    @auth(permissions: ["edit:tag"])
 }
 
 input ExplicitizeTagParentInput {
@@ -9,8 +10,7 @@ input ExplicitizeTagParentInput {
 }
 
 union ExplicitizeTagParentReturnUnion =
-    MutationAuthenticationError
-  | MutationInvalidTagParentIdError
+    MutationInvalidTagParentIdError
   | MutationTagParentNotFoundError
   | ExplicitizeTagAlreadyExplicitError
   | ExplicitizeTagOtherErrorsFallback

@@ -4,7 +4,7 @@ import { ResolverDeps } from "../../types.js";
 import { YoutubeVideoSourceModel } from "../../YoutubeVideoSource/model.js";
 
 export const getYoutubeVideoSource = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { id }, { user: ctxUser }, info) =>
+  (async (_parent, { id }, { currentUser: ctxUser }, info) =>
     prisma.youtubeVideoSource
       .findUniqueOrThrow({ where: { id: parseGqlID("YoutubeVideoSource", id) } })
       .then((v) => YoutubeVideoSourceModel.fromPrisma(v))

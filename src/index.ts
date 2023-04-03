@@ -2,20 +2,32 @@
 /* eslint-disable no-process-env */
 import { createServer } from "node:http";
 
-import { usePrometheus } from "@envelop/prometheus";
+import { ResolveUserFn, useGenericAuth, ValidateUserFn } from "@envelop/generic-auth";
 import { useDisableIntrospection } from "@graphql-yoga/plugin-disable-introspection";
 import { PrismaClient } from "@prisma/client";
-import { print } from "graphql";
+import { ListValueNode, StringValueNode } from "graphql";
 import { createSchema, createYoga, useLogger, useReadinessCheck } from "graphql-yoga";
+import jwt, { GetPublicKeyOrSecret, Jwt } from "jsonwebtoken";
+import createJwksClient from "jwks-rsa";
 import { MeiliSearch } from "meilisearch";
 import neo4j from "neo4j-driver";
 import { pino } from "pino";
+import z from "zod";
 
-import { typeDefs } from "./resolvers/graphql.js";
 import { makeResolvers } from "./resolvers/index.js";
-import { ServerContext, UserContext } from "./resolvers/types.js";
+import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
+import typeDefs from "./schema.graphql";
+import { extractTokenFromReq } from "./token.js";
+import { isOk } from "./utils/Result.js";
+
+const jwksClient = createJwksClient({ jwksUri: "http://localhost:3000/api/auth/jwt/jwks.json" }); // TODO: 環境変数に直す
+const getPublicKey: GetPublicKeyOrSecret = async (header, callback) => {
+  const key = await jwksClient.getSigningKey();
+  callback(null, key.getPublicKey());
+};
 
 const logger = pino({
+  level: process.env.NODE_ENV === "production" ? "info" : "trace",
   transport: {
     targets: [
       {
@@ -57,9 +69,6 @@ const yoga = createYoga<ServerContext, UserContext>({
       logger,
     }),
   }),
-  async context({ req }) {
-    return { user: null } satisfies UserContext;
-  },
   cors: (request) => {
     const origin = request.headers.get("origin");
     return {
@@ -68,6 +77,50 @@ const yoga = createYoga<ServerContext, UserContext>({
     };
   },
   plugins: [
+    useGenericAuth({
+      mode: "protect-granular",
+      resolveUserFn: (async (ctx) => {
+        const token = extractTokenFromReq(ctx.req);
+        if (isOk(token)) {
+          const decoded = await new Promise<Jwt | undefined>((res, rej) =>
+            jwt.verify(token.data, getPublicKey, { complete: true }, (err, decoded) => {
+              if (err) return rej(err);
+              else res(decoded);
+            })
+          );
+          const payload = z
+            .object({ "sub": z.string(), "st-perm": z.object({ v: z.array(z.string()) }) })
+            .safeParse(decoded?.payload);
+          if (!payload.success) {
+            logger.error({ error: payload.error }, "Unexpected token payload");
+            return null;
+          }
+          const {
+            "st-perm": { v: permissions },
+            "sub": userId,
+          } = payload.data;
+          logger.trace(payload.data);
+          return {
+            id: userId,
+            role: "NORMAL", // TODO: 削除
+            permissions: permissions || [],
+          };
+        }
+        return null;
+      }) satisfies ResolveUserFn<CurrentUser, ServerContext>,
+      validateUser: (({ user, fieldAuthDirectiveNode }) => {
+        const valueNode = fieldAuthDirectiveNode?.arguments?.find((arg) => arg.name.value === "permissions")?.value as
+          | ListValueNode
+          | undefined;
+        const requirePermissions = valueNode?.values.map((v) => (v as StringValueNode).value) || [];
+        const missingPermission = requirePermissions.find((p) => !user?.permissions.includes(p));
+        if (missingPermission) {
+          logger.error({ user, missingPermission }, "Missing permission");
+          throw new Error(`Missing permission: ${missingPermission}`);
+        }
+        return;
+      }) satisfies ValidateUserFn<CurrentUser>,
+    }),
     useDisableIntrospection({
       isDisabled() {
         return false; // TODO: 何かしら認証を入れる
@@ -96,19 +149,21 @@ const yoga = createYoga<ServerContext, UserContext>({
         }
       },
     }),
+    /*
     usePrometheus({
       execute: true,
       errors: true,
       requestCount: true,
       requestSummary: true,
     }),
+    */
     useLogger({
       logFn(event, data) {
         switch (event) {
           case "execute-end":
             logger.info(
               {
-                query: print(data.args.document),
+                // query: print(data.args.document),
                 operation: data.args.operationName,
                 variables: data.args.variableValues || {},
                 user: data.args.contextValue.user,

@@ -7,6 +7,7 @@ import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { DeepMockProxy, mock, mockDeep, mockReset } from "vitest-mock-extended";
 
+import typeDefs from "../../../schema.graphql";
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import {
   MutationAuthenticationError,
@@ -14,7 +15,6 @@ import {
   NicovideoRegistrationRequest,
   RejectNicovideoRegistrationRequestRequestAlreadyCheckedError,
   RejectNicovideoRegistrationRequestSucceededPayload,
-  typeDefs,
   User,
   UserRole as GraphQLUserRole,
 } from "../../graphql.js";
@@ -127,7 +127,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
           note: "a",
         },
       },
-      context: { user: null } satisfies UserContext,
+      context: { currentUser: null } satisfies UserContext,
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -216,7 +216,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
           note: "a",
         },
       },
-      context: { user: { id: "u2", role: UserRole.NORMAL } } satisfies UserContext,
+      context: { currentUser: { id: "u2", role: UserRole.NORMAL } } satisfies UserContext,
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -305,7 +305,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
           note: "a",
         },
       },
-      context: { user: { id: "u2", role: UserRole.EDITOR } } satisfies UserContext,
+      context: { currentUser: { id: "u2", role: UserRole.EDITOR } } satisfies UserContext,
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -384,7 +384,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
           note: "a",
         },
       },
-      context: { user: { id: "u2", role: UserRole.EDITOR } } satisfies UserContext,
+      context: { currentUser: { id: "u2", role: UserRole.EDITOR } } satisfies UserContext,
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -473,7 +473,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
           note: "a",
         },
       },
-      context: { user: { id: "u2", role: UserRole.EDITOR } } satisfies UserContext,
+      context: { currentUser: { id: "u2", role: UserRole.EDITOR } } satisfies UserContext,
     });
 
     expect(requestResult.data).toStrictEqual({

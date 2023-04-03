@@ -14,7 +14,7 @@ export const resolveUser = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "l
     likes: resolverUserLikes({ prisma }),
     nicovideoRegistrationRequests: resolverUserNicovideoRegistrationRequests({ prisma, logger }),
 
-    mylist: async ({ id: userId }, { id: gqlMylistId }, { user: ctxUser }) => {
+    mylist: async ({ id: userId }, { id: gqlMylistId }, { currentUser: ctxUser }) => {
       const mylist = await prisma.mylist.findFirst({ where: { id: parseGqlID("Mylist", gqlMylistId) } });
 
       if (!mylist) return null;

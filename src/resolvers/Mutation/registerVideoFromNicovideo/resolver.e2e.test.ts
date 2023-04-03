@@ -5,11 +5,8 @@ import { createSchema, createYoga } from "graphql-yoga";
 import { beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { DeepMockProxy, mockDeep, mockReset } from "vitest-mock-extended";
 
-import {
-  RegisterVideoFromNicovideoInput,
-  RegisterVideoFromNicovideoSemitagTooLongError,
-  typeDefs,
-} from "../../graphql.js";
+import typeDefs from "../../../schema.graphql";
+import { RegisterVideoFromNicovideoInput, RegisterVideoFromNicovideoSemitagTooLongError } from "../../graphql.js";
 import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
 import { ResolverDeps, ServerContext, UserContext } from "../../types.js";
@@ -63,7 +60,7 @@ describe("Mutation.registerVideoFromNicovideo e2e", () => {
           }
         `),
         variables: { input },
-        context: { user: { id: "u1", role: "EDITOR" } } satisfies UserContext,
+        context: { currentUser: { id: "u1", role: "EDITOR" } } satisfies UserContext,
       });
 
       expect(requestResult.data.registerVideoFromNicovideo).toStrictEqual(expected);

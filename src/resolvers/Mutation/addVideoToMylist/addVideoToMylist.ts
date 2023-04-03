@@ -2,14 +2,12 @@ import { isErr } from "../../../utils/Result.js";
 import {
   AddVideoToMylistOtherErrorMessage,
   AddVideoToMylistOtherErrorsFallback,
-  MutationAuthenticationError,
   MutationInvalidMylistIdError,
   MutationInvalidVideoIdError,
   MutationMylistNotFoundError,
   MutationResolvers,
   MutationVideoNotFoundError,
   MutationWrongMylistHolderError,
-  UserRole as GraphQLUserRole,
 } from "../../graphql.js";
 import { buildGqlId, parseGqlID3 } from "../../id.js";
 import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
@@ -18,13 +16,7 @@ import { add } from "./add.js";
 import { addVideoToMylistInNeo4j } from "./neo4j.js";
 
 export const addVideoToMylist = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
-  (async (_parent, { input: { mylistId: mylistGqlId, note, videoId: videoGqlId } }, { user: ctxUser }, info) => {
-    if (!ctxUser?.id)
-      return {
-        __typename: "MutationAuthenticationError",
-        requiredRole: GraphQLUserRole.User,
-      } satisfies MutationAuthenticationError;
-
+  (async (_parent, { input: { mylistId: mylistGqlId, note, videoId: videoGqlId } }, { currentUser: ctxUser }, info) => {
     const mylistId = parseGqlID3("Mylist", mylistGqlId);
     if (isErr(mylistId))
       return {

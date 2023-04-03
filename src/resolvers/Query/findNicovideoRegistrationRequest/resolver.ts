@@ -7,7 +7,7 @@ import { NicovideoRegistrationRequestModel } from "../../NicovideoRegistrationRe
 import { ResolverDeps } from "../../types.js";
 
 export const resolverFindNicovideoRegistrationRequest = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_, { input: unparsedInput }, { user: ctxUser }, info) => {
+  (async (_, { input: unparsedInput }, { currentUser: ctxUser }, info) => {
     const parsed = z.union([z.object({ id: z.string() }), z.object({ sourceId: z.string() })]).safeParse(unparsedInput);
     if (!parsed.success) {
       logger.error({ path: info.path, args: { input: unparsedInput }, userId: ctxUser?.id }, "Invalid input");

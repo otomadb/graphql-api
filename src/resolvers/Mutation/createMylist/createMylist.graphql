@@ -1,5 +1,5 @@
 type Mutation {
-  createMylist(input: CreateMylistInput!): CreateMylistReturnUnion!
+  createMylist(input: CreateMylistInput!): CreateMylistReturnUnion! @auth(permissions: ["create:mylist"])
 }
 
 input CreateMylistInput {
@@ -7,10 +7,7 @@ input CreateMylistInput {
   range: MylistShareRange!
 }
 
-union CreateMylistReturnUnion =
-    MutationAuthenticationError
-  | CreateMylistOtherErrorsFallback
-  | CreateMylistSucceededPayload
+union CreateMylistReturnUnion = CreateMylistOtherErrorsFallback | CreateMylistSucceededPayload
 
 "その他のエラー"
 type CreateMylistOtherErrorsFallback {

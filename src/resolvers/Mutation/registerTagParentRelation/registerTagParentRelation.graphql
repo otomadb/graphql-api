@@ -1,5 +1,6 @@
 type Mutation {
   registerTagParentRelation(input: RegisterTagParentRelationInput!): RegisterTagParentRelationResultUnion!
+    @auth(permissions: ["edit:tag"])
 }
 
 input RegisterTagParentRelationInput {
@@ -9,8 +10,7 @@ input RegisterTagParentRelationInput {
 }
 
 union RegisterTagParentRelationResultUnion =
-    MutationAuthenticationError
-  | MutationInvalidTagIdError
+    MutationInvalidTagIdError
   | MutationTagNotFoundError
   | RegisterTagParentRelationRelationAlreadyRegisteredError
   | RegisterTagParentRelationChildTagAlreadyHadExplicitParentError

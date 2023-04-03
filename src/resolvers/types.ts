@@ -11,17 +11,18 @@ export type ResolverDeps = {
   meilisearch: MeiliSearch;
   logger: Logger;
 };
-
 export type ServerContext = {
   req: IncomingMessage;
   res: ServerResponse;
 };
 
+export type CurrentUser = {
+  id: User["id"];
+  role: User["role"];
+  permissions: string[];
+};
 export type UserContext = {
-  user: {
-    id: User["id"];
-    role: User["role"];
-  } | null;
+  currentUser: CurrentUser;
 };
 
-export type Context = UserContext & ServerContext;
+export type Context = ServerContext & UserContext;
