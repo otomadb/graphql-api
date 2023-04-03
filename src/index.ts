@@ -4,25 +4,19 @@ import { createServer } from "node:http";
 
 import { ResolveUserFn, useGenericAuth, ValidateUserFn } from "@envelop/generic-auth";
 import { useDisableIntrospection } from "@graphql-yoga/plugin-disable-introspection";
-import { PrismaClient } from "@prisma/client";
 import { PrismaClient, UserRole } from "@prisma/client";
 import { ListValueNode, StringValueNode } from "graphql";
 import { createSchema, createYoga, useLogger, useReadinessCheck } from "graphql-yoga";
-import { GetPublicKeyOrSecret, Jwt } from "jsonwebtoken";
-import jwt from "jsonwebtoken";
+import jwt, { GetPublicKeyOrSecret, Jwt } from "jsonwebtoken";
 import createJwksClient from "jwks-rsa";
 import { MeiliSearch } from "meilisearch";
 import neo4j from "neo4j-driver";
 import { pino } from "pino";
 
 import { makeResolvers } from "./resolvers/index.js";
-import { makeResolvers } from "./resolvers/index.js";
 import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
-import { ServerContext, UserContext } from "./resolvers/types.js";
 import typeDefs from "./schema.graphql";
 import { extractTokenFromReq, signToken } from "./token.js";
-import { extractTokenFromReq, signToken } from "./token.js";
-import { isOk } from "./utils/Result.js";
 import { isOk } from "./utils/Result.js";
 
 const jwksClient = createJwksClient({ jwksUri: "http://localhost:3000/api/auth/jwt/jwks.json" });
