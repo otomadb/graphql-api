@@ -14,7 +14,7 @@ export const resolverRemoveTagFromVideo = ({
   neo4j,
   logger,
 }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
-  (async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { user }, info) => {
+  (async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { currentUser: user }, info) => {
     if (!user || (user?.role !== UserRole.EDITOR && user?.role !== UserRole.ADMINISTRATOR))
       return {
         __typename: "RemoveTagFromVideoFailedPayload",

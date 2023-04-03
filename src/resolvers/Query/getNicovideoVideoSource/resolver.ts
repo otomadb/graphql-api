@@ -4,7 +4,7 @@ import { NicovideoVideoSourceModel } from "../../NicovideoVideoSource/model.js";
 import { ResolverDeps } from "../../types.js";
 
 export const getNicovideoVideoSource = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { id }, { user: ctxUser }, info) =>
+  (async (_parent, { id }, { currentUser: ctxUser }, info) =>
     prisma.nicovideoVideoSource
       .findUniqueOrThrow({ where: { id: parseGqlID("NicovideoVideoSource", id) } })
       .then((v) => new NicovideoVideoSourceModel(v))

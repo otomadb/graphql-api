@@ -60,7 +60,7 @@ describe("Mutation.registerVideoFromNicovideo e2e", () => {
           }
         `),
         variables: { input },
-        context: { user: { id: "u1", role: "EDITOR" } } satisfies UserContext,
+        context: { currentUser: { id: "u1", role: "EDITOR" } } satisfies UserContext,
       });
 
       expect(requestResult.data.registerVideoFromNicovideo).toStrictEqual(expected);

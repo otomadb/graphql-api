@@ -20,7 +20,7 @@ export const resolverRegisterVideoFromYoutube = ({
   logger,
   neo4j,
 }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
-  (async (_parent, { input }, { user }) => {
+  (async (_parent, { input }, { currentUser: user }) => {
     if (!user || (user.role !== UserRole.EDITOR && user.role !== UserRole.ADMINISTRATOR))
       return {
         __typename: "MutationAuthenticationError",

@@ -4,7 +4,7 @@ import { SemitagModel } from "../../Semitag/model.js";
 import { ResolverDeps } from "../../types.js";
 
 export const getSemitag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { id }, { user: ctxUser }, info) =>
+  (async (_parent, { id }, { currentUser: ctxUser }, info) =>
     prisma.semitag
       .findUniqueOrThrow({ where: { id: parseGqlID("Semitag", id) } })
       .then((v) => SemitagModel.fromPrisma(v))

@@ -163,7 +163,7 @@ describe("Mutation.registerTag e2e", () => {
       `),
       variables: { input },
       context: {
-        user: { id: "u1", role: "EDITOR", permissions: ["create:tag"] },
+        currentUser: { id: "u1", role: "EDITOR", permissions: ["create:tag"] },
       } satisfies UserContext,
     });
 

@@ -5,7 +5,7 @@ import { ResolverDeps } from "../../types.js";
 import { UserModel } from "../../User/model.js";
 
 export const findUser = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { input: { name } }, { user: ctxUser }, info) => {
+  (async (_parent, { input: { name } }, { currentUser: ctxUser }, info) => {
     if (!name) {
       logger.error({ path: info.path, args: { input: { name } }, userId: ctxUser?.id }, "Invalid input");
       throw new GraphQLError("name must be provided"); // TODO: error messsage

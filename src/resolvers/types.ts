@@ -34,7 +34,7 @@ export type CurrentUser = {
 };
 
 export type UserContext = {
-  user: CurrentUser | null;
+  currentUser: CurrentUser | null;
 };
 
 export type Context = UserContext & ServerContext;

@@ -40,7 +40,7 @@ export const remove = async (
 };
 
 export const removeVideoFromMylist = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
-  (async (_, { input: { mylistId: mylistGqlId, videoId: videoGqlId } }, { user }, info) => {
+  (async (_, { input: { mylistId: mylistGqlId, videoId: videoGqlId } }, { currentUser: user }, info) => {
     if (!user)
       return {
         __typename: "RemoveVideoFromMylistFailedPayload",

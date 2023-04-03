@@ -14,7 +14,7 @@ import { ResolverDeps } from "../../types.js";
 import { update } from "./prisma.js";
 
 export const resolverChangeMylistShareRange = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { input: { mylistId: mylistGqlId, range } }, { user: ctxUser }, info) => {
+  (async (_parent, { input: { mylistId: mylistGqlId, range } }, { currentUser: ctxUser }, info) => {
     if (!ctxUser)
       return {
         __typename: "MutationAuthenticationError",

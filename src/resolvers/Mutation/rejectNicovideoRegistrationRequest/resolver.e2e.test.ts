@@ -132,7 +132,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
           note: "a",
         },
       },
-      context: { user: null } satisfies UserContext,
+      context: { currentUser: null } satisfies UserContext,
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -221,7 +221,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
           note: "a",
         },
       },
-      context: { user: { id: "u2", role: UserRole.NORMAL } } satisfies UserContext,
+      context: { currentUser: { id: "u2", role: UserRole.NORMAL } } satisfies UserContext,
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -310,7 +310,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
           note: "a",
         },
       },
-      context: { user: { id: "u2", role: UserRole.EDITOR } } satisfies UserContext,
+      context: { currentUser: { id: "u2", role: UserRole.EDITOR } } satisfies UserContext,
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -389,7 +389,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
           note: "a",
         },
       },
-      context: { user: { id: "u2", role: UserRole.EDITOR } } satisfies UserContext,
+      context: { currentUser: { id: "u2", role: UserRole.EDITOR } } satisfies UserContext,
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -478,7 +478,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
           note: "a",
         },
       },
-      context: { user: { id: "u2", role: UserRole.EDITOR } } satisfies UserContext,
+      context: { currentUser: { id: "u2", role: UserRole.EDITOR } } satisfies UserContext,
     });
 
     expect(requestResult.data).toStrictEqual({

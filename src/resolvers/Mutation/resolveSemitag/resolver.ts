@@ -16,7 +16,7 @@ import { resolve as resolveSemitagInNeo4j } from "./neo4j.js";
 import { resolve } from "./prisma.js";
 
 export const resolverResolveSemitag = ({ prisma, logger, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
-  (async (_, { semitagId: semitagGqlId, tagId: tagGqlId }, { user }, info) => {
+  (async (_, { semitagId: semitagGqlId, tagId: tagGqlId }, { currentUser: user }, info) => {
     if (!user || (user?.role !== UserRole.EDITOR && user?.role !== UserRole.ADMINISTRATOR))
       return {
         __typename: "MutationAuthenticationError",

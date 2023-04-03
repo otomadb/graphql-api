@@ -177,7 +177,7 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
           ],
         },
       },
-      context: { user: { id: "u1", role: UserRole.NORMAL } } satisfies UserContext,
+      context: { currentUser: { id: "u1", role: UserRole.NORMAL } } satisfies UserContext,
     });
 
     expect(requestResult.data).toStrictEqual({

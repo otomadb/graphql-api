@@ -24,7 +24,7 @@ const convertDuration = (
 };
 
 export const resolverGenerateAccessToken = ({ token }: Pick<ResolverDeps, "token">) =>
-  (async (_parent, { duration }, { user: ctxUser }) => {
+  (async (_parent, { duration }, { currentUser: ctxUser }) => {
     // TODO: 現状管理者だけアクセストークンが発行できる
     if (!ctxUser || ctxUser.role !== UserRole.ADMINISTRATOR) {
       return {

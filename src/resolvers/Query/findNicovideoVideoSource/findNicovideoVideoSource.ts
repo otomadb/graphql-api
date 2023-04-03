@@ -5,7 +5,7 @@ import { NicovideoVideoSourceModel } from "../../NicovideoVideoSource/model.js";
 import { ResolverDeps } from "../../types.js";
 
 export const findNicovideoVideoSource = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_, { input: { sourceId } }, { user: ctxUser }, info) => {
+  (async (_, { input: { sourceId } }, { currentUser: ctxUser }, info) => {
     if (!sourceId) {
       logger.error({ path: info.path, args: { input: { sourceId } }, userId: ctxUser?.id }, "Invalid input");
       throw new GraphQLError("source id must be provided"); // TODO: error messsage

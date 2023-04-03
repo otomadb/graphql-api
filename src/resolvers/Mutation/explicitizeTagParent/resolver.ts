@@ -12,7 +12,7 @@ import { ResolverDeps } from "../../types.js";
 import { explicitize } from "./prisma.js";
 
 export const resolverExplicitizeTagParent = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { input: { relationId: relationGqlId } }, { user: ctxUser }, info) => {
+  (async (_parent, { input: { relationId: relationGqlId } }, { currentUser: ctxUser }, info) => {
     if (!ctxUser || (ctxUser.role !== UserRole.EDITOR && ctxUser.role !== UserRole.ADMINISTRATOR))
       return {
         __typename: "MutationAuthenticationError",

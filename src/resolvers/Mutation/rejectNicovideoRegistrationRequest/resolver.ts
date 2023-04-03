@@ -19,7 +19,7 @@ export const resolverRejectRequestNicovideoRegistration = ({
   prisma,
   logger,
 }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_, { input: { requestId: requestGqlId, note } }, { user }, info) => {
+  (async (_, { input: { requestId: requestGqlId, note } }, { currentUser: user }, info) => {
     if (!user || (user.role !== UserRole.EDITOR && user.role !== UserRole.ADMINISTRATOR))
       return {
         __typename: "MutationAuthenticationError",

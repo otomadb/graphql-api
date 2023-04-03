@@ -11,7 +11,7 @@ import { SemitagConnectionModel } from "../../SemitagConnection/model.js";
 import { ResolverDeps } from "../../types.js";
 
 export const findSemitags = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, args, { user: ctxUser }, info) => {
+  (async (_parent, args, { currentUser: ctxUser }, info) => {
     const { orderBy: unparsedOrderBy, checked, ...unparsedConnectionArgs } = args;
     const connectionArgs = z
       .union([

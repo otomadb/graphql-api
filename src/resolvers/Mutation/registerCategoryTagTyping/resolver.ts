@@ -37,7 +37,7 @@ const convertTagType = (g: GqlTagType): Result<GqlTagType, CategoryTagType> => {
 };
 
 export const resolverRegisterCategoryTagTyping = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_: unknown, { input }, { user }, info) => {
+  (async (_: unknown, { input }, { currentUser: user }, info) => {
     if (!user || user.role !== UserRole.ADMINISTRATOR)
       return {
         __typename: "MutationAuthenticationError",

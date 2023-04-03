@@ -5,7 +5,7 @@ import { ResolverDeps } from "../../types.js";
 import { create } from "./create.js";
 
 export const createMylist = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { input: { title, range } }, { user: ctxUser }, info) => {
+  (async (_parent, { input: { title, range } }, { currentUser: ctxUser }, info) => {
     if (!ctxUser)
       return {
         __typename: "MutationAuthenticationError",

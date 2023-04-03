@@ -4,7 +4,7 @@ import { ResolverDeps } from "../../types.js";
 import { UserModel } from "../../User/model.js";
 
 export const getUser = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { id }, { user: ctxUser }, info) =>
+  (async (_parent, { id }, { currentUser: ctxUser }, info) =>
     prisma.user
       .findUniqueOrThrow({ where: { id: parseGqlID("User", id) } })
       .then((v) => new UserModel(v))

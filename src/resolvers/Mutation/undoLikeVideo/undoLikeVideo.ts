@@ -39,7 +39,7 @@ export const undo = async (
 };
 
 export const undoLikeVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
-  (async (_, { input: { videoId: videoGqlId } }, { user }, info) => {
+  (async (_, { input: { videoId: videoGqlId } }, { currentUser: user }, info) => {
     if (!user) return { __typename: "UndoLikeVideoFailedPayload", message: UndoLikeVideoFailedMessage.Forbidden };
 
     const videoId = parseGqlID2("Video", videoGqlId);

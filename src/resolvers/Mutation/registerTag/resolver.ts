@@ -20,7 +20,7 @@ export const resolverRegisterTag = ({
   logger,
   meilisearch,
 }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "meilisearch">) =>
-  (async (_: unknown, { input }, { user }, info) => {
+  (async (_: unknown, { input }, { currentUser: user }, info) => {
     if (!user || (user.role !== UserRole.EDITOR && user.role !== UserRole.ADMINISTRATOR))
       return {
         __typename: "MutationAuthenticationError",

@@ -58,7 +58,7 @@ export const like = async (
 };
 
 export const likeVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
-  (async (_parent, { input: { videoId: videoGqlId } }, { user }, info) => {
+  (async (_parent, { input: { videoId: videoGqlId } }, { currentUser: user }, info) => {
     if (!user)
       return {
         __typename: "LikeVideoFailedPayload",

@@ -14,7 +14,7 @@ import { ResolverDeps } from "../../types.js";
 import { reject } from "./prisma.js";
 
 export const resolverRejectSemitag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
-  (async (_, { semitagId: semitagGqlId }, { user }) => {
+  (async (_, { semitagId: semitagGqlId }, { currentUser: user }) => {
     if (!user || (user?.role !== UserRole.EDITOR && user?.role !== UserRole.ADMINISTRATOR))
       return {
         __typename: "MutationAuthenticationError",

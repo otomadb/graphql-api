@@ -18,7 +18,7 @@ import { add } from "./add.js";
 import { addVideoToMylistInNeo4j } from "./neo4j.js";
 
 export const addVideoToMylist = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
-  (async (_parent, { input: { mylistId: mylistGqlId, note, videoId: videoGqlId } }, { user: ctxUser }, info) => {
+  (async (_parent, { input: { mylistId: mylistGqlId, note, videoId: videoGqlId } }, { currentUser: ctxUser }, info) => {
     if (!ctxUser?.id)
       return {
         __typename: "MutationAuthenticationError",
