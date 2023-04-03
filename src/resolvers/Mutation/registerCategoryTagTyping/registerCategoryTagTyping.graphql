@@ -9,8 +9,7 @@ input RegisterCategoryTagTypingInput {
 }
 
 union RegisterCategoryTagTypingResultUnion =
-    MutationAuthenticationError
-  | MutationInvalidTagIdError
+    MutationInvalidTagIdError
   | MutationTagNotFoundError
   | RegisterCategoryTagTypingUnsupportedTagType
   | RegisterCategoryTagTypingAlreadyTypeExistsError

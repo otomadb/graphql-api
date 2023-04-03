@@ -3,8 +3,7 @@ type Mutation {
 }
 
 union ResolveSemitagReturnUnion =
-    MutationAuthenticationError
-  | MutationInvalidTagIdError
+    MutationInvalidTagIdError
   | MutationTagNotFoundError
   | MutationInvalidSemitagIdError
   | MutationSemitagNotFoundError

@@ -21,7 +21,6 @@ export type ResolverDeps = {
     sign(payload: { userId: string; duration: "1d" | "3d" | "1w" | "1m" }): string;
   };
 };
-
 export type ServerContext = {
   req: IncomingMessage;
   res: ServerResponse;
@@ -32,9 +31,8 @@ export type CurrentUser = {
   role: User["role"];
   permissions: string[];
 };
-
 export type UserContext = {
-  currentUser: CurrentUser | null;
+  currentUser: CurrentUser;
 };
 
-export type Context = UserContext & ServerContext;
+export type Context = ServerContext & UserContext;

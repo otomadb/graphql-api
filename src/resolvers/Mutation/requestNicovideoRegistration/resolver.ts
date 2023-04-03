@@ -1,11 +1,9 @@
 import { isErr } from "../../../utils/Result.js";
 import {
-  MutationAuthenticationError,
   MutationInvalidTagIdError,
   MutationResolvers,
   RequestNicovideoRegistrationOtherErrorMessage,
   RequestNicovideoRegistrationOtherErrorsFallback,
-  UserRole as GraphQLUserRole,
 } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { NicovideoRegistrationRequestModel } from "../../NicovideoRegistrationRequest/model.js";
@@ -20,12 +18,6 @@ export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<Re
     { currentUser: user },
     info
   ) => {
-    if (!user)
-      return {
-        __typename: "MutationAuthenticationError",
-        requiredRole: GraphQLUserRole.User,
-      } satisfies MutationAuthenticationError;
-
     const taggings: { tagId: string; note: string | null }[] = [];
     for (const { tagId, note } of gqlTaggings) {
       const parsed = parseGqlID2("Tag", tagId);

@@ -7,10 +7,7 @@ input CreateMylistInput {
   range: MylistShareRange!
 }
 
-union CreateMylistReturnUnion =
-    MutationAuthenticationError
-  | CreateMylistOtherErrorsFallback
-  | CreateMylistSucceededPayload
+union CreateMylistReturnUnion = CreateMylistOtherErrorsFallback | CreateMylistSucceededPayload
 
 "その他のエラー"
 type CreateMylistOtherErrorsFallback {

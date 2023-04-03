@@ -1,14 +1,7 @@
-import { UserRole } from "@prisma/client";
-
 import { checkDuplicate } from "../../../utils/checkDuplicate.js";
 import { isValidNicovideoSourceId } from "../../../utils/isValidNicovideoSourceId.js";
 import { isErr } from "../../../utils/Result.js";
-import {
-  MutationResolvers,
-  RegisterVideoFromNicovideoFailedMessage,
-  ResolversTypes,
-  UserRole as GraphQLUserRole,
-} from "../../graphql.js";
+import { MutationResolvers, RegisterVideoFromNicovideoFailedMessage, ResolversTypes } from "../../graphql.js";
 import { parseGqlID3, parseGqlIDs3 } from "../../id.js";
 import { ResolverDeps } from "../../types.js";
 import { VideoModel } from "../../Video/model.js";
@@ -21,12 +14,6 @@ export const resolverRegisterVideoFromNicovideo = ({
   neo4j,
 }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
   (async (_parent, { input }, { currentUser: user }) => {
-    if (!user || (user.role !== UserRole.EDITOR && user.role !== UserRole.ADMINISTRATOR))
-      return {
-        __typename: "MutationAuthenticationError",
-        requiredRole: GraphQLUserRole.User,
-      } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
-
     // TagのIDの妥当性及び重複チェック
     const tagIds = parseGqlIDs3("Tag", input.tagIds);
     if (isErr(tagIds)) {

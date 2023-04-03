@@ -24,8 +24,7 @@ input RequestNicovideoRegistrationInputSemitagging {
 }
 
 union RequestNicovideoRegistrationReturnUnion =
-    MutationAuthenticationError
-  | MutationInvalidTagIdError
+    MutationInvalidTagIdError
   | MutationTagNotFoundError
   | RequestNicovideoRegistrationVideoAlreadyRegisteredError
   | RequestNicovideoRegistrationOtherErrorsFallback

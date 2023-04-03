@@ -7,10 +7,7 @@ input RegisterCategoryTagInput {
   primaryName: String!
 }
 
-union RegisterCategoryTagResultUnion =
-    MutationAuthenticationError
-  | RegisterCategoryTagOtherErrorsFallback
-  | RegisterCategoryTagSucceededPayload
+union RegisterCategoryTagResultUnion = RegisterCategoryTagOtherErrorsFallback | RegisterCategoryTagSucceededPayload
 
 "その他のエラー"
 type RegisterCategoryTagOtherErrorsFallback {

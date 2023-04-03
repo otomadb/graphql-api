@@ -12,9 +12,10 @@ import createJwksClient from "jwks-rsa";
 import { MeiliSearch } from "meilisearch";
 import neo4j from "neo4j-driver";
 import { pino } from "pino";
+import z from "zod";
 
 import { makeResolvers } from "./resolvers/index.js";
-import { Context, CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
+import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
 import typeDefs from "./schema.graphql";
 import { extractTokenFromReq, signToken } from "./token.js";
 import { isOk } from "./utils/Result.js";
@@ -26,6 +27,7 @@ const getPublicKey: GetPublicKeyOrSecret = async (header, callback) => {
 };
 
 const logger = pino({
+  level: process.env.NODE_ENV === "production" ? "info" : "trace",
   transport: {
     targets: [
       {
@@ -101,19 +103,19 @@ const yoga = createYoga<ServerContext, UserContext>({
             logger.error({ error: payload.error }, "Unexpected token payload");
             return null;
           }
-            const {
-              "st-perm": { v: permissions },
+          const {
+            "st-perm": { v: permissions },
             "sub": userId,
           } = payload.data;
           logger.trace(payload.data);
-              return {
-                id: userId,
-                role: "NORMAL", // TODO: 削除
-                permissions: permissions || [],
-              };
+          return {
+            id: userId,
+            role: "NORMAL", // TODO: 削除
+            permissions: permissions || [],
+          };
         }
         return null;
-      }) satisfies ResolveUserFn<CurrentUser, Context>,
+      }) satisfies ResolveUserFn<CurrentUser, ServerContext>,
       validateUser: (({ user, fieldAuthDirectiveNode }) => {
         const valueNode = fieldAuthDirectiveNode?.arguments?.find((arg) => arg.name.value === "permissions")?.value as
           | ListValueNode
@@ -121,6 +123,7 @@ const yoga = createYoga<ServerContext, UserContext>({
         const requirePermissions = valueNode?.values.map((v) => (v as StringValueNode).value) || [];
         const missingPermission = requirePermissions.find((p) => !user?.permissions.includes(p));
         if (missingPermission) {
+          logger.error({ user, missingPermission }, "Missing permission");
           throw new Error(`Missing permission: ${missingPermission}`);
         }
         return;

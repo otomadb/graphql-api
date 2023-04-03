@@ -10,8 +10,7 @@ input RegisterTagParentRelationInput {
 }
 
 union RegisterTagParentRelationResultUnion =
-    MutationAuthenticationError
-  | MutationInvalidTagIdError
+    MutationInvalidTagIdError
   | MutationTagNotFoundError
   | RegisterTagParentRelationRelationAlreadyRegisteredError
   | RegisterTagParentRelationChildTagAlreadyHadExplicitParentError

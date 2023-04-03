@@ -15,10 +15,7 @@ enum GenerateAccessTokenInputDuration {
   ONE_MONTH
 }
 
-union GenerateAccessTokenReturnUnion =
-    MutationAuthenticationError
-  | GenerateAccessTokenOtherErrorsFallback
-  | GenerateAccessTokenSucceededPayload
+union GenerateAccessTokenReturnUnion = GenerateAccessTokenOtherErrorsFallback | GenerateAccessTokenSucceededPayload
 
 "その他のエラー"
 type GenerateAccessTokenOtherErrorsFallback {

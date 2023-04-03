@@ -1,11 +1,4 @@
-import { UserRole } from "@prisma/client";
-
-import {
-  GenerateAccessTokenInputDuration,
-  MutationResolvers,
-  ResolversTypes,
-  UserRole as GraphQLUserRole,
-} from "../../graphql.js";
+import { GenerateAccessTokenInputDuration, MutationResolvers, ResolversTypes } from "../../graphql.js";
 import { ResolverDeps } from "../../types.js";
 
 const convertDuration = (
@@ -25,14 +18,6 @@ const convertDuration = (
 
 export const resolverGenerateAccessToken = ({ token }: Pick<ResolverDeps, "token">) =>
   (async (_parent, { duration }, { currentUser: ctxUser }) => {
-    // TODO: 現状管理者だけアクセストークンが発行できる
-    if (!ctxUser || ctxUser.role !== UserRole.ADMINISTRATOR) {
-      return {
-        __typename: "MutationAuthenticationError",
-        requiredRole: GraphQLUserRole.User,
-      } satisfies ResolversTypes["GenerateAccessTokenReturnUnion"];
-    }
-
     const accessToken = await token.sign({
       userId: ctxUser.id,
       duration: convertDuration(duration),

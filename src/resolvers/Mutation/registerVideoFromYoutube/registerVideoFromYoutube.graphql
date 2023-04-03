@@ -16,8 +16,7 @@ input RegisterVideoFromYoutubeInput {
 }
 
 union RegisterVideoFromYoutubePayload =
-    MutationAuthenticationError
-  | MutationInvalidTagIdError
+    MutationInvalidTagIdError
   | MutationTagNotFoundError
   | RegisterVideoFromYoutubeTagIdsDuplicatedError
   | RegisterVideoFromYoutubeSemitagNamesDuplicatedError # | MutationYoutubeRegistrationRequestNotFoundError | MutationInvalidYoutubeRegistrationRequestIdError | MutationYoutubeRegistrationRequestAlreadyCheckedError

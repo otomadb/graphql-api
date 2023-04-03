@@ -35,7 +35,7 @@ export const verifyToken = async (
 
     const { sub } = parsed.data;
     return ok({
-      user: {
+      currentUser: {
         id: sub,
         role: UserRole.ADMINISTRATOR, // TODO: 全然嘘だけど一旦これで
         permissions: [],

@@ -10,8 +10,7 @@ input ImplicitizeTagParentInput {
 }
 
 union ImplicitizeTagParentReturnUnion =
-    MutationAuthenticationError
-  | MutationInvalidTagParentIdError
+    MutationInvalidTagParentIdError
   | MutationTagParentNotFoundError
   | ImplicitizeTagAlreadyImplicitError
   | ImplicitizeTagOtherErrorsFallback

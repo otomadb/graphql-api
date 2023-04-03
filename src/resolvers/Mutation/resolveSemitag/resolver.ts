@@ -1,12 +1,5 @@
-import { UserRole } from "@prisma/client";
-
 import { isErr } from "../../../utils/Result.js";
-import {
-  MutationResolvers,
-  ResolversTypes,
-  ResolveSemitagOtherErrorsFallbackMessage,
-  UserRole as GqlUserRole,
-} from "../../graphql.js";
+import { MutationResolvers, ResolversTypes, ResolveSemitagOtherErrorsFallbackMessage } from "../../graphql.js";
 import { parseGqlID3 } from "../../id.js";
 import { SemitagModel } from "../../Semitag/model.js";
 import { SemitagResolvingModel } from "../../SemitagResolving/model.js";
@@ -17,12 +10,6 @@ import { resolve } from "./prisma.js";
 
 export const resolverResolveSemitag = ({ prisma, logger, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
   (async (_, { semitagId: semitagGqlId, tagId: tagGqlId }, { currentUser: user }, info) => {
-    if (!user || (user?.role !== UserRole.EDITOR && user?.role !== UserRole.ADMINISTRATOR))
-      return {
-        __typename: "MutationAuthenticationError",
-        requiredRole: GqlUserRole.Editor,
-      } satisfies ResolversTypes["ResolveSemitagReturnUnion"];
-
     const semitagId = parseGqlID3("Semitag", semitagGqlId);
     if (isErr(semitagId))
       return {

@@ -2,11 +2,9 @@ import { isErr } from "../../../utils/Result.js";
 import {
   ChangeMylistShareRangeOtherErrorMessage,
   ChangeMylistShareRangeOtherErrorsFallback,
-  MutationAuthenticationError,
   MutationMylistNotFoundError,
   MutationResolvers,
   MutationWrongMylistHolderError,
-  UserRole as GraphQLUserRole,
 } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { MylistModel } from "../../Mylist/model.js";
@@ -15,12 +13,6 @@ import { update } from "./prisma.js";
 
 export const resolverChangeMylistShareRange = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async (_parent, { input: { mylistId: mylistGqlId, range } }, { currentUser: ctxUser }, info) => {
-    if (!ctxUser)
-      return {
-        __typename: "MutationAuthenticationError",
-        requiredRole: GraphQLUserRole.User,
-      } satisfies MutationAuthenticationError;
-
     const mylistId = parseGqlID2("Mylist", mylistGqlId);
     if (isErr(mylistId)) {
       return {

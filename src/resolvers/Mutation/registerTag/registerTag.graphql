@@ -13,8 +13,7 @@ input RegisterTagInput {
 }
 
 union RegisterTagReturnUnion =
-    MutationAuthenticationError
-  | MutationInvalidTagIdError
+    MutationInvalidTagIdError
   | MutationTagNotFoundError
   | MutationInvalidSemitagIdError
   | MutationSemitagNotFoundError
