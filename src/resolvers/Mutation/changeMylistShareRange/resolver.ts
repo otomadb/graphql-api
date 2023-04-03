@@ -12,7 +12,7 @@ import { ResolverDeps } from "../../types.js";
 import { update } from "./prisma.js";
 
 export const resolverChangeMylistShareRange = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { input: { mylistId: mylistGqlId, range } }, { currentUser: ctxUser }, info) => {
+  (async (_parent, { input: { mylistId: mylistGqlId, range } }, { currentUser }, info) => {
     const mylistId = parseGqlID2("Mylist", mylistGqlId);
     if (isErr(mylistId)) {
       return {
@@ -21,7 +21,7 @@ export const resolverChangeMylistShareRange = ({ prisma, logger }: Pick<Resolver
       };
     }
 
-    const result = await update(prisma, { mylistId: mylistId.data, userId: ctxUser.id, range });
+    const result = await update(prisma, { mylistId: mylistId.data, userId: currentUser.id, range });
     if (isErr(result)) {
       switch (result.error.message) {
         case "MYLIST_NOT_FOUND":

@@ -9,12 +9,7 @@ import { DeepMockProxy, mock, mockDeep, mockReset } from "vitest-mock-extended";
 
 import typeDefs from "../../../schema.graphql";
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import {
-  MutationAuthenticationError,
-  NicovideoRegistrationRequest,
-  RequestNicovideoRegistrationSucceededPayload,
-  UserRole as GraphQLUserRole,
-} from "../../graphql.js";
+import { NicovideoRegistrationRequest, RequestNicovideoRegistrationSucceededPayload } from "../../graphql.js";
 import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
 import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
@@ -58,54 +53,6 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
     await neo4j.close();
   });
 
-  test("シナリオ1", async () => {
-    const requestResult = await executor({
-      document: parse(/* GraphQL */ `
-        mutation ($input: RequestNicovideoRegistrationInput!) {
-          requestNicovideoRegistration(input: $input) {
-            __typename
-            ... on MutationAuthenticationError {
-              requiredRole
-            }
-            ... on MutationTagNotFoundError {
-              tagId
-            }
-            ... on RequestNicovideoRegistrationVideoAlreadyRegisteredError {
-              source {
-                id
-              }
-            }
-            ... on RequestNicovideoRegistrationOtherErrorsFallback {
-              message
-            }
-            ... on RequestNicovideoRegistrationSucceededPayload {
-              request {
-                id
-              }
-            }
-          }
-        }
-      `),
-      variables: {
-        input: {
-          sourceId: "sm9",
-          title: "タイトル 1",
-          thumbnailUrl: "https://example.com/thumbnail.jpg",
-          taggings: [],
-          semitaggings: [],
-        },
-      },
-      context: { user: null },
-    });
-
-    expect(requestResult.data).toStrictEqual({
-      requestNicovideoRegistration: {
-        __typename: "MutationAuthenticationError",
-        requiredRole: GraphQLUserRole.User,
-      } satisfies MutationAuthenticationError,
-    });
-  });
-
   /**
    * ユーザu1でログインしていればリクエストに成功する
    */
@@ -134,9 +81,7 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
         mutation Request($input: RequestNicovideoRegistrationInput!) {
           requestNicovideoRegistration(input: $input) {
             __typename
-            ... on MutationAuthenticationError {
-              requiredRole
-            }
+
             ... on MutationTagNotFoundError {
               tagId
             }

@@ -14,10 +14,6 @@ enum SortOrder {
   DESC
 }
 
-type MutationAuthenticationError {
-  requiredRole: UserRole!
-}
-
 "VideoのIDとして無効なIDを入力した場合のエラー"
 type MutationInvalidVideoIdError {
   "無効なID"
