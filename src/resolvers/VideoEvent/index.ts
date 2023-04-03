@@ -4,16 +4,13 @@ import { ResolverDeps } from "../types.js";
 import { UserModel } from "../User/model.js";
 import { VideoModel } from "../Video/model.js";
 
-export const resolveVideoEventCommonProps = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveVideoEventCommonProps = ({
+  prisma,
+  auth0Management,
+}: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
   ({
     id: ({ id }): string => buildGqlId("VideoEvent", id),
-    user: ({ userId }) =>
-      prisma.user
-        .findUniqueOrThrow({ where: { id: userId } })
-        .then((u) => new UserModel(u))
-        .catch(() => {
-          throw new GraphQLNotExistsInDBError("User", userId);
-        }),
+    user: async ({ userId }) => UserModel.fromAuth0User(await auth0Management.getUser({ id: userId })),
     video: ({ videoId }) =>
       prisma.video
         .findUniqueOrThrow({ where: { id: videoId } })
@@ -33,7 +30,7 @@ export const resolveVideoEvent = () =>
     },
   } satisfies Resolvers["VideoEvent"]);
 
-export const resolveVideoRegisterEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveVideoRegisterEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
   ({
-    ...resolveVideoEventCommonProps({ prisma }),
+    ...resolveVideoEventCommonProps(deps),
   } satisfies Resolvers["VideoRegisterEvent"]);

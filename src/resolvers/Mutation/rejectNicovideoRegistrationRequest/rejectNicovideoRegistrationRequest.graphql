@@ -1,7 +1,7 @@
 type Mutation {
   rejectNicovideoRegistrationRequest(
     input: RejectNicovideoRegistrationRequestInput!
-  ): RejectNicovideoRegistrationRequestReturnUnion! @auth(permissions: ["check:registration_request"])
+  ): RejectNicovideoRegistrationRequestReturnUnion! @auth(scopes: ["check:registration_request"])
 }
 
 input RejectNicovideoRegistrationRequestInput {

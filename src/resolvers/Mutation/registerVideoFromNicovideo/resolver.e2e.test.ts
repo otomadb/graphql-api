@@ -63,7 +63,7 @@ describe("Mutation.registerVideoFromNicovideo e2e", () => {
         context: {
           currentUser: {
             id: "u1",
-            permissions: ["create:video"],
+            scopes: ["create:video"],
           } satisfies CurrentUser,
         },
       });

@@ -1,6 +1,6 @@
 type Mutation {
   requestNicovideoRegistration(input: RequestNicovideoRegistrationInput!): RequestNicovideoRegistrationReturnUnion!
-    @auth(permissions: ["create:registration_request"])
+    @auth(scopes: ["create:registration_request"])
 }
 
 input RequestNicovideoRegistrationInput {

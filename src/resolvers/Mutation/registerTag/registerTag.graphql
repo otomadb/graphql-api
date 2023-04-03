@@ -1,5 +1,5 @@
 type Mutation {
-  registerTag(input: RegisterTagInput!): RegisterTagReturnUnion! @auth(permissions: ["create:tag"])
+  registerTag(input: RegisterTagInput!): RegisterTagReturnUnion! @auth(scopes: ["create:tag"])
 }
 
 input RegisterTagInput {

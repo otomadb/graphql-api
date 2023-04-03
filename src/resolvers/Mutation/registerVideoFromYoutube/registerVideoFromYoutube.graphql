@@ -1,6 +1,6 @@
 type Mutation {
   registerVideoFromYoutube(input: RegisterVideoFromYoutubeInput!): RegisterVideoFromYoutubePayload!
-    @auth(permissions: ["create:video"])
+    @auth(scopes: ["create:video"])
 }
 
 input RegisterVideoFromYoutubeInput {

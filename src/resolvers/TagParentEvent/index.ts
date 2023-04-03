@@ -6,16 +6,13 @@ import { TagParentModel } from "../TagParent/model.js";
 import { ResolverDeps } from "../types.js";
 import { UserModel } from "../User/model.js";
 
-export const resolveTagParentEventCommonProps = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveTagParentEventCommonProps = ({
+  prisma,
+  auth0Management,
+}: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
   ({
     id: ({ id }): string => buildGqlId("TagParentEvent", id),
-    user: ({ userId }) =>
-      prisma.user
-        .findUniqueOrThrow({ where: { id: userId } })
-        .then((u) => new UserModel(u))
-        .catch(() => {
-          throw new GraphQLNotExistsInDBError("User", userId);
-        }),
+    user: async ({ userId }) => UserModel.fromAuth0User(await auth0Management.getUser({ id: userId })),
     tagParent: ({ tagParentId }) =>
       prisma.tagParent
         .findUniqueOrThrow({ where: { id: tagParentId } })
@@ -39,17 +36,17 @@ export const resolveTagParentEvent = () =>
     },
   } satisfies Resolvers["TagParentEvent"]);
 
-export const resolveTagParentCreateEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveTagParentCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
   ({
-    ...resolveTagParentEventCommonProps({ prisma }),
+    ...resolveTagParentEventCommonProps(deps),
   } satisfies Resolvers["TagParentCreateEvent"]);
 
-export const resolveTagParentSetPrimaryEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveTagParentSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
   ({
-    ...resolveTagParentEventCommonProps({ prisma }),
+    ...resolveTagParentEventCommonProps(deps),
   } satisfies Resolvers["TagParentSetPrimaryEvent"]);
 
-export const resolveTagParentUnsetPrimaryEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveTagParentUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
   ({
-    ...resolveTagParentEventCommonProps({ prisma }),
+    ...resolveTagParentEventCommonProps(deps),
   } satisfies Resolvers["TagParentUnsetPrimaryEvent"]);

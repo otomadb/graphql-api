@@ -1,5 +1,5 @@
 type Mutation {
-  rejectSemitag(semitagId: ID!): RejectSemitagReturnUnion! @auth(permissions: ["check:semitag"])
+  rejectSemitag(semitagId: ID!): RejectSemitagReturnUnion! @auth(scopes: ["check:semitag"])
 }
 
 union RejectSemitagReturnUnion =

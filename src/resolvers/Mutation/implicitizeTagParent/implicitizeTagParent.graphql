@@ -1,7 +1,6 @@
 type Mutation {
   "明示的なタグの親子関係を非明示的に降格する"
-  implicitizeTagParent(input: ImplicitizeTagParentInput!): ImplicitizeTagParentReturnUnion!
-    @auth(permissions: ["edit:tag"])
+  implicitizeTagParent(input: ImplicitizeTagParentInput!): ImplicitizeTagParentReturnUnion! @auth(scopes: ["edit:tag"])
 }
 
 input ImplicitizeTagParentInput {

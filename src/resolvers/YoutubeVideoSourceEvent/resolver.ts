@@ -6,16 +6,13 @@ import { ResolverDeps } from "../types.js";
 import { UserModel } from "../User/model.js";
 import { YoutubeVideoSourceModel } from "../YoutubeVideoSource/model.js";
 
-export const resolveYoutubeVideoSourceEventCommonProps = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveYoutubeVideoSourceEventCommonProps = ({
+  prisma,
+  auth0Management,
+}: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
   ({
     id: ({ id }): string => buildGqlId("YoutubeVideoSourceEvent", id),
-    user: ({ userId }) =>
-      prisma.user
-        .findUniqueOrThrow({ where: { id: userId } })
-        .then((u) => new UserModel(u))
-        .catch(() => {
-          throw new GraphQLNotExistsInDBError("User", userId);
-        }),
+    user: async ({ userId }) => UserModel.fromAuth0User(await auth0Management.getUser({ id: userId })),
     source: ({ sourceId: videoSourceId }) =>
       prisma.youtubeVideoSource
         .findUniqueOrThrow({ where: { id: videoSourceId } })
@@ -35,5 +32,5 @@ export const resolveYoutubeVideoSourceEvent = () =>
     },
   } satisfies Resolvers["YoutubeVideoSourceEvent"]);
 
-export const resolveYoutubeVideoSourceCreateEvent = (deps: Pick<ResolverDeps, "prisma">) =>
+export const resolveYoutubeVideoSourceCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
   ({ ...resolveYoutubeVideoSourceEventCommonProps(deps) } satisfies Resolvers["YoutubeVideoSourceCreateEvent"]);

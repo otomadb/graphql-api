@@ -5,9 +5,10 @@ import { createServer } from "node:http";
 import { ResolveUserFn, useGenericAuth, ValidateUserFn } from "@envelop/generic-auth";
 import { useDisableIntrospection } from "@graphql-yoga/plugin-disable-introspection";
 import { PrismaClient } from "@prisma/client";
+import { ManagementClient } from "auth0";
 import { ListValueNode, StringValueNode } from "graphql";
 import { createSchema, createYoga, useLogger, useReadinessCheck } from "graphql-yoga";
-import jwt, { GetPublicKeyOrSecret, Jwt } from "jsonwebtoken";
+import jwt, { GetPublicKeyOrSecret } from "jsonwebtoken";
 import createJwksClient from "jwks-rsa";
 import { MeiliSearch } from "meilisearch";
 import neo4j from "neo4j-driver";
@@ -18,11 +19,20 @@ import { makeResolvers } from "./resolvers/index.js";
 import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
 import typeDefs from "./schema.graphql";
 
-const jwksClient = createJwksClient({ jwksUri: process.env.JWKS_URI });
+const jwksClient = createJwksClient({
+  jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`,
+});
 const getPublicKey: GetPublicKeyOrSecret = async (header, callback) => {
-  const key = await jwksClient.getSigningKey();
-  callback(null, key.getPublicKey());
+  jwksClient.getSigningKey(header.kid, function (err, key) {
+    const signingKey = key?.getPublicKey();
+    callback(null, signingKey);
+  });
 };
+
+const auth0Management = new ManagementClient({
+  domain: process.env.AUTH0_DOMAIN,
+  token: process.env.AUTH0_MANAGEMENT_API_TOKEN,
+});
 
 const logger = pino({
   level: process.env.NODE_ENV === "production" ? "info" : "trace",
@@ -65,6 +75,7 @@ const yoga = createYoga<ServerContext, UserContext>({
       prisma: prismaClient,
       meilisearch: meilisearchClient,
       logger,
+      auth0Management,
     }),
   }),
   cors: (request) => {
@@ -79,42 +90,40 @@ const yoga = createYoga<ServerContext, UserContext>({
       mode: "protect-granular",
       resolveUserFn: (async ({ req }) => {
         const token = req.headers.authorization?.split(" ").at(1);
+        logger.trace(token);
         if (token) {
-          const decoded = await new Promise<Jwt | undefined>((res, rej) =>
-            jwt.verify(token, getPublicKey, { complete: true }, (err, decoded) => {
-              if (err) return rej(err);
-              else res(decoded);
+          const result = await new Promise<{ error: jwt.VerifyErrors } | { decoded: jwt.Jwt }>((resolve, reject) =>
+            jwt.verify(token, getPublicKey, { complete: true }, (error, decoded) => {
+              if (error) return resolve({ error });
+              if (decoded) resolve({ decoded });
+              reject();
             })
           );
-          const payload = z
-            .object({ "sub": z.string(), "st-perm": z.object({ v: z.array(z.string()) }) })
-            .safeParse(decoded?.payload);
+          if ("error" in result) {
+            logger.error({ error: result.error }, "Token verification error");
+            return null;
+          }
+          const payload = z.object({ sub: z.string(), scope: z.string() }).safeParse(result.decoded.payload);
           if (!payload.success) {
             logger.error({ error: payload.error }, "Unexpected token payload");
             return null;
           }
-          const {
-            "st-perm": { v: permissions },
-            "sub": userId,
-          } = payload.data;
+
           logger.trace(payload.data);
-          return {
-            id: userId,
-            role: "NORMAL", // TODO: 削除
-            permissions: permissions || [],
-          };
+          const { sub, scope } = payload.data;
+          return { id: sub, scopes: scope.split(" ") };
         }
         return null;
       }) satisfies ResolveUserFn<CurrentUser, ServerContext>,
       validateUser: (({ user, fieldAuthDirectiveNode }) => {
-        const valueNode = fieldAuthDirectiveNode?.arguments?.find((arg) => arg.name.value === "permissions")?.value as
+        const valueNode = fieldAuthDirectiveNode?.arguments?.find((arg) => arg.name.value === "scopes")?.value as
           | ListValueNode
           | undefined;
-        const requirePermissions = valueNode?.values.map((v) => (v as StringValueNode).value) || [];
-        const missingPermission = requirePermissions.find((p) => !user?.permissions.includes(p));
-        if (missingPermission) {
-          logger.error({ user, missingPermission }, "Missing permission");
-          throw new Error(`Missing permission: ${missingPermission}`);
+        const requireScopes = valueNode?.values.map((v) => (v as StringValueNode).value) || [];
+        const missingScope = requireScopes.find((p) => !user?.scopes.includes(p));
+        if (missingScope) {
+          logger.error({ user, scope: missingScope }, "Missing scope");
+          throw new Error(`Missing scope: ${missingScope}`);
         }
         return;
       }) satisfies ValidateUserFn<CurrentUser>,

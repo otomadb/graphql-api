@@ -1,6 +1,6 @@
 type Mutation {
   changeMylistShareRange(input: ChangeMylistShareRangeInput!): ChangeMylistShareReturnUnion!
-    @auth(permissions: ["edit:mylist"])
+    @auth(scopes: ["edit:mylist"])
 }
 
 input ChangeMylistShareRangeInput {

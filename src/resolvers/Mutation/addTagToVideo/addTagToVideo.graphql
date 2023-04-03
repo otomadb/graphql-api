@@ -1,5 +1,5 @@
 type Mutation {
-  addTagToVideo(input: AddTagToVideoInput!): AddTagToVideoPayload! @auth(permissions: ["create:tagging"])
+  addTagToVideo(input: AddTagToVideoInput!): AddTagToVideoPayload! @auth(scopes: ["create:tagging"])
 }
 
 input AddTagToVideoInput {

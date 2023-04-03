@@ -1,6 +1,6 @@
 type Mutation {
   registerCategoryTag(input: RegisterCategoryTagInput!): RegisterCategoryTagResultUnion!
-    @auth(permissions: ["create:category_tag"])
+    @auth(scopes: ["create:category_tag"])
 }
 
 input RegisterCategoryTagInput {

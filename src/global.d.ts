@@ -10,6 +10,9 @@ declare namespace NodeJS {
 
     readonly JWT_SECRET: string; // TODO: 削除
 
+    readonly AUTH0_DOMAIN: string;
+    readonly AUTH0_MANAGEMENT_API_TOKEN: string;
+
     readonly JWKS_URI: string;
 
     readonly PRISMA_DATABASE_URL: string;

@@ -9,16 +9,10 @@ import { SemitagResolvingModel } from "../SemitagResolving/model.js";
 import { ResolverDeps } from "../types.js";
 import { UserModel } from "../User/model.js";
 
-export const resolveSemitagEventCommonProps = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveSemitagEventCommonProps = ({ auth0Management }: Pick<ResolverDeps, "auth0Management">) =>
   ({
     id: ({ id }): string => buildGqlId("SemitagEvent", id),
-    user: ({ userId }) =>
-      prisma.user
-        .findUniqueOrThrow({ where: { id: userId } })
-        .then((u) => new UserModel(u))
-        .catch(() => {
-          throw new GraphQLNotExistsInDBError("User", userId);
-        }),
+    user: async ({ userId }) => UserModel.fromAuth0User(await auth0Management.getUser({ id: userId })),
   } satisfies Omit<Exclude<Resolvers["SemitagEvent"], undefined>, "__resolveType">);
 
 export const resolveSemitagEvent = () =>
@@ -35,9 +29,12 @@ export const resolveSemitagEvent = () =>
     },
   } satisfies Resolvers["SemitagEvent"]);
 
-export const resolveSemitagEventAttachEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveSemitagEventAttachEvent = ({
+  prisma,
+  auth0Management,
+}: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
   ({
-    ...resolveSemitagEventCommonProps({ prisma }),
+    ...resolveSemitagEventCommonProps({ auth0Management }),
     semitag: ({ semitagId }) =>
       prisma.semitag
         .findUniqueOrThrow({ where: { id: semitagId } })
@@ -47,9 +44,13 @@ export const resolveSemitagEventAttachEvent = ({ prisma }: Pick<ResolverDeps, "p
         }),
   } satisfies Resolvers["SemitagAttachEvent"]);
 
-export const resolveSemitagEventResolveEvent = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolveSemitagEventResolveEvent = ({
+  prisma,
+  auth0Management,
+  logger,
+}: Pick<ResolverDeps, "prisma" | "logger" | "auth0Management">) =>
   ({
-    ...resolveSemitagEventCommonProps({ prisma }),
+    ...resolveSemitagEventCommonProps({ auth0Management }),
     resolving: async ({ semitagId }, _args, _context, info) => {
       const checking = await prisma.semitagChecking.findUniqueOrThrow({ where: { semitagId } });
       if (!checking.videoTagId) {
@@ -65,9 +66,13 @@ export const resolveSemitagEventResolveEvent = ({ prisma, logger }: Pick<Resolve
     },
   } satisfies Resolvers["SemitagResolveEvent"]);
 
-export const resolveSemitagEventRejectEvent = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolveSemitagEventRejectEvent = ({
+  prisma,
+  auth0Management,
+  logger,
+}: Pick<ResolverDeps, "prisma" | "logger" | "auth0Management">) =>
   ({
-    ...resolveSemitagEventCommonProps({ prisma }),
+    ...resolveSemitagEventCommonProps({ auth0Management }),
     rejecting: async ({ semitagId }, _args, _context, info) => {
       const checking = await prisma.semitagChecking.findUniqueOrThrow({ where: { semitagId } });
       if (checking.videoTagId) {

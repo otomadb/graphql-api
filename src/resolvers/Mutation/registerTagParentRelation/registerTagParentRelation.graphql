@@ -1,6 +1,6 @@
 type Mutation {
   registerTagParentRelation(input: RegisterTagParentRelationInput!): RegisterTagParentRelationResultUnion!
-    @auth(permissions: ["edit:tag"])
+    @auth(scopes: ["edit:tag"])
 }
 
 input RegisterTagParentRelationInput {

@@ -25,6 +25,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
   let neo4j: ResolverDeps["neo4j"];
   let logger: ResolverDeps["logger"];
   let meilisearch: DeepMockProxy<ResolverDeps["meilisearch"]>;
+  let auth0Management: DeepMockProxy<ResolverDeps["auth0Management"]>;
 
   let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
 
@@ -39,10 +40,11 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
 
     logger = mock<ResolverDeps["logger"]>();
     meilisearch = mockDeep<ResolverDeps["meilisearch"]>();
+    auth0Management = mockDeep<ResolverDeps["auth0Management"]>();
 
     const schema = createSchema({
       typeDefs,
-      resolvers: makeResolvers({ prisma, neo4j, logger, meilisearch }),
+      resolvers: makeResolvers({ prisma, neo4j, logger, meilisearch, auth0Management }),
     });
     const yoga = createYoga<ServerContext, UserContext>({ schema });
     executor = buildHTTPExecutor({ fetch: yoga.fetch });
@@ -139,7 +141,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
       context: {
         currentUser: {
           id: "u2",
-          permissions: ["check:registration_request"],
+          scopes: ["check:registration_request"],
         } satisfies CurrentUser,
       },
     });
@@ -220,7 +222,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
       context: {
         currentUser: {
           id: "u2",
-          permissions: ["check:registration_request"],
+          scopes: ["check:registration_request"],
         } satisfies CurrentUser,
       },
     });
@@ -312,7 +314,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
       context: {
         currentUser: {
           id: "u2",
-          permissions: ["check:registration_request"],
+          scopes: ["check:registration_request"],
         } satisfies CurrentUser,
       },
     });

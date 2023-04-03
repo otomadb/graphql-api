@@ -1,5 +1,5 @@
 type Mutation {
-  undoLikeVideo(input: UndoLikeVideoInput!): UndoLikeVideoPayload! @auth(permissions: ["update:mylist_registration"])
+  undoLikeVideo(input: UndoLikeVideoInput!): UndoLikeVideoPayload! @auth(scopes: ["update:mylist_registration"])
 }
 
 input UndoLikeVideoInput {
