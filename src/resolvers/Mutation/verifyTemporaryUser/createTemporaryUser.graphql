@@ -1,0 +1,9 @@
+type Mutation {
+  verifyTemporaryUser: VerifyTemporaryUserReturnUnion!
+}
+
+union VerifyTemporaryUserReturnUnion = VerifyTemporaryUserSucceededPayload
+
+type VerifyTemporaryUserSucceededPayload {
+  id: ID!
+}

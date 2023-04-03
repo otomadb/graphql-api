@@ -1,5 +1,5 @@
 type Mutation {
-  signup(input: SignupInput!): SignupPayload!
+  signup(input: SignupInput!): SignupPayload! @deprecated
 }
 
 input SignupInput {

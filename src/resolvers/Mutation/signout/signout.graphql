@@ -1,5 +1,5 @@
 type Mutation {
-  signout: SignoutPayload!
+  signout: SignoutPayload! @deprecated
 }
 
 union SignoutPayload = SignoutSucceededPayload | SignoutFailedPayload
