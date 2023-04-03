@@ -17,8 +17,7 @@ describe("Mutation.registerTag e2e", () => {
   let prisma: ResolverDeps["prisma"];
   let neo4j: ResolverDeps["neo4j"];
   let logger: ResolverDeps["logger"];
-  let config: ResolverDeps["config"];
-  let token: DeepMockProxy<ResolverDeps["token"]>;
+
   let meilisearch: DeepMockProxy<ResolverDeps["meilisearch"]>;
 
   let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
@@ -33,13 +32,11 @@ describe("Mutation.registerTag e2e", () => {
     );
 
     logger = mock<ResolverDeps["logger"]>();
-    config = mock<ResolverDeps["config"]>();
-    token = mock<ResolverDeps["token"]>();
     meilisearch = mockDeep<ResolverDeps["meilisearch"]>();
 
     const schema = createSchema({
       typeDefs,
-      resolvers: makeResolvers({ prisma, neo4j, logger, config, meilisearch, token }),
+      resolvers: makeResolvers({ prisma, neo4j, logger, meilisearch }),
     });
     const yoga = createYoga<ServerContext, UserContext>({ schema });
     executor = buildHTTPExecutor({ fetch: yoga.fetch });
@@ -50,7 +47,6 @@ describe("Mutation.registerTag e2e", () => {
     // TODO: neo4jのreset処理
 
     mockReset(logger);
-    mockReset(config);
   });
 
   afterAll(async () => {

@@ -10,16 +10,6 @@ export type ResolverDeps = {
   neo4j: Neo4jDriver;
   meilisearch: MeiliSearch;
   logger: Logger;
-  config: {
-    session: {
-      cookieName(): string;
-      cookieDomain(): string | undefined;
-      cookieSameSite(): "none" | "strict";
-    };
-  };
-  token: {
-    sign(payload: { userId: string; duration: "1d" | "3d" | "1w" | "1m" }): string;
-  };
 };
 export type ServerContext = {
   req: IncomingMessage;

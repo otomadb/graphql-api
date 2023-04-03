@@ -17,7 +17,7 @@ import z from "zod";
 import { makeResolvers } from "./resolvers/index.js";
 import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
 import typeDefs from "./schema.graphql";
-import { extractTokenFromReq, signToken } from "./token.js";
+import { extractTokenFromReq } from "./token.js";
 import { isOk } from "./utils/Result.js";
 
 const jwksClient = createJwksClient({ jwksUri: "http://localhost:3000/api/auth/jwt/jwks.json" }); // TODO: 環境変数に直す
@@ -67,14 +67,6 @@ const yoga = createYoga<ServerContext, UserContext>({
       prisma: prismaClient,
       meilisearch: meilisearchClient,
       logger,
-      config: {
-        session: {
-          cookieName: () => "otomadb_session",
-          cookieDomain: () => process.env.DOMAIN,
-          cookieSameSite: () => (process.env.ENABLE_SAME_SITE_NONE === "true" ? "none" : "strict"),
-        },
-      },
-      token: { sign: signToken },
     }),
   }),
   cors: (request) => {
