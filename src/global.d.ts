@@ -6,9 +6,11 @@ declare namespace NodeJS {
 
     readonly ENABLE_GRAPHIQL?: string;
     // readonly ENABLE_INTROSPECTION?: string;
-    readonly ENABLE_SAME_SITE_NONE?: string;
+    readonly ENABLE_SAME_SITE_NONE?: string; // TODO: 削除
 
-    readonly JWT_SECRET: string;
+    readonly JWT_SECRET: string; // TODO: 削除
+
+    readonly JWKS_URI: string;
 
     readonly PRISMA_DATABASE_URL: string;
 

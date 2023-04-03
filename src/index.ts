@@ -18,7 +18,7 @@ import { makeResolvers } from "./resolvers/index.js";
 import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
 import typeDefs from "./schema.graphql";
 
-const jwksClient = createJwksClient({ jwksUri: "http://localhost:3000/api/auth/jwt/jwks.json" }); // TODO: 環境変数に直す
+const jwksClient = createJwksClient({ jwksUri: process.env.JWKS_URI });
 const getPublicKey: GetPublicKeyOrSecret = async (header, callback) => {
   const key = await jwksClient.getSigningKey();
   callback(null, key.getPublicKey());
