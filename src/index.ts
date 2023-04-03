@@ -4,7 +4,7 @@ import { createServer } from "node:http";
 
 import { ResolveUserFn, useGenericAuth, ValidateUserFn } from "@envelop/generic-auth";
 import { useDisableIntrospection } from "@graphql-yoga/plugin-disable-introspection";
-import { PrismaClient, UserRole } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { ListValueNode, StringValueNode } from "graphql";
 import { createSchema, createYoga, useLogger, useReadinessCheck } from "graphql-yoga";
 import jwt, { GetPublicKeyOrSecret, Jwt } from "jsonwebtoken";
@@ -14,12 +14,12 @@ import neo4j from "neo4j-driver";
 import { pino } from "pino";
 
 import { makeResolvers } from "./resolvers/index.js";
-import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
+import { Context, CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
 import typeDefs from "./schema.graphql";
 import { extractTokenFromReq, signToken } from "./token.js";
 import { isOk } from "./utils/Result.js";
 
-const jwksClient = createJwksClient({ jwksUri: "http://localhost:3000/api/auth/jwt/jwks.json" });
+const jwksClient = createJwksClient({ jwksUri: "http://localhost:3000/api/auth/jwt/jwks.json" }); // TODO: 環境変数に直す
 const getPublicKey: GetPublicKeyOrSecret = async (header, callback) => {
   const key = await jwksClient.getSigningKey();
   callback(null, key.getPublicKey());
@@ -75,84 +75,6 @@ const yoga = createYoga<ServerContext, UserContext>({
       token: { sign: signToken },
     }),
   }),
-  async context({ req }) {
-    const token = extractTokenFromReq(req);
-    if (isOk(token)) {
-      const decoded = await new Promise<Jwt | undefined>((res, rej) =>
-        jwt.verify(token.data, getPublicKey, { complete: true }, (err, decoded) => {
-          if (err) return rej(err);
-          else res(decoded);
-        })
-      );
-      if (decoded && typeof decoded.payload === "object") {
-        const {
-          "sub": userId,
-          "st-perm": { v: permissions },
-        } = decoded.payload;
-
-        if (!userId) {
-          logger.error({ payload: decoded.payload }, "Invalid token payload");
-        } else {
-          return {
-            user: {
-              id: userId,
-              role: UserRole.NORMAL, // TODO: 削除
-              permissions: permissions || [],
-            },
-          } satisfies UserContext;
-        }
-      }
-    }
-
-    /*
-    // from cookie
-    const resultExtractSession = extractSessionFromReq(req, "otomadb_session");
-    if (isErr(resultExtractSession)) {
-      switch (resultExtractSession.error.type) {
-        case "INVALID_FORM":
-          logger.warn({ cookie: resultExtractSession.error.cookie }, "Cookie is invalid form for session");
-          break;
-      }
-    } else {
-      const session = await verifySession(prismaClient, resultExtractSession.data);
-      if (isOk(session))
-        return {
-          user: { id: session.data.user.id, role: session.data.user.role, permissions: [] },
-        } satisfies UserContext;
-      else {
-        switch (session.error.type) {
-          case "NOT_FOUND_SESSION":
-            logger.warn({ id: session.error.id }, "Session not found");
-            break;
-          case "WRONG_SECRET":
-            logger.warn({ id: session.error.id, secret: session.error.secret }, "Session secret is incorrect");
-            break;
-        }
-      }
-    }
-
-    const token = extractTokenFromReq(req);
-    if (isOk(token)) {
-      const verified = await verifyToken(token.data);
-      if (isOk(verified)) return verified.data;
-      else {
-        switch (verified.error.type) {
-          case "TOKEN_EXPIRED":
-            logger.warn("Token already expired");
-            break;
-          case "INVALID_PAYLOAD":
-            logger.error({ payload: verified.error.payload }, "Token payload is invalid");
-            break;
-          case "UNKNOWN_ERROR":
-            logger.error({ error: verified.error.error }, "Something wrong in verifing token");
-            break;
-        }
-      }
-    }
-
-    */
-    return { user: null } satisfies UserContext;
-  },
   cors: (request) => {
     const origin = request.headers.get("origin");
     return {
@@ -163,21 +85,45 @@ const yoga = createYoga<ServerContext, UserContext>({
   plugins: [
     useGenericAuth({
       mode: "protect-granular",
-      resolveUserFn: ((ctx) => {
-        return { id: "1", role: "NORMAL", permissions: ["test"] };
+      resolveUserFn: (async (ctx) => {
+        const token = extractTokenFromReq(ctx.req);
+        if (isOk(token)) {
+          const decoded = await new Promise<Jwt | undefined>((res, rej) =>
+            jwt.verify(token.data, getPublicKey, { complete: true }, (err, decoded) => {
+              if (err) return rej(err);
+              else res(decoded);
+            })
+          );
+          if (decoded && typeof decoded.payload === "object") {
+            const {
+              "sub": userId,
+              "st-perm": { v: permissions },
+            } = decoded.payload;
+            if (!userId) {
+              logger.error({ payload: decoded.payload }, "Invalid token payload");
+              return null;
+            } else {
+              return {
+                id: userId,
+                role: "NORMAL", // TODO: 削除
+                permissions: permissions || [],
+              };
+            }
+          }
+        }
         return null;
-      }) satisfies ResolveUserFn<CurrentUser>,
+      }) satisfies ResolveUserFn<CurrentUser, Context>,
       validateUser: (({ user, fieldAuthDirectiveNode }) => {
         const valueNode = fieldAuthDirectiveNode?.arguments?.find((arg) => arg.name.value === "permissions")?.value as
           | ListValueNode
           | undefined;
         const requirePermissions = valueNode?.values.map((v) => (v as StringValueNode).value) || [];
-
         const missingPermission = requirePermissions.find((p) => !user?.permissions.includes(p));
-        if (missingPermission) throw new Error(`Missing permission: ${missingPermission}`);
-
+        if (missingPermission) {
+          throw new Error(`Missing permission: ${missingPermission}`);
+        }
         return;
-      }) satisfies ValidateUserFn<CurrentUser | null>,
+      }) satisfies ValidateUserFn<CurrentUser>,
     }),
     useDisableIntrospection({
       isDisabled() {
