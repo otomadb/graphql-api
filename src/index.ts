@@ -2,20 +2,20 @@
 /* eslint-disable no-process-env */
 import { createServer } from "node:http";
 
-import { usePrometheus } from "@envelop/prometheus";
+import { ResolveUserFn, useGenericAuth, ValidateUserFn } from "@envelop/generic-auth";
 import { useDisableIntrospection } from "@graphql-yoga/plugin-disable-introspection";
 import { PrismaClient, UserRole } from "@prisma/client";
+import { ListValueNode, StringValueNode } from "graphql";
 import { createSchema, createYoga, useLogger, useReadinessCheck } from "graphql-yoga";
-import { GetPublicKeyOrSecret, Jwt } from "jsonwebtoken";
-import jwt from "jsonwebtoken";
+import jwt, { GetPublicKeyOrSecret, Jwt } from "jsonwebtoken";
 import createJwksClient from "jwks-rsa";
 import { MeiliSearch } from "meilisearch";
 import neo4j from "neo4j-driver";
 import { pino } from "pino";
 
-import { typeDefs } from "./resolvers/graphql.js";
 import { makeResolvers } from "./resolvers/index.js";
-import { ServerContext, UserContext } from "./resolvers/types.js";
+import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
+import typeDefs from "./schema.graphql";
 import { extractTokenFromReq, signToken } from "./token.js";
 import { isOk } from "./utils/Result.js";
 
@@ -117,7 +117,7 @@ const yoga = createYoga<ServerContext, UserContext>({
       const session = await verifySession(prismaClient, resultExtractSession.data);
       if (isOk(session))
         return {
-          user: { id: session.data.user.id, role: session.data.user.role },
+          user: { id: session.data.user.id, role: session.data.user.role, permissions: [] },
         } satisfies UserContext;
       else {
         switch (session.error.type) {
@@ -161,6 +161,24 @@ const yoga = createYoga<ServerContext, UserContext>({
     };
   },
   plugins: [
+    useGenericAuth({
+      mode: "protect-granular",
+      resolveUserFn: ((ctx) => {
+        return { id: "1", role: "NORMAL", permissions: ["test"] };
+        return null;
+      }) satisfies ResolveUserFn<CurrentUser>,
+      validateUser: (({ user, fieldAuthDirectiveNode }) => {
+        const valueNode = fieldAuthDirectiveNode?.arguments?.find((arg) => arg.name.value === "permissions")?.value as
+          | ListValueNode
+          | undefined;
+        const requirePermissions = valueNode?.values.map((v) => (v as StringValueNode).value) || [];
+
+        const missingPermission = requirePermissions.find((p) => !user?.permissions.includes(p));
+        if (missingPermission) throw new Error(`Missing permission: ${missingPermission}`);
+
+        return;
+      }) satisfies ValidateUserFn<CurrentUser | null>,
+    }),
     useDisableIntrospection({
       isDisabled() {
         return false; // TODO: 何かしら認証を入れる
@@ -189,12 +207,14 @@ const yoga = createYoga<ServerContext, UserContext>({
         }
       },
     }),
+    /*
     usePrometheus({
       execute: true,
       errors: true,
       requestCount: true,
       requestSummary: true,
     }),
+    */
     useLogger({
       logFn(event, data) {
         switch (event) {

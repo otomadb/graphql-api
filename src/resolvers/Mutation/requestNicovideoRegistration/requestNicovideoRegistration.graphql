@@ -1,5 +1,6 @@
 type Mutation {
   requestNicovideoRegistration(input: RequestNicovideoRegistrationInput!): RequestNicovideoRegistrationReturnUnion!
+    @auth(permissions: ["check:registration_request"])
 }
 
 input RequestNicovideoRegistrationInput {

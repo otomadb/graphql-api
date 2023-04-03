@@ -1,5 +1,6 @@
 type Mutation {
   registerCategoryTagTyping(input: RegisterCategoryTagTypingInput!): RegisterCategoryTagTypingResultUnion!
+    @auth(permissions: ["create:tag_type"])
 }
 
 input RegisterCategoryTagTypingInput {

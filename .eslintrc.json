@@ -20,7 +20,7 @@
   },
   "overrides": [
     {
-      "files": ["codegen-plugins/*.mjs", "esbuild.mjs"],
+      "files": ["codegen-plugins/*.mjs", "rollup.config.js"],
       "extends": ["plugin:n/recommended"],
       "parserOptions": {
         "sourceType": "module",
