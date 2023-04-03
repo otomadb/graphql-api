@@ -94,22 +94,23 @@ const yoga = createYoga<ServerContext, UserContext>({
               else res(decoded);
             })
           );
-          if (decoded && typeof decoded.payload === "object") {
+          const payload = z
+            .object({ "sub": z.string(), "st-perm": z.object({ v: z.array(z.string()) }) })
+            .safeParse(decoded?.payload);
+          if (!payload.success) {
+            logger.error({ error: payload.error }, "Unexpected token payload");
+            return null;
+          }
             const {
-              "sub": userId,
               "st-perm": { v: permissions },
-            } = decoded.payload;
-            if (!userId) {
-              logger.error({ payload: decoded.payload }, "Invalid token payload");
-              return null;
-            } else {
+            "sub": userId,
+          } = payload.data;
+          logger.trace(payload.data);
               return {
                 id: userId,
                 role: "NORMAL", // TODO: 削除
                 permissions: permissions || [],
               };
-            }
-          }
         }
         return null;
       }) satisfies ResolveUserFn<CurrentUser, Context>,
