@@ -38,6 +38,7 @@ export const verifyToken = async (
       user: {
         id: sub,
         role: UserRole.ADMINISTRATOR, // TODO: 全然嘘だけど一旦これで
+        permissions: [],
       },
     } satisfies UserContext);
   } catch (e) {

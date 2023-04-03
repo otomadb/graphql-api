@@ -27,11 +27,14 @@ export type ServerContext = {
   res: ServerResponse;
 };
 
+export type CurrentUser = {
+  id: User["id"];
+  role: User["role"];
+  permissions: string[];
+};
+
 export type UserContext = {
-  user: {
-    id: User["id"];
-    role: User["role"];
-  } | null;
+  user: CurrentUser | null;
 };
 
 export type Context = UserContext & ServerContext;

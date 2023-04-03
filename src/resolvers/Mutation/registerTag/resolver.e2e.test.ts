@@ -162,7 +162,9 @@ describe("Mutation.registerTag e2e", () => {
         }
       `),
       variables: { input },
-      context: { user: { id: "u1", role: "EDITOR" } } satisfies UserContext,
+      context: {
+        user: { id: "u1", role: "EDITOR", permissions: ["create:tag"] },
+      } satisfies UserContext,
     });
 
     expect(requestResult.data).toStrictEqual({
