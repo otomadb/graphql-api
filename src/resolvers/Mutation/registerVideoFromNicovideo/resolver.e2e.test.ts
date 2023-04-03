@@ -9,7 +9,7 @@ import typeDefs from "../../../schema.graphql";
 import { RegisterVideoFromNicovideoInput, RegisterVideoFromNicovideoSemitagTooLongError } from "../../graphql.js";
 import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
-import { ResolverDeps, ServerContext, UserContext } from "../../types.js";
+import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
 
 describe("Mutation.registerVideoFromNicovideo e2e", () => {
   describe("Args and Return check", () => {
@@ -60,7 +60,12 @@ describe("Mutation.registerVideoFromNicovideo e2e", () => {
           }
         `),
         variables: { input },
-        context: { currentUser: { id: "u1", role: "EDITOR" } } satisfies UserContext,
+        context: {
+          currentUser: {
+            id: "u1",
+            permissions: ["create:video"],
+          } satisfies CurrentUser,
+        },
       });
 
       expect(requestResult.data.registerVideoFromNicovideo).toStrictEqual(expected);

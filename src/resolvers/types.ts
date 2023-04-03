@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from "node:http";
 
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { MeiliSearch } from "meilisearch";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 import { Logger } from "pino";
@@ -17,8 +17,7 @@ export type ServerContext = {
 };
 
 export type CurrentUser = {
-  id: User["id"];
-  role: User["role"];
+  id: string;
   permissions: string[];
 };
 export type UserContext = {

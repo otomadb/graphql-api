@@ -20,7 +20,7 @@ import {
 } from "../../graphql.js";
 import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
-import { ResolverDeps, ServerContext, UserContext } from "../../types.js";
+import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
 
 describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
   let prisma: ResolverDeps["prisma"];
@@ -127,7 +127,12 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
           note: "a",
         },
       },
-      context: { currentUser: null } satisfies UserContext,
+      context: {
+        currentUser: {
+          id: "u1",
+          permissions: ["check:registration_request"],
+        } satisfies CurrentUser,
+      },
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -216,7 +221,12 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
           note: "a",
         },
       },
-      context: { currentUser: { id: "u2", role: UserRole.NORMAL } } satisfies UserContext,
+      context: {
+        currentUser: {
+          id: "u2",
+          permissions: ["check:registration_request"],
+        } satisfies CurrentUser,
+      },
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -305,7 +315,12 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
           note: "a",
         },
       },
-      context: { currentUser: { id: "u2", role: UserRole.EDITOR } } satisfies UserContext,
+      context: {
+        currentUser: {
+          id: "u2",
+          permissions: ["check:registration_request"],
+        } satisfies CurrentUser,
+      },
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -384,7 +399,12 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
           note: "a",
         },
       },
-      context: { currentUser: { id: "u2", role: UserRole.EDITOR } } satisfies UserContext,
+      context: {
+        currentUser: {
+          id: "u2",
+          permissions: ["check:registration_request"],
+        } satisfies CurrentUser,
+      },
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -473,7 +493,12 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
           note: "a",
         },
       },
-      context: { currentUser: { id: "u2", role: UserRole.EDITOR } } satisfies UserContext,
+      context: {
+        currentUser: {
+          id: "u2",
+          permissions: ["check:registration_request"],
+        } satisfies CurrentUser,
+      },
     });
 
     expect(requestResult.data).toStrictEqual({

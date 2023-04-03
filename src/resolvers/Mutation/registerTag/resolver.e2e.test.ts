@@ -11,7 +11,7 @@ import typeDefs from "../../../schema.graphql";
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
-import { ResolverDeps, ServerContext, UserContext } from "../../types.js";
+import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
 
 describe("Mutation.registerTag e2e", () => {
   let prisma: ResolverDeps["prisma"];
@@ -159,8 +159,11 @@ describe("Mutation.registerTag e2e", () => {
       `),
       variables: { input },
       context: {
-        currentUser: { id: "u1", role: "EDITOR", permissions: ["create:tag"] },
-      } satisfies UserContext,
+        currentUser: {
+          id: "u1",
+          permissions: ["create:tag"],
+        } satisfies CurrentUser,
+      },
     });
 
     expect(requestResult.data).toStrictEqual({

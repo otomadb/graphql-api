@@ -17,7 +17,7 @@ import {
 } from "../../graphql.js";
 import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
-import { ResolverDeps, ServerContext, UserContext } from "../../types.js";
+import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
 
 describe("Mutation.requestNicovideoRegistration e2e", () => {
   let prisma: ResolverDeps["prisma"];
@@ -171,7 +171,12 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
           ],
         },
       },
-      context: { currentUser: { id: "u1", role: UserRole.NORMAL } } satisfies UserContext,
+      context: {
+        currentUser: {
+          id: "u1",
+          permissions: ["create:registration_request"],
+        } satisfies CurrentUser,
+      },
     });
 
     expect(requestResult.data).toStrictEqual({

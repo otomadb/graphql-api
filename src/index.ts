@@ -17,8 +17,6 @@ import z from "zod";
 import { makeResolvers } from "./resolvers/index.js";
 import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
 import typeDefs from "./schema.graphql";
-import { extractTokenFromReq } from "./token.js";
-import { isOk } from "./utils/Result.js";
 
 const jwksClient = createJwksClient({ jwksUri: "http://localhost:3000/api/auth/jwt/jwks.json" }); // TODO: 環境変数に直す
 const getPublicKey: GetPublicKeyOrSecret = async (header, callback) => {
@@ -79,11 +77,11 @@ const yoga = createYoga<ServerContext, UserContext>({
   plugins: [
     useGenericAuth({
       mode: "protect-granular",
-      resolveUserFn: (async (ctx) => {
-        const token = extractTokenFromReq(ctx.req);
-        if (isOk(token)) {
+      resolveUserFn: (async ({ req }) => {
+        const token = req.headers.authorization?.split(" ").at(1);
+        if (token) {
           const decoded = await new Promise<Jwt | undefined>((res, rej) =>
-            jwt.verify(token.data, getPublicKey, { complete: true }, (err, decoded) => {
+            jwt.verify(token, getPublicKey, { complete: true }, (err, decoded) => {
               if (err) return rej(err);
               else res(decoded);
             })
