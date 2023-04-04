@@ -11,7 +11,7 @@ export const findUser = ({ logger, auth0Management }: Pick<ResolverDeps, "prisma
       throw new GraphQLError("name must be provided"); // TODO: error messsage
     }
 
-    const user = (await auth0Management.getUsers({ q: `name:"${name}"` })).at(0);
+    const user = (await auth0Management.getUsers({ q: `username:"${name}"` })).at(0);
     if (!user) {
       logger.info({ path: info.path, name }, "Not found");
       return null;
