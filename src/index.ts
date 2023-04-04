@@ -31,8 +31,8 @@ const getPublicKey: GetPublicKeyOrSecret = async (header, callback) => {
 const auth0Management = new ManagementClient(
   process.env.AUTH0_MANAGEMENT_API_TOKEN
     ? {
-  domain: process.env.AUTH0_DOMAIN,
-  token: process.env.AUTH0_MANAGEMENT_API_TOKEN,
+        domain: process.env.AUTH0_DOMAIN,
+        token: process.env.AUTH0_MANAGEMENT_API_TOKEN,
       }
     : {
         domain: process.env.AUTH0_DOMAIN,
