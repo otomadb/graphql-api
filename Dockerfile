@@ -33,5 +33,5 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules/.prisma/client ./node_modules/.prisma/client
 
 ENTRYPOINT ["tini", "--"]
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/index.mjs"]
 
