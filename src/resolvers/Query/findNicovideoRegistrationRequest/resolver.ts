@@ -16,7 +16,7 @@ export const resolverFindNicovideoRegistrationRequest = ({ prisma, logger }: Pic
 
     const input = parsed.data;
     if ("id" in input) {
-      const req = await prisma.nicovideoRegistrationRequest.findUniqueOrThrow({
+      const req = await prisma.nicovideoRegistrationRequest.findUnique({
         where: { id: parseGqlID("NicovideoRegistrationRequest", input.id) },
       });
       if (!req) {
@@ -25,7 +25,7 @@ export const resolverFindNicovideoRegistrationRequest = ({ prisma, logger }: Pic
       }
       return new NicovideoRegistrationRequestModel(req);
     } else {
-      const req = await prisma.nicovideoRegistrationRequest.findUniqueOrThrow({
+      const req = await prisma.nicovideoRegistrationRequest.findUnique({
         where: { sourceId: input.sourceId },
       });
       if (!req) {
