@@ -13,7 +13,6 @@ import {
   MutationNicovideoRegistrationRequestNotFoundError,
   NicovideoRegistrationRequest,
   RejectNicovideoRegistrationRequestRequestAlreadyCheckedError,
-  RejectNicovideoRegistrationRequestSucceededPayload,
 } from "../../graphql.js";
 import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
@@ -318,7 +317,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
         rejecting: {
           note: "a",
         },
-      } satisfies RejectNicovideoRegistrationRequestSucceededPayload,
+      },
     });
   });
 });
