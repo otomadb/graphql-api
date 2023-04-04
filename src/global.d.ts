@@ -8,7 +8,9 @@ declare namespace NodeJS {
     // readonly ENABLE_INTROSPECTION?: string;
 
     readonly AUTH0_DOMAIN: string;
-    readonly AUTH0_MANAGEMENT_API_TOKEN: string;
+    readonly AUTH0_MANAGEMENT_API_TOKEN: string | undefined;
+    readonly AUTH0_CLIENT_ID: string;
+    readonly AUTH0_CLIENT_SECRET: string;
 
     readonly PRISMA_DATABASE_URL: string;
 

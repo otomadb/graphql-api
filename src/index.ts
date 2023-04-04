@@ -28,10 +28,19 @@ const getPublicKey: GetPublicKeyOrSecret = async (header, callback) => {
   });
 };
 
-const auth0Management = new ManagementClient({
+const auth0Management = new ManagementClient(
+  process.env.AUTH0_MANAGEMENT_API_TOKEN
+    ? {
   domain: process.env.AUTH0_DOMAIN,
   token: process.env.AUTH0_MANAGEMENT_API_TOKEN,
-});
+      }
+    : {
+        domain: process.env.AUTH0_DOMAIN,
+        clientId: process.env.AUTH0_CLIENT_ID,
+        clientSecret: process.env.AUTH0_CLIENT_SECRET,
+        scope: "read:users",
+      }
+);
 
 const logger = pino({
   level: process.env.NODE_ENV === "production" ? "info" : "trace",
