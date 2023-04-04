@@ -72,14 +72,14 @@ export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pris
       return { nodes };
     },
 
-    isLiked: ({ id: videoId }, _args, { user }) => {
+    isLiked: ({ id: videoId }, _args, { currentUser: user }) => {
       if (!user) throw new GraphQLError("Not logged in");
       return prisma.mylistRegistration
         .findFirst({ where: { videoId, mylist: { holderId: user.id }, isRemoved: false } })
         .then((r) => !!r);
     },
 
-    like: async ({ id: videoId }, _args, { user }) => {
+    like: async ({ id: videoId }, _args, { currentUser: user }) => {
       if (!user) return null;
       return prisma.mylistRegistration
         .findFirst({ where: { videoId, mylist: { holderId: user.id }, isRemoved: false } })

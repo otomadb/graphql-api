@@ -6,16 +6,13 @@ import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
 import { ResolverDeps } from "../types.js";
 import { UserModel } from "../User/model.js";
 
-export const resolveNicovideoVideoSourceEventCommonProps = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveNicovideoVideoSourceEventCommonProps = ({
+  prisma,
+  auth0Management,
+}: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
   ({
     id: ({ id }): string => buildGqlId("NicovideoVideoSourceEvent", id),
-    user: ({ userId }) =>
-      prisma.user
-        .findUniqueOrThrow({ where: { id: userId } })
-        .then((u) => new UserModel(u))
-        .catch(() => {
-          throw new GraphQLNotExistsInDBError("User", userId);
-        }),
+    user: async ({ userId }) => UserModel.fromAuth0User(await auth0Management.getUser({ id: userId })),
     source: ({ sourceId: videoSourceId }) =>
       prisma.nicovideoVideoSource
         .findUniqueOrThrow({ where: { id: videoSourceId } })
@@ -35,7 +32,7 @@ export const resolveNicovideoVideoSourceEvent = () =>
     },
   } satisfies Resolvers["NicovideoVideoSourceEvent"]);
 
-export const resolveNicovideoVideoSourceCreateEvent = (deps: Pick<ResolverDeps, "prisma">) =>
+export const resolveNicovideoVideoSourceCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
   ({
     ...resolveNicovideoVideoSourceEventCommonProps(deps),
   } satisfies Resolvers["NicovideoVideoSourceCreateEvent"]);

@@ -1,5 +1,6 @@
 type Mutation {
   registerVideoFromYoutube(input: RegisterVideoFromYoutubeInput!): RegisterVideoFromYoutubePayload!
+    @auth(scopes: ["create:video"])
 }
 
 input RegisterVideoFromYoutubeInput {
@@ -15,8 +16,7 @@ input RegisterVideoFromYoutubeInput {
 }
 
 union RegisterVideoFromYoutubePayload =
-    MutationAuthenticationError
-  | MutationInvalidTagIdError
+    MutationInvalidTagIdError
   | MutationTagNotFoundError
   | RegisterVideoFromYoutubeTagIdsDuplicatedError
   | RegisterVideoFromYoutubeSemitagNamesDuplicatedError # | MutationYoutubeRegistrationRequestNotFoundError | MutationInvalidYoutubeRegistrationRequestIdError | MutationYoutubeRegistrationRequestAlreadyCheckedError

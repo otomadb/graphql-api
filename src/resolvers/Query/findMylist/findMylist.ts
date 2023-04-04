@@ -10,7 +10,7 @@ export const MYLIST_NOT_FOUND_OR_PRIVATE_ERROR = "Mylist Not Found or Private";
 export const MYLIST_NOT_HOLDED_BY_YOU = "This mylist is not holded by you";
 
 export const findMylist = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { input: { id } }, { user: ctxUser }, info) => {
+  (async (_parent, { input: { id } }, { currentUser: ctxUser }, info) => {
     if (!id) {
       logger.error({ path: info.path, args: { input: { id } }, userId: ctxUser?.id }, "Not found");
       throw new GraphQLError("id must be provided"); // TODO: error messsage

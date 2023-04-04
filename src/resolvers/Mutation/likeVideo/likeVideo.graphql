@@ -1,5 +1,5 @@
 type Mutation {
-  likeVideo(input: LikeVideoInput!): LikeVideoPayload!
+  likeVideo(input: LikeVideoInput!): LikeVideoPayload! @auth(scopes: ["update:mylist_registration"])
 }
 
 input LikeVideoInput {

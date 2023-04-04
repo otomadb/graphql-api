@@ -5,6 +5,8 @@ generates:
   ./src/schema.graphql:
     plugins:
       - schema-ast
+    config:
+      includeDirectives: true
   ./src/resolvers/graphql.ts:
     config:
       avoidOptionals:
@@ -38,7 +40,6 @@ generates:
         SemitagResolveEvent: ./SemitagEvent/model.js#SemitagEventModel
         SemitagSuggestTagsItem: ./SemitagSuggestTagsItem/model.js#SemitagSuggestTagsItemModel
         SemitagResolving: ./SemitagResolving/model.js#SemitagResolvingModel
-        Session: ./Session/model.js#SessionModel
         Tag: ./Tag/model.js#TagModel
         TagEvent: ./TagEvent/model.js#TagEventModel
         TagName: ./TagName/model.js#TagNameModel

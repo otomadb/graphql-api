@@ -1,4 +1,4 @@
-import { CategoryTagType, UserRole } from "@prisma/client";
+import { CategoryTagType } from "@prisma/client";
 
 import { err, isErr, ok, Result } from "../../../utils/Result.js";
 import {
@@ -6,7 +6,6 @@ import {
   RegisterCategoryTagTypingOtherErrorMessage,
   ResolversTypes,
   TagType as GqlTagType,
-  UserRole as GqlUserRole,
 } from "../../graphql.js";
 import { parseGqlID3 } from "../../id.js";
 import { TagModel } from "../../Tag/model.js";
@@ -37,13 +36,7 @@ const convertTagType = (g: GqlTagType): Result<GqlTagType, CategoryTagType> => {
 };
 
 export const resolverRegisterCategoryTagTyping = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_: unknown, { input }, { user }, info) => {
-    if (!user || user.role !== UserRole.ADMINISTRATOR)
-      return {
-        __typename: "MutationAuthenticationError",
-        requiredRole: GqlUserRole.Administrator,
-      } satisfies ResolversTypes["MutationAuthenticationError"];
-
+  (async (_: unknown, { input }, { currentUser: user }, info) => {
     const tagId = parseGqlID3("Tag", input.tagId);
     if (isErr(tagId))
       return {

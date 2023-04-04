@@ -1,10 +1,9 @@
 type Mutation {
-  resovleSemitag(semitagId: ID!, tagId: ID!): ResolveSemitagReturnUnion!
+  resovleSemitag(semitagId: ID!, tagId: ID!): ResolveSemitagReturnUnion! @auth(scopes: ["check:semitag"])
 }
 
 union ResolveSemitagReturnUnion =
-    MutationAuthenticationError
-  | MutationInvalidTagIdError
+    MutationInvalidTagIdError
   | MutationTagNotFoundError
   | MutationInvalidSemitagIdError
   | MutationSemitagNotFoundError

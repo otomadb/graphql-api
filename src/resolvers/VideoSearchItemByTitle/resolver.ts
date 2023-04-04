@@ -6,7 +6,7 @@ import { VideoTitleModel } from "../VideoTitle/model.js";
 
 export const resolverVideoSearchItemByTitle = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   ({
-    video: ({ videoId }, _args, { user: ctxUser }, info) =>
+    video: ({ videoId }, _args, { currentUser: ctxUser }, info) =>
       prisma.video
         .findUniqueOrThrow({ where: { id: videoId } })
         .then((v) => new VideoModel(v))
@@ -14,7 +14,7 @@ export const resolverVideoSearchItemByTitle = ({ prisma, logger }: Pick<Resolver
           logger.error({ path: info.path, id: videoId, userId: ctxUser?.id, error: e }, "Not found");
           throw new GraphQLNotExistsInDBError("Video", videoId);
         }),
-    title: ({ titleId }, _args, { user: ctxUser }, info) =>
+    title: ({ titleId }, _args, { currentUser: ctxUser }, info) =>
       prisma.videoTitle
         .findUniqueOrThrow({ where: { id: titleId } })
         .then((v) => new VideoTitleModel(v))

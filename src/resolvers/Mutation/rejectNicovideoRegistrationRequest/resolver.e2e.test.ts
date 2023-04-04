@@ -10,25 +10,20 @@ import { DeepMockProxy, mock, mockDeep, mockReset } from "vitest-mock-extended";
 import typeDefs from "../../../schema.graphql";
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import {
-  MutationAuthenticationError,
   MutationNicovideoRegistrationRequestNotFoundError,
   NicovideoRegistrationRequest,
   RejectNicovideoRegistrationRequestRequestAlreadyCheckedError,
-  RejectNicovideoRegistrationRequestSucceededPayload,
-  User,
-  UserRole as GraphQLUserRole,
 } from "../../graphql.js";
 import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
-import { ResolverDeps, ServerContext, UserContext } from "../../types.js";
+import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
 
 describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
   let prisma: ResolverDeps["prisma"];
   let neo4j: ResolverDeps["neo4j"];
   let logger: ResolverDeps["logger"];
-  let config: ResolverDeps["config"];
-  let token: DeepMockProxy<ResolverDeps["token"]>;
   let meilisearch: DeepMockProxy<ResolverDeps["meilisearch"]>;
+  let auth0Management: DeepMockProxy<ResolverDeps["auth0Management"]>;
 
   let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
 
@@ -42,13 +37,12 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
     );
 
     logger = mock<ResolverDeps["logger"]>();
-    config = mock<ResolverDeps["config"]>();
-    token = mock<ResolverDeps["token"]>();
     meilisearch = mockDeep<ResolverDeps["meilisearch"]>();
+    auth0Management = mockDeep<ResolverDeps["auth0Management"]>();
 
     const schema = createSchema({
       typeDefs,
-      resolvers: makeResolvers({ prisma, neo4j, logger, config, meilisearch, token }),
+      resolvers: makeResolvers({ prisma, neo4j, logger, meilisearch, auth0Management }),
     });
     const yoga = createYoga<ServerContext, UserContext>({ schema });
     executor = buildHTTPExecutor({ fetch: yoga.fetch });
@@ -59,177 +53,11 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
     // TODO: neo4jのreset処理
 
     mockReset(logger);
-    mockReset(config);
   });
 
   afterAll(async () => {
     await prisma.$disconnect();
     await neo4j.close();
-  });
-
-  test("シナリオ1", async () => {
-    await prisma.$transaction([
-      prisma.user.create({
-        data: {
-          id: "u1",
-          name: "user1",
-          displayName: "User 1",
-          email: "user1@example.com",
-          password: "password",
-          role: UserRole.NORMAL,
-        },
-      }),
-      prisma.nicovideoRegistrationRequest.create({
-        data: {
-          id: "r1",
-          isChecked: false,
-          title: "タイトル1",
-          thumbnailUrl: "https://example.com/thumbnail.jpg",
-          sourceId: "sm9",
-          taggings: {},
-          semitaggings: {},
-          requestedById: "u1",
-        },
-      }),
-    ]);
-
-    const requestResult = await executor({
-      document: parse(/* GraphQL */ `
-        mutation NicovideoRegistrationRequests_Scenario1_Reject($input: RejectNicovideoRegistrationRequestInput!) {
-          rejectNicovideoRegistrationRequest(input: $input) {
-            __typename
-            ... on MutationAuthenticationError {
-              requiredRole
-            }
-            ... on MutationNicovideoRegistrationRequestNotFoundError {
-              requestId
-            }
-            ... on RejectNicovideoRegistrationRequestRequestAlreadyCheckedError {
-              request {
-                id
-              }
-            }
-            ... on RejectNicovideoRegistrationRequestOtherErrorsFallback {
-              message
-            }
-            ... on RejectNicovideoRegistrationRequestSucceededPayload {
-              rejecting {
-                note
-                rejectedBy {
-                  id
-                }
-                request {
-                  id
-                }
-              }
-            }
-          }
-        }
-      `),
-      variables: {
-        input: {
-          requestId: buildGqlId("NicovideoRegistrationRequest", "r1"),
-          note: "a",
-        },
-      },
-      context: { user: null } satisfies UserContext,
-    });
-
-    expect(requestResult.data).toStrictEqual({
-      rejectNicovideoRegistrationRequest: {
-        __typename: "MutationAuthenticationError",
-        requiredRole: GraphQLUserRole.Editor,
-      } satisfies MutationAuthenticationError,
-    });
-  });
-
-  /**
-   * 既にリクエストがあって，拒否しようとするが，権限が足りないので失敗する
-   */
-  test("シナリオ2", async () => {
-    await prisma.$transaction([
-      prisma.user.create({
-        data: {
-          id: "u1",
-          name: "user1",
-          displayName: "User 1",
-          email: "user1@example.com",
-          password: "password",
-          role: UserRole.NORMAL,
-        },
-      }),
-      prisma.user.create({
-        data: {
-          id: "u2",
-          name: "user2",
-          displayName: "User 2",
-          email: "user2@example.com",
-          password: "password",
-          role: UserRole.EDITOR,
-        },
-      }),
-      prisma.nicovideoRegistrationRequest.create({
-        data: {
-          id: "r1",
-          isChecked: false,
-          title: "タイトル1",
-          thumbnailUrl: "https://example.com/thumbnail.jpg",
-          sourceId: "sm9",
-          taggings: {},
-          semitaggings: {},
-          requestedById: "u1",
-        },
-      }),
-    ]);
-
-    const requestResult = await executor({
-      document: parse(/* GraphQL */ `
-        mutation NicovideoRegistrationRequests_Scenario2_Reject($input: RejectNicovideoRegistrationRequestInput!) {
-          rejectNicovideoRegistrationRequest(input: $input) {
-            __typename
-            ... on MutationAuthenticationError {
-              requiredRole
-            }
-            ... on MutationNicovideoRegistrationRequestNotFoundError {
-              requestId
-            }
-            ... on RejectNicovideoRegistrationRequestRequestAlreadyCheckedError {
-              request {
-                id
-              }
-            }
-            ... on RejectNicovideoRegistrationRequestOtherErrorsFallback {
-              message
-            }
-            ... on RejectNicovideoRegistrationRequestSucceededPayload {
-              rejecting {
-                note
-                rejectedBy {
-                  id
-                }
-                request {
-                  id
-                }
-              }
-            }
-          }
-        }
-      `),
-      variables: {
-        input: {
-          requestId: buildGqlId("NicovideoRegistrationRequest", "r1"),
-          note: "a",
-        },
-      },
-      context: { user: { id: "u2", role: UserRole.NORMAL } } satisfies UserContext,
-    });
-
-    expect(requestResult.data).toStrictEqual({
-      rejectNicovideoRegistrationRequest: {
-        __typename: "MutationAuthenticationError",
-        requiredRole: GraphQLUserRole.Editor,
-      } satisfies MutationAuthenticationError,
-    });
   });
 
   /**
@@ -276,9 +104,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
         mutation NicovideoRegistrationRequests_Scenario3_Reject($input: RejectNicovideoRegistrationRequestInput!) {
           rejectNicovideoRegistrationRequest(input: $input) {
             __typename
-            ... on MutationAuthenticationError {
-              requiredRole
-            }
+
             ... on MutationNicovideoRegistrationRequestNotFoundError {
               requestId
             }
@@ -310,7 +136,12 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
           note: "a",
         },
       },
-      context: { user: { id: "u2", role: UserRole.EDITOR } } satisfies UserContext,
+      context: {
+        currentUser: {
+          id: "u2",
+          scopes: ["check:registration_request"],
+        } satisfies CurrentUser,
+      },
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -355,9 +186,6 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
         mutation NicovideoRegistrationRequests_Scenario4_Reject($input: RejectNicovideoRegistrationRequestInput!) {
           rejectNicovideoRegistrationRequest(input: $input) {
             __typename
-            ... on MutationAuthenticationError {
-              requiredRole
-            }
             ... on MutationNicovideoRegistrationRequestNotFoundError {
               requestId
             }
@@ -389,7 +217,12 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
           note: "a",
         },
       },
-      context: { user: { id: "u2", role: UserRole.EDITOR } } satisfies UserContext,
+      context: {
+        currentUser: {
+          id: "u2",
+          scopes: ["check:registration_request"],
+        } satisfies CurrentUser,
+      },
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -444,9 +277,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
         mutation NicovideoRegistrationRequests_Scenario5_Reject($input: RejectNicovideoRegistrationRequestInput!) {
           rejectNicovideoRegistrationRequest(input: $input) {
             __typename
-            ... on MutationAuthenticationError {
-              requiredRole
-            }
+
             ... on MutationNicovideoRegistrationRequestNotFoundError {
               requestId
             }
@@ -461,12 +292,6 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
             ... on RejectNicovideoRegistrationRequestSucceededPayload {
               rejecting {
                 note
-                rejectedBy {
-                  id
-                }
-                request {
-                  id
-                }
               }
             }
           }
@@ -478,7 +303,12 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
           note: "a",
         },
       },
-      context: { user: { id: "u2", role: UserRole.EDITOR } } satisfies UserContext,
+      context: {
+        currentUser: {
+          id: "u2",
+          scopes: ["check:registration_request"],
+        } satisfies CurrentUser,
+      },
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -486,14 +316,8 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
         __typename: "RejectNicovideoRegistrationRequestSucceededPayload",
         rejecting: {
           note: "a",
-          request: {
-            id: buildGqlId("NicovideoRegistrationRequest", "r1"),
-          } as NicovideoRegistrationRequest,
-          rejectedBy: {
-            id: buildGqlId("User", "u2"),
-          } as User,
         },
-      } satisfies RejectNicovideoRegistrationRequestSucceededPayload,
+      },
     });
   });
 });

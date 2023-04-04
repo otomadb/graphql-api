@@ -11,25 +11,22 @@ import typeDefs from "../../../schema.graphql";
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import {
   ChangeMylistShareRangeSucceededPayload,
-  MutationAuthenticationError,
   MutationInvalidMylistIdError,
   MutationMylistNotFoundError,
   MutationWrongMylistHolderError,
   Mylist,
   MylistShareRange,
-  UserRole as GraphQLUserRole,
 } from "../../graphql.js";
 import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
-import { ResolverDeps, ServerContext, UserContext } from "../../types.js";
+import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
 
 describe("Mutation.changeMylistShareRange e2e", () => {
   let prisma: ResolverDeps["prisma"];
   let neo4j: ResolverDeps["neo4j"];
   let logger: ResolverDeps["logger"];
-  let config: ResolverDeps["config"];
-  let token: DeepMockProxy<ResolverDeps["token"]>;
   let meilisearch: DeepMockProxy<ResolverDeps["meilisearch"]>;
+  let auth0Management: DeepMockProxy<ResolverDeps["auth0Management"]>;
 
   let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
 
@@ -43,14 +40,13 @@ describe("Mutation.changeMylistShareRange e2e", () => {
     );
 
     logger = mockDeep<ResolverDeps["logger"]>();
-    config = mockDeep<ResolverDeps["config"]>();
     logger = mock<ResolverDeps["logger"]>();
-    token = mockDeep<ResolverDeps["token"]>();
     meilisearch = mockDeep<ResolverDeps["meilisearch"]>();
+    auth0Management = mockDeep<ResolverDeps["auth0Management"]>();
 
     const schema = createSchema({
       typeDefs,
-      resolvers: makeResolvers({ prisma, neo4j, logger, config, meilisearch, token }),
+      resolvers: makeResolvers({ prisma, neo4j, logger, meilisearch, auth0Management }),
     });
     const yoga = createYoga<ServerContext, UserContext>({ schema });
     executor = buildHTTPExecutor({ fetch: yoga.fetch });
@@ -61,74 +57,11 @@ describe("Mutation.changeMylistShareRange e2e", () => {
     // TODO: neo4jのreset処理
 
     mockReset(logger);
-    mockReset(config);
   });
 
   afterAll(async () => {
     await prisma.$disconnect();
     await neo4j.close();
-  });
-
-  test("MutationAuthenticationError", async () => {
-    await prisma.$transaction([
-      prisma.user.create({
-        data: {
-          id: "u1",
-          name: "user1",
-          displayName: "User 1",
-          email: "user1@example.com",
-          password: "password",
-          role: UserRole.NORMAL,
-        },
-      }),
-      prisma.mylist.create({
-        data: {
-          id: "m1",
-          title: "Mylist 1",
-          holderId: "u1",
-        },
-      }),
-    ]);
-
-    const requestResult = await executor({
-      document: parse(/* GraphQL */ `
-        mutation ChangeMylistShareRange_Scenario_1($input: ChangeMylistShareRangeInput!) {
-          changeMylistShareRange(input: $input) {
-            __typename
-            ... on MutationAuthenticationError {
-              requiredRole
-            }
-            ... on MutationInvalidMylistIdError {
-              mylistId
-            }
-            ... on MutationMylistNotFoundError {
-              mylistId
-            }
-            ... on MutationWrongMylistHolderError {
-              mylistId
-            }
-            ... on ChangeMylistShareRangeOtherErrorsFallback {
-              message
-            }
-            ... on ChangeMylistShareRangeSucceededPayload {
-              mylist {
-                id
-                range
-              }
-            }
-          }
-        }
-      `),
-      variables: { input: { mylistId: "m1", range: MylistShareRange.KnowLink } },
-      context: { user: null },
-    });
-
-    expect(requestResult.data).toStrictEqual({
-      changeMylistShareRange: {
-        __typename: "MutationAuthenticationError",
-        requiredRole: GraphQLUserRole.User,
-      } satisfies MutationAuthenticationError,
-    });
   });
 
   test("MutationInvalidMylistIdError", async () => {
@@ -157,9 +90,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
         mutation ChangeMylistShareRange_Scenario_1($input: ChangeMylistShareRangeInput!) {
           changeMylistShareRange(input: $input) {
             __typename
-            ... on MutationAuthenticationError {
-              requiredRole
-            }
+
             ... on MutationInvalidMylistIdError {
               mylistId
             }
@@ -187,7 +118,9 @@ describe("Mutation.changeMylistShareRange e2e", () => {
           range: MylistShareRange.KnowLink,
         },
       },
-      context: { user: { id: "u1", role: UserRole.NORMAL } },
+      context: {
+        user: { id: "u1", scopes: ["edit:mylist"] } satisfies CurrentUser,
+      },
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -224,9 +157,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
         mutation ChangeMylistShareRange_Scenario_1($input: ChangeMylistShareRangeInput!) {
           changeMylistShareRange(input: $input) {
             __typename
-            ... on MutationAuthenticationError {
-              requiredRole
-            }
+
             ... on MutationInvalidMylistIdError {
               mylistId
             }
@@ -254,7 +185,9 @@ describe("Mutation.changeMylistShareRange e2e", () => {
           range: MylistShareRange.KnowLink,
         },
       },
-      context: { user: { id: "u1", role: UserRole.NORMAL } },
+      context: {
+        currentUser: { id: "u1", scopes: ["edit:mylist"] } satisfies CurrentUser,
+      },
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -291,9 +224,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
         mutation ChangeMylistShareRange_Scenario_1($input: ChangeMylistShareRangeInput!) {
           changeMylistShareRange(input: $input) {
             __typename
-            ... on MutationAuthenticationError {
-              requiredRole
-            }
+
             ... on MutationInvalidMylistIdError {
               mylistId
             }
@@ -321,7 +252,9 @@ describe("Mutation.changeMylistShareRange e2e", () => {
           range: MylistShareRange.KnowLink,
         },
       },
-      context: { user: { id: "u2", role: UserRole.NORMAL } },
+      context: {
+        currentUser: { id: "u2", scopes: ["edit:mylist"] } satisfies CurrentUser,
+      },
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -359,9 +292,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
         mutation ChangeMylistShareRange_Scenario_1($input: ChangeMylistShareRangeInput!) {
           changeMylistShareRange(input: $input) {
             __typename
-            ... on MutationAuthenticationError {
-              requiredRole
-            }
+
             ... on MutationInvalidMylistIdError {
               mylistId
             }
@@ -389,7 +320,9 @@ describe("Mutation.changeMylistShareRange e2e", () => {
           range: MylistShareRange.KnowLink,
         },
       },
-      context: { user: { id: "u1", role: UserRole.NORMAL } },
+      context: {
+        currentUser: { id: "u1", scopes: ["edit:mylist"] } satisfies CurrentUser,
+      },
     });
 
     expect(requestResult.data).toStrictEqual({

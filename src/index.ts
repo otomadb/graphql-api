@@ -2,22 +2,40 @@
 /* eslint-disable no-process-env */
 import { createServer } from "node:http";
 
+import { ResolveUserFn, useGenericAuth, ValidateUserFn } from "@envelop/generic-auth";
 import { useDisableIntrospection } from "@graphql-yoga/plugin-disable-introspection";
 import { PrismaClient } from "@prisma/client";
-import { print } from "graphql";
+import { ManagementClient } from "auth0";
+import { GraphQLError, ListValueNode, StringValueNode } from "graphql";
 import { createSchema, createYoga, useLogger, useReadinessCheck } from "graphql-yoga";
+import jwt, { GetPublicKeyOrSecret } from "jsonwebtoken";
+import createJwksClient from "jwks-rsa";
 import { MeiliSearch } from "meilisearch";
 import neo4j from "neo4j-driver";
 import { pino } from "pino";
+import z from "zod";
 
-import { extractSessionFromReq, verifySession } from "./auth/session.js";
 import { makeResolvers } from "./resolvers/index.js";
-import { ServerContext, UserContext } from "./resolvers/types.js";
+import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
 import typeDefs from "./schema.graphql";
-import { extractTokenFromReq, signToken, verifyToken } from "./token.js";
-import { isErr, isOk } from "./utils/Result.js";
+
+const jwksClient = createJwksClient({
+  jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`,
+});
+const getPublicKey: GetPublicKeyOrSecret = async (header, callback) => {
+  jwksClient.getSigningKey(header.kid, function (err, key) {
+    const signingKey = key?.getPublicKey();
+    callback(null, signingKey);
+  });
+};
+
+const auth0Management = new ManagementClient({
+  domain: process.env.AUTH0_DOMAIN,
+  token: process.env.AUTH0_MANAGEMENT_API_TOKEN,
+});
 
 const logger = pino({
+  level: process.env.NODE_ENV === "production" ? "info" : "trace",
   transport: {
     targets: [
       {
@@ -57,64 +75,9 @@ const yoga = createYoga<ServerContext, UserContext>({
       prisma: prismaClient,
       meilisearch: meilisearchClient,
       logger,
-      config: {
-        session: {
-          cookieName: () => "otomadb_session",
-          cookieDomain: () => process.env.DOMAIN,
-          cookieSameSite: () => (process.env.ENABLE_SAME_SITE_NONE === "true" ? "none" : "strict"),
-        },
-      },
-      token: { sign: signToken },
+      auth0Management,
     }),
   }),
-  async context({ req }) {
-    // from cookie
-    const resultExtractSession = extractSessionFromReq(req, "otomadb_session");
-    if (isErr(resultExtractSession)) {
-      switch (resultExtractSession.error.type) {
-        case "INVALID_FORM":
-          logger.warn({ cookie: resultExtractSession.error.cookie }, "Cookie is invalid form for session");
-          break;
-      }
-    } else {
-      const session = await verifySession(prismaClient, resultExtractSession.data);
-      if (isOk(session))
-        return {
-          user: { id: session.data.user.id, role: session.data.user.role },
-        } satisfies UserContext;
-      else {
-        switch (session.error.type) {
-          case "NOT_FOUND_SESSION":
-            logger.warn({ id: session.error.id }, "Session not found");
-            break;
-          case "WRONG_SECRET":
-            logger.warn({ id: session.error.id, secret: session.error.secret }, "Session secret is incorrect");
-            break;
-        }
-      }
-    }
-
-    const token = extractTokenFromReq(req);
-    if (isOk(token)) {
-      const verified = await verifyToken(token.data);
-      if (isOk(verified)) return verified.data;
-      else {
-        switch (verified.error.type) {
-          case "TOKEN_EXPIRED":
-            logger.warn("Token already expired");
-            break;
-          case "INVALID_PAYLOAD":
-            logger.error({ payload: verified.error.payload }, "Token payload is invalid");
-            break;
-          case "UNKNOWN_ERROR":
-            logger.error({ error: verified.error.error }, "Something wrong in verifing token");
-            break;
-        }
-      }
-    }
-
-    return { user: null } satisfies UserContext;
-  },
   cors: (request) => {
     const origin = request.headers.get("origin");
     return {
@@ -123,6 +86,50 @@ const yoga = createYoga<ServerContext, UserContext>({
     };
   },
   plugins: [
+    useGenericAuth({
+      mode: "protect-granular",
+      resolveUserFn: (async ({ req }) => {
+        const token = req.headers.authorization?.split(" ").at(1);
+        logger.trace(token);
+        if (token) {
+          const result = await new Promise<{ error: jwt.VerifyErrors } | { decoded: jwt.Jwt }>((resolve, reject) =>
+            jwt.verify(token, getPublicKey, { complete: true }, (error, decoded) => {
+              if (error) return resolve({ error });
+              if (decoded) resolve({ decoded });
+              reject();
+            })
+          );
+          if ("error" in result) {
+            logger.error({ error: result.error }, "Token verification error");
+            return null;
+          }
+          const payload = z.object({ sub: z.string(), scope: z.string() }).safeParse(result.decoded.payload);
+          if (!payload.success) {
+            logger.error({ error: payload.error }, "Unexpected token payload");
+            return null;
+          }
+
+          logger.trace(payload.data);
+          const { sub, scope } = payload.data;
+          return { id: sub, scopes: scope.split(" ") };
+        }
+        return null;
+      }) satisfies ResolveUserFn<CurrentUser, ServerContext>,
+      validateUser: (({ user, fieldAuthDirectiveNode }) => {
+        const valueNode = fieldAuthDirectiveNode?.arguments?.find((arg) => arg.name.value === "scopes")?.value as
+          | ListValueNode
+          | undefined;
+        const requireScopes = valueNode?.values.map((v) => (v as StringValueNode).value) || [];
+        const missingScope = requireScopes.find((p) => !user?.scopes.includes(p));
+        if (missingScope) {
+          logger.error({ user, scope: missingScope }, "Missing scope");
+          throw new GraphQLError(`Missing scope`, {
+            extensions: { code: "FORBIDDEN", scope: missingScope },
+          });
+        }
+        return;
+      }) satisfies ValidateUserFn<CurrentUser>,
+    }),
     useDisableIntrospection({
       isDisabled() {
         return false; // TODO: 何かしら認証を入れる
@@ -165,7 +172,7 @@ const yoga = createYoga<ServerContext, UserContext>({
           case "execute-end":
             logger.info(
               {
-                query: print(data.args.document),
+                // query: print(data.args.document),
                 operation: data.args.operationName,
                 variables: data.args.variableValues || {},
                 user: data.args.contextValue.user,

@@ -9,7 +9,7 @@ import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
 import { ResolverDeps } from "../../types.js";
 
 export const resolverMylistRegistrations = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async ({ id: mylistId }, { orderBy, ...unparsedConnectionArgs }, { user: ctxUser }, info) => {
+  (async ({ id: mylistId }, { orderBy, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([
         z.object({

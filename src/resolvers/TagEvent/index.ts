@@ -6,16 +6,13 @@ import { TagModel } from "../Tag/model.js";
 import { ResolverDeps } from "../types.js";
 import { UserModel } from "../User/model.js";
 
-export const resolveTagEventCommonProps = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveTagEventCommonProps = ({
+  prisma,
+  auth0Management,
+}: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
   ({
     id: ({ id }): string => buildGqlId("TagEvent", id),
-    user: ({ userId }) =>
-      prisma.user
-        .findUniqueOrThrow({ where: { id: userId } })
-        .then((u) => new UserModel(u))
-        .catch(() => {
-          throw new GraphQLNotExistsInDBError("User", userId);
-        }),
+    user: async ({ userId }) => UserModel.fromAuth0User(await auth0Management.getUser({ id: userId })),
     tag: ({ tagId }) =>
       prisma.tag
         .findUniqueOrThrow({ where: { id: tagId } })
@@ -35,7 +32,7 @@ export const resolveTagEvent = () =>
     },
   } satisfies Resolvers["TagEvent"]);
 
-export const resolveTagRegisterEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveTagRegisterEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
   ({
-    ...resolveTagEventCommonProps({ prisma }),
+    ...resolveTagEventCommonProps(deps),
   } satisfies Resolvers["TagRegisterEvent"]);

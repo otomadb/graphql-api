@@ -1,5 +1,6 @@
 type Mutation {
   registerVideoFromNicovideo(input: RegisterVideoFromNicovideoInput!): RegisterVideoFromNicovideoPayload!
+    @auth(scopes: ["create:video"])
 }
 
 input RegisterVideoFromNicovideoInput {
@@ -17,8 +18,7 @@ input RegisterVideoFromNicovideoInput {
 }
 
 union RegisterVideoFromNicovideoPayload =
-    MutationAuthenticationError
-  | MutationInvalidTagIdError
+    MutationInvalidTagIdError
   | MutationTagNotFoundError
   | RegisterVideoFromNicovideoTagIdsDuplicatedError
   | RegisterVideoFromNicovideoSemitagNamesDuplicatedError

@@ -1,5 +1,5 @@
 type Mutation {
-  signin(input: SigninInput!): SigninPayload!
+  signin(input: SigninInput!): SigninPayload! @deprecated
 }
 
 input SigninInput {

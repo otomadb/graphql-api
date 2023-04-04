@@ -11,15 +11,14 @@ import typeDefs from "../../../schema.graphql";
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
-import { ResolverDeps, ServerContext, UserContext } from "../../types.js";
+import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
 
 describe("Mutation.registerTag e2e", () => {
   let prisma: ResolverDeps["prisma"];
   let neo4j: ResolverDeps["neo4j"];
   let logger: ResolverDeps["logger"];
-  let config: ResolverDeps["config"];
-  let token: DeepMockProxy<ResolverDeps["token"]>;
   let meilisearch: DeepMockProxy<ResolverDeps["meilisearch"]>;
+  let auth0Management: DeepMockProxy<ResolverDeps["auth0Management"]>;
 
   let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
 
@@ -33,13 +32,12 @@ describe("Mutation.registerTag e2e", () => {
     );
 
     logger = mock<ResolverDeps["logger"]>();
-    config = mock<ResolverDeps["config"]>();
-    token = mock<ResolverDeps["token"]>();
     meilisearch = mockDeep<ResolverDeps["meilisearch"]>();
+    auth0Management = mockDeep<ResolverDeps["auth0Management"]>();
 
     const schema = createSchema({
       typeDefs,
-      resolvers: makeResolvers({ prisma, neo4j, logger, config, meilisearch, token }),
+      resolvers: makeResolvers({ prisma, neo4j, logger, meilisearch, auth0Management }),
     });
     const yoga = createYoga<ServerContext, UserContext>({ schema });
     executor = buildHTTPExecutor({ fetch: yoga.fetch });
@@ -50,7 +48,6 @@ describe("Mutation.registerTag e2e", () => {
     // TODO: neo4jのreset処理
 
     mockReset(logger);
-    mockReset(config);
   });
 
   afterAll(async () => {
@@ -162,7 +159,12 @@ describe("Mutation.registerTag e2e", () => {
         }
       `),
       variables: { input },
-      context: { user: { id: "u1", role: "EDITOR" } } satisfies UserContext,
+      context: {
+        currentUser: {
+          id: "u1",
+          scopes: ["create:tag"],
+        } satisfies CurrentUser,
+      },
     });
 
     expect(requestResult.data).toStrictEqual({

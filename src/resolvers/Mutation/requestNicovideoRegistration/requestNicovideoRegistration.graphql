@@ -1,5 +1,6 @@
 type Mutation {
   requestNicovideoRegistration(input: RequestNicovideoRegistrationInput!): RequestNicovideoRegistrationReturnUnion!
+    @auth(scopes: ["create:registration_request"])
 }
 
 input RequestNicovideoRegistrationInput {
@@ -23,8 +24,7 @@ input RequestNicovideoRegistrationInputSemitagging {
 }
 
 union RequestNicovideoRegistrationReturnUnion =
-    MutationAuthenticationError
-  | MutationInvalidTagIdError
+    MutationInvalidTagIdError
   | MutationTagNotFoundError
   | RequestNicovideoRegistrationVideoAlreadyRegisteredError
   | RequestNicovideoRegistrationOtherErrorsFallback

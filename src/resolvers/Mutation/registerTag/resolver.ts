@@ -1,12 +1,5 @@
-import { UserRole } from "@prisma/client";
-
 import { isErr, ok } from "../../../utils/Result.js";
-import {
-  MutationResolvers,
-  RegisterTagOtherErrorsFallbackMessage,
-  ResolversTypes,
-  UserRole as GqlUserRole,
-} from "../../graphql.js";
+import { MutationResolvers, RegisterTagOtherErrorsFallbackMessage, ResolversTypes } from "../../graphql.js";
 import { buildGqlId, parseGqlID3, parseGqlIDs3 } from "../../id.js";
 import { TagModel } from "../../Tag/model.js";
 import { ResolverDeps } from "../../types.js";
@@ -20,13 +13,7 @@ export const resolverRegisterTag = ({
   logger,
   meilisearch,
 }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "meilisearch">) =>
-  (async (_: unknown, { input }, { user }, info) => {
-    if (!user || (user.role !== UserRole.EDITOR && user.role !== UserRole.ADMINISTRATOR))
-      return {
-        __typename: "MutationAuthenticationError",
-        requiredRole: GqlUserRole.Editor,
-      } satisfies ResolversTypes["MutationAuthenticationError"];
-
+  (async (_: unknown, { input }, { currentUser: user }, info) => {
     const explicitParentId = input.explicitParent ? parseGqlID3("Tag", input.explicitParent) : ok(null);
     if (isErr(explicitParentId))
       return {

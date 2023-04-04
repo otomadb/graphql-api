@@ -10,7 +10,7 @@ import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
 import { ResolverDeps } from "../../types.js";
 
 export const resolverUserMylists = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async ({ id: userId }, { orderBy, range, ...unparsedConnectionArgs }, { user: ctxUser }, info) => {
+  (async ({ id: userId }, { orderBy, range, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([
         z.object({}), // 全てのMylistの取得を許容する

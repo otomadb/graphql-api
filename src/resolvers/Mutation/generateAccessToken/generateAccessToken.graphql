@@ -1,5 +1,5 @@
 type Mutation {
-  generateAccessToken(duration: GenerateAccessTokenInputDuration!): GenerateAccessTokenReturnUnion!
+  generateAccessToken(duration: GenerateAccessTokenInputDuration!): GenerateAccessTokenReturnUnion! @deprecated
 }
 
 enum GenerateAccessTokenInputDuration {
