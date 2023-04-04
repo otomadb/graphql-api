@@ -151,9 +151,6 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
               name
               note
             }
-            requestedBy {
-              id
-            }
           }
         }
       `),
@@ -161,9 +158,6 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
     });
     expect(getRequestsResult.data.getNicovideoRegistrationRequest).toStrictEqual({
       id: requestResult.data.requestNicovideoRegistration.request.id,
-      requestedBy: {
-        id: buildGqlId("User", "u1"),
-      },
       sourceId: "sm9",
       title: "タイトル1",
       thumbnailUrl: "https://example.com/thumbnail.jpg",

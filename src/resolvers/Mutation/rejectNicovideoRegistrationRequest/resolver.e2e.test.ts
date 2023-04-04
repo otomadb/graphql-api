@@ -14,7 +14,6 @@ import {
   NicovideoRegistrationRequest,
   RejectNicovideoRegistrationRequestRequestAlreadyCheckedError,
   RejectNicovideoRegistrationRequestSucceededPayload,
-  User,
 } from "../../graphql.js";
 import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
@@ -294,12 +293,6 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
             ... on RejectNicovideoRegistrationRequestSucceededPayload {
               rejecting {
                 note
-                rejectedBy {
-                  id
-                }
-                request {
-                  id
-                }
               }
             }
           }
@@ -324,12 +317,6 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
         __typename: "RejectNicovideoRegistrationRequestSucceededPayload",
         rejecting: {
           note: "a",
-          request: {
-            id: buildGqlId("NicovideoRegistrationRequest", "r1"),
-          } as NicovideoRegistrationRequest,
-          rejectedBy: {
-            id: buildGqlId("User", "u2"),
-          } as User,
         },
       } satisfies RejectNicovideoRegistrationRequestSucceededPayload,
     });
