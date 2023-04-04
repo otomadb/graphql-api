@@ -9,3 +9,9 @@ type User implements Node {
   isEditor: Boolean!
   isAdministrator: Boolean!
 }
+
+enum UserRole {
+  USER
+  EDITOR
+  ADMINISTRATOR
+}
