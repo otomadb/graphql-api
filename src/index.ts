@@ -124,6 +124,8 @@ const yoga = createYoga<ServerContext, UserContext>({
         return null;
       }) satisfies ResolveUserFn<CurrentUser, ServerContext>,
       validateUser: (({ user, fieldAuthDirectiveNode }) => {
+        if (!fieldAuthDirectiveNode) return;
+
         if (!user) {
           throw new GraphQLError(`Not authenticated`, {
             extensions: { code: "NOT_AUTHENTICATED" },
