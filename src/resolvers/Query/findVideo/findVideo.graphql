@@ -1,5 +1,5 @@
 type Query {
-  findVideo(input: FindVideoInput!): Video @auth
+  findVideo(input: FindVideoInput!): Video
 }
 
 input FindVideoInput {
