@@ -6,7 +6,7 @@ import { ResolveUserFn, useGenericAuth, ValidateUserFn } from "@envelop/generic-
 import { useDisableIntrospection } from "@graphql-yoga/plugin-disable-introspection";
 import { PrismaClient } from "@prisma/client";
 import { ManagementClient } from "auth0";
-import { ListValueNode, StringValueNode } from "graphql";
+import { GraphQLError, ListValueNode, StringValueNode } from "graphql";
 import { createSchema, createYoga, useLogger, useReadinessCheck } from "graphql-yoga";
 import jwt, { GetPublicKeyOrSecret } from "jsonwebtoken";
 import createJwksClient from "jwks-rsa";
@@ -123,7 +123,9 @@ const yoga = createYoga<ServerContext, UserContext>({
         const missingScope = requireScopes.find((p) => !user?.scopes.includes(p));
         if (missingScope) {
           logger.error({ user, scope: missingScope }, "Missing scope");
-          throw new Error(`Missing scope: ${missingScope}`);
+          throw new GraphQLError(`Missing scope`, {
+            extensions: { code: "FORBIDDEN", scope: missingScope },
+          });
         }
         return;
       }) satisfies ValidateUserFn<CurrentUser>,
