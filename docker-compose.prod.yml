@@ -53,7 +53,7 @@ services:
       PRISMA_DATABASE_URL: "postgres://user:pass@postgres:5432/test"
 
   neo4j:
-    image: neo4j:5.5
+    image: neo4j:5.6
     environment:
       NEO4J_AUTH: neo4j/password
     healthcheck:
