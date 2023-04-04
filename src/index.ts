@@ -3,7 +3,6 @@
 import { createServer } from "node:http";
 
 import { ResolveUserFn, useGenericAuth, ValidateUserFn } from "@envelop/generic-auth";
-import { useDisableIntrospection } from "@graphql-yoga/plugin-disable-introspection";
 import { PrismaClient } from "@prisma/client";
 import { ManagementClient } from "auth0";
 import { GraphQLError, ListValueNode, StringValueNode } from "graphql";
@@ -129,11 +128,6 @@ const yoga = createYoga<ServerContext, UserContext>({
         }
         return;
       }) satisfies ValidateUserFn<CurrentUser>,
-    }),
-    useDisableIntrospection({
-      isDisabled() {
-        return false; // TODO: 何かしら認証を入れる
-      },
     }),
     useReadinessCheck({
       check: async () => {
