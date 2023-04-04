@@ -89,8 +89,8 @@ const yoga = createYoga<ServerContext, UserContext>({
       mode: "protect-granular",
       resolveUserFn: (async ({ req }) => {
         const token = req.headers.authorization?.split(" ").at(1);
-        logger.trace(token);
         if (token) {
+          logger.trace(token);
           const result = await new Promise<{ error: jwt.VerifyErrors } | { decoded: jwt.Jwt }>((resolve, reject) =>
             jwt.verify(token, getPublicKey, { complete: true }, (error, decoded) => {
               if (error) return resolve({ error });
@@ -115,17 +115,27 @@ const yoga = createYoga<ServerContext, UserContext>({
         return null;
       }) satisfies ResolveUserFn<CurrentUser, ServerContext>,
       validateUser: (({ user, fieldAuthDirectiveNode }) => {
+        if (!user) {
+          throw new GraphQLError(`Not authenticated`, {
+            extensions: { code: "NOT_AUTHENTICATED" },
+          });
+        }
+
         const valueNode = fieldAuthDirectiveNode?.arguments?.find((arg) => arg.name.value === "scopes")?.value as
           | ListValueNode
           | undefined;
         const requireScopes = valueNode?.values.map((v) => (v as StringValueNode).value) || [];
-        const missingScope = requireScopes.find((p) => !user?.scopes.includes(p));
+
+        logger.trace({ have: user.scopes, require: requireScopes });
+
+        const missingScope = requireScopes.find((p) => !user.scopes.includes(p));
         if (missingScope) {
           logger.error({ user, scope: missingScope }, "Missing scope");
           throw new GraphQLError(`Missing scope`, {
             extensions: { code: "FORBIDDEN", scope: missingScope },
           });
         }
+
         return;
       }) satisfies ValidateUserFn<CurrentUser>,
     }),
