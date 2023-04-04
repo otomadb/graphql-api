@@ -66,7 +66,7 @@ jobs:
           POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ env.POSTGRES_DATABASE }}
       neo4j:
-        image: neo4j:5.5
+        image: neo4j:5.6
         ports:
           - 7687:7687
         env:
