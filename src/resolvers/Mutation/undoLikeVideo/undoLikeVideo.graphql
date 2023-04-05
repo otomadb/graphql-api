@@ -1,30 +1,27 @@
 type Mutation {
-  undoLikeVideo(input: UndoLikeVideoInput!): UndoLikeVideoPayload! @auth(scopes: ["update:mylist_registration"])
+  undoLikeVideo(input: UndoLikeVideoInput!): UndoLikeVideoReturnUnion! @auth(scopes: ["update:mylist_registration"])
 }
 
 input UndoLikeVideoInput {
   videoId: ID!
 }
 
-union UndoLikeVideoPayload = UndoLikeVideoSucceededPayload | UndoLikeVideoFailedPayload
+union UndoLikeVideoReturnUnion =
+    MutationVideoNotFoundError
+  | MutationInvalidVideoIdError
+  | UndoLikeVideoNotLikedError
+  | UndoLikeVideoAlreadyUndoLikedError
+  | UndoLikeVideoSucceededPayload
+
+type UndoLikeVideoNotLikedError {
+  video: Video!
+  likes: Mylist!
+}
+
+type UndoLikeVideoAlreadyUndoLikedError {
+  registration: MylistRegistration!
+}
 
 type UndoLikeVideoSucceededPayload {
   registration: MylistRegistration!
-
-  video: Video! @deprecated
-  mylist: Mylist! @deprecated
-}
-
-type UndoLikeVideoFailedPayload {
-  message: UndoLikeVideoFailedMessage!
-}
-
-enum UndoLikeVideoFailedMessage {
-  FORBIDDEN
-
-  INVALID_VIDEO_ID
-  VIDEO_NOT_FOUND
-  VIDEO_NOT_LIKED
-
-  UNKNOWN
 }
