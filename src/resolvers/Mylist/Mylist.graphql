@@ -1,6 +1,9 @@
 type Mylist implements Node {
   id: ID!
+
   title: String!
+  slug: String!
+
   holder: User!
   isLikeList: Boolean!
   range: MylistShareRange!
