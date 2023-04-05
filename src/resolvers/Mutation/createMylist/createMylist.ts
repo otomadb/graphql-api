@@ -5,8 +5,8 @@ import { ResolverDeps } from "../../types.js";
 import { create } from "./create.js";
 
 export const createMylist = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { input: { title, range } }, { currentUser: ctxUser }, info) => {
-    const result = await create(prisma, { title, userId: ctxUser.id, range });
+  (async (_parent, { input: { slug, title, range } }, { currentUser }, info) => {
+    const result = await create(prisma, { title, userId: currentUser.id, range, slug });
     if (isErr(result)) {
       switch (result.error.message) {
         case "INTERNAL_SERVER_ERROR":

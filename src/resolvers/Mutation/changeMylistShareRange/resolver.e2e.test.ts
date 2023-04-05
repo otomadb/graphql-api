@@ -81,6 +81,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
           id: "m1",
           title: "Mylist 1",
           holderId: "u1",
+          slug: "mylist-1",
         },
       }),
     ]);
@@ -148,6 +149,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
           id: "m1",
           title: "Mylist 1",
           holderId: "u1",
+          slug: "mylist-1",
         },
       }),
     ]);
@@ -215,6 +217,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
           id: "m1",
           title: "Mylist 1",
           holderId: "u1",
+          slug: "mylist-1",
         },
       }),
     ]);
@@ -283,6 +286,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
           title: "Mylist 1",
           holderId: "u1",
           shareRange: MylistShareRange.Private,
+          slug: "mylist-1",
         },
       }),
     ]);

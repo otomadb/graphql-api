@@ -12,7 +12,8 @@ datasource db {
 }
 
 model Mylist {
-  id String @id @default(cuid())
+  id   String @id @default(cuid())
+  slug String @db.Citext()
 
   title String
 
@@ -31,6 +32,8 @@ model Mylist {
   includedGroups MylistGroupMylistInclsion[]
 
   events MylistEvent[]
+
+  @@unique([holderId, slug])
 }
 
 enum MylistShareRange {

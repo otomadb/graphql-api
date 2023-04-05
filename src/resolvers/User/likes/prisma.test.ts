@@ -40,6 +40,7 @@ describe("Get user likes by Prisma", () => {
           holderId: "u1",
           isLikeList: true,
           shareRange: MylistShareRange.PRIVATE,
+          slug: "mylist-1",
         },
       }),
     ]);
@@ -76,6 +77,7 @@ describe("Get user likes by Prisma", () => {
           holderId: "u1",
           isLikeList: true,
           shareRange: MylistShareRange.PRIVATE,
+          slug: "mylist-1",
         },
       }),
     ]);
@@ -103,6 +105,7 @@ describe("Get user likes by Prisma", () => {
           holderId: "u1",
           isLikeList: true,
           shareRange: MylistShareRange.PRIVATE,
+          slug: "mylist-1",
         },
       }),
     ]);
@@ -139,6 +142,7 @@ describe("Get user likes by Prisma", () => {
           holderId: "u1",
           isLikeList: true,
           shareRange: MylistShareRange.KNOW_LINK,
+          slug: "mylist-1",
         },
       }),
     ]);
@@ -166,6 +170,7 @@ describe("Get user likes by Prisma", () => {
           holderId: "u1",
           isLikeList: true,
           shareRange: MylistShareRange.PUBLIC,
+          slug: "mylist-1",
         },
       }),
     ]);
@@ -208,6 +213,7 @@ describe("Get user likes by Prisma", () => {
           holderId: "u1",
           isLikeList: true,
           shareRange: MylistShareRange.PUBLIC,
+          slug: "mylist-1",
         },
       }),
     ]);
