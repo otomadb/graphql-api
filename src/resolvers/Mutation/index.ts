@@ -23,7 +23,7 @@ import { resolverRemoveTagFromVideo } from "./removeTagFromVideo/resolver.js";
 import { removeVideoFromMylist } from "./removeVideoFromMylist/removeVideoFromMylist.js";
 import { resolverRequestNicovideoRegistration as requestNicovideoRegistration } from "./requestNicovideoRegistration/resolver.js";
 import { resolverResolveSemitag } from "./resolveSemitag/resolver.js";
-import { undoLikeVideo } from "./undoLikeVideo/undoLikeVideo.js";
+import { resolverUndoLikeVideo } from "./undoLikeVideo/resolver.js";
 
 export const resolveMutation = (deps: ResolverDeps) =>
   ({
@@ -48,5 +48,5 @@ export const resolveMutation = (deps: ResolverDeps) =>
     removeVideoFromMylist: removeVideoFromMylist(deps),
     requestNicovideoRegistration: requestNicovideoRegistration(deps),
     resovleSemitag: resolverResolveSemitag(deps),
-    undoLikeVideo: undoLikeVideo(deps),
+    undoLikeVideo: resolverUndoLikeVideo(deps),
   } satisfies Resolvers["Mutation"]);
