@@ -11,7 +11,7 @@ import { resolverUserNicovideoRegistrationRequests } from "./nicovideoRegistrati
 export const resolveUser = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   ({
     id: ({ id }): string => buildGqlId("User", id),
-    likes: resolverUserLikes({ prisma }),
+    likes: resolverUserLikes({ prisma, logger }),
     nicovideoRegistrationRequests: resolverUserNicovideoRegistrationRequests({ prisma, logger }),
 
     mylist: async ({ id: userId }, { id: gqlMylistId }, { currentUser: ctxUser }) => {
