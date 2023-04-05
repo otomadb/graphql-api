@@ -1,27 +1,21 @@
 type Mutation {
-  likeVideo(input: LikeVideoInput!): LikeVideoPayload! @auth(scopes: ["update:mylist_registration"])
+  likeVideo(input: LikeVideoInput!): LikeVideoReturnUnion! @auth(scopes: ["update:mylist_registration"])
 }
 
 input LikeVideoInput {
   videoId: ID!
 }
 
-union LikeVideoPayload = LikeVideoSucceededPayload | LikeVideoFailedPayload
+union LikeVideoReturnUnion =
+    MutationVideoNotFoundError
+  | MutationInvalidVideoIdError
+  | LikeVideoAlreadyLikedError
+  | LikeVideoSucceededPayload
 
-type LikeVideoSucceededPayload {
+type LikeVideoAlreadyLikedError {
   registration: MylistRegistration!
 }
 
-type LikeVideoFailedPayload {
-  message: LikeVideoFailedMessage!
-}
-
-enum LikeVideoFailedMessage {
-  FORBIDDEN
-
-  INVALID_VIDEO_ID
-  VIDEO_NOT_FOUND
-  VIDEO_ALREADY_LIKED
-
-  UNKNOWN
+type LikeVideoSucceededPayload {
+  registration: MylistRegistration!
 }
