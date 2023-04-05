@@ -26,7 +26,7 @@ import { getVideo } from "./getVideo/resolver.js";
 import { getYoutubeVideoSource } from "./getYoutubeVideoSource/resolver.js";
 import { searchTags } from "./searchTags/resolver.js";
 import { searchVideos } from "./searchVideos/resolver.js";
-import { whoami } from "./whoami/whoami.js";
+import { resolverWhoami } from "./whoami/resolver.js";
 
 export const resolveQuery = (deps: ResolverDeps) =>
   ({
@@ -54,5 +54,5 @@ export const resolveQuery = (deps: ResolverDeps) =>
     getYoutubeVideoSource: getYoutubeVideoSource(deps),
     searchTags: searchTags(deps),
     searchVideos: searchVideos(deps),
-    whoami: whoami(deps),
+    whoami: resolverWhoami(deps),
   } satisfies Resolvers["Query"]);
