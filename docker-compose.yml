@@ -47,7 +47,7 @@ services:
       NEO4J_AUTH: neo4j/password
 
   meilisearch:
-    image: getmeili/meilisearch:v1.1
+    image: getmeili/meilisearch:v1.0
     ports:
       - target: 7700
         published: 7700
