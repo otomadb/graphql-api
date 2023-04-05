@@ -3,6 +3,8 @@ type Mutation {
 }
 
 input CreateMylistInput {
+  "URLなどで使う簡単な識別子"
+  slug: String!
   title: String!
   range: MylistShareRange!
 }
