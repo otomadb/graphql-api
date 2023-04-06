@@ -87,7 +87,7 @@ export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pris
       });
       return prisma.mylistRegistration
         .findUnique({ where: { mylistId_videoId: { mylistId: likelist.id, videoId } } })
-        .then((r) => !!r);
+        .then((r) => !!MylistRegistrationModel.fromPrismaNullable(r));
     },
 
     like: async ({ id: videoId }, _args, { currentUser }) => {

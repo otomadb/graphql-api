@@ -4,12 +4,13 @@ export class MylistRegistrationModel {
   constructor(private readonly entity: MylistRegistration) {}
 
   static fromPrisma(e: MylistRegistration) {
+    // TODO: isRemoved が true の場合はエラーにする
     return new MylistRegistrationModel(e);
   }
 
-  static fromPrismaNullable(e: MylistRegistration | null) {
-    if (!e) return null;
-    return new MylistRegistrationModel(e);
+  static fromPrismaNullable(r: MylistRegistration | null) {
+    if (!r || r.isRemoved) return null;
+    return new MylistRegistrationModel(r);
   }
 
   get id() {
