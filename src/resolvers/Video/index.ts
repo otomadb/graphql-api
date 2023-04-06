@@ -1,3 +1,4 @@
+import { MylistShareRange } from "@prisma/client";
 import { GraphQLError } from "graphql";
 
 import { Resolvers } from "../graphql.js";
@@ -72,17 +73,37 @@ export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pris
       return { nodes };
     },
 
-    isLiked: ({ id: videoId }, _args, { currentUser: user }) => {
-      if (!user) throw new GraphQLError("Not logged in");
+    isLiked: async ({ id: videoId }, _args, { currentUser }) => {
+      const likelist = await prisma.mylist.upsert({
+        where: { holderId_slug: { holderId: currentUser.id, slug: "likes" } },
+        create: {
+          holderId: currentUser.id,
+          slug: "likes",
+          title: "likes",
+          shareRange: MylistShareRange.PRIVATE,
+          isLikeList: false,
+        },
+        update: {},
+      });
       return prisma.mylistRegistration
-        .findFirst({ where: { videoId, mylist: { holderId: user.id }, isRemoved: false } })
+        .findUnique({ where: { mylistId_videoId: { mylistId: likelist.id, videoId } } })
         .then((r) => !!r);
     },
 
-    like: async ({ id: videoId }, _args, { currentUser: user }) => {
-      if (!user) return null;
+    like: async ({ id: videoId }, _args, { currentUser }) => {
+      const likelist = await prisma.mylist.upsert({
+        where: { holderId_slug: { holderId: currentUser.id, slug: "likes" } },
+        create: {
+          holderId: currentUser.id,
+          slug: "likes",
+          title: "likes",
+          shareRange: MylistShareRange.PRIVATE,
+          isLikeList: false,
+        },
+        update: {},
+      });
       return prisma.mylistRegistration
-        .findFirst({ where: { videoId, mylist: { holderId: user.id }, isRemoved: false } })
+        .findUnique({ where: { mylistId_videoId: { mylistId: likelist.id, videoId } } })
         .then((r) => MylistRegistrationModel.fromPrismaNullable(r));
     },
   } satisfies Resolvers["Video"]);

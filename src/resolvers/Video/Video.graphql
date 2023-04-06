@@ -16,7 +16,7 @@ type Video implements Node {
 
   semitags(checked: Boolean): [Semitag!]!
 
-  isLiked: Boolean! @deprecated
+  isLiked: Boolean! @auth
   like: MylistRegistration @auth
 }
 
