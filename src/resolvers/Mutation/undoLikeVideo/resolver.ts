@@ -39,8 +39,9 @@ export const resolverUndoLikeVideo = ({ prisma, neo4j, logger }: Pick<ResolverDe
           } satisfies ResolversTypes["UndoLikeVideoReturnUnion"];
         case "ALREADY_REMOVED":
           return {
-            __typename: "UndoLikeVideoAlreadyUndoLikedError",
-            registration: new MylistRegistrationModel(result.error.registration),
+            __typename: "UndoLikeVideoNotLikedError",
+            video: new VideoModel(result.error.video),
+            likes: new MylistModel(result.error.mylist),
           } satisfies ResolversTypes["UndoLikeVideoReturnUnion"];
       }
     }
