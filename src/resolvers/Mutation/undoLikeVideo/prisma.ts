@@ -10,7 +10,7 @@ export const undo = async (
   Result<
     | { type: "VIDEO_NOT_FOUND"; videoId: string }
     | { type: "NOT_LIKED"; mylist: Mylist; video: Video }
-    | { type: "ALREADY_REMOVED"; registration: MylistRegistration }
+    | { type: "ALREADY_REMOVED"; mylist: Mylist; video: Video }
     | { type: "INTERNAL_SERVER_ERROR"; error: unknown },
     MylistRegistration
   >
@@ -36,9 +36,13 @@ export const undo = async (
         videoId: video.id,
       },
     },
+    include: {
+      video: true,
+      mylist: true,
+    },
   });
   if (!ext) return err({ type: "NOT_LIKED", video, mylist: likelist });
-  if (ext.isRemoved) return err({ type: "ALREADY_REMOVED", registration: ext });
+  if (ext.isRemoved) return err({ type: "ALREADY_REMOVED", mylist: ext.mylist, video: ext.video });
   const registration = await prisma.mylistRegistration.update({
     where: { id: ext.id },
     data: { isRemoved: true, events: { create: { type: "UNREGISTER", userId, payload: {} } } },
