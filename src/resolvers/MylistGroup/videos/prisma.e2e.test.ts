@@ -39,10 +39,6 @@ describe("Get whole videos in mylist group in prisma", () => {
       prisma.user.create({
         data: {
           id: userId1,
-          name: "user1",
-          displayName: "User1",
-          email: "user1@example.com",
-          password: "password",
         },
       }),
       prisma.video.createMany({
@@ -125,10 +121,6 @@ describe("Get whole videos in mylist group in prisma", () => {
       prisma.user.create({
         data: {
           id: userId1,
-          name: "user1",
-          displayName: "User1",
-          email: "user1@example.com",
-          password: "password",
         },
       }),
       prisma.video.createMany({
@@ -220,10 +212,6 @@ describe("Get whole videos in mylist group in prisma", () => {
       prisma.user.create({
         data: {
           id: userId1,
-          name: "user1",
-          displayName: "User1",
-          email: "user1@example.com",
-          password: "password",
         },
       }),
       prisma.video.createMany({

@@ -1,6 +1,6 @@
 import { buildHTTPExecutor, HTTPExecutorOptions } from "@graphql-tools/executor-http";
 import { SyncExecutor } from "@graphql-tools/utils";
-import { PrismaClient, UserRole } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { parse } from "graphql";
 import { createSchema, createYoga } from "graphql-yoga";
 import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
@@ -63,11 +63,6 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
       prisma.user.create({
         data: {
           id: "u1",
-          name: "user1",
-          displayName: "User 1",
-          email: "user1@example.com",
-          password: "password",
-          role: UserRole.NORMAL,
         },
       }),
       prisma.tag.createMany({

@@ -1,4 +1,4 @@
-import { MylistShareRange, UserRole } from "@prisma/client";
+import { MylistShareRange } from "@prisma/client";
 
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
@@ -25,6 +25,6 @@ export const resolveUser = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "l
 
     mylists: resolverUserMylists({ prisma, logger }),
 
-    isEditor: ({ role }) => role === UserRole.EDITOR || role === UserRole.ADMINISTRATOR,
-    isAdministrator: ({ role }) => role === UserRole.ADMINISTRATOR,
+    isEditor: () => false,
+    isAdministrator: () => false,
   } satisfies Resolvers["User"]);

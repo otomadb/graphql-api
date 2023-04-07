@@ -1,6 +1,6 @@
 import { buildHTTPExecutor, HTTPExecutorOptions } from "@graphql-tools/executor-http";
 import { SyncExecutor } from "@graphql-tools/utils";
-import { PrismaClient, UserRole } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { parse } from "graphql";
 import { createSchema, createYoga } from "graphql-yoga";
 import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
@@ -68,21 +68,11 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
       prisma.user.create({
         data: {
           id: "u1",
-          name: "user1",
-          displayName: "User 1",
-          email: "user1@example.com",
-          password: "password",
-          role: UserRole.NORMAL,
         },
       }),
       prisma.user.create({
         data: {
           id: "u2",
-          name: "user2",
-          displayName: "User 2",
-          email: "user2@example.com",
-          password: "password",
-          role: UserRole.EDITOR,
         },
       }),
       prisma.nicovideoRegistrationRequest.create({
@@ -162,21 +152,11 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
       prisma.user.create({
         data: {
           id: "u1",
-          name: "user1",
-          displayName: "User 1",
-          email: "user1@example.com",
-          password: "password",
-          role: UserRole.NORMAL,
         },
       }),
       prisma.user.create({
         data: {
           id: "u2",
-          name: "user2",
-          displayName: "User 2",
-          email: "user2@example.com",
-          password: "password",
-          role: UserRole.EDITOR,
         },
       }),
     ]);
@@ -241,21 +221,11 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
       prisma.user.create({
         data: {
           id: "u1",
-          name: "user1",
-          displayName: "User 1",
-          email: "user1@example.com",
-          password: "password",
-          role: UserRole.NORMAL,
         },
       }),
       prisma.user.create({
         data: {
           id: "u2",
-          name: "user2",
-          displayName: "User 2",
-          email: "user2@example.com",
-          password: "password",
-          role: UserRole.EDITOR,
         },
       }),
       prisma.nicovideoRegistrationRequest.create({
