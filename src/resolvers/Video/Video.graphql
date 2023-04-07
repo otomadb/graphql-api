@@ -15,9 +15,6 @@ type Video implements Node {
   youtubeSources: [YoutubeVideoSource!]!
 
   semitags(checked: Boolean): [Semitag!]!
-
-  isLiked: Boolean! @auth
-  like: MylistRegistration @auth
 }
 
 type VideoThumbnail {
