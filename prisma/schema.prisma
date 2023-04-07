@@ -184,21 +184,6 @@ enum MylistGroupMylistInclsionEventType {
   REINCLUDE
 }
 
-model Session {
-  id String @id @default(cuid())
-
-  secret String @db.VarChar(64)
-
-  expiredAt DateTime
-  isExpired Boolean  @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-}
-
 model Tag {
   id     String @id @default(cuid())
   serial Int    @unique @default(autoincrement())
@@ -371,8 +356,6 @@ model User {
   mylists Mylist[]
 
   mylistGroups MylistGroup[]
-
-  sessions Session[]
 
   eventTag        TagEvent[]
   eventsTagName   TagNameEvent[]
