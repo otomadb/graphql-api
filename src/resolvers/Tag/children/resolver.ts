@@ -18,9 +18,9 @@ export const resolverChildren = ({ prisma, logger }: Pick<ResolverDeps, "prisma"
               z.object({ last: z.number(), before: z.string().optional() }),
             ]
           : [
-              z.object({}), // カテゴリータグでない場合は全取得を許容
               z.object({ first: z.number(), after: z.string().optional() }),
               z.object({ last: z.number(), before: z.string().optional() }),
+              z.object({}), // カテゴリータグでない場合は全取得を許容
             ]
       )
       .safeParse(unparsedConnectionArgs);
