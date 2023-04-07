@@ -12,7 +12,6 @@ export const resolveTaggings = ({ prisma, logger }: Pick<ResolverDeps, "prisma" 
   (async ({ id: videoId }, { orderBy, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([
-        z.object({}), // 全てのVideoTagの取得を許容する
         z.object({
           first: z.number(),
           after: z.string().optional(),
@@ -21,6 +20,7 @@ export const resolveTaggings = ({ prisma, logger }: Pick<ResolverDeps, "prisma" 
           last: z.number(),
           before: z.string().optional(),
         }),
+        z.object({}), // 全てのVideoTagの取得を許容する
       ])
       .safeParse(unparsedConnectionArgs);
     if (!connectionArgs.success) {
