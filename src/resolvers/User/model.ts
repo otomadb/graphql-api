@@ -1,4 +1,3 @@
-import { UserRole } from "@prisma/client";
 import { AppMetadata, User, UserMetadata } from "auth0";
 import { z } from "zod";
 
@@ -39,9 +38,5 @@ export class UserModel {
 
   get icon() {
     return this.entity.icon;
-  }
-
-  get role(): UserRole {
-    return UserRole.NORMAL;
   }
 }

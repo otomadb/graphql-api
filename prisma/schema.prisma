@@ -336,55 +336,32 @@ enum TagParentEventType {
 }
 
 model User {
-  id   String @id @default(cuid())
-  name String @unique @db.Citext
-
-  email            String  @unique()
-  isEmailConfirmed Boolean @default(false)
-
-  role UserRole @default(NORMAL)
-
-  displayName String
-
-  icon String?
-
-  password String
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  mylists Mylist[]
-
+  mylists      Mylist[]
   mylistGroups MylistGroup[]
 
-  eventTag        TagEvent[]
-  eventsTagName   TagNameEvent[]
-  eventsTagParent TagParentEvent[]
-
-  eventsVideo           VideoEvent[]
-  eventsVideoTag        VideoTagEvent[]
-  eventsVideoTitle      VideoTitleEvent[]
-  eventsVideoThumbnail  VideoThumbnailEvent[]
-  eventsNicovideoSource NicovideoVideoSourceEvent[]
-  eventsSemitag         SemitagEvent[]
-
-  eventsMylist                   MylistEvent[]
-  eventMylistRegistration        MylistRegistrationEvent[]
-  eventMylistGroup               MylistGroupEvent[]
-  eventMylistGroupMylistInclsion MylistGroupMylistInclsionEvent[]
-
-  NicovideoRegistrationRequests         NicovideoRegistrationRequest[]
-  NicovideoRegistrationRequestCheckings NicovideoRegistrationRequestChecking[]
-  NicovideoRegistrationRequestEvents    NicovideoRegistrationRequestEvent[]
-
-  CategoryTagTyping       CategoryTagTyping[]
-  YoutubeVideoSourceEvent YoutubeVideoSourceEvent[]
-}
-
-enum UserRole {
-  NORMAL
-  EDITOR
-  ADMINISTRATOR
+  MylistEvent                          MylistEvent[]
+  MylistRegistrationEvent              MylistRegistrationEvent[]
+  MylistGroupEvent                     MylistGroupEvent[]
+  MylistGroupMylistInclsionEvent       MylistGroupMylistInclsionEvent[]
+  CategoryTagTyping                    CategoryTagTyping[]
+  TagEvent                             TagEvent[]
+  TagNameEvent                         TagNameEvent[]
+  TagParentEvent                       TagParentEvent[]
+  VideoEvent                           VideoEvent[]
+  VideoTitleEvent                      VideoTitleEvent[]
+  VideoThumbnailEvent                  VideoThumbnailEvent[]
+  VideoTagEvent                        VideoTagEvent[]
+  SemitagEvent                         SemitagEvent[]
+  NicovideoVideoSourceEvent            NicovideoVideoSourceEvent[]
+  NicovideoRegistrationRequest         NicovideoRegistrationRequest[]
+  NicovideoRegistrationRequestChecking NicovideoRegistrationRequestChecking[]
+  NicovideoRegistrationRequestEvent    NicovideoRegistrationRequestEvent[]
+  YoutubeVideoSourceEvent              YoutubeVideoSourceEvent[]
 }
 
 model Video {

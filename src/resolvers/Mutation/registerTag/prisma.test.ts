@@ -27,10 +27,6 @@ describe("Register video by Prisma", () => {
       prisma.user.create({
         data: {
           id: "u1",
-          name: "user1",
-          displayName: "User1",
-          email: "user1@example.com",
-          password: "password",
         },
       }),
       prisma.video.createMany({
@@ -70,10 +66,6 @@ describe("Register video by Prisma", () => {
       prisma.user.create({
         data: {
           id: "u1",
-          name: "user1",
-          displayName: "User1",
-          email: "user1@example.com",
-          password: "password",
         },
       }),
       prisma.video.createMany({
@@ -113,10 +105,6 @@ describe("Register video by Prisma", () => {
       prisma.user.create({
         data: {
           id: "u1",
-          name: "user1",
-          displayName: "User1",
-          email: "user1@example.com",
-          password: "password",
         },
       }),
       prisma.video.createMany({
@@ -154,10 +142,6 @@ describe("Register video by Prisma", () => {
       prisma.user.create({
         data: {
           id: "u1",
-          name: "user1",
-          displayName: "User1",
-          email: "user1@example.com",
-          password: "password",
         },
       }),
       prisma.video.createMany({
@@ -198,10 +182,6 @@ describe("Register video by Prisma", () => {
       prisma.user.create({
         data: {
           id: "u1",
-          name: "user1",
-          displayName: "User1",
-          email: "user1@example.com",
-          password: "password",
         },
       }),
       prisma.video.createMany({
