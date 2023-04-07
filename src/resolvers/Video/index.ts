@@ -1,9 +1,7 @@
-import { MylistShareRange } from "@prisma/client";
 import { GraphQLError } from "graphql";
 
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
-import { MylistRegistrationModel } from "../MylistRegistration/model.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
 import { SemitagModel } from "../Semitag/model.js";
 import { ResolverDeps } from "../types.js";
@@ -11,6 +9,8 @@ import { VideoEventModel } from "../VideoEvent/model.js";
 import { VideoThumbnailModel } from "../VideoThumbnail/model.js";
 import { VideoTitleModel } from "../VideoTitle/model.js";
 import { YoutubeVideoSourceModel } from "../YoutubeVideoSource/model.js";
+import { resolveVideoIsLiked } from "./isLiked/resolver.js";
+import { resolveVideoLike } from "./like/resolver.js";
 import { resolveSimilarVideos as resolverVideoSimilarVideos } from "./similarVideos/resolver.js";
 import { resolveTaggings } from "./taggings/resolver.js";
 
@@ -73,37 +73,6 @@ export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pris
       return { nodes };
     },
 
-    isLiked: async ({ id: videoId }, _args, { currentUser }) => {
-      const likelist = await prisma.mylist.upsert({
-        where: { holderId_slug: { holderId: currentUser.id, slug: "likes" } },
-        create: {
-          holderId: currentUser.id,
-          slug: "likes",
-          title: "likes",
-          shareRange: MylistShareRange.PRIVATE,
-          isLikeList: false,
-        },
-        update: {},
-      });
-      return prisma.mylistRegistration
-        .findUnique({ where: { mylistId_videoId: { mylistId: likelist.id, videoId } } })
-        .then((r) => !!MylistRegistrationModel.fromPrismaNullable(r));
-    },
-
-    like: async ({ id: videoId }, _args, { currentUser }) => {
-      const likelist = await prisma.mylist.upsert({
-        where: { holderId_slug: { holderId: currentUser.id, slug: "likes" } },
-        create: {
-          holderId: currentUser.id,
-          slug: "likes",
-          title: "likes",
-          shareRange: MylistShareRange.PRIVATE,
-          isLikeList: false,
-        },
-        update: {},
-      });
-      return prisma.mylistRegistration
-        .findUnique({ where: { mylistId_videoId: { mylistId: likelist.id, videoId } } })
-        .then((r) => MylistRegistrationModel.fromPrismaNullable(r));
-    },
+    isLiked: resolveVideoIsLiked({ prisma, logger }),
+    like: resolveVideoLike({ prisma, logger }),
   } satisfies Resolvers["Video"]);
