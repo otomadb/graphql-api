@@ -17,6 +17,7 @@ import z from "zod";
 
 import { makeResolvers } from "./resolvers/index.js";
 import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
+import { UserModel } from "./resolvers/User/model.js";
 import typeDefs from "./schema.graphql";
 
 const jwksClient = createJwksClient({
@@ -86,17 +87,7 @@ const yoga = createYoga<ServerContext, UserContext>({
       prisma: prismaClient,
       meilisearch: meilisearchClient,
       logger,
-      auth0Management,
-      cache: {
-        get: (key) => redisClient.get(key),
-        set: async (key, value, { ttl }) => {
-          await redisClient.set(key, value);
-          if (ttl) await redisClient.expire(key, ttl);
-        },
-        delete: async (key) => {
-          await redisClient.del(key);
-        },
-      },
+      userRepository: UserModel.makeRepository({ auth0Management, logger, redis: redisClient }),
     }),
   }),
   cors: (request) => {

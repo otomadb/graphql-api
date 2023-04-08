@@ -1,13 +1,32 @@
-import { AppMetadata, User, UserMetadata } from "auth0";
+import type { AppMetadata, ManagementClient, User, UserMetadata } from "auth0";
+import type { Redis } from "ioredis";
+import type { Logger } from "pino";
 import { z } from "zod";
-
-import { ResolverDeps } from "../types.js";
 
 export class UserModel {
   private constructor(private readonly entity: { id: string; name: string; displayName: string; icon: string }) {}
 
-  public static async fromAuth0User(
-    { logger, cache }: Pick<ResolverDeps, "logger" | "cache">,
+  public static makeRepository({
+    logger,
+    redis,
+    auth0Management,
+  }: {
+    auth0Management: ManagementClient<AppMetadata, UserMetadata>;
+    logger: Logger;
+    redis: Redis;
+  }) {
+    return {
+      async getById(id: string) {
+        return UserModel.getByIdFromAuth0({ logger, redis, auth0Management }, id);
+      },
+      async findByName(name: string) {
+        return UserModel.findByNameFromAuth0({ logger, redis, auth0Management }, name);
+      },
+    };
+  }
+
+  private static async fromAuth0User(
+    { logger, redis }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "logger" | "redis">,
     auth0user: User<AppMetadata, UserMetadata>
   ) {
     const parsed = z
@@ -29,15 +48,19 @@ export class UserModel {
       displayName: parsed.data.nickname,
       icon: parsed.data.picture,
     });
-    await cache.set(`auth0:${user.id}`, JSON.stringify(user.entity), { ttl: 60 * 10 });
+    await redis.setex(`auth0:${user.id}`, 60 * 3, JSON.stringify(user.entity));
     return user;
   }
 
-  public static async fromAuth0(
-    { auth0Management, logger, cache }: Pick<ResolverDeps, "auth0Management" | "logger" | "cache">,
+  private static async getByIdFromAuth0(
+    {
+      auth0Management,
+      logger,
+      redis,
+    }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "auth0Management" | "logger" | "redis">,
     userId: string
   ) {
-    const cached = await cache.get(`auth0:${userId}`);
+    const cached = await redis.get(`auth0:${userId}`);
 
     if (cached) {
       const parsedCached = z
@@ -46,17 +69,33 @@ export class UserModel {
 
       if (parsedCached.success) return new UserModel(parsedCached.data);
 
-      cache.delete(`auth0:${userId}`);
+      await redis.del(`auth0:${userId}`);
     }
 
     try {
       const auth0user = await auth0Management.getUser({ id: userId });
-      const user = await UserModel.fromAuth0User({ logger, cache }, auth0user);
+      const user = await UserModel.fromAuth0User({ logger, redis }, auth0user);
       return user;
     } catch (error) {
       logger.error({ error }, "Failed to fetch user from Auth0");
       throw new Error("Failed to fetch user from Auth0");
     }
+  }
+
+  private static async findByNameFromAuth0(
+    {
+      auth0Management,
+      logger,
+      redis,
+    }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "auth0Management" | "logger" | "redis">,
+    name: string
+  ) {
+    const auth0user = (await auth0Management.getUsers({ q: `username:"${name}"` })).at(0);
+    if (!auth0user) {
+      logger.info({ userName: name }, "User not found");
+      return null;
+    }
+    return UserModel.fromAuth0User({ logger, redis }, auth0user);
   }
 
   get id() {

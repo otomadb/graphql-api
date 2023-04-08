@@ -7,28 +7,24 @@ import { ResolverDeps } from "../../types.js";
 export const resolverFindMylist = ({
   prisma,
   logger,
-  auth0Management,
-}: Pick<ResolverDeps, "prisma" | "logger" | "auth0Management">) =>
+  userRepository,
+}: Pick<ResolverDeps, "prisma" | "logger" | "userRepository">) =>
   (async (_parent, { input }, { currentUser }, info) => {
     const { pair } = input;
 
-    const holder = (await auth0Management.getUsers({ q: `username:"${pair.holderName}"` })).at(0);
+    const holder = await userRepository.findByName(pair.holderName);
     if (!holder) {
       logger.info({ path: info.path, holderName: pair.holderName }, "Holder not found");
-      return null;
-    }
-    if (!holder.user_id) {
-      logger.warn({ path: info.path, requestHolderName: pair.holderName, holder }, "User id not defined");
       return null;
     }
 
     const mylist = await prisma.mylist.findUnique({
       where: {
-        holderId_slug: { slug: input.pair.mylistSlug, holderId: holder.user_id },
+        holderId_slug: { slug: input.pair.mylistSlug, holderId: holder.id },
       },
     });
     if (!mylist) {
-      logger.info({ path: info.path, input: pair, holderId: holder.user_id }, "Mylist not found");
+      logger.info({ path: info.path, input: pair, holderId: holder.id }, "Mylist not found");
       return null;
     }
 

@@ -4,18 +4,15 @@ import { GraphQLError } from "graphql";
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
 import { ResolverDeps } from "../types.js";
-import { UserModel } from "../User/model.js";
 import { VideoTagModel } from "../VideoTag/model.js";
 
 export const resolveVideoTagEventCommonProps = ({
   prisma,
-  auth0Management,
-  logger,
-  cache,
-}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">) =>
+  userRepository,
+}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     id: ({ id }): string => buildGqlId("VideoTagEvent", id),
-    user: async ({ userId }) => UserModel.fromAuth0({ auth0Management, logger, cache }, userId),
+    user: async ({ userId }) => userRepository.getById(userId),
     videoTag: ({ videoTagId }) =>
       prisma.videoTag
         .findUniqueOrThrow({ where: { id: videoTagId } })
@@ -41,23 +38,17 @@ export const resolveVideoTagEvent = () =>
     },
   } satisfies Resolvers["VideoTagEvent"]);
 
-export const resolveVideoTagAttachEvent = (
-  deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">
-) =>
+export const resolveVideoTagAttachEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     ...resolveVideoTagEventCommonProps(deps),
   } satisfies Resolvers["VideoTagAttachEvent"]);
 
-export const resolveVideoTagReattachEvent = (
-  deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">
-) =>
+export const resolveVideoTagReattachEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     ...resolveVideoTagEventCommonProps(deps),
   } satisfies Resolvers["VideoTagReattachEvent"]);
 
-export const resolveVideoTagDetachEvent = (
-  deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">
-) =>
+export const resolveVideoTagDetachEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     ...resolveVideoTagEventCommonProps(deps),
   } satisfies Resolvers["VideoTagDetachEvent"]);

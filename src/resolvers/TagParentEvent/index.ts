@@ -4,17 +4,14 @@ import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
 import { TagParentModel } from "../TagParent/model.js";
 import { ResolverDeps } from "../types.js";
-import { UserModel } from "../User/model.js";
 
 export const resolveTagParentEventCommonProps = ({
   prisma,
-  auth0Management,
-  logger,
-  cache,
-}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">) =>
+  userRepository,
+}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     id: ({ id }): string => buildGqlId("TagParentEvent", id),
-    user: async ({ userId }) => UserModel.fromAuth0({ auth0Management, logger, cache }, userId),
+    user: async ({ userId }) => userRepository.getById(userId),
     tagParent: ({ tagParentId }) =>
       prisma.tagParent
         .findUniqueOrThrow({ where: { id: tagParentId } })
@@ -38,23 +35,17 @@ export const resolveTagParentEvent = () =>
     },
   } satisfies Resolvers["TagParentEvent"]);
 
-export const resolveTagParentCreateEvent = (
-  deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">
-) =>
+export const resolveTagParentCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     ...resolveTagParentEventCommonProps(deps),
   } satisfies Resolvers["TagParentCreateEvent"]);
 
-export const resolveTagParentSetPrimaryEvent = (
-  deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">
-) =>
+export const resolveTagParentSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     ...resolveTagParentEventCommonProps(deps),
   } satisfies Resolvers["TagParentSetPrimaryEvent"]);
 
-export const resolveTagParentUnsetPrimaryEvent = (
-  deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">
-) =>
+export const resolveTagParentUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     ...resolveTagParentEventCommonProps(deps),
   } satisfies Resolvers["TagParentUnsetPrimaryEvent"]);

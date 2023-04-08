@@ -1,10 +1,12 @@
 import { IncomingMessage, ServerResponse } from "node:http";
 
 import { PrismaClient } from "@prisma/client";
-import { AppMetadata, ManagementClient, User, UserMetadata } from "auth0";
+import { AppMetadata, User, UserMetadata } from "auth0";
 import { MeiliSearch } from "meilisearch";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 import { Logger } from "pino";
+
+import { UserModel } from "./User/model.js";
 
 export type Auth0User = User<AppMetadata, UserMetadata>;
 export type ResolverDeps = {
@@ -12,12 +14,7 @@ export type ResolverDeps = {
   neo4j: Neo4jDriver;
   meilisearch: MeiliSearch;
   logger: Logger;
-  auth0Management: ManagementClient<AppMetadata, UserMetadata>;
-  cache: {
-    get(key: string): Promise<string | null>;
-    set(key: string, value: string, option: { ttl?: number }): Promise<void>;
-    delete(key: string): void;
-  };
+  userRepository: ReturnType<typeof UserModel.makeRepository>;
 };
 export type ServerContext = {
   req: IncomingMessage;

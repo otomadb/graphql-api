@@ -2,14 +2,11 @@ import { Resolvers } from "../graphql.js";
 import { buildGqlId } from "../id.js";
 import { TagModel } from "../Tag/model.js";
 import { ResolverDeps } from "../types.js";
-import { UserModel } from "../User/model.js";
 
 export const resolverNicovideoRegistrationRequest = ({
   prisma,
-  auth0Management,
-  logger,
-  cache,
-}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">) =>
+  userRepository,
+}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     id: ({ dbId: requestId }) => buildGqlId("NicovideoRegistrationRequest", requestId),
 
@@ -36,5 +33,5 @@ export const resolverNicovideoRegistrationRequest = ({
         }))
       );
     },
-    requestedBy: async ({ requestedById }) => UserModel.fromAuth0({ auth0Management, logger, cache }, requestedById),
+    requestedBy: async ({ requestedById }) => userRepository.getById(requestedById),
   } satisfies Resolvers["NicovideoRegistrationRequest"]);
