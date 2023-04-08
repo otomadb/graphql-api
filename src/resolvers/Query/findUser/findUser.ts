@@ -11,10 +11,12 @@ export const findUser = ({ logger, auth0Management }: Pick<ResolverDeps, "prisma
       throw new GraphQLError("name must be provided"); // TODO: error messsage
     }
 
-    const user = (await auth0Management.getUsers({ q: `username:"${name}"` })).at(0);
-    if (!user) {
+    const auth0user = (await auth0Management.getUsers({ q: `username:"${name}"` })).at(0);
+    if (!auth0user) {
       logger.info({ path: info.path, name }, "Not found");
       return null;
     }
-    return UserModel.fromAuth0User(user);
+    return UserModel.fromAuth0User({ logger }, auth0user).catch(() => {
+      throw new GraphQLError("Internal server error");
+    });
   }) satisfies QueryResolvers["findUser"];

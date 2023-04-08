@@ -7,7 +7,8 @@ import { UserModel } from "../User/model.js";
 export const resolverNicovideoRegistrationRequest = ({
   prisma,
   auth0Management,
-}: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
+  logger,
+}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
   ({
     id: ({ dbId: requestId }) => buildGqlId("NicovideoRegistrationRequest", requestId),
 
@@ -34,6 +35,5 @@ export const resolverNicovideoRegistrationRequest = ({
         }))
       );
     },
-    requestedBy: async ({ requestedById }) =>
-      UserModel.fromAuth0User(await auth0Management.getUser({ id: requestedById })),
+    requestedBy: async ({ requestedById }) => UserModel.fromAuth0({ auth0Management, logger }, requestedById),
   } satisfies Resolvers["NicovideoRegistrationRequest"]);

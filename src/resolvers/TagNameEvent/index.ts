@@ -9,10 +9,11 @@ import { UserModel } from "../User/model.js";
 export const resolveTagNameEventCommonProps = ({
   prisma,
   auth0Management,
-}: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
+  logger,
+}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
   ({
     id: ({ id }): string => buildGqlId("TagEvent", id),
-    user: async ({ userId }) => UserModel.fromAuth0User(await auth0Management.getUser({ id: userId })),
+    user: async ({ userId }) => UserModel.fromAuth0({ auth0Management, logger }, userId),
     tagName: ({ tagNameId }) =>
       prisma.tagName
         .findUniqueOrThrow({ where: { id: tagNameId } })
@@ -36,17 +37,17 @@ export const resolveTagNameEvent = () =>
     },
   } satisfies Resolvers["TagNameEvent"]);
 
-export const resolveTagNameCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
+export const resolveTagNameCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
   ({
     ...resolveTagNameEventCommonProps(deps),
   } satisfies Resolvers["TagNameCreateEvent"]);
 
-export const resolveTagNameSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
+export const resolveTagNameSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
   ({
     ...resolveTagNameEventCommonProps(deps),
   } satisfies Resolvers["TagNameSetPrimaryEvent"]);
 
-export const resolveTagNameUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
+export const resolveTagNameUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
   ({
     ...resolveTagNameEventCommonProps(deps),
   } satisfies Resolvers["TagNameUnsetPrimaryEvent"]);

@@ -9,10 +9,11 @@ import { UserModel } from "../User/model.js";
 export const resolveTagEventCommonProps = ({
   prisma,
   auth0Management,
-}: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
+  logger,
+}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
   ({
     id: ({ id }): string => buildGqlId("TagEvent", id),
-    user: async ({ userId }) => UserModel.fromAuth0User(await auth0Management.getUser({ id: userId })),
+    user: async ({ userId }) => UserModel.fromAuth0({ auth0Management, logger }, userId),
     tag: ({ tagId }) =>
       prisma.tag
         .findUniqueOrThrow({ where: { id: tagId } })
@@ -32,7 +33,7 @@ export const resolveTagEvent = () =>
     },
   } satisfies Resolvers["TagEvent"]);
 
-export const resolveTagRegisterEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
+export const resolveTagRegisterEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
   ({
     ...resolveTagEventCommonProps(deps),
   } satisfies Resolvers["TagRegisterEvent"]);

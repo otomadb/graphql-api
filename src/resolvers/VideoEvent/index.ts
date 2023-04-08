@@ -7,10 +7,11 @@ import { VideoModel } from "../Video/model.js";
 export const resolveVideoEventCommonProps = ({
   prisma,
   auth0Management,
-}: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
+  logger,
+}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
   ({
     id: ({ id }): string => buildGqlId("VideoEvent", id),
-    user: async ({ userId }) => UserModel.fromAuth0User(await auth0Management.getUser({ id: userId })),
+    user: async ({ userId }) => UserModel.fromAuth0({ auth0Management, logger }, userId),
     video: ({ videoId }) =>
       prisma.video
         .findUniqueOrThrow({ where: { id: videoId } })
@@ -30,7 +31,7 @@ export const resolveVideoEvent = () =>
     },
   } satisfies Resolvers["VideoEvent"]);
 
-export const resolveVideoRegisterEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
+export const resolveVideoRegisterEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
   ({
     ...resolveVideoEventCommonProps(deps),
   } satisfies Resolvers["VideoRegisterEvent"]);

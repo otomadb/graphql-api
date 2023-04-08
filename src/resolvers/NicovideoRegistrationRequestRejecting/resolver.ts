@@ -7,7 +7,8 @@ import { UserModel } from "../User/model.js";
 export const resolverNicovideoRegistrationRequestRejecting = ({
   prisma,
   auth0Management,
-}: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
+  logger,
+}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
   ({
     request: ({ requestId }) =>
       prisma.nicovideoRegistrationRequest
@@ -16,5 +17,5 @@ export const resolverNicovideoRegistrationRequestRejecting = ({
         .catch(() => {
           throw new GraphQLNotExistsInDBError("NicovideoRegistrationRequest", requestId);
         }),
-    rejectedBy: async ({ checkedById }) => UserModel.fromAuth0User(await auth0Management.getUser({ id: checkedById })),
+    rejectedBy: async ({ checkedById }) => UserModel.fromAuth0({ auth0Management, logger }, checkedById),
   } satisfies Resolvers["NicovideoRegistrationRequestRejecting"]);

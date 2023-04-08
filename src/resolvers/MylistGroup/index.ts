@@ -5,11 +5,15 @@ import { UserModel } from "../User/model.js";
 import { resolveMylists } from "./mylists.js";
 import { resolverMylistGroupVideo } from "./videos/resolver.js";
 
-export const resolveMylistGroup = ({ prisma, auth0Management }: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
+export const resolveMylistGroup = ({
+  prisma,
+  auth0Management,
+  logger,
+}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
   ({
     id: ({ id }) => buildGqlId("MylistGroup", id),
 
-    holder: async ({ holderId }) => UserModel.fromAuth0User(await auth0Management.getUser({ id: holderId })),
+    holder: async ({ holderId }) => UserModel.fromAuth0({ auth0Management, logger }, holderId),
 
     mylists: resolveMylists({ prisma }),
     videos: resolverMylistGroupVideo({ prisma }),

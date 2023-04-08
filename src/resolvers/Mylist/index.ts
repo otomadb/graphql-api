@@ -29,7 +29,7 @@ export const resolveMylist = ({
       }
     },
 
-    holder: async ({ holderId }) => UserModel.fromAuth0User(await auth0Management.getUser({ id: holderId })),
+    holder: async ({ holderId }) => UserModel.fromAuth0({ auth0Management, logger }, holderId),
     registrations: resolverMylistRegistrations({ prisma, logger }),
 
     isIncludesVideo: async ({ id: mylistId }, { id: videoId }) =>
