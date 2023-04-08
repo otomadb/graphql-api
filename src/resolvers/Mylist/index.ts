@@ -3,17 +3,16 @@ import { MylistShareRange } from "@prisma/client";
 import { MylistShareRange as GQLMylistShareRange, Resolvers } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
 import { ResolverDeps } from "../types.js";
-import { UserModel } from "../User/model.js";
 import { resolveIncludeTags } from "./includesTags.js";
 import { resolveRecommendedVideos } from "./recommendedVideos.js";
 import { resolverMylistRegistrations } from "./registrations/resolver.js";
 
 export const resolveMylist = ({
   prisma,
-  neo4j,
-  auth0Management,
   logger,
-}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "auth0Management">) =>
+  neo4j,
+  userRepository,
+}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "userRepository">) =>
   ({
     id: ({ id }) => buildGqlId("Mylist", id),
     range: ({ shareRange }) => {
@@ -29,7 +28,7 @@ export const resolveMylist = ({
       }
     },
 
-    holder: async ({ holderId }) => UserModel.fromAuth0User(await auth0Management.getUser({ id: holderId })),
+    holder: async ({ holderId }) => userRepository.getById(holderId),
     registrations: resolverMylistRegistrations({ prisma, logger }),
 
     isIncludesVideo: async ({ id: mylistId }, { id: videoId }) =>

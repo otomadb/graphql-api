@@ -7,6 +7,7 @@ import { PrismaClient } from "@prisma/client";
 import { ManagementClient } from "auth0";
 import { GraphQLError, ListValueNode, StringValueNode } from "graphql";
 import { createSchema, createYoga, useLogger, useReadinessCheck } from "graphql-yoga";
+import { Redis } from "ioredis";
 import jwt, { GetPublicKeyOrSecret } from "jsonwebtoken";
 import createJwksClient from "jwks-rsa";
 import { MeiliSearch } from "meilisearch";
@@ -16,6 +17,7 @@ import z from "zod";
 
 import { makeResolvers } from "./resolvers/index.js";
 import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
+import { UserModel } from "./resolvers/User/model.js";
 import typeDefs from "./schema.graphql";
 
 const jwksClient = createJwksClient({
@@ -74,6 +76,8 @@ const meilisearchClient = new MeiliSearch({
   host: process.env.MEILISEARCH_URL,
 });
 
+const redisClient = new Redis(process.env.REDIS_URL);
+
 const yoga = createYoga<ServerContext, UserContext>({
   graphiql: process.env.ENABLE_GRAPHIQL === "true",
   schema: createSchema({
@@ -83,7 +87,7 @@ const yoga = createYoga<ServerContext, UserContext>({
       prisma: prismaClient,
       meilisearch: meilisearchClient,
       logger,
-      auth0Management,
+      userRepository: UserModel.makeRepository({ auth0Management, logger, redis: redisClient }),
     }),
   }),
   cors: (request) => {
@@ -165,6 +169,10 @@ const yoga = createYoga<ServerContext, UserContext>({
               }),
             neo4jDriver.getServerInfo().catch((e) => {
               logger.error({ error: e }, "Neo4j is not ready.");
+              throw e;
+            }),
+            redisClient.ping().catch((e) => {
+              logger.error({ error: e }, "Redis is not ready.");
               throw e;
             }),
           ]);

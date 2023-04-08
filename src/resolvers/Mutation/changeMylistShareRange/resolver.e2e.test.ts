@@ -26,7 +26,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
   let neo4j: ResolverDeps["neo4j"];
   let logger: ResolverDeps["logger"];
   let meilisearch: DeepMockProxy<ResolverDeps["meilisearch"]>;
-  let auth0Management: DeepMockProxy<ResolverDeps["auth0Management"]>;
+  let userRepository: DeepMockProxy<ResolverDeps["userRepository"]>;
 
   let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
 
@@ -42,11 +42,11 @@ describe("Mutation.changeMylistShareRange e2e", () => {
     logger = mockDeep<ResolverDeps["logger"]>();
     logger = mock<ResolverDeps["logger"]>();
     meilisearch = mockDeep<ResolverDeps["meilisearch"]>();
-    auth0Management = mockDeep<ResolverDeps["auth0Management"]>();
+    userRepository = mockDeep<ResolverDeps["userRepository"]>();
 
     const schema = createSchema({
       typeDefs,
-      resolvers: makeResolvers({ prisma, neo4j, logger, meilisearch, auth0Management }),
+      resolvers: makeResolvers({ prisma, neo4j, logger, meilisearch, userRepository }),
     });
     const yoga = createYoga<ServerContext, UserContext>({ schema });
     executor = buildHTTPExecutor({ fetch: yoga.fetch });

@@ -7,12 +7,11 @@ import { SemitagModel } from "../Semitag/model.js";
 import { SemitagRejectingModel } from "../SemitagRejecting/model.js";
 import { SemitagResolvingModel } from "../SemitagResolving/model.js";
 import { ResolverDeps } from "../types.js";
-import { UserModel } from "../User/model.js";
 
-export const resolveSemitagEventCommonProps = ({ auth0Management }: Pick<ResolverDeps, "auth0Management">) =>
+export const resolveSemitagEventCommonProps = ({ userRepository }: Pick<ResolverDeps, "userRepository">) =>
   ({
     id: ({ id }): string => buildGqlId("SemitagEvent", id),
-    user: async ({ userId }) => UserModel.fromAuth0User(await auth0Management.getUser({ id: userId })),
+    user: async ({ userId }) => userRepository.getById(userId),
   } satisfies Omit<Exclude<Resolvers["SemitagEvent"], undefined>, "__resolveType">);
 
 export const resolveSemitagEvent = () =>
@@ -31,10 +30,11 @@ export const resolveSemitagEvent = () =>
 
 export const resolveSemitagEventAttachEvent = ({
   prisma,
-  auth0Management,
-}: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
+  userRepository,
+  logger,
+}: Pick<ResolverDeps, "prisma" | "userRepository" | "logger">) =>
   ({
-    ...resolveSemitagEventCommonProps({ auth0Management }),
+    ...resolveSemitagEventCommonProps({ userRepository }),
     semitag: ({ semitagId }) =>
       prisma.semitag
         .findUniqueOrThrow({ where: { id: semitagId } })
@@ -46,11 +46,11 @@ export const resolveSemitagEventAttachEvent = ({
 
 export const resolveSemitagEventResolveEvent = ({
   prisma,
-  auth0Management,
+  userRepository,
   logger,
-}: Pick<ResolverDeps, "prisma" | "logger" | "auth0Management">) =>
+}: Pick<ResolverDeps, "prisma" | "logger" | "userRepository">) =>
   ({
-    ...resolveSemitagEventCommonProps({ auth0Management }),
+    ...resolveSemitagEventCommonProps({ userRepository }),
     resolving: async ({ semitagId }, _args, _context, info) => {
       const checking = await prisma.semitagChecking.findUniqueOrThrow({ where: { semitagId } });
       if (!checking.videoTagId) {
@@ -68,11 +68,11 @@ export const resolveSemitagEventResolveEvent = ({
 
 export const resolveSemitagEventRejectEvent = ({
   prisma,
-  auth0Management,
   logger,
-}: Pick<ResolverDeps, "prisma" | "logger" | "auth0Management">) =>
+  userRepository,
+}: Pick<ResolverDeps, "prisma" | "logger" | "userRepository">) =>
   ({
-    ...resolveSemitagEventCommonProps({ auth0Management }),
+    ...resolveSemitagEventCommonProps({ userRepository }),
     rejecting: async ({ semitagId }, _args, _context, info) => {
       const checking = await prisma.semitagChecking.findUniqueOrThrow({ where: { semitagId } });
       if (checking.videoTagId) {

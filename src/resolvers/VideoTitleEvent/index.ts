@@ -3,16 +3,15 @@ import { VideoTitleEventType } from "@prisma/client";
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
 import { ResolverDeps } from "../types.js";
-import { UserModel } from "../User/model.js";
 import { VideoTitleModel } from "../VideoTitle/model.js";
 
 export const resolveVideoEventCommonProps = ({
   prisma,
-  auth0Management,
-}: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
+  userRepository,
+}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     id: ({ id }): string => buildGqlId("VideoTitleEvent", id),
-    user: async ({ userId }) => UserModel.fromAuth0User(await auth0Management.getUser({ id: userId })),
+    user: async ({ userId }) => userRepository.getById(userId),
     videoTitle: ({ videoTitleId }) =>
       prisma.videoTitle
         .findUniqueOrThrow({ where: { id: videoTitleId } })
@@ -36,17 +35,17 @@ export const resolveVideoTitleEvent = () =>
     },
   } satisfies Resolvers["VideoTitleEvent"]);
 
-export const resolveVideoTitleCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
+export const resolveVideoTitleCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     ...resolveVideoEventCommonProps(deps),
   } satisfies Resolvers["VideoTitleCreateEvent"]);
 
-export const resolveVideoTitleSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
+export const resolveVideoTitleSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     ...resolveVideoEventCommonProps(deps),
   } satisfies Resolvers["VideoTitleSetPrimaryEvent"]);
 
-export const resolveVideoTitleUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management">) =>
+export const resolveVideoTitleUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     ...resolveVideoEventCommonProps(deps),
   } satisfies Resolvers["VideoTitleUnsetPrimaryEvent"]);
