@@ -10,10 +10,11 @@ export const resolveVideoThumbnailEventCommonProps = ({
   prisma,
   auth0Management,
   logger,
-}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
+  cache,
+}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">) =>
   ({
     id: ({ id }): string => buildGqlId("VideoThumbnailEvent", id),
-    user: async ({ userId }) => UserModel.fromAuth0({ auth0Management, logger }, userId),
+    user: async ({ userId }) => UserModel.fromAuth0({ auth0Management, logger, cache }, userId),
     videoThumbnail: ({ videoThumbnailId }) =>
       prisma.videoThumbnail
         .findUniqueOrThrow({ where: { id: videoThumbnailId } })
@@ -37,20 +38,22 @@ export const resolveVideoThumbnailEvent = () =>
     },
   } satisfies Resolvers["VideoThumbnailEvent"]);
 
-export const resolveVideoThumbnailCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
+export const resolveVideoThumbnailCreateEvent = (
+  deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">
+) =>
   ({
     ...resolveVideoThumbnailEventCommonProps(deps),
   } satisfies Resolvers["VideoThumbnailCreateEvent"]);
 
 export const resolveVideoThumbnailSetPrimaryEvent = (
-  deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">
+  deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">
 ) =>
   ({
     ...resolveVideoThumbnailEventCommonProps(deps),
   } satisfies Resolvers["VideoThumbnailSetPrimaryEvent"]);
 
 export const resolveVideoThumbnailUnsetPrimaryEvent = (
-  deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">
+  deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">
 ) =>
   ({
     ...resolveVideoThumbnailEventCommonProps(deps),

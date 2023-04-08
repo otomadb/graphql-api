@@ -13,7 +13,8 @@ export const resolveMylist = ({
   neo4j,
   auth0Management,
   logger,
-}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "auth0Management">) =>
+  cache,
+}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "auth0Management" | "cache">) =>
   ({
     id: ({ id }) => buildGqlId("Mylist", id),
     range: ({ shareRange }) => {
@@ -29,7 +30,7 @@ export const resolveMylist = ({
       }
     },
 
-    holder: async ({ holderId }) => UserModel.fromAuth0({ auth0Management, logger }, holderId),
+    holder: async ({ holderId }) => UserModel.fromAuth0({ auth0Management, logger, cache }, holderId),
     registrations: resolverMylistRegistrations({ prisma, logger }),
 
     isIncludesVideo: async ({ id: mylistId }, { id: videoId }) =>

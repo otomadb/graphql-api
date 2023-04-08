@@ -7,6 +7,7 @@ import { PrismaClient } from "@prisma/client";
 import { ManagementClient } from "auth0";
 import { GraphQLError, ListValueNode, StringValueNode } from "graphql";
 import { createSchema, createYoga, useLogger, useReadinessCheck } from "graphql-yoga";
+import { Redis } from "ioredis";
 import jwt, { GetPublicKeyOrSecret } from "jsonwebtoken";
 import createJwksClient from "jwks-rsa";
 import { MeiliSearch } from "meilisearch";
@@ -74,6 +75,8 @@ const meilisearchClient = new MeiliSearch({
   host: process.env.MEILISEARCH_URL,
 });
 
+const redisClient = new Redis(process.env.REDIS_URL);
+
 const yoga = createYoga<ServerContext, UserContext>({
   graphiql: process.env.ENABLE_GRAPHIQL === "true",
   schema: createSchema({
@@ -84,6 +87,16 @@ const yoga = createYoga<ServerContext, UserContext>({
       meilisearch: meilisearchClient,
       logger,
       auth0Management,
+      cache: {
+        get: (key) => redisClient.get(key),
+        set: async (key, value, { ttl }) => {
+          await redisClient.set(key, value);
+          if (ttl) await redisClient.expire(key, ttl);
+        },
+        delete: async (key) => {
+          await redisClient.del(key);
+        },
+      },
     }),
   }),
   cors: (request) => {
@@ -165,6 +178,10 @@ const yoga = createYoga<ServerContext, UserContext>({
               }),
             neo4jDriver.getServerInfo().catch((e) => {
               logger.error({ error: e }, "Neo4j is not ready.");
+              throw e;
+            }),
+            redisClient.ping().catch((e) => {
+              logger.error({ error: e }, "Redis is not ready.");
               throw e;
             }),
           ]);

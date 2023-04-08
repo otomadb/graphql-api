@@ -10,10 +10,11 @@ export const resolveTagEventCommonProps = ({
   prisma,
   auth0Management,
   logger,
-}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
+  cache,
+}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">) =>
   ({
     id: ({ id }): string => buildGqlId("TagEvent", id),
-    user: async ({ userId }) => UserModel.fromAuth0({ auth0Management, logger }, userId),
+    user: async ({ userId }) => UserModel.fromAuth0({ auth0Management, logger, cache }, userId),
     tag: ({ tagId }) =>
       prisma.tag
         .findUniqueOrThrow({ where: { id: tagId } })
@@ -33,7 +34,7 @@ export const resolveTagEvent = () =>
     },
   } satisfies Resolvers["TagEvent"]);
 
-export const resolveTagRegisterEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
+export const resolveTagRegisterEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">) =>
   ({
     ...resolveTagEventCommonProps(deps),
   } satisfies Resolvers["TagRegisterEvent"]);

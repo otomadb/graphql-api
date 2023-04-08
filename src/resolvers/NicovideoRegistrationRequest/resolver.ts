@@ -8,7 +8,8 @@ export const resolverNicovideoRegistrationRequest = ({
   prisma,
   auth0Management,
   logger,
-}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
+  cache,
+}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">) =>
   ({
     id: ({ dbId: requestId }) => buildGqlId("NicovideoRegistrationRequest", requestId),
 
@@ -35,5 +36,5 @@ export const resolverNicovideoRegistrationRequest = ({
         }))
       );
     },
-    requestedBy: async ({ requestedById }) => UserModel.fromAuth0({ auth0Management, logger }, requestedById),
+    requestedBy: async ({ requestedById }) => UserModel.fromAuth0({ auth0Management, logger, cache }, requestedById),
   } satisfies Resolvers["NicovideoRegistrationRequest"]);

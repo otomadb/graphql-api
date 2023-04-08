@@ -9,11 +9,12 @@ export const resolveMylistGroup = ({
   prisma,
   auth0Management,
   logger,
-}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
+  cache,
+}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">) =>
   ({
     id: ({ id }) => buildGqlId("MylistGroup", id),
 
-    holder: async ({ holderId }) => UserModel.fromAuth0({ auth0Management, logger }, holderId),
+    holder: async ({ holderId }) => UserModel.fromAuth0({ auth0Management, logger, cache }, holderId),
 
     mylists: resolveMylists({ prisma }),
     videos: resolverMylistGroupVideo({ prisma }),

@@ -13,6 +13,11 @@ export type ResolverDeps = {
   meilisearch: MeiliSearch;
   logger: Logger;
   auth0Management: ManagementClient<AppMetadata, UserMetadata>;
+  cache: {
+    get(key: string): Promise<string | null>;
+    set(key: string, value: string, option: { ttl?: number }): Promise<void>;
+    delete(key: string): void;
+  };
 };
 export type ServerContext = {
   req: IncomingMessage;

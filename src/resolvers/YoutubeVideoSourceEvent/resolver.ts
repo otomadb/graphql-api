@@ -10,10 +10,11 @@ export const resolveYoutubeVideoSourceEventCommonProps = ({
   prisma,
   auth0Management,
   logger,
-}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
+  cache,
+}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">) =>
   ({
     id: ({ id }): string => buildGqlId("YoutubeVideoSourceEvent", id),
-    user: async ({ userId }) => UserModel.fromAuth0({ auth0Management, logger }, userId),
+    user: async ({ userId }) => UserModel.fromAuth0({ auth0Management, logger, cache }, userId),
     source: ({ sourceId: videoSourceId }) =>
       prisma.youtubeVideoSource
         .findUniqueOrThrow({ where: { id: videoSourceId } })
@@ -34,5 +35,5 @@ export const resolveYoutubeVideoSourceEvent = () =>
   } satisfies Resolvers["YoutubeVideoSourceEvent"]);
 
 export const resolveYoutubeVideoSourceCreateEvent = (
-  deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">
+  deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">
 ) => ({ ...resolveYoutubeVideoSourceEventCommonProps(deps) } satisfies Resolvers["YoutubeVideoSourceCreateEvent"]);

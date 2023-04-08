@@ -11,10 +11,11 @@ export const resolveVideoTagEventCommonProps = ({
   prisma,
   auth0Management,
   logger,
-}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
+  cache,
+}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">) =>
   ({
     id: ({ id }): string => buildGqlId("VideoTagEvent", id),
-    user: async ({ userId }) => UserModel.fromAuth0({ auth0Management, logger }, userId),
+    user: async ({ userId }) => UserModel.fromAuth0({ auth0Management, logger, cache }, userId),
     videoTag: ({ videoTagId }) =>
       prisma.videoTag
         .findUniqueOrThrow({ where: { id: videoTagId } })
@@ -40,17 +41,23 @@ export const resolveVideoTagEvent = () =>
     },
   } satisfies Resolvers["VideoTagEvent"]);
 
-export const resolveVideoTagAttachEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
+export const resolveVideoTagAttachEvent = (
+  deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">
+) =>
   ({
     ...resolveVideoTagEventCommonProps(deps),
   } satisfies Resolvers["VideoTagAttachEvent"]);
 
-export const resolveVideoTagReattachEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
+export const resolveVideoTagReattachEvent = (
+  deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">
+) =>
   ({
     ...resolveVideoTagEventCommonProps(deps),
   } satisfies Resolvers["VideoTagReattachEvent"]);
 
-export const resolveVideoTagDetachEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
+export const resolveVideoTagDetachEvent = (
+  deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">
+) =>
   ({
     ...resolveVideoTagEventCommonProps(deps),
   } satisfies Resolvers["VideoTagDetachEvent"]);

@@ -18,6 +18,8 @@ declare namespace NodeJS {
     readonly NEO4J_USERNAME: string;
     readonly NEO4J_PASSWORD: string;
 
+    readonly REDIS_URL: string;
+
     /* Meilisearch */
     readonly MEILISEARCH_URL: string;
   }

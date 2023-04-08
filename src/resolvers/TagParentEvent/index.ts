@@ -10,10 +10,11 @@ export const resolveTagParentEventCommonProps = ({
   prisma,
   auth0Management,
   logger,
-}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
+  cache,
+}: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">) =>
   ({
     id: ({ id }): string => buildGqlId("TagParentEvent", id),
-    user: async ({ userId }) => UserModel.fromAuth0({ auth0Management, logger }, userId),
+    user: async ({ userId }) => UserModel.fromAuth0({ auth0Management, logger, cache }, userId),
     tagParent: ({ tagParentId }) =>
       prisma.tagParent
         .findUniqueOrThrow({ where: { id: tagParentId } })
@@ -37,17 +38,23 @@ export const resolveTagParentEvent = () =>
     },
   } satisfies Resolvers["TagParentEvent"]);
 
-export const resolveTagParentCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
+export const resolveTagParentCreateEvent = (
+  deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">
+) =>
   ({
     ...resolveTagParentEventCommonProps(deps),
   } satisfies Resolvers["TagParentCreateEvent"]);
 
-export const resolveTagParentSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
+export const resolveTagParentSetPrimaryEvent = (
+  deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">
+) =>
   ({
     ...resolveTagParentEventCommonProps(deps),
   } satisfies Resolvers["TagParentSetPrimaryEvent"]);
 
-export const resolveTagParentUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger">) =>
+export const resolveTagParentUnsetPrimaryEvent = (
+  deps: Pick<ResolverDeps, "prisma" | "auth0Management" | "logger" | "cache">
+) =>
   ({
     ...resolveTagParentEventCommonProps(deps),
   } satisfies Resolvers["TagParentUnsetPrimaryEvent"]);
