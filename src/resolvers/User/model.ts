@@ -1,3 +1,4 @@
+import { PrismaClient } from "@prisma/client";
 import type { AppMetadata, ManagementClient, User, UserMetadata } from "auth0";
 import type { Redis } from "ioredis";
 import type { Logger } from "pino";
@@ -7,26 +8,28 @@ export class UserModel {
   private constructor(private readonly entity: { id: string; name: string; displayName: string; icon: string }) {}
 
   public static makeRepository({
+    prisma,
     logger,
     redis,
     auth0Management,
   }: {
+    prisma: PrismaClient;
     auth0Management: ManagementClient<AppMetadata, UserMetadata>;
     logger: Logger;
     redis: Redis;
   }) {
     return {
       async getById(id: string) {
-        return UserModel.getByIdFromAuth0({ logger, redis, auth0Management }, id);
+        return UserModel.getByIdFromAuth0({ prisma, logger, redis, auth0Management }, id);
       },
       async findByName(name: string) {
-        return UserModel.findByNameFromAuth0({ logger, redis, auth0Management }, name);
+        return UserModel.findByNameFromAuth0({ logger, redis, auth0Management, prisma }, name);
       },
     };
   }
 
   private static async fromAuth0User(
-    { logger, redis }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "logger" | "redis">,
+    { logger, redis, prisma }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "logger" | "redis" | "prisma">,
     auth0user: User<AppMetadata, UserMetadata>
   ) {
     const parsed = z
@@ -49,6 +52,20 @@ export class UserModel {
       icon: parsed.data.picture,
     });
     await redis.setex(`auth0:${user.id}`, 60 * 3, JSON.stringify(user.entity));
+
+    await prisma.$transaction([
+      prisma.user.upsert({
+        where: { id: user.id },
+        create: { id: user.id },
+        update: {},
+      }),
+      prisma.mylist.upsert({
+        where: { holderId_slug: { holderId: user.id, slug: "likes" } },
+        create: { slug: "likes", title: `Favlist for ${user.name}`, holderId: user.id },
+        update: {},
+      }),
+    ]);
+
     return user;
   }
 
@@ -57,7 +74,8 @@ export class UserModel {
       auth0Management,
       logger,
       redis,
-    }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "auth0Management" | "logger" | "redis">,
+      prisma,
+    }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "auth0Management" | "logger" | "redis" | "prisma">,
     userId: string
   ) {
     const cached = await redis.get(`auth0:${userId}`);
@@ -74,10 +92,10 @@ export class UserModel {
 
     try {
       const auth0user = await auth0Management.getUser({ id: userId });
-      const user = await UserModel.fromAuth0User({ logger, redis }, auth0user);
+      const user = await UserModel.fromAuth0User({ logger, redis, prisma }, auth0user);
       return user;
     } catch (error) {
-      logger.error({ error }, "Failed to fetch user from Auth0");
+      logger.error({ error, userId }, "Failed to fetch user from Auth0");
       throw new Error("Failed to fetch user from Auth0");
     }
   }
@@ -87,7 +105,8 @@ export class UserModel {
       auth0Management,
       logger,
       redis,
-    }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "auth0Management" | "logger" | "redis">,
+      prisma,
+    }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "auth0Management" | "logger" | "redis" | "prisma">,
     name: string
   ) {
     const auth0user = (await auth0Management.getUsers({ q: `username:"${name}"` })).at(0);
@@ -95,7 +114,7 @@ export class UserModel {
       logger.info({ userName: name }, "User not found");
       return null;
     }
-    return UserModel.fromAuth0User({ logger, redis }, auth0user);
+    return UserModel.fromAuth0User({ logger, redis, prisma }, auth0user);
   }
 
   get id() {

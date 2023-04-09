@@ -87,7 +87,7 @@ const yoga = createYoga<ServerContext, UserContext>({
       prisma: prismaClient,
       meilisearch: meilisearchClient,
       logger,
-      userRepository: UserModel.makeRepository({ auth0Management, logger, redis: redisClient }),
+      userRepository: UserModel.makeRepository({ auth0Management, logger, redis: redisClient, prisma: prismaClient }),
     }),
   }),
   cors: (request) => {
