@@ -4,18 +4,13 @@ import z from "zod";
 
 import { isErr } from "../../../utils/Result.js";
 import { cursorOptions } from "../../connection.js";
-import { UserResolvers } from "../../graphql.js";
+import { QueryResolvers } from "../../graphql.js";
 import { NotificationConnectionModel } from "../../NotificationConnection/model.js";
 import { parseOrderBy } from "../../parseSortOrder.js";
 import { ResolverDeps } from "../../types.js";
 
-export const resolverUserNotifications = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (
-    { id: userId },
-    { orderBy: unparsedOrderBy, filter, ...unparsedConnectionArgs },
-    { currentUser: ctxUser },
-    info
-  ) => {
+export const resolverNotifications = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+  (async (_parent, { orderBy: unparsedOrderBy, filter, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([
         z.object({
@@ -39,19 +34,24 @@ export const resolverUserNotifications = ({ prisma, logger }: Pick<ResolverDeps,
       logger.error({ path: info.path, args: unparsedOrderBy, userId: ctxUser?.id }, "OrderBy args error");
       throw new GraphQLError("Wrong args");
     }
-
     return findManyCursorConnection(
       (args) =>
         prisma.notification.findMany({
           ...args,
-          where: { notifyToId: userId },
+          where: {
+            notifyToId: ctxUser.id,
+            isWatched: filter.watched?.valueOf(),
+          },
           orderBy: orderBy.data,
         }),
       () =>
         prisma.notification.count({
-          where: { notifyToId: userId },
+          where: {
+            notifyToId: ctxUser.id,
+            isWatched: filter.watched?.valueOf(),
+          },
         }),
       connectionArgs.data,
       { resolveInfo: info, ...cursorOptions }
     ).then((c) => NotificationConnectionModel.fromPrisma(c));
-  }) satisfies UserResolvers["notifications"];
+  }) satisfies QueryResolvers["notifications"];

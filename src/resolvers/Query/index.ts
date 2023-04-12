@@ -25,6 +25,7 @@ import { getTag } from "./getTag/resolver.js";
 import { getUser } from "./getUser/resolver.js";
 import { getVideo } from "./getVideo/resolver.js";
 import { getYoutubeVideoSource } from "./getYoutubeVideoSource/resolver.js";
+import { resolverNotifications } from "./notifications/resolver.js";
 import { searchTags } from "./searchTags/resolver.js";
 import { searchVideos } from "./searchVideos/resolver.js";
 import { resolverWhoami } from "./whoami/resolver.js";
@@ -54,6 +55,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
     getUser: getUser(deps),
     getVideo: getVideo(deps),
     getYoutubeVideoSource: getYoutubeVideoSource(deps),
+    notifications: resolverNotifications(deps),
     searchTags: searchTags(deps),
     searchVideos: searchVideos(deps),
     whoami: resolverWhoami(deps),
