@@ -1,6 +1,7 @@
 import {
   NicovideoRegistrationRequest,
   NicovideoVideoSourceEventType,
+  Notification,
   Prisma,
   SemitagEventType,
   Video,
@@ -22,7 +23,10 @@ export const getRequestCheck = async (
     | { type: "REQUEST_NOT_FOUND"; requestId: string }
     | { type: "REQUEST_ALREADY_CHECKED"; requestId: string }
     | { type: "INTERNAL_SERVER_ERROR"; error: unknown },
-    Prisma.Prisma__NicovideoRegistrationRequestClient<NicovideoRegistrationRequest, never>[]
+    (
+      | Prisma.Prisma__NicovideoRegistrationRequestClient<NicovideoRegistrationRequest, never>
+      | Prisma.Prisma__NotificationClient<Notification, never>
+    )[]
   >
 > => {
   if (!requestId) return ok([]);
@@ -32,14 +36,15 @@ export const getRequestCheck = async (
     if (!request) return err({ type: "REQUEST_NOT_FOUND", requestId });
     if (request.isChecked) return err({ type: "REQUEST_ALREADY_CHECKED", requestId });
 
-    return ok([
+    const checkingId = ulid();
+    const tx = [
       prisma.nicovideoRegistrationRequest.update({
         where: { id: requestId },
         data: {
           isChecked: true,
           checking: {
             create: {
-              id: ulid(),
+              id: checkingId,
               video: { connect: { id: videoId } },
               checkedBy: { connect: { id: userId } },
             },
@@ -47,7 +52,15 @@ export const getRequestCheck = async (
           events: { create: { userId, type: "ACCEPT" } },
         },
       }),
-    ]);
+      prisma.notification.create({
+        data: {
+          notifyToId: request.requestedById,
+          type: "ACCEPTING_NICOVIDEO_REGISTRATION_REQUEST",
+          payload: { id: checkingId },
+        },
+      }),
+    ];
+    return ok(tx);
   } catch (e) {
     return err({ type: "INTERNAL_SERVER_ERROR", error: e });
   }

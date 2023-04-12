@@ -31,10 +31,11 @@ export const reject = async (
       return err({ message: "REQUEST_ALREADY_CHECKED", request });
     }
 
+    const checkingId = ulid();
     const [checking] = await prisma.$transaction([
       prisma.nicovideoRegistrationRequestChecking.create({
         data: {
-          id: ulid(),
+          id: checkingId,
           requestId,
           videoId: null,
           checkedById: userId,
@@ -46,6 +47,13 @@ export const reject = async (
         data: {
           isChecked: true,
           events: { create: { userId, type: "REJECT" } },
+        },
+      }),
+      prisma.notification.create({
+        data: {
+          notifyToId: request.requestedById,
+          type: "REJECTING_NICOVIDEO_REGISTRATION_REQUEST",
+          payload: { id: checkingId },
         },
       }),
     ]);
