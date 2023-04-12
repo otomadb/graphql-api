@@ -28,10 +28,10 @@ generates:
         NicovideoOriginalSourceTag: ./NicovideoOriginalSourceTag/model.js#NicovideoOriginalSourceTagModel
         NicovideoRegistrationRequest: ./NicovideoRegistrationRequest/model.js#NicovideoRegistrationRequestModel
         NicovideoRegistrationRequestAccepting: ./NicovideoRegistrationRequestAccepting/model.js#NicovideoRegistrationRequestAcceptingModel
-        NicovideoRegistrationRequestAcceptingNotification: ./NicovideoRegistrationRequestAcceptingNotification/model.js#NicovideoRegistrationRequestAcceptingNotificationModel
+        NicovideoRegistrationRequestAcceptingNotification: ./Notification/model.js#NotificationModel
         NicovideoRegistrationRequestConnection: ./NicovideoRegistrationRequestConnection/model.js#NicovideoRegistrationRequestConnectionModel
         NicovideoRegistrationRequestRejecting: ./NicovideoRegistrationRequestRejecting/model.js#NicovideoRegistrationRequestRejectingModel
-        NicovideoRegistrationRequestRejectingNotification: ./NicovideoRegistrationRequestRejectingNotification/model.js#NicovideoRegistrationRequestRejectingNotificationModel
+        NicovideoRegistrationRequestRejectingNotification: ./Notification/model.js#NotificationModel
         NicovideoVideoSource: ./NicovideoVideoSource/model.js#NicovideoVideoSourceModel
         NicovideoVideoSourceCreateEvent: ./NicovideoVideoSourceEvent/model.js#NicovideoVideoSourceEventModel
         NicovideoVideoSourceEvent: ./NicovideoVideoSourceEvent/model.js#NicovideoVideoSourceEventModel

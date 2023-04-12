@@ -31,7 +31,7 @@ export class NotificationModel {
     return this.entity.isWatched;
   }
 
-  protected payload() {
+  get payload() {
     return this.entity.payload;
   }
 }

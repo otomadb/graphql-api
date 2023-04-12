@@ -1,7 +1,23 @@
 import { NicovideoRegistrationRequestChecking } from "@prisma/client";
 
 export class NicovideoRegistrationRequestRejectingModel {
-  constructor(private readonly request: NicovideoRegistrationRequestChecking) {}
+  private constructor(
+    private readonly request: {
+      id: string;
+      note: string | null;
+      requestId: string;
+      checkedById: string;
+    }
+  ) {}
+
+  public static fromPrisma({ id, checkedById, requestId, note }: NicovideoRegistrationRequestChecking) {
+    return new NicovideoRegistrationRequestRejectingModel({
+      id,
+      checkedById,
+      requestId,
+      note,
+    });
+  }
 
   get dbId() {
     return this.request.id;

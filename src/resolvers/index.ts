@@ -17,7 +17,7 @@ import { resolverNicovideoRegistrationRequestAccepting } from "./NicovideoRegist
 import { resolverNicovideoRegistrationRequestAcceptingNotification } from "./NicovideoRegistrationRequestAcceptingNotification/resolver.js";
 import { resolverNicovideoRegistrationRequestConnection } from "./NicovideoRegistrationRequestConnection/resolver.js";
 import { resolverNicovideoRegistrationRequestRejecting } from "./NicovideoRegistrationRequestRejecting/resolver.js";
-import { resolverNicovideoRegistrationRequestResolvingNotification } from "./NicovideoRegistrationRequestRejectingNotification/resolver.js";
+import { resolverNicovideoRegistrationRequestRejectingNotification } from "./NicovideoRegistrationRequestRejectingNotification/resolver.js";
 import { resolveNicovideoVideoSource } from "./NicovideoVideoSource/index.js";
 import {
   resolveNicovideoVideoSourceCreateEvent,
@@ -102,7 +102,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     NicovideoRegistrationRequestAcceptingNotification: resolverNicovideoRegistrationRequestAcceptingNotification(deps),
     NicovideoRegistrationRequestConnection: resolverNicovideoRegistrationRequestConnection(),
     NicovideoRegistrationRequestRejecting: resolverNicovideoRegistrationRequestRejecting(deps),
-    NicovideoRegistrationRequestRejectingNotification: resolverNicovideoRegistrationRequestResolvingNotification(deps),
+    NicovideoRegistrationRequestRejectingNotification: resolverNicovideoRegistrationRequestRejectingNotification(deps),
     NicovideoVideoSource: resolveNicovideoVideoSource(deps),
     NicovideoVideoSourceCreateEvent: resolveNicovideoVideoSourceCreateEvent(deps),
     NicovideoVideoSourceEvent: resolveNicovideoVideoSourceEvent(),
