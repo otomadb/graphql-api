@@ -27,11 +27,16 @@ generates:
         MylistVideoRecommendation: ./MylistVideoRecommendation/model.js#MylistVideoRecommendationModel
         NicovideoOriginalSourceTag: ./NicovideoOriginalSourceTag/model.js#NicovideoOriginalSourceTagModel
         NicovideoRegistrationRequest: ./NicovideoRegistrationRequest/model.js#NicovideoRegistrationRequestModel
+        NicovideoRegistrationRequestAccepting: ./NicovideoRegistrationRequestAccepting/model.js#NicovideoRegistrationRequestAcceptingModel
+        NicovideoRegistrationRequestAcceptingNotification: ./Notification/model.js#NotificationModel
         NicovideoRegistrationRequestConnection: ./NicovideoRegistrationRequestConnection/model.js#NicovideoRegistrationRequestConnectionModel
         NicovideoRegistrationRequestRejecting: ./NicovideoRegistrationRequestRejecting/model.js#NicovideoRegistrationRequestRejectingModel
+        NicovideoRegistrationRequestRejectingNotification: ./Notification/model.js#NotificationModel
         NicovideoVideoSource: ./NicovideoVideoSource/model.js#NicovideoVideoSourceModel
         NicovideoVideoSourceCreateEvent: ./NicovideoVideoSourceEvent/model.js#NicovideoVideoSourceEventModel
         NicovideoVideoSourceEvent: ./NicovideoVideoSourceEvent/model.js#NicovideoVideoSourceEventModel
+        Notification: ./Notification/model.js#NotificationModel
+        NotificationConnection: ./NotificationConnection/model.js#NotificationConnectionModel
         Semitag: ./Semitag/model.js#SemitagModel
         SemitagAttachEvent: ./SemitagEvent/model.js#SemitagEventModel
         SemitagConnection: ./SemitagConnection/model.js#SemitagConnectionModel

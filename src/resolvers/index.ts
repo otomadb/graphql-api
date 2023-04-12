@@ -13,13 +13,18 @@ import { resolveMylistTagInclusion } from "./MylistTagInclusion/index.js";
 import { resolveMylistVideoRecommendation } from "./MylistVideoRecommendation/index.js";
 import { resolveNicovideoOriginalSourceTag } from "./NicovideoOriginalSourceTag/index.js";
 import { resolverNicovideoRegistrationRequest } from "./NicovideoRegistrationRequest/resolver.js";
+import { resolverNicovideoRegistrationRequestAccepting } from "./NicovideoRegistrationRequestAccepting/resolver.js";
+import { resolverNicovideoRegistrationRequestAcceptingNotification } from "./NicovideoRegistrationRequestAcceptingNotification/resolver.js";
 import { resolverNicovideoRegistrationRequestConnection } from "./NicovideoRegistrationRequestConnection/resolver.js";
 import { resolverNicovideoRegistrationRequestRejecting } from "./NicovideoRegistrationRequestRejecting/resolver.js";
+import { resolverNicovideoRegistrationRequestRejectingNotification } from "./NicovideoRegistrationRequestRejectingNotification/resolver.js";
 import { resolveNicovideoVideoSource } from "./NicovideoVideoSource/index.js";
 import {
   resolveNicovideoVideoSourceCreateEvent,
   resolveNicovideoVideoSourceEvent,
 } from "./NicovideoVideoSourceEvent/index.js";
+import { resolverNotification } from "./Notification/resolver.js";
+import { resolverNotificationConnection } from "./NotificationConnection/resolver.js";
 import { resolveQuery } from "./Query/index.js";
 import { resolveSemitag } from "./Semitag/index.js";
 import { resolverSemitagConnection } from "./SemitagConnection/resolver.js";
@@ -93,11 +98,16 @@ export const makeResolvers = (deps: ResolverDeps) =>
     MylistVideoRecommendation: resolveMylistVideoRecommendation(deps),
     NicovideoOriginalSourceTag: resolveNicovideoOriginalSourceTag(deps),
     NicovideoRegistrationRequest: resolverNicovideoRegistrationRequest(deps),
+    NicovideoRegistrationRequestAccepting: resolverNicovideoRegistrationRequestAccepting(deps),
+    NicovideoRegistrationRequestAcceptingNotification: resolverNicovideoRegistrationRequestAcceptingNotification(deps),
     NicovideoRegistrationRequestConnection: resolverNicovideoRegistrationRequestConnection(),
     NicovideoRegistrationRequestRejecting: resolverNicovideoRegistrationRequestRejecting(deps),
+    NicovideoRegistrationRequestRejectingNotification: resolverNicovideoRegistrationRequestRejectingNotification(deps),
     NicovideoVideoSource: resolveNicovideoVideoSource(deps),
     NicovideoVideoSourceCreateEvent: resolveNicovideoVideoSourceCreateEvent(deps),
     NicovideoVideoSourceEvent: resolveNicovideoVideoSourceEvent(),
+    Notification: resolverNotification(deps),
+    NotificationConnection: resolverNotificationConnection(),
     Query: resolveQuery(deps),
     Semitag: resolveSemitag(deps),
     SemitagAttachEvent: resolveSemitagEventAttachEvent(deps),

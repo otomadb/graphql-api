@@ -1,0 +1,18 @@
+type Query {
+  notifications(
+    after: String
+    before: String
+    first: Int
+    last: Int
+    orderBy: NotificationsOrderBy! = { createdAt: DESC }
+    filter: NotificationsFilter! = {}
+  ): NotificationConnection! @auth
+}
+
+input NotificationsOrderBy {
+  createdAt: SortOrder
+}
+
+input NotificationsFilter {
+  watched: Boolean
+}
