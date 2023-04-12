@@ -1,12 +1,11 @@
-import { buildHTTPExecutor, HTTPExecutorOptions } from "@graphql-tools/executor-http";
-import { SyncExecutor } from "@graphql-tools/utils";
+import type { ResultOf, VariablesOf } from "@graphql-typed-document-node/core";
 import { createSchema, createYoga } from "graphql-yoga";
 import { beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { DeepMockProxy, mockDeep, mockReset } from "vitest-mock-extended";
 
 import { graphql } from "../../../gql/gql.js";
 import typeDefs from "../../../schema.graphql";
-import { RegisterVideoFromNicovideoInput, RegisterVideoFromNicovideoSemitagTooLongError } from "../../graphql.js";
+import { makeExecutor } from "../../../test/makeExecutor.js";
 import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
 import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
@@ -24,7 +23,7 @@ const Mutation = graphql(`
 describe("Mutation.registerVideoFromNicovideo e2e", () => {
   describe("Args and Return check", () => {
     let deps: DeepMockProxy<ResolverDeps>;
-    let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
+    let executor: ReturnType<typeof makeExecutor>;
 
     beforeAll(async () => {
       deps = mockDeep<ResolverDeps>();
@@ -34,7 +33,7 @@ describe("Mutation.registerVideoFromNicovideo e2e", () => {
         resolvers: makeResolvers(deps),
       });
       const yoga = createYoga<ServerContext, UserContext>({ schema });
-      executor = buildHTTPExecutor({ fetch: yoga.fetch });
+      executor = makeExecutor(yoga);
     });
 
     beforeEach(async () => {
@@ -51,15 +50,18 @@ describe("Mutation.registerVideoFromNicovideo e2e", () => {
           semitagNames: ["st1", "toolongtoolongtoolongtoolongtoolongtoolong"],
           sourceIds: ["sm2057168"],
           requestId: null,
-        } satisfies RegisterVideoFromNicovideoInput,
+        } satisfies VariablesOf<typeof Mutation>["input"],
         {
           __typename: "RegisterVideoFromNicovideoSemitagTooLongError",
           name: "toolongtoolongtoolongtoolongtoolongtoolong",
-        } satisfies RegisterVideoFromNicovideoSemitagTooLongError,
+        } satisfies Extract<
+          ResultOf<typeof Mutation>["registerVideoFromNicovideo"],
+          { __typename: "RegisterVideoFromNicovideoSemitagTooLongError" }
+        >,
       ],
     ])("不適当なinput: %#", async (input, expected) => {
       const requestResult = await executor({
-        document: Mutation,
+        operation: Mutation,
         variables: { input },
         context: {
           currentUser: {
@@ -69,7 +71,7 @@ describe("Mutation.registerVideoFromNicovideo e2e", () => {
         },
       });
 
-      expect(requestResult.data.registerVideoFromNicovideo).toStrictEqual(expected);
+      expect(requestResult.data?.registerVideoFromNicovideo).toStrictEqual(expected);
     });
   });
 });

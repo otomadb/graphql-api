@@ -1,5 +1,3 @@
-import { buildHTTPExecutor, HTTPExecutorOptions } from "@graphql-tools/executor-http";
-import { SyncExecutor } from "@graphql-tools/utils";
 import { PrismaClient } from "@prisma/client";
 import { createSchema, createYoga } from "graphql-yoga";
 import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
@@ -9,6 +7,7 @@ import { DeepMockProxy, mock, mockDeep, mockReset } from "vitest-mock-extended";
 import { graphql } from "../../../gql/gql.js";
 import typeDefs from "../../../schema.graphql";
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
+import { makeExecutor } from "../../../test/makeExecutor.js";
 import {
   ChangeMylistShareRangeSucceededPayload,
   MutationInvalidMylistIdError,
@@ -53,7 +52,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
   let meilisearch: DeepMockProxy<ResolverDeps["meilisearch"]>;
   let userRepository: DeepMockProxy<ResolverDeps["userRepository"]>;
 
-  let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
+  let executor: ReturnType<typeof makeExecutor>;
 
   beforeAll(async () => {
     prisma = new PrismaClient();
@@ -74,7 +73,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
       resolvers: makeResolvers({ prisma, neo4j, logger, meilisearch, userRepository }),
     });
     const yoga = createYoga<ServerContext, UserContext>({ schema });
-    executor = buildHTTPExecutor({ fetch: yoga.fetch });
+    executor = makeExecutor(yoga);
   });
 
   beforeEach(async () => {
@@ -107,7 +106,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
     ]);
 
     const requestResult = await executor({
-      document: Mutation,
+      operation: Mutation,
       variables: {
         input: {
           mylistId: "m1", // wrong
@@ -115,7 +114,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
         },
       },
       context: {
-        user: { id: "u1", scopes: ["edit:mylist"] } satisfies CurrentUser,
+        currentUser: { id: "u1", scopes: ["edit:mylist"] } satisfies CurrentUser,
       },
     });
 
@@ -145,7 +144,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
     ]);
 
     const requestResult = await executor({
-      document: Mutation,
+      operation: Mutation,
       variables: {
         input: {
           mylistId: buildGqlId("Mylist", "m2"),
@@ -183,7 +182,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
     ]);
 
     const requestResult = await executor({
-      document: Mutation,
+      operation: Mutation,
       variables: {
         input: {
           mylistId: buildGqlId("Mylist", "m1"),
@@ -222,7 +221,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
     ]);
 
     const requestResult = await executor({
-      document: Mutation,
+      operation: Mutation,
       variables: {
         input: {
           mylistId: buildGqlId("Mylist", "m1"),

@@ -1,5 +1,4 @@
-import { buildHTTPExecutor, HTTPExecutorOptions } from "@graphql-tools/executor-http";
-import { SyncExecutor } from "@graphql-tools/utils";
+import { ResultOf } from "@graphql-typed-document-node/core";
 import { PrismaClient } from "@prisma/client";
 import { createSchema, createYoga } from "graphql-yoga";
 import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
@@ -9,11 +8,7 @@ import { DeepMockProxy, mock, mockDeep, mockReset } from "vitest-mock-extended";
 import { graphql } from "../../../gql/gql.js";
 import typeDefs from "../../../schema.graphql";
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import {
-  MutationNicovideoRegistrationRequestNotFoundError,
-  NicovideoRegistrationRequest,
-  RejectNicovideoRegistrationRequestRequestAlreadyCheckedError,
-} from "../../graphql.js";
+import { makeExecutor } from "../../../test/makeExecutor.js";
 import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
 import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
@@ -36,9 +31,6 @@ const Mutation = graphql(`
       ... on RejectNicovideoRegistrationRequestSucceededPayload {
         rejecting {
           note
-          rejectedBy {
-            id
-          }
           request {
             id
           }
@@ -54,7 +46,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
   let meilisearch: DeepMockProxy<ResolverDeps["meilisearch"]>;
   let userRepository: DeepMockProxy<ResolverDeps["userRepository"]>;
 
-  let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
+  let executor: ReturnType<typeof makeExecutor>;
 
   beforeAll(async () => {
     prisma = new PrismaClient();
@@ -74,7 +66,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
       resolvers: makeResolvers({ prisma, neo4j, logger, meilisearch, userRepository }),
     });
     const yoga = createYoga<ServerContext, UserContext>({ schema });
-    executor = buildHTTPExecutor({ fetch: yoga.fetch });
+    executor = makeExecutor(yoga);
   });
 
   beforeEach(async () => {
@@ -119,7 +111,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
     ]);
 
     const requestResult = await executor({
-      document: Mutation,
+      operation: Mutation,
       variables: {
         input: {
           requestId: buildGqlId("NicovideoRegistrationRequest", "r1"),
@@ -137,10 +129,11 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
     expect(requestResult.data).toStrictEqual({
       rejectNicovideoRegistrationRequest: {
         __typename: "RejectNicovideoRegistrationRequestRequestAlreadyCheckedError",
-        request: {
-          id: buildGqlId("NicovideoRegistrationRequest", "r1"),
-        } as NicovideoRegistrationRequest,
-      } satisfies RejectNicovideoRegistrationRequestRequestAlreadyCheckedError,
+        request: { id: buildGqlId("NicovideoRegistrationRequest", "r1") },
+      } satisfies Extract<
+        ResultOf<typeof Mutation>["rejectNicovideoRegistrationRequest"],
+        { __typename: "RejectNicovideoRegistrationRequestRequestAlreadyCheckedError" }
+      >,
     });
   });
 
@@ -162,7 +155,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
     ]);
 
     const requestResult = await executor({
-      document: Mutation,
+      operation: Mutation,
       variables: {
         input: {
           requestId: buildGqlId("NicovideoRegistrationRequest", "r1"),
@@ -181,7 +174,10 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
       rejectNicovideoRegistrationRequest: {
         __typename: "MutationNicovideoRegistrationRequestNotFoundError",
         requestId: "r1",
-      } satisfies MutationNicovideoRegistrationRequestNotFoundError,
+      } satisfies Extract<
+        ResultOf<typeof Mutation>["rejectNicovideoRegistrationRequest"],
+        { __typename: "MutationNicovideoRegistrationRequestNotFoundError" }
+      >,
     });
   });
 
@@ -215,7 +211,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
     ]);
 
     const requestResult = await executor({
-      document: Mutation,
+      operation: Mutation,
       variables: {
         input: {
           requestId: buildGqlId("NicovideoRegistrationRequest", "r1"),
@@ -235,8 +231,14 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
         __typename: "RejectNicovideoRegistrationRequestSucceededPayload",
         rejecting: {
           note: "a",
+          request: {
+            id: buildGqlId("NicovideoRegistrationRequest", "r1"),
+          },
         },
-      },
+      } satisfies Extract<
+        ResultOf<typeof Mutation>["rejectNicovideoRegistrationRequest"],
+        { __typename: "RejectNicovideoRegistrationRequestSucceededPayload" }
+      >,
     });
   });
 });
