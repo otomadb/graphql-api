@@ -1,5 +1,7 @@
 scalar DateTime
 
+directive @auth(scopes: [String!]) on FIELD_DEFINITION
+
 type PageInfo {
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!
@@ -10,10 +12,6 @@ type PageInfo {
 enum SortOrder {
   ASC
   DESC
-}
-
-type MutationAuthenticationError {
-  requiredRole: UserRole!
 }
 
 "VideoのIDとして無効なIDを入力した場合のエラー"

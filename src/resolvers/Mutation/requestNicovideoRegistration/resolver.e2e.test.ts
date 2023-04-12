@@ -1,47 +1,45 @@
 import { buildHTTPExecutor, HTTPExecutorOptions } from "@graphql-tools/executor-http";
 import { SyncExecutor } from "@graphql-tools/utils";
-import { PrismaClient, UserRole } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { parse } from "graphql";
 import { createSchema, createYoga } from "graphql-yoga";
 import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { DeepMockProxy, mock, mockDeep, mockReset } from "vitest-mock-extended";
 
+import typeDefs from "../../../schema.graphql";
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import {
-  MutationAuthenticationError,
-  NicovideoRegistrationRequest,
-  RequestNicovideoRegistrationSucceededPayload,
-  typeDefs,
-  UserRole as GraphQLUserRole,
-} from "../../graphql.js";
+import { NicovideoRegistrationRequest, RequestNicovideoRegistrationSucceededPayload } from "../../graphql.js";
 import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
-import { ResolverDeps, ServerContext, UserContext } from "../../types.js";
+import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
 
 describe("Mutation.requestNicovideoRegistration e2e", () => {
   let prisma: ResolverDeps["prisma"];
   let neo4j: ResolverDeps["neo4j"];
   let logger: ResolverDeps["logger"];
-  let config: ResolverDeps["config"];
   let meilisearch: DeepMockProxy<ResolverDeps["meilisearch"]>;
+  let userRepository: DeepMockProxy<ResolverDeps["userRepository"]>;
 
   let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
 
   beforeAll(async () => {
-    prisma = new PrismaClient({ datasources: { db: { url: process.env.TEST_PRISMA_DATABASE_URL } } });
+    prisma = new PrismaClient();
     await prisma.$connect();
 
     neo4j = createNeo4jDriver(
-      process.env.TEST_NEO4J_URL,
-      neo4jAuth.basic(process.env.TEST_NEO4J_USERNAME, process.env.TEST_NEO4J_PASSWORD)
+      process.env.NEO4J_URL,
+      neo4jAuth.basic(process.env.NEO4J_USERNAME, process.env.NEO4J_PASSWORD)
     );
 
     logger = mock<ResolverDeps["logger"]>();
-    config = mock<ResolverDeps["config"]>();
     meilisearch = mockDeep<ResolverDeps["meilisearch"]>();
+    userRepository = mockDeep<ResolverDeps["userRepository"]>();
 
-    const schema = createSchema({ typeDefs, resolvers: makeResolvers({ prisma, neo4j, logger, config, meilisearch }) });
+    const schema = createSchema({
+      typeDefs,
+      resolvers: makeResolvers({ prisma, neo4j, logger, meilisearch, userRepository }),
+    });
     const yoga = createYoga<ServerContext, UserContext>({ schema });
     executor = buildHTTPExecutor({ fetch: yoga.fetch });
   });
@@ -49,62 +47,12 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
   beforeEach(async () => {
     await cleanPrisma(prisma);
     // TODO: neo4jのreset処理
-
     mockReset(logger);
-    mockReset(config);
   });
 
   afterAll(async () => {
     await prisma.$disconnect();
     await neo4j.close();
-  });
-
-  test("シナリオ1", async () => {
-    const requestResult = await executor({
-      document: parse(/* GraphQL */ `
-        mutation ($input: RequestNicovideoRegistrationInput!) {
-          requestNicovideoRegistration(input: $input) {
-            __typename
-            ... on MutationAuthenticationError {
-              requiredRole
-            }
-            ... on MutationTagNotFoundError {
-              tagId
-            }
-            ... on RequestNicovideoRegistrationVideoAlreadyRegisteredError {
-              source {
-                id
-              }
-            }
-            ... on RequestNicovideoRegistrationOtherErrorsFallback {
-              message
-            }
-            ... on RequestNicovideoRegistrationSucceededPayload {
-              request {
-                id
-              }
-            }
-          }
-        }
-      `),
-      variables: {
-        input: {
-          sourceId: "sm9",
-          title: "タイトル 1",
-          thumbnailUrl: "https://example.com/thumbnail.jpg",
-          taggings: [],
-          semitaggings: [],
-        },
-      },
-      context: { user: null },
-    });
-
-    expect(requestResult.data).toStrictEqual({
-      requestNicovideoRegistration: {
-        __typename: "MutationAuthenticationError",
-        requiredRole: GraphQLUserRole.User,
-      } satisfies MutationAuthenticationError,
-    });
   });
 
   /**
@@ -115,11 +63,6 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
       prisma.user.create({
         data: {
           id: "u1",
-          name: "user1",
-          displayName: "User 1",
-          email: "user1@example.com",
-          password: "password",
-          role: UserRole.NORMAL,
         },
       }),
       prisma.tag.createMany({
@@ -135,9 +78,7 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
         mutation Request($input: RequestNicovideoRegistrationInput!) {
           requestNicovideoRegistration(input: $input) {
             __typename
-            ... on MutationAuthenticationError {
-              requiredRole
-            }
+
             ... on MutationTagNotFoundError {
               tagId
             }
@@ -172,7 +113,12 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
           ],
         },
       },
-      context: { user: { id: "u1", role: UserRole.NORMAL } } satisfies UserContext,
+      context: {
+        currentUser: {
+          id: "u1",
+          scopes: ["create:registration_request"],
+        } satisfies CurrentUser,
+      },
     });
 
     expect(requestResult.data).toStrictEqual({
@@ -200,9 +146,6 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
               name
               note
             }
-            requestedBy {
-              id
-            }
           }
         }
       `),
@@ -210,9 +153,6 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
     });
     expect(getRequestsResult.data.getNicovideoRegistrationRequest).toStrictEqual({
       id: requestResult.data.requestNicovideoRegistration.request.id,
-      requestedBy: {
-        id: buildGqlId("User", "u1"),
-      },
       sourceId: "sm9",
       title: "タイトル1",
       thumbnailUrl: "https://example.com/thumbnail.jpg",

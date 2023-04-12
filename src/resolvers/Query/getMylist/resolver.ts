@@ -7,7 +7,7 @@ import { MylistModel } from "../../Mylist/model.js";
 import { ResolverDeps } from "../../types.js";
 
 export const getMylist = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { id }, { user: ctxUser }, info) => {
+  (async (_parent, { id }, { currentUser: ctxUser }, info) => {
     const mylist = await prisma.mylist.findFirst({ where: { id: parseGqlID("Mylist", id) } });
 
     if (!mylist) {

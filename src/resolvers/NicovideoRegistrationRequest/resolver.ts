@@ -1,10 +1,12 @@
 import { Resolvers } from "../graphql.js";
-import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
+import { buildGqlId } from "../id.js";
 import { TagModel } from "../Tag/model.js";
 import { ResolverDeps } from "../types.js";
-import { UserModel } from "../User/model.js";
 
-export const resolverNicovideoRegistrationRequest = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolverNicovideoRegistrationRequest = ({
+  prisma,
+  userRepository,
+}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     id: ({ dbId: requestId }) => buildGqlId("NicovideoRegistrationRequest", requestId),
 
@@ -31,11 +33,5 @@ export const resolverNicovideoRegistrationRequest = ({ prisma }: Pick<ResolverDe
         }))
       );
     },
-    requestedBy: ({ requestedById }) =>
-      prisma.user
-        .findUniqueOrThrow({ where: { id: requestedById } })
-        .then((u) => new UserModel(u))
-        .catch(() => {
-          throw new GraphQLNotExistsInDBError("User", requestedById);
-        }),
+    requestedBy: async ({ requestedById }) => userRepository.getById(requestedById),
   } satisfies Resolvers["NicovideoRegistrationRequest"]);

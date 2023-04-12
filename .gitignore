@@ -4,6 +4,8 @@ result
 
 # env
 .env
+.env.*.local
+!.env.*.local.example
 
 # VSCode
 .vscode/settings.json
@@ -16,6 +18,7 @@ logs/
 
 # dumps
 dumps
+dump.sql
 
 # codegen
 schema.graphql

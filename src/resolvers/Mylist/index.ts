@@ -1,14 +1,18 @@
 import { MylistShareRange } from "@prisma/client";
 
 import { MylistShareRange as GQLMylistShareRange, Resolvers } from "../graphql.js";
-import { buildGqlId, GraphQLNotExistsInDBError, parseGqlID } from "../id.js";
+import { buildGqlId, parseGqlID } from "../id.js";
 import { ResolverDeps } from "../types.js";
-import { UserModel } from "../User/model.js";
 import { resolveIncludeTags } from "./includesTags.js";
 import { resolveRecommendedVideos } from "./recommendedVideos.js";
 import { resolverMylistRegistrations } from "./registrations/resolver.js";
 
-export const resolveMylist = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+export const resolveMylist = ({
+  prisma,
+  logger,
+  neo4j,
+  userRepository,
+}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "userRepository">) =>
   ({
     id: ({ id }) => buildGqlId("Mylist", id),
     range: ({ shareRange }) => {
@@ -23,14 +27,8 @@ export const resolveMylist = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pri
           throw new Error("Unknown Mylist Range");
       }
     },
-    holder: async ({ holderId }) =>
-      prisma.user
-        .findUniqueOrThrow({ where: { id: holderId } })
-        .then((v) => new UserModel(v))
-        .catch(() => {
-          throw new GraphQLNotExistsInDBError("User", holderId);
-        }),
 
+    holder: async ({ holderId }) => userRepository.getById(holderId),
     registrations: resolverMylistRegistrations({ prisma, logger }),
 
     isIncludesVideo: async ({ id: mylistId }, { id: videoId }) =>

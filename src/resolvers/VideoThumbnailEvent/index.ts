@@ -3,19 +3,15 @@ import { VideoTitleEventType } from "@prisma/client";
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
 import { ResolverDeps } from "../types.js";
-import { UserModel } from "../User/model.js";
 import { VideoThumbnailModel } from "../VideoThumbnail/model.js";
 
-export const resolveVideoThumbnailEventCommonProps = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveVideoThumbnailEventCommonProps = ({
+  prisma,
+  userRepository,
+}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     id: ({ id }): string => buildGqlId("VideoThumbnailEvent", id),
-    user: ({ userId }) =>
-      prisma.user
-        .findUniqueOrThrow({ where: { id: userId } })
-        .then((u) => new UserModel(u))
-        .catch(() => {
-          throw new GraphQLNotExistsInDBError("User", userId);
-        }),
+    user: async ({ userId }) => userRepository.getById(userId),
     videoThumbnail: ({ videoThumbnailId }) =>
       prisma.videoThumbnail
         .findUniqueOrThrow({ where: { id: videoThumbnailId } })
@@ -39,17 +35,17 @@ export const resolveVideoThumbnailEvent = () =>
     },
   } satisfies Resolvers["VideoThumbnailEvent"]);
 
-export const resolveVideoThumbnailCreateEvent = (deps: Pick<ResolverDeps, "prisma">) =>
+export const resolveVideoThumbnailCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     ...resolveVideoThumbnailEventCommonProps(deps),
   } satisfies Resolvers["VideoThumbnailCreateEvent"]);
 
-export const resolveVideoThumbnailSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma">) =>
+export const resolveVideoThumbnailSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     ...resolveVideoThumbnailEventCommonProps(deps),
   } satisfies Resolvers["VideoThumbnailSetPrimaryEvent"]);
 
-export const resolveVideoThumbnailUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma">) =>
+export const resolveVideoThumbnailUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     ...resolveVideoThumbnailEventCommonProps(deps),
   } satisfies Resolvers["VideoThumbnailUnsetPrimaryEvent"]);

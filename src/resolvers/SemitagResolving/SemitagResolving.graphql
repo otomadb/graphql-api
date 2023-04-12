@@ -1,0 +1,5 @@
+type SemitagResolving {
+  note: String
+  resolveTo: VideoTag!
+  semitag: Semitag!
+}

@@ -1,34 +1,32 @@
 import { IncomingMessage, ServerResponse } from "node:http";
 
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+import { AppMetadata, User, UserMetadata } from "auth0";
 import { MeiliSearch } from "meilisearch";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 import { Logger } from "pino";
 
+import { UserModel } from "./User/model.js";
+
+export type Auth0User = User<AppMetadata, UserMetadata>;
 export type ResolverDeps = {
   prisma: PrismaClient;
   neo4j: Neo4jDriver;
   meilisearch: MeiliSearch;
   logger: Logger;
-  config: {
-    session: {
-      cookieName(): string;
-      cookieDomain(): string | undefined;
-      cookieSameSite(): "none" | "strict";
-    };
-  };
+  userRepository: ReturnType<typeof UserModel.makeRepository>;
 };
-
 export type ServerContext = {
   req: IncomingMessage;
   res: ServerResponse;
 };
 
+export type CurrentUser = {
+  id: string;
+  scopes: string[];
+};
 export type UserContext = {
-  user: {
-    id: User["id"];
-    role: User["role"];
-  } | null;
+  currentUser: CurrentUser;
 };
 
-export type Context = UserContext & ServerContext;
+export type Context = ServerContext & UserContext;

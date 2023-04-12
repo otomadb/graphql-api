@@ -3,7 +3,8 @@
 import { type Resolvers } from "../graphql.js";
 import { ResolverDeps } from "../types.js";
 import { fetchNicovideo } from "./fetchNicovideo/fetchNicovideo.js";
-import { findMylist } from "./findMylist/findMylist.js";
+import { resolverFetchYoutube } from "./fetchYoutube/resolver.js";
+import { resolverFindMylist } from "./findMylist/findMylist.js";
 import { resolverFindNicovideoRegistrationRequest } from "./findNicovideoRegistrationRequest/resolver.js";
 import { findNicovideoRegistrationRequests } from "./findNicovideoRegistrationRequests/findNicovideoRegistrationRequests.js";
 import { findNicovideoVideoSource } from "./findNicovideoVideoSource/findNicovideoVideoSource.js";
@@ -13,6 +14,7 @@ import { findTags } from "./findTags/findTags.js";
 import { findUser } from "./findUser/findUser.js";
 import { findVideo } from "./findVideo/findVideos.js";
 import { findVideos } from "./findVideos/findVideos.js";
+import { resolverFindYoutubeVideoSource } from "./findYoutubeVideoSource/resolver.js";
 import { getMylist } from "./getMylist/resolver.js";
 import { getMylistGroup } from "./getMylistGroup/resolver.js";
 import { getNicovideoRegistrationRequest } from "./getNicovideoRegistrationRequest/getNicovideoRegistrationRequest.js";
@@ -21,14 +23,16 @@ import { getSemitag } from "./getSemitag/resolver.js";
 import { getTag } from "./getTag/resolver.js";
 import { getUser } from "./getUser/resolver.js";
 import { getVideo } from "./getVideo/resolver.js";
+import { getYoutubeVideoSource } from "./getYoutubeVideoSource/resolver.js";
 import { searchTags } from "./searchTags/resolver.js";
 import { searchVideos } from "./searchVideos/resolver.js";
-import { whoami } from "./whoami/whoami.js";
+import { resolverWhoami } from "./whoami/resolver.js";
 
 export const resolveQuery = (deps: ResolverDeps) =>
   ({
     fetchNicovideo: fetchNicovideo(),
-    findMylist: findMylist(deps),
+    fetchYoutube: resolverFetchYoutube(),
+    findMylist: resolverFindMylist(deps),
     findNicovideoRegistrationRequest: resolverFindNicovideoRegistrationRequest(deps),
     findNicovideoRegistrationRequests: findNicovideoRegistrationRequests(deps),
     findNicovideoVideoSource: findNicovideoVideoSource(deps),
@@ -38,6 +42,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
     findUser: findUser(deps),
     findVideo: findVideo(deps),
     findVideos: findVideos(deps),
+    findYoutubeVideoSource: resolverFindYoutubeVideoSource(deps),
     getMylist: getMylist(deps),
     getMylistGroup: getMylistGroup(deps),
     getNicovideoRegistrationRequest: getNicovideoRegistrationRequest(deps),
@@ -46,14 +51,8 @@ export const resolveQuery = (deps: ResolverDeps) =>
     getTag: getTag(deps),
     getUser: getUser(deps),
     getVideo: getVideo(deps),
-    mylist: getMylist(deps),
-    mylistGroup: getMylistGroup(deps),
-    nicovideoVideoSource: getNicovideoVideoSource(deps),
+    getYoutubeVideoSource: getYoutubeVideoSource(deps),
     searchTags: searchTags(deps),
     searchVideos: searchVideos(deps),
-    semitag: getSemitag(deps),
-    tag: getTag(deps),
-    user: getUser(deps),
-    video: getVideo(deps),
-    whoami: whoami(deps),
+    whoami: resolverWhoami(deps),
   } satisfies Resolvers["Query"]);

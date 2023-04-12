@@ -1,13 +1,9 @@
-import { UserRole } from "@prisma/client";
-
 import { isErr } from "../../../utils/Result.js";
 import {
-  MutationAuthenticationError,
   MutationNicovideoRegistrationRequestNotFoundError,
   MutationResolvers,
   RejectNicovideoRegistrationRequestOtherErrorMessage,
   RejectNicovideoRegistrationRequestOtherErrorsFallback,
-  UserRole as GraphQLUserRole,
 } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { NicovideoRegistrationRequestModel } from "../../NicovideoRegistrationRequest/model.js";
@@ -19,13 +15,7 @@ export const resolverRejectRequestNicovideoRegistration = ({
   prisma,
   logger,
 }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_, { input: { requestId: requestGqlId, note } }, { user }, info) => {
-    if (!user || (user.role !== UserRole.EDITOR && user.role !== UserRole.ADMINISTRATOR))
-      return {
-        __typename: "MutationAuthenticationError",
-        requiredRole: GraphQLUserRole.Editor,
-      } satisfies MutationAuthenticationError;
-
+  (async (_, { input: { requestId: requestGqlId, note } }, { currentUser: user }, info) => {
     const requestId = parseGqlID2("NicovideoRegistrationRequest", requestGqlId);
     if (isErr(requestId)) {
       return {

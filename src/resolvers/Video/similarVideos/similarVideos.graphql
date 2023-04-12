@@ -1,0 +1,11 @@
+type Video implements Node {
+  similarVideos(input: VideoSimilarVideosInput!): VideoSimilarVideosPayload!
+}
+
+input VideoSimilarVideosInput {
+  limit: Int! = 10
+}
+
+type VideoSimilarVideosPayload {
+  items: [VideoSimilarity!]!
+}

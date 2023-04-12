@@ -10,7 +10,7 @@ describe("Get whole videos in mylist group in prisma", () => {
   let prisma: ResolverDeps["prisma"];
 
   beforeAll(async () => {
-    prisma = new PrismaClient({ datasources: { db: { url: process.env.TEST_PRISMA_DATABASE_URL } } });
+    prisma = new PrismaClient();
     await prisma.$connect();
   });
 
@@ -39,10 +39,6 @@ describe("Get whole videos in mylist group in prisma", () => {
       prisma.user.create({
         data: {
           id: userId1,
-          name: "user1",
-          displayName: "User1",
-          email: "user1@example.com",
-          password: "password",
         },
       }),
       prisma.video.createMany({
@@ -54,16 +50,19 @@ describe("Get whole videos in mylist group in prisma", () => {
             id: mylistId1,
             title: "Mylist 1",
             holderId: userId1,
+            slug: "mylist-1",
           },
           {
             id: mylistId2,
             title: "Mylist 2",
             holderId: userId1,
+            slug: "mylist-2",
           },
           {
             id: mylistId3,
             title: "Mylist 3",
             holderId: userId1,
+            slug: "mylist-3",
           },
         ],
       }),
@@ -122,10 +121,6 @@ describe("Get whole videos in mylist group in prisma", () => {
       prisma.user.create({
         data: {
           id: userId1,
-          name: "user1",
-          displayName: "User1",
-          email: "user1@example.com",
-          password: "password",
         },
       }),
       prisma.video.createMany({
@@ -137,21 +132,25 @@ describe("Get whole videos in mylist group in prisma", () => {
             id: mylistId1,
             title: "Mylist 1",
             holderId: userId1,
+            slug: "mylist-1",
           },
           {
             id: mylistId2,
             title: "Mylist 2",
             holderId: userId1,
+            slug: "mylist-2",
           },
           {
             id: mylistId3,
             title: "Mylist 3",
             holderId: userId1,
+            slug: "mylist-3",
           },
           {
             id: mylistId4,
             title: "Mylist 4",
             holderId: userId1,
+            slug: "mylist-4",
           },
         ],
       }),
@@ -213,10 +212,6 @@ describe("Get whole videos in mylist group in prisma", () => {
       prisma.user.create({
         data: {
           id: userId1,
-          name: "user1",
-          displayName: "User1",
-          email: "user1@example.com",
-          password: "password",
         },
       }),
       prisma.video.createMany({
@@ -228,16 +223,19 @@ describe("Get whole videos in mylist group in prisma", () => {
             id: mylistId1,
             title: "Mylist 1",
             holderId: userId1,
+            slug: "mylist-1",
           },
           {
             id: mylistId2,
             title: "Mylist 2",
             holderId: userId1,
+            slug: "mylist-2",
           },
           {
             id: mylistId3,
             title: "Mylist 3",
             holderId: userId1,
+            slug: "mylist-4",
           },
         ],
       }),

@@ -2,20 +2,13 @@ import { GraphQLError } from "graphql";
 
 import { QueryResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../types.js";
-import { UserModel } from "../../User/model.js";
 
-export const findUser = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { input: { name } }, { user: ctxUser }, info) => {
+export const findUser = ({ logger, userRepository }: Pick<ResolverDeps, "logger" | "userRepository">) =>
+  (async (_parent, { input: { name } }, { currentUser: ctxUser }, info) => {
     if (!name) {
       logger.error({ path: info.path, args: { input: { name } }, userId: ctxUser?.id }, "Invalid input");
       throw new GraphQLError("name must be provided"); // TODO: error messsage
     }
 
-    const user = await prisma.user.findFirst({ where: { name } });
-    if (!user) {
-      logger.info({ path: info.path, name, userId: ctxUser?.id }, "Not found");
-      throw new GraphQLError("Not Found");
-    }
-
-    return new UserModel(user);
+    return userRepository.findByName(name);
   }) satisfies QueryResolvers["findUser"];

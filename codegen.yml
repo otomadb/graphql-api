@@ -2,9 +2,11 @@
 schema:
   - ./src/resolvers/**/*.graphql
 generates:
-  ./schema.graphql:
+  ./src/schema.graphql:
     plugins:
       - schema-ast
+    config:
+      includeDirectives: true
   ./src/resolvers/graphql.ts:
     config:
       avoidOptionals:
@@ -34,10 +36,10 @@ generates:
         SemitagConnection: ./SemitagConnection/model.js#SemitagConnectionModel
         SemitagEvent: ./SemitagEvent/model.js#SemitagEventModel
         SemitagRejectEvent: ./SemitagEvent/model.js#SemitagEventModel
-        SemitagRejecting: ./Semitag/model.js#SemitagRejectingModel
+        SemitagRejecting: ./SemitagRejecting/model.js#SemitagRejectingModel
         SemitagResolveEvent: ./SemitagEvent/model.js#SemitagEventModel
-        SemitagResolving: ./Semitag/model.js#SemitagResolvingModel
-        Session: ./Session/model.js#SessionModel
+        SemitagSuggestTagsItem: ./SemitagSuggestTagsItem/model.js#SemitagSuggestTagsItemModel
+        SemitagResolving: ./SemitagResolving/model.js#SemitagResolvingModel
         Tag: ./Tag/model.js#TagModel
         TagEvent: ./TagEvent/model.js#TagEventModel
         TagName: ./TagName/model.js#TagNameModel
@@ -77,8 +79,11 @@ generates:
         VideoTitleEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
         VideoTitleSetPrimaryEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
         VideoTitleUnsetPrimaryEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
+        YoutubeVideoSource: ./YoutubeVideoSource/model.js#YoutubeVideoSourceModel
+        YoutubeVideoSourceCreateEvent: ./YoutubeVideoSourceEvent/model.js#YoutubeVideoSourceEventModel
+        YoutubeVideoSourceEvent: ./YoutubeVideoSourceEvent/model.js#YoutubeVideoSourceEventModel
+        YoutubeVideoSourceEventConnection: ./YoutubeVideoSourceEventConnection/model.js#YoutubeVideoSourceEventConnectionModel
       makeResolverTypeCallable: true
     plugins:
       - typescript
       - typescript-resolvers
-      - "./codegen-plugins/typedefs.mjs"

@@ -12,7 +12,7 @@ export const resolverUserNicovideoRegistrationRequests = ({
   prisma,
   logger,
 }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async ({ id: userId }, { orderBy, ...unparsedConnectionArgs }, { user: ctxUser }, info) => {
+  (async ({ id: userId }, { orderBy, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([
         z.object({

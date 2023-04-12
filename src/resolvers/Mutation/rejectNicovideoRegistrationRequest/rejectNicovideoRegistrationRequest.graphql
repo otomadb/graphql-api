@@ -1,7 +1,7 @@
 type Mutation {
   rejectNicovideoRegistrationRequest(
     input: RejectNicovideoRegistrationRequestInput!
-  ): RejectNicovideoRegistrationRequestReturnUnion!
+  ): RejectNicovideoRegistrationRequestReturnUnion! @auth(scopes: ["check:registration_request"])
 }
 
 input RejectNicovideoRegistrationRequestInput {
@@ -10,8 +10,7 @@ input RejectNicovideoRegistrationRequestInput {
 }
 
 union RejectNicovideoRegistrationRequestReturnUnion =
-    MutationAuthenticationError
-  | MutationNicovideoRegistrationRequestNotFoundError
+    MutationNicovideoRegistrationRequestNotFoundError
   | MutationInvalidNicovideoRegistrationRequestIdError
   | RejectNicovideoRegistrationRequestRequestAlreadyCheckedError
   | RejectNicovideoRegistrationRequestOtherErrorsFallback

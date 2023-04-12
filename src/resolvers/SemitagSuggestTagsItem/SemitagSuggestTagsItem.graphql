@@ -1,0 +1,5 @@
+type SemitagSuggestTagsItem {
+  name: TagName!
+  tag: Tag!
+  canResolveTo: Boolean!
+}

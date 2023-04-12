@@ -4,18 +4,14 @@ import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
 import { TagNameModel } from "../TagName/model.js";
 import { ResolverDeps } from "../types.js";
-import { UserModel } from "../User/model.js";
 
-export const resolveTagNameEventCommonProps = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveTagNameEventCommonProps = ({
+  prisma,
+  userRepository,
+}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     id: ({ id }): string => buildGqlId("TagEvent", id),
-    user: ({ userId }) =>
-      prisma.user
-        .findUniqueOrThrow({ where: { id: userId } })
-        .then((u) => new UserModel(u))
-        .catch(() => {
-          throw new GraphQLNotExistsInDBError("User", userId);
-        }),
+    user: async ({ userId }) => userRepository.getById(userId),
     tagName: ({ tagNameId }) =>
       prisma.tagName
         .findUniqueOrThrow({ where: { id: tagNameId } })
@@ -39,17 +35,17 @@ export const resolveTagNameEvent = () =>
     },
   } satisfies Resolvers["TagNameEvent"]);
 
-export const resolveTagNameCreateEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveTagNameCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
-    ...resolveTagNameEventCommonProps({ prisma }),
+    ...resolveTagNameEventCommonProps(deps),
   } satisfies Resolvers["TagNameCreateEvent"]);
 
-export const resolveTagNameSetPrimaryEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveTagNameSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
-    ...resolveTagNameEventCommonProps({ prisma }),
+    ...resolveTagNameEventCommonProps(deps),
   } satisfies Resolvers["TagNameSetPrimaryEvent"]);
 
-export const resolveTagNameUnsetPrimaryEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveTagNameUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
-    ...resolveTagNameEventCommonProps({ prisma }),
+    ...resolveTagNameEventCommonProps(deps),
   } satisfies Resolvers["TagNameUnsetPrimaryEvent"]);

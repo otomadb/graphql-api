@@ -21,7 +21,7 @@ import {
   resolveNicovideoVideoSourceEvent,
 } from "./NicovideoVideoSourceEvent/index.js";
 import { resolveQuery } from "./Query/index.js";
-import { resolveSemitag, resolveSemitagRejecting, resolveSemitagResolving } from "./Semitag/index.js";
+import { resolveSemitag } from "./Semitag/index.js";
 import { resolverSemitagConnection } from "./SemitagConnection/resolver.js";
 import {
   resolveSemitagEvent,
@@ -29,7 +29,9 @@ import {
   resolveSemitagEventRejectEvent,
   resolveSemitagEventResolveEvent,
 } from "./SemitagEvent/index.js";
-import { resolveSession } from "./Session/index.js";
+import { resolverSemitagRejecting } from "./SemitagRejecting/resolver.js";
+import { resolverSemitagResolving } from "./SemitagResolving/resolver.js";
+import { resolverSemitagSuggestTagsItem } from "./SemitagSuggestTagsItem/resolver.js";
 import { resolveTag } from "./Tag/index.js";
 import { resolveTagEvent, resolveTagRegisterEvent } from "./TagEvent/index.js";
 import { resolveTagName } from "./TagName/index.js";
@@ -70,6 +72,12 @@ import {
   resolveVideoTitleSetPrimaryEvent,
   resolveVideoTitleUnsetPrimaryEvent,
 } from "./VideoTitleEvent/index.js";
+import { resolveYoutubeVideoSource } from "./YoutubeVideoSource/resolver.js";
+import {
+  resolveYoutubeVideoSourceCreateEvent,
+  resolveYoutubeVideoSourceEvent,
+} from "./YoutubeVideoSourceEvent/resolver.js";
+import { resolverYoutubeVideoSourceEventConnection } from "./YoutubeVideoSourceEventConnection/resolver.js";
 
 export const makeResolvers = (deps: ResolverDeps) =>
   ({
@@ -96,10 +104,10 @@ export const makeResolvers = (deps: ResolverDeps) =>
     SemitagConnection: resolverSemitagConnection(),
     SemitagEvent: resolveSemitagEvent(),
     SemitagRejectEvent: resolveSemitagEventRejectEvent(deps),
-    SemitagRejecting: resolveSemitagRejecting(deps),
+    SemitagRejecting: resolverSemitagRejecting(deps),
     SemitagResolveEvent: resolveSemitagEventResolveEvent(deps),
-    SemitagResolving: resolveSemitagResolving(deps),
-    Session: resolveSession(deps),
+    SemitagResolving: resolverSemitagResolving(deps),
+    SemitagSuggestTagsItem: resolverSemitagSuggestTagsItem(deps),
     Tag: resolveTag(deps),
     TagEvent: resolveTagEvent(),
     TagName: resolveTagName(deps),
@@ -133,4 +141,8 @@ export const makeResolvers = (deps: ResolverDeps) =>
     VideoTitleEvent: resolveVideoTitleEvent(),
     VideoTitleSetPrimaryEvent: resolveVideoTitleSetPrimaryEvent(deps),
     VideoTitleUnsetPrimaryEvent: resolveVideoTitleUnsetPrimaryEvent(deps),
+    YoutubeVideoSource: resolveYoutubeVideoSource(deps),
+    YoutubeVideoSourceCreateEvent: resolveYoutubeVideoSourceCreateEvent(deps),
+    YoutubeVideoSourceEvent: resolveYoutubeVideoSourceEvent(),
+    YoutubeVideoSourceEventConnection: resolverYoutubeVideoSourceEventConnection(),
   } satisfies Resolvers);

@@ -1,31 +1,42 @@
 import { MylistShareRange } from "@prisma/client";
-import { GraphQLError } from "graphql";
 
 import { QueryResolvers } from "../../graphql.js";
-import { parseGqlID } from "../../id.js";
 import { MylistModel } from "../../Mylist/model.js";
 import { ResolverDeps } from "../../types.js";
 
-export const MYLIST_NOT_FOUND_OR_PRIVATE_ERROR = "Mylist Not Found or Private";
-export const MYLIST_NOT_HOLDED_BY_YOU = "This mylist is not holded by you";
+export const resolverFindMylist = ({
+  prisma,
+  logger,
+  userRepository,
+}: Pick<ResolverDeps, "prisma" | "logger" | "userRepository">) =>
+  (async (_parent, { input }, { currentUser }, info) => {
+    const { pair } = input;
 
-export const findMylist = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { input: { id } }, { user: ctxUser }, info) => {
-    if (!id) {
-      logger.error({ path: info.path, args: { input: { id } }, userId: ctxUser?.id }, "Not found");
-      throw new GraphQLError("id must be provided"); // TODO: error messsage
-    }
-
-    const mylist = await prisma.mylist.findFirst({ where: { id: parseGqlID("Mylist", id) } });
-
-    if (!mylist) {
-      logger.info({ path: info.path, id, userId: ctxUser?.id }, "Not found");
+    const holder = await userRepository.findByName(pair.holderName);
+    if (!holder) {
+      logger.info({ path: info.path, holderName: pair.holderName }, "Holder not found");
       return null;
     }
-    if (mylist.shareRange === MylistShareRange.PRIVATE && mylist.holderId !== ctxUser?.id) {
+
+    const mylist = await prisma.mylist.findUnique({
+      where: {
+        holderId_slug: { slug: input.pair.mylistSlug, holderId: holder.id },
+      },
+    });
+    if (!mylist) {
+      logger.info({ path: info.path, input: pair, holderId: holder.id }, "Mylist not found");
+      return null;
+    }
+
+    if (mylist.shareRange === MylistShareRange.PRIVATE && mylist.holderId !== currentUser?.id) {
       logger.warn(
-        { path: info.path, id, holderId: mylist.holderId, userId: ctxUser?.id },
-        "Private mylist accessed by other user"
+        {
+          path: info.path,
+          input: pair,
+          mylistHolderId: mylist.holderId,
+          currentUserId: currentUser?.id,
+        },
+        "Mylist is private"
       );
       return null;
     }

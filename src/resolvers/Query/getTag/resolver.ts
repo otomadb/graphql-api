@@ -4,7 +4,7 @@ import { TagModel } from "../../Tag/model.js";
 import { ResolverDeps } from "../../types.js";
 
 export const getTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { id }, { user: ctxUser }, info) =>
+  (async (_parent, { id }, { currentUser: ctxUser }, info) =>
     prisma.tag
       .findUniqueOrThrow({ where: { id: parseGqlID("Tag", id) } })
       .then((v) => new TagModel(v))

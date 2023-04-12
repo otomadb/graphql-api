@@ -28,7 +28,7 @@ services:
         published: 8081
 
   neo4j:
-    image: neo4j:5.5
+    image: neo4j:5.6
     ports:
       # http
       - target: 7474
@@ -55,6 +55,12 @@ services:
       - type: volume
         source: meilisearch_data
         target: /meili_data
+
+  redis:
+    image: redis:7.0
+    ports:
+      - target: 6379
+        published: 6379
 
 volumes:
   postgres_data:

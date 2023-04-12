@@ -7,7 +7,7 @@ import { SemitagModel } from "../../Semitag/model.js";
 import { ResolverDeps } from "../../types.js";
 
 export const addSemitagToVideo = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
-  (async (_parent, { input: { videoId: videoGqlId, name: semitagName } }, { user }) => {
+  (async (_parent, { input: { videoId: videoGqlId, name: semitagName } }, { currentUser: user }) => {
     if (!user)
       return {
         __typename: "AddSemitagToVideoFailedPayload",
@@ -58,6 +58,6 @@ export const addSemitagToVideo = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
 
     return {
       __typename: "AddSemitagToVideoSucceededPayload",
-      semitag: new SemitagModel(semitag),
+      semitag: SemitagModel.fromPrisma(semitag),
     };
   }) satisfies MutationResolvers["addSemitagToVideo"];

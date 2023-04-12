@@ -4,7 +4,7 @@ import { NicovideoRegistrationRequestModel } from "../../NicovideoRegistrationRe
 import { ResolverDeps } from "../../types.js";
 
 export const getNicovideoRegistrationRequest = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { id }, { user: ctxUser }, info) =>
+  (async (_parent, { id }, { currentUser: ctxUser }, info) =>
     prisma.nicovideoRegistrationRequest
       .findUniqueOrThrow({ where: { id: parseGqlID("NicovideoRegistrationRequest", id) } })
       .then((v) => new NicovideoRegistrationRequestModel(v))

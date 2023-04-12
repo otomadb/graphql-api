@@ -1,8 +1,12 @@
+import graphql from "@rollup/plugin-graphql";
 import { defaultExclude, defineConfig } from "vitest/config";
 
 export default defineConfig({
+  plugins: [graphql()],
   test: {
-    exclude: [...defaultExclude, "**/.direnv/**"],
+    include: ["src/**/*.test.{js,ts}"],
+    exclude: [...defaultExclude],
     threads: false,
+    globalSetup: ["./test/globalSetup.ts"],
   },
 });

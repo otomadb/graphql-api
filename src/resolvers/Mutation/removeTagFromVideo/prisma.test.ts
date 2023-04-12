@@ -11,7 +11,7 @@ describe("Remove tag in Prisma", () => {
   let prisma: ResolverDeps["prisma"];
 
   beforeAll(async () => {
-    prisma = new PrismaClient({ datasources: { db: { url: process.env.TEST_PRISMA_DATABASE_URL } } });
+    prisma = new PrismaClient();
     await prisma.$connect();
   });
 
@@ -28,10 +28,6 @@ describe("Remove tag in Prisma", () => {
       prisma.user.create({
         data: {
           id: "u1",
-          name: "user1",
-          displayName: "User1",
-          email: "user1@example.com",
-          password: "password",
         },
       }),
       prisma.tag.create({
@@ -53,10 +49,6 @@ describe("Remove tag in Prisma", () => {
       prisma.user.create({
         data: {
           id: "u1",
-          name: "user1",
-          displayName: "User1",
-          email: "user1@example.com",
-          password: "password",
         },
       }),
       prisma.video.create({
@@ -78,10 +70,6 @@ describe("Remove tag in Prisma", () => {
       prisma.user.create({
         data: {
           id: "u1",
-          name: "user1",
-          displayName: "User1",
-          email: "user1@example.com",
-          password: "password",
         },
       }),
       prisma.video.create({
@@ -106,10 +94,6 @@ describe("Remove tag in Prisma", () => {
       prisma.user.create({
         data: {
           id: "u1",
-          name: "user1",
-          displayName: "User1",
-          email: "user1@example.com",
-          password: "password",
         },
       }),
       prisma.video.create({
@@ -142,10 +126,6 @@ describe("Remove tag in Prisma", () => {
       prisma.user.create({
         data: {
           id: "u1",
-          name: "user1",
-          displayName: "User1",
-          email: "user1@example.com",
-          password: "password",
         },
       }),
       prisma.tag.create({
