@@ -1,16 +1,26 @@
 import { buildHTTPExecutor, HTTPExecutorOptions } from "@graphql-tools/executor-http";
 import { SyncExecutor } from "@graphql-tools/utils";
-import { parse } from "graphql";
 import { createSchema, createYoga } from "graphql-yoga";
 import { beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { DeepMockProxy, mockDeep, mockReset } from "vitest-mock-extended";
 
+import { graphql } from "../../../gql/gql.js";
 import typeDefs from "../../../schema.graphql";
 import { RegisterVideoFromNicovideoInput, RegisterVideoFromNicovideoSemitagTooLongError } from "../../graphql.js";
 import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
 import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
 
+const Mutation = graphql(`
+  mutation E2E_RegisterVideoFromNicovideo($input: RegisterVideoFromNicovideoInput!) {
+    registerVideoFromNicovideo(input: $input) {
+      __typename
+      ... on RegisterVideoFromNicovideoSemitagTooLongError {
+        name
+      }
+    }
+  }
+`);
 describe("Mutation.registerVideoFromNicovideo e2e", () => {
   describe("Args and Return check", () => {
     let deps: DeepMockProxy<ResolverDeps>;
@@ -49,16 +59,7 @@ describe("Mutation.registerVideoFromNicovideo e2e", () => {
       ],
     ])("不適当なinput: %#", async (input, expected) => {
       const requestResult = await executor({
-        document: parse(/* GraphQL */ `
-          mutation E2ETest_Mutation_RegisterVideoFromNicovideo_Invalid_Input($input: RegisterVideoFromNicovideoInput!) {
-            registerVideoFromNicovideo(input: $input) {
-              __typename
-              ... on RegisterVideoFromNicovideoSemitagTooLongError {
-                name
-              }
-            }
-          }
-        `),
+        document: Mutation,
         variables: { input },
         context: {
           currentUser: {

@@ -1,12 +1,12 @@
 import { buildHTTPExecutor, HTTPExecutorOptions } from "@graphql-tools/executor-http";
 import { SyncExecutor } from "@graphql-tools/utils";
 import { PrismaClient } from "@prisma/client";
-import { parse } from "graphql";
 import { createSchema, createYoga } from "graphql-yoga";
 import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { DeepMockProxy, mock, mockDeep, mockReset } from "vitest-mock-extended";
 
+import { graphql } from "../../../gql/gql.js";
 import typeDefs from "../../../schema.graphql";
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import {
@@ -18,6 +18,35 @@ import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
 import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
 
+const Mutation = graphql(`
+  mutation E2E_RejectNicovideoRegistrationRequest($input: RejectNicovideoRegistrationRequestInput!) {
+    rejectNicovideoRegistrationRequest(input: $input) {
+      __typename
+      ... on MutationNicovideoRegistrationRequestNotFoundError {
+        requestId
+      }
+      ... on RejectNicovideoRegistrationRequestRequestAlreadyCheckedError {
+        request {
+          id
+        }
+      }
+      ... on RejectNicovideoRegistrationRequestOtherErrorsFallback {
+        message
+      }
+      ... on RejectNicovideoRegistrationRequestSucceededPayload {
+        rejecting {
+          note
+          rejectedBy {
+            id
+          }
+          request {
+            id
+          }
+        }
+      }
+    }
+  }
+`);
 describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
   let prisma: ResolverDeps["prisma"];
   let neo4j: ResolverDeps["neo4j"];
@@ -90,36 +119,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
     ]);
 
     const requestResult = await executor({
-      document: parse(/* GraphQL */ `
-        mutation NicovideoRegistrationRequests_Scenario3_Reject($input: RejectNicovideoRegistrationRequestInput!) {
-          rejectNicovideoRegistrationRequest(input: $input) {
-            __typename
-
-            ... on MutationNicovideoRegistrationRequestNotFoundError {
-              requestId
-            }
-            ... on RejectNicovideoRegistrationRequestRequestAlreadyCheckedError {
-              request {
-                id
-              }
-            }
-            ... on RejectNicovideoRegistrationRequestOtherErrorsFallback {
-              message
-            }
-            ... on RejectNicovideoRegistrationRequestSucceededPayload {
-              rejecting {
-                note
-                rejectedBy {
-                  id
-                }
-                request {
-                  id
-                }
-              }
-            }
-          }
-        }
-      `),
+      document: Mutation,
       variables: {
         input: {
           requestId: buildGqlId("NicovideoRegistrationRequest", "r1"),
@@ -162,35 +162,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
     ]);
 
     const requestResult = await executor({
-      document: parse(/* GraphQL */ `
-        mutation NicovideoRegistrationRequests_Scenario4_Reject($input: RejectNicovideoRegistrationRequestInput!) {
-          rejectNicovideoRegistrationRequest(input: $input) {
-            __typename
-            ... on MutationNicovideoRegistrationRequestNotFoundError {
-              requestId
-            }
-            ... on RejectNicovideoRegistrationRequestRequestAlreadyCheckedError {
-              request {
-                id
-              }
-            }
-            ... on RejectNicovideoRegistrationRequestOtherErrorsFallback {
-              message
-            }
-            ... on RejectNicovideoRegistrationRequestSucceededPayload {
-              rejecting {
-                note
-                rejectedBy {
-                  id
-                }
-                request {
-                  id
-                }
-              }
-            }
-          }
-        }
-      `),
+      document: Mutation,
       variables: {
         input: {
           requestId: buildGqlId("NicovideoRegistrationRequest", "r1"),
@@ -243,30 +215,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
     ]);
 
     const requestResult = await executor({
-      document: parse(/* GraphQL */ `
-        mutation NicovideoRegistrationRequests_Scenario5_Reject($input: RejectNicovideoRegistrationRequestInput!) {
-          rejectNicovideoRegistrationRequest(input: $input) {
-            __typename
-
-            ... on MutationNicovideoRegistrationRequestNotFoundError {
-              requestId
-            }
-            ... on RejectNicovideoRegistrationRequestRequestAlreadyCheckedError {
-              request {
-                id
-              }
-            }
-            ... on RejectNicovideoRegistrationRequestOtherErrorsFallback {
-              message
-            }
-            ... on RejectNicovideoRegistrationRequestSucceededPayload {
-              rejecting {
-                note
-              }
-            }
-          }
-        }
-      `),
+      document: Mutation,
       variables: {
         input: {
           requestId: buildGqlId("NicovideoRegistrationRequest", "r1"),

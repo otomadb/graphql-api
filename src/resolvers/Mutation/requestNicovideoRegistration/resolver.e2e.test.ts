@@ -1,18 +1,72 @@
 import { buildHTTPExecutor, HTTPExecutorOptions } from "@graphql-tools/executor-http";
 import { SyncExecutor } from "@graphql-tools/utils";
 import { PrismaClient } from "@prisma/client";
-import { parse } from "graphql";
 import { createSchema, createYoga } from "graphql-yoga";
 import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { DeepMockProxy, mock, mockDeep, mockReset } from "vitest-mock-extended";
 
+import { graphql } from "../../../gql/gql.js";
 import typeDefs from "../../../schema.graphql";
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import { NicovideoRegistrationRequest, RequestNicovideoRegistrationSucceededPayload } from "../../graphql.js";
 import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
 import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
+
+const Mutation = graphql(`
+  mutation E2E_RequestNicovideoRegistration($input: RequestNicovideoRegistrationInput!) {
+    requestNicovideoRegistration(input: $input) {
+      __typename
+
+      ... on MutationTagNotFoundError {
+        tagId
+      }
+      ... on RequestNicovideoRegistrationVideoAlreadyRegisteredError {
+        source {
+          id
+        }
+      }
+      ... on RequestNicovideoRegistrationOtherErrorsFallback {
+        message
+      }
+      ... on RequestNicovideoRegistrationSucceededPayload {
+        request {
+          id
+        }
+      }
+    }
+  }
+`);
+const GetRequestQuery = graphql(`
+  query E2E_RequestNicovideoRegistration_GetRequest($id: ID!) {
+    getNicovideoRegistrationRequest(id: $id) {
+      id
+      title
+      sourceId
+      thumbnailUrl
+      taggings {
+        tag {
+          id
+        }
+        note
+      }
+      semitaggings {
+        name
+        note
+      }
+    }
+  }
+`);
+const FindRequestsQuery = graphql(`
+  query E2E_RequestNicovideoRegistration_FindRequests {
+    findNicovideoRegistrationRequests(first: 2) {
+      nodes {
+        id
+      }
+    }
+  }
+`);
 
 describe("Mutation.requestNicovideoRegistration e2e", () => {
   let prisma: ResolverDeps["prisma"];
@@ -74,30 +128,7 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
     ]);
 
     const requestResult = await executor({
-      document: parse(/* GraphQL */ `
-        mutation Request($input: RequestNicovideoRegistrationInput!) {
-          requestNicovideoRegistration(input: $input) {
-            __typename
-
-            ... on MutationTagNotFoundError {
-              tagId
-            }
-            ... on RequestNicovideoRegistrationVideoAlreadyRegisteredError {
-              source {
-                id
-              }
-            }
-            ... on RequestNicovideoRegistrationOtherErrorsFallback {
-              message
-            }
-            ... on RequestNicovideoRegistrationSucceededPayload {
-              request {
-                id
-              }
-            }
-          }
-        }
-      `),
+      document: Mutation,
       variables: {
         input: {
           sourceId: "sm9",
@@ -129,26 +160,7 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
     });
 
     const getRequestsResult = await executor({
-      document: parse(/* GraphQL */ `
-        query GetRequest($id: ID!) {
-          getNicovideoRegistrationRequest(id: $id) {
-            id
-            title
-            sourceId
-            thumbnailUrl
-            taggings {
-              tag {
-                id
-              }
-              note
-            }
-            semitaggings {
-              name
-              note
-            }
-          }
-        }
-      `),
+      document: GetRequestQuery,
       variables: { id: requestResult.data.requestNicovideoRegistration.request.id },
     });
     expect(getRequestsResult.data.getNicovideoRegistrationRequest).toStrictEqual({
@@ -179,15 +191,7 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
     });
 
     const findRequestsResult = await executor({
-      document: parse(/* GraphQL */ `
-        query FindRequests {
-          findNicovideoRegistrationRequests(first: 2) {
-            nodes {
-              id
-            }
-          }
-        }
-      `),
+      document: FindRequestsQuery,
     });
     expect(findRequestsResult.data.findNicovideoRegistrationRequests.nodes).toHaveLength(1);
     expect(findRequestsResult.data.findNicovideoRegistrationRequests.nodes).toStrictEqual(

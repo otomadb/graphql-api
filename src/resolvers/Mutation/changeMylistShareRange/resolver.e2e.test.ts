@@ -1,12 +1,12 @@
 import { buildHTTPExecutor, HTTPExecutorOptions } from "@graphql-tools/executor-http";
 import { SyncExecutor } from "@graphql-tools/utils";
 import { PrismaClient } from "@prisma/client";
-import { parse } from "graphql";
 import { createSchema, createYoga } from "graphql-yoga";
 import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { DeepMockProxy, mock, mockDeep, mockReset } from "vitest-mock-extended";
 
+import { graphql } from "../../../gql/gql.js";
 import typeDefs from "../../../schema.graphql";
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import {
@@ -21,6 +21,31 @@ import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
 import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
 
+const Mutation = graphql(`
+  mutation E2E_ChangeMylistShareRange($input: ChangeMylistShareRangeInput!) {
+    changeMylistShareRange(input: $input) {
+      __typename
+      ... on MutationInvalidMylistIdError {
+        mylistId
+      }
+      ... on MutationMylistNotFoundError {
+        mylistId
+      }
+      ... on MutationWrongMylistHolderError {
+        mylistId
+      }
+      ... on ChangeMylistShareRangeOtherErrorsFallback {
+        message
+      }
+      ... on ChangeMylistShareRangeSucceededPayload {
+        mylist {
+          id
+          range
+        }
+      }
+    }
+  }
+`);
 describe("Mutation.changeMylistShareRange e2e", () => {
   let prisma: ResolverDeps["prisma"];
   let neo4j: ResolverDeps["neo4j"];
@@ -82,32 +107,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
     ]);
 
     const requestResult = await executor({
-      document: parse(/* GraphQL */ `
-        mutation ChangeMylistShareRange_Scenario_1($input: ChangeMylistShareRangeInput!) {
-          changeMylistShareRange(input: $input) {
-            __typename
-
-            ... on MutationInvalidMylistIdError {
-              mylistId
-            }
-            ... on MutationMylistNotFoundError {
-              mylistId
-            }
-            ... on MutationWrongMylistHolderError {
-              mylistId
-            }
-            ... on ChangeMylistShareRangeOtherErrorsFallback {
-              message
-            }
-            ... on ChangeMylistShareRangeSucceededPayload {
-              mylist {
-                id
-                range
-              }
-            }
-          }
-        }
-      `),
+      document: Mutation,
       variables: {
         input: {
           mylistId: "m1", // wrong
@@ -145,32 +145,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
     ]);
 
     const requestResult = await executor({
-      document: parse(/* GraphQL */ `
-        mutation ChangeMylistShareRange_Scenario_1($input: ChangeMylistShareRangeInput!) {
-          changeMylistShareRange(input: $input) {
-            __typename
-
-            ... on MutationInvalidMylistIdError {
-              mylistId
-            }
-            ... on MutationMylistNotFoundError {
-              mylistId
-            }
-            ... on MutationWrongMylistHolderError {
-              mylistId
-            }
-            ... on ChangeMylistShareRangeOtherErrorsFallback {
-              message
-            }
-            ... on ChangeMylistShareRangeSucceededPayload {
-              mylist {
-                id
-                range
-              }
-            }
-          }
-        }
-      `),
+      document: Mutation,
       variables: {
         input: {
           mylistId: buildGqlId("Mylist", "m2"),
@@ -208,32 +183,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
     ]);
 
     const requestResult = await executor({
-      document: parse(/* GraphQL */ `
-        mutation ChangeMylistShareRange_Scenario_1($input: ChangeMylistShareRangeInput!) {
-          changeMylistShareRange(input: $input) {
-            __typename
-
-            ... on MutationInvalidMylistIdError {
-              mylistId
-            }
-            ... on MutationMylistNotFoundError {
-              mylistId
-            }
-            ... on MutationWrongMylistHolderError {
-              mylistId
-            }
-            ... on ChangeMylistShareRangeOtherErrorsFallback {
-              message
-            }
-            ... on ChangeMylistShareRangeSucceededPayload {
-              mylist {
-                id
-                range
-              }
-            }
-          }
-        }
-      `),
+      document: Mutation,
       variables: {
         input: {
           mylistId: buildGqlId("Mylist", "m1"),
@@ -272,32 +222,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
     ]);
 
     const requestResult = await executor({
-      document: parse(/* GraphQL */ `
-        mutation ChangeMylistShareRange_Scenario_1($input: ChangeMylistShareRangeInput!) {
-          changeMylistShareRange(input: $input) {
-            __typename
-
-            ... on MutationInvalidMylistIdError {
-              mylistId
-            }
-            ... on MutationMylistNotFoundError {
-              mylistId
-            }
-            ... on MutationWrongMylistHolderError {
-              mylistId
-            }
-            ... on ChangeMylistShareRangeOtherErrorsFallback {
-              message
-            }
-            ... on ChangeMylistShareRangeSucceededPayload {
-              mylist {
-                id
-                range
-              }
-            }
-          }
-        }
-      `),
+      document: Mutation,
       variables: {
         input: {
           mylistId: buildGqlId("Mylist", "m1"),

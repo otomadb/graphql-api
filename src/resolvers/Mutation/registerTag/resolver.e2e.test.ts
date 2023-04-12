@@ -1,17 +1,40 @@
 import { buildHTTPExecutor, HTTPExecutorOptions } from "@graphql-tools/executor-http";
 import { SyncExecutor } from "@graphql-tools/utils";
 import { PrismaClient } from "@prisma/client";
-import { parse } from "graphql";
 import { createSchema, createYoga } from "graphql-yoga";
 import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { DeepMockProxy, mock, mockDeep, mockReset } from "vitest-mock-extended";
 
+import { graphql } from "../../../gql/gql.js";
 import typeDefs from "../../../schema.graphql";
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
 import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
+
+const Mutation = graphql(`
+  mutation E2E_RegisterTag($input: RegisterTagInput!) {
+    registerTag(input: $input) {
+      __typename
+      ... on MutationInvalidTagIdError {
+        tagId
+      }
+      ... on MutationInvalidSemitagIdError {
+        semitagId
+      }
+      ... on RegisterTagTagIdCollidedBetweenExplicitAndImplicitError {
+        tagId
+      }
+      ... on RegisterTagImplicitParentIdsDuplicatedError {
+        tagId
+      }
+      ... on RegisterTagResolveSemitagIdsDuplicatedError {
+        semitagId
+      }
+    }
+  }
+`);
 
 describe("Mutation.registerTag e2e", () => {
   let prisma: ResolverDeps["prisma"];
@@ -136,28 +159,7 @@ describe("Mutation.registerTag e2e", () => {
     ],
   ])("不適当なinput: %#", async (input, expected) => {
     const requestResult = await executor({
-      document: parse(/* GraphQL */ `
-        mutation E2ETest_Mutation_RegisterTag_Invalid_Input($input: RegisterTagInput!) {
-          registerTag(input: $input) {
-            __typename
-            ... on MutationInvalidTagIdError {
-              tagId
-            }
-            ... on MutationInvalidSemitagIdError {
-              semitagId
-            }
-            ... on RegisterTagTagIdCollidedBetweenExplicitAndImplicitError {
-              tagId
-            }
-            ... on RegisterTagImplicitParentIdsDuplicatedError {
-              tagId
-            }
-            ... on RegisterTagResolveSemitagIdsDuplicatedError {
-              semitagId
-            }
-          }
-        }
-      `),
+      document: Mutation,
       variables: { input },
       context: {
         currentUser: {
