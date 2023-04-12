@@ -1,18 +1,20 @@
-import { MylistShareRange, UserRole } from "@prisma/client";
+import { MylistShareRange } from "@prisma/client";
 
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
-import { ResolverDeps } from "../index.js";
 import { MylistModel } from "../Mylist/model.js";
+import { ResolverDeps } from "../types.js";
 import { resolverUserLikes } from "./likes/resolver.js";
 import { resolverUserMylists } from "./mylists/resolver.js";
+import { resolverUserNicovideoRegistrationRequests } from "./nicovideoRegistrationRequests/resolver.js";
 
 export const resolveUser = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   ({
     id: ({ id }): string => buildGqlId("User", id),
-    likes: resolverUserLikes({ prisma }),
+    likes: resolverUserLikes({ prisma, logger }),
+    nicovideoRegistrationRequests: resolverUserNicovideoRegistrationRequests({ prisma, logger }),
 
-    mylist: async ({ id: userId }, { id: gqlMylistId }, { user: ctxUser }) => {
+    mylist: async ({ id: userId }, { id: gqlMylistId }, { currentUser: ctxUser }) => {
       const mylist = await prisma.mylist.findFirst({ where: { id: parseGqlID("Mylist", gqlMylistId) } });
 
       if (!mylist) return null;
@@ -23,6 +25,6 @@ export const resolveUser = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "l
 
     mylists: resolverUserMylists({ prisma, logger }),
 
-    isEditor: ({ role }) => role === UserRole.EDITOR || role === UserRole.ADMINISTRATOR,
-    isAdministrator: ({ role }) => role === UserRole.ADMINISTRATOR,
+    isEditor: () => false,
+    isAdministrator: () => false,
   } satisfies Resolvers["User"]);

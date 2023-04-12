@@ -4,12 +4,12 @@ import z from "zod";
 
 import { cursorOptions } from "../../connection.js";
 import { TagResolvers } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
 import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
+import { ResolverDeps } from "../../types.js";
 import { VideoTagConnectionModel } from "../../VideoTagConnection/model.js";
 
 export const resolveTaggedVideos = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async ({ id: tagId }, { orderBy, ...unparsedConnectionArgs }, { user: ctxUser }, info) => {
+  (async ({ id: tagId }, { orderBy, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([
         z.object({

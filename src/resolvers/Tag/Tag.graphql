@@ -2,13 +2,10 @@ type Tag implements Node {
   id: ID!
   serial: Int!
 
-  pseudoType: PseudoTagType! @deprecated
-
   name: String!
-  names: [TagName!]!
+  names(primary: Boolean): [TagName!]!
 
   explicitParent: Tag
-  parents(categoryTag: Boolean): [TagParent!]!
 
   meaningless: Boolean! @deprecated
   isCategoryTag: Boolean!
@@ -29,31 +26,6 @@ type Tag implements Node {
 input TagEventsInput {
   skip: Int! = 0
   limit: Int! = 10
-}
-
-enum PseudoTagType {
-  "曲"
-  MUSIC
-  "作品名"
-  COPYRIGHT
-  "キャラクター"
-  CHARACTER
-  "特徴的なセリフなど"
-  PHRASE
-  "シリーズ"
-  SERIES
-  "戦法"
-  TACTICS
-  "動画そのものに対しての性質，作風など"
-  STYLE
-  "動画の内容に依らない情報，分類など"
-  CLASS
-  "合作などのイベント"
-  EVENT
-  "2つ以上のタイプが算出された場合"
-  SUBTLE
-  "タイプを算出できなかった場合"
-  UNKNOWN
 }
 
 type TagConnection {

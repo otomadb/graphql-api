@@ -1,5 +1,5 @@
 import { err, ok, Result } from "../../../utils/Result.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 
 export const removeMylistRegistrationInNeo4j = async (
   { prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">,
@@ -12,9 +12,9 @@ export const removeMylistRegistrationInNeo4j = async (
     const registration = await prisma.mylistRegistration.findUniqueOrThrow({ where: { id: registerationId } });
     tx.run(
       `
-        MATCH (v:Video {id: $video_id })
-        MATCH (l:Mylist {id: $mylist_id })
-        MATCH (l)-[r:CONTAINS_VIDEO]->(v)
+        MATCH (m:Mylist {uid: $mylist_id })
+        MATCH (v:Video {uid: $video_id })
+        MATCH (m)-[r:REGISTERED_TO]->(v)
         DELETE r
         `,
       { mylist_id: registration.mylistId, video_id: registration.videoId }

@@ -2,13 +2,13 @@ import { GraphQLError } from "graphql";
 import z from "zod";
 
 import { QueryResolvers } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
+import { ResolverDeps } from "../../types.js";
 
 const schema = z.union([z.object({ id: z.string() }), z.object({ serial: z.number() })]);
 
 export const findTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { input: unparsedInput }, { user: ctxUser }, info) => {
+  (async (_parent, { input: unparsedInput }, { currentUser: ctxUser }, info) => {
     const parsed = schema.safeParse(unparsedInput);
     if (!parsed.success) {
       logger.error({ path: info.path, args: { input: unparsedInput }, userId: ctxUser?.id }, "Invalid input");

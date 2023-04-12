@@ -1,10 +1,8 @@
-import { UserRole } from "@prisma/client";
-
 import { isErr } from "../../../utils/Result.js";
 import { MutationResolvers, RemoveTagFromVideoFailedMessage } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { TagModel } from "../../Tag/model.js";
+import { ResolverDeps } from "../../types.js";
 import { VideoModel } from "../../Video/model.js";
 import { removeInNeo4j } from "./neo4j.js";
 import { remove } from "./prisma.js";
@@ -14,13 +12,7 @@ export const resolverRemoveTagFromVideo = ({
   neo4j,
   logger,
 }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
-  (async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { user }, info) => {
-    if (!user || (user?.role !== UserRole.EDITOR && user?.role !== UserRole.ADMINISTRATOR))
-      return {
-        __typename: "RemoveTagFromVideoFailedPayload",
-        message: RemoveTagFromVideoFailedMessage.Forbidden,
-      };
-
+  (async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { currentUser: user }, info) => {
     const videoId = parseGqlID2("Video", videoGqlId);
     if (isErr(videoId))
       return {

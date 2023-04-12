@@ -4,15 +4,14 @@ import z from "zod";
 
 import { cursorOptions } from "../../connection.js";
 import { VideoResolvers } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
 import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
+import { ResolverDeps } from "../../types.js";
 import { VideoTagConnectionModel } from "../../VideoTagConnection/model.js";
 
 export const resolveTaggings = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async ({ id: videoId }, { orderBy, ...unparsedConnectionArgs }, { user: ctxUser }, info) => {
+  (async ({ id: videoId }, { orderBy, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([
-        z.object({}), // 全てのVideoTagの取得を許容する
         z.object({
           first: z.number(),
           after: z.string().optional(),
@@ -21,6 +20,7 @@ export const resolveTaggings = ({ prisma, logger }: Pick<ResolverDeps, "prisma" 
           last: z.number(),
           before: z.string().optional(),
         }),
+        z.object({}), // 全てのVideoTagの取得を許容する
       ])
       .safeParse(unparsedConnectionArgs);
     if (!connectionArgs.success) {
@@ -35,10 +35,19 @@ export const resolveTaggings = ({ prisma, logger }: Pick<ResolverDeps, "prisma" 
       (args) =>
         prisma.videoTag.findMany({
           ...args,
-          where: { videoId },
+          where: {
+            videoId,
+            isRemoved: false,
+          },
           orderBy: { createdAt: parseOrderBy(orderBy.createdAt) },
         }),
-      () => prisma.videoTag.count({ where: { videoId } }),
+      () =>
+        prisma.videoTag.count({
+          where: {
+            videoId,
+            isRemoved: false,
+          },
+        }),
       connectionArgs.data,
       { resolveInfo: info, ...cursorOptions }
     ).then((c) => VideoTagConnectionModel.fromPrisma(c));

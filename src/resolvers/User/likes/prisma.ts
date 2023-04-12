@@ -1,18 +1,43 @@
 import { Mylist, MylistShareRange } from "@prisma/client";
 
 import { err, ok, Result } from "../../../utils/Result.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 
 export const get = async (
   prisma: ResolverDeps["prisma"],
-  { holderId, authUserId }: { holderId: string; authUserId: string | null }
-): Promise<Result<"NO_LIKELIST" | "PRIVATE_NOT_HOLDER", Mylist>> => {
-  const mylist = await prisma.mylist.findFirst({ where: { holderId, isLikeList: true } });
+  { holderId, currentUserId }: { holderId: string; currentUserId: string | null }
+): Promise<
+  Result<
+    | { type: "INTERNAL_SERVER_ERROR"; error: unknown; holderId: string; currentUserId: string | null }
+    | { type: "PRIVATE_MYLIST_NOT_AUTH"; mylistId: string }
+    | { type: "PRIVATE_MYLIST_WRONG_HOLDER"; mylistId: string; currentUserId: string },
+    Mylist
+  >
+> => {
+  try {
+    const mylist = await prisma.mylist.upsert({
+      where: { holderId_slug: { holderId, slug: "likes" } },
+      create: {
+        holderId,
+        slug: "likes",
+        title: "likes",
+        shareRange: MylistShareRange.PRIVATE,
+        isLikeList: false,
+      },
+      update: {},
+    });
 
-  if (!mylist) return err("NO_LIKELIST");
-
-  if (mylist.shareRange !== MylistShareRange.PUBLIC && (!authUserId || mylist.holderId !== authUserId))
-    return err("PRIVATE_NOT_HOLDER");
-
-  return ok(mylist);
+    switch (mylist.shareRange) {
+      case MylistShareRange.PUBLIC:
+        return ok(mylist);
+      case MylistShareRange.KNOW_LINK:
+      case MylistShareRange.PRIVATE:
+        if (!currentUserId) return err({ type: "PRIVATE_MYLIST_NOT_AUTH", mylistId: mylist.id });
+        if (mylist.holderId !== currentUserId)
+          return err({ type: "PRIVATE_MYLIST_WRONG_HOLDER", mylistId: mylist.id, currentUserId });
+        return ok(mylist);
+    }
+  } catch (error) {
+    return err({ type: "INTERNAL_SERVER_ERROR", error, currentUserId, holderId });
+  }
 };

@@ -42,18 +42,18 @@ services:
         source: postgres_data
         target: /var/lib/postgresql/data
 
-  migration:
-    build:
-      context: ./.
-      dockerfile: Dockerfile.migration
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      PRISMA_DATABASE_URL: "postgres://user:pass@postgres:5432/test"
+  # migration:
+  #   build:
+  #     context: ./.
+  #     dockerfile: Dockerfile.migration
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   environment:
+  #     PRISMA_DATABASE_URL: "postgres://user:pass@postgres:5432/test"
 
   neo4j:
-    image: neo4j:5.4
+    image: neo4j:5.6
     environment:
       NEO4J_AUTH: neo4j/password
     healthcheck:

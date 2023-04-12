@@ -3,11 +3,11 @@ import z from "zod";
 
 import { QueryResolvers } from "../../graphql.js";
 import { parseGqlID } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { NicovideoRegistrationRequestModel } from "../../NicovideoRegistrationRequest/model.js";
+import { ResolverDeps } from "../../types.js";
 
 export const resolverFindNicovideoRegistrationRequest = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_, { input: unparsedInput }, { user: ctxUser }, info) => {
+  (async (_, { input: unparsedInput }, { currentUser: ctxUser }, info) => {
     const parsed = z.union([z.object({ id: z.string() }), z.object({ sourceId: z.string() })]).safeParse(unparsedInput);
     if (!parsed.success) {
       logger.error({ path: info.path, args: { input: unparsedInput }, userId: ctxUser?.id }, "Invalid input");
@@ -16,7 +16,7 @@ export const resolverFindNicovideoRegistrationRequest = ({ prisma, logger }: Pic
 
     const input = parsed.data;
     if ("id" in input) {
-      const req = await prisma.nicovideoRegistrationRequest.findUniqueOrThrow({
+      const req = await prisma.nicovideoRegistrationRequest.findUnique({
         where: { id: parseGqlID("NicovideoRegistrationRequest", input.id) },
       });
       if (!req) {
@@ -25,7 +25,7 @@ export const resolverFindNicovideoRegistrationRequest = ({ prisma, logger }: Pic
       }
       return new NicovideoRegistrationRequestModel(req);
     } else {
-      const req = await prisma.nicovideoRegistrationRequest.findUniqueOrThrow({
+      const req = await prisma.nicovideoRegistrationRequest.findUnique({
         where: { sourceId: input.sourceId },
       });
       if (!req) {

@@ -1,10 +1,10 @@
 import { QueryResolvers } from "../../graphql.js";
 import { GraphQLNotExistsInDBError, parseGqlID } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { NicovideoRegistrationRequestModel } from "../../NicovideoRegistrationRequest/model.js";
+import { ResolverDeps } from "../../types.js";
 
 export const getNicovideoRegistrationRequest = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { id }, { user: ctxUser }, info) =>
+  (async (_parent, { id }, { currentUser: ctxUser }, info) =>
     prisma.nicovideoRegistrationRequest
       .findUniqueOrThrow({ where: { id: parseGqlID("NicovideoRegistrationRequest", id) } })
       .then((v) => new NicovideoRegistrationRequestModel(v))

@@ -1,7 +1,7 @@
 import { CategoryTagType } from "@prisma/client";
 
 import { TagResolvers, TagType as GqlTagType } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 
 export const resolveTagType = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   (async ({ id: tagId }) => {

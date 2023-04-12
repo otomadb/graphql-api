@@ -4,12 +4,12 @@ import z from "zod";
 
 import { cursorOptions } from "../../connection.js";
 import { QueryResolvers } from "../../graphql.js";
-import { ResolverDeps } from "../../index.js";
 import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
+import { ResolverDeps } from "../../types.js";
 import { VideoConnectionModel } from "../../VideoConnection/model.js";
 
 export const findVideos = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  ((_parent, { orderBy, ...unparsedConnectionArgs }, { user: ctxUser }, info) => {
+  ((_parent, { orderBy, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([
         z.object({

@@ -35,7 +35,7 @@ jobs:
 
       - id: image_tag
         name: Determine image tag
-        uses: actions/github-script@v6.4.0
+        uses: actions/github-script@v6.4.1
         with:
           result-encoding: string
           script: |

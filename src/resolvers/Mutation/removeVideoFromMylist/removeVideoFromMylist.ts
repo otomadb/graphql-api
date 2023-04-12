@@ -4,8 +4,8 @@ import { err, ok, Result } from "../../../utils/Result.js";
 import { isErr } from "../../../utils/Result.js";
 import { MutationResolvers, RemoveVideoFromMylistFailedMessage } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
+import { ResolverDeps } from "../../types.js";
 import { VideoModel } from "../../Video/model.js";
 import { removeMylistRegistrationInNeo4j } from "./neo4j.js";
 
@@ -40,13 +40,7 @@ export const remove = async (
 };
 
 export const removeVideoFromMylist = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
-  (async (_, { input: { mylistId: mylistGqlId, videoId: videoGqlId } }, { user }, info) => {
-    if (!user)
-      return {
-        __typename: "RemoveVideoFromMylistFailedPayload",
-        message: RemoveVideoFromMylistFailedMessage.Forbidden,
-      };
-
+  (async (_, { input: { mylistId: mylistGqlId, videoId: videoGqlId } }, { currentUser: user }, info) => {
     const videoId = parseGqlID2("Video", videoGqlId);
     if (isErr(videoId))
       return {

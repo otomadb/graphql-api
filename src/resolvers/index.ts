@@ -1,9 +1,5 @@
 /* eslint sort-keys: 2 */
 
-import { PrismaClient } from "@prisma/client";
-import { Driver as Neo4jDriver } from "neo4j-driver";
-import { Logger } from "pino";
-
 import { type Resolvers } from "./graphql.js";
 import { resolveMutation } from "./Mutation/index.js";
 import { resolveMylist } from "./Mylist/index.js";
@@ -12,6 +8,7 @@ import { resolveMylistGroup } from "./MylistGroup/index.js";
 import { resolveMylistGroupMylistInclusion } from "./MylistGroupMylistInclusion/index.js";
 import { resolveMylistGroupVideoAggregation } from "./MylistGroupVideoAggregation/index.js";
 import { resolveMylistRegistration } from "./MylistRegistration/index.js";
+import { resolverMylistRegistrationConnection } from "./MylistRegistrationConnection/resolver.js";
 import { resolveMylistTagInclusion } from "./MylistTagInclusion/index.js";
 import { resolveMylistVideoRecommendation } from "./MylistVideoRecommendation/index.js";
 import { resolveNicovideoOriginalSourceTag } from "./NicovideoOriginalSourceTag/index.js";
@@ -24,7 +21,7 @@ import {
   resolveNicovideoVideoSourceEvent,
 } from "./NicovideoVideoSourceEvent/index.js";
 import { resolveQuery } from "./Query/index.js";
-import { resolveSemitag, resolveSemitagRejecting, resolveSemitagResolving } from "./Semitag/index.js";
+import { resolveSemitag } from "./Semitag/index.js";
 import { resolverSemitagConnection } from "./SemitagConnection/resolver.js";
 import {
   resolveSemitagEvent,
@@ -32,7 +29,9 @@ import {
   resolveSemitagEventRejectEvent,
   resolveSemitagEventResolveEvent,
 } from "./SemitagEvent/index.js";
-import { resolveSession } from "./Session/index.js";
+import { resolverSemitagRejecting } from "./SemitagRejecting/resolver.js";
+import { resolverSemitagResolving } from "./SemitagResolving/resolver.js";
+import { resolverSemitagSuggestTagsItem } from "./SemitagSuggestTagsItem/resolver.js";
 import { resolveTag } from "./Tag/index.js";
 import { resolveTagEvent, resolveTagRegisterEvent } from "./TagEvent/index.js";
 import { resolveTagName } from "./TagName/index.js";
@@ -44,10 +43,13 @@ import {
 } from "./TagNameEvent/index.js";
 import { resolveTagParent } from "./TagParent/index.js";
 import { resolverTagParentConnection } from "./TagParentConnection/resolver.js";
+import { resolverTagSearchItemByName } from "./TagSearchItemByName/resolver.js";
+import { ResolverDeps } from "./types.js";
 import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
 import { resolverVideoConnection } from "./VideoConnection/resolver.js";
 import { resolveVideoEvent, resolveVideoRegisterEvent } from "./VideoEvent/index.js";
+import { resolverVideoSearchItemByTitle } from "./VideoSearchItemByTitle/resolver.js";
 import { resolveVideoSimilarity } from "./VideoSimilarity/index.js";
 import { resolveVideoTag } from "./VideoTag/index.js";
 import {
@@ -70,19 +72,12 @@ import {
   resolveVideoTitleSetPrimaryEvent,
   resolveVideoTitleUnsetPrimaryEvent,
 } from "./VideoTitleEvent/index.js";
-
-export type ResolverDeps = {
-  prisma: PrismaClient;
-  neo4j: Neo4jDriver;
-  logger: Logger;
-  config: {
-    session: {
-      cookieName(): string;
-      cookieDomain(): string | undefined;
-      cookieSameSite(): "none" | "strict";
-    };
-  };
-};
+import { resolveYoutubeVideoSource } from "./YoutubeVideoSource/resolver.js";
+import {
+  resolveYoutubeVideoSourceCreateEvent,
+  resolveYoutubeVideoSourceEvent,
+} from "./YoutubeVideoSourceEvent/resolver.js";
+import { resolverYoutubeVideoSourceEventConnection } from "./YoutubeVideoSourceEventConnection/resolver.js";
 
 export const makeResolvers = (deps: ResolverDeps) =>
   ({
@@ -93,6 +88,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     MylistGroupMylistInclusion: resolveMylistGroupMylistInclusion(deps),
     MylistGroupVideoAggregation: resolveMylistGroupVideoAggregation(deps),
     MylistRegistration: resolveMylistRegistration(deps),
+    MylistRegistrationConnection: resolverMylistRegistrationConnection(),
     MylistTagInclusion: resolveMylistTagInclusion(deps),
     MylistVideoRecommendation: resolveMylistVideoRecommendation(deps),
     NicovideoOriginalSourceTag: resolveNicovideoOriginalSourceTag(deps),
@@ -108,10 +104,10 @@ export const makeResolvers = (deps: ResolverDeps) =>
     SemitagConnection: resolverSemitagConnection(),
     SemitagEvent: resolveSemitagEvent(),
     SemitagRejectEvent: resolveSemitagEventRejectEvent(deps),
-    SemitagRejecting: resolveSemitagRejecting(deps),
+    SemitagRejecting: resolverSemitagRejecting(deps),
     SemitagResolveEvent: resolveSemitagEventResolveEvent(deps),
-    SemitagResolving: resolveSemitagResolving(deps),
-    Session: resolveSession(deps),
+    SemitagResolving: resolverSemitagResolving(deps),
+    SemitagSuggestTagsItem: resolverSemitagSuggestTagsItem(deps),
     Tag: resolveTag(deps),
     TagEvent: resolveTagEvent(),
     TagName: resolveTagName(deps),
@@ -122,11 +118,13 @@ export const makeResolvers = (deps: ResolverDeps) =>
     TagParent: resolveTagParent(deps),
     TagParentConnection: resolverTagParentConnection(),
     TagRegisterEvent: resolveTagRegisterEvent(deps),
+    TagSearchItemByName: resolverTagSearchItemByName(deps),
     User: resolveUser(deps),
     Video: resolveVideo(deps),
     VideoConnection: resolverVideoConnection(),
     VideoEvent: resolveVideoEvent(),
     VideoRegisterEvent: resolveVideoRegisterEvent(deps),
+    VideoSearchItemByTitle: resolverVideoSearchItemByTitle(deps),
     VideoSimilarity: resolveVideoSimilarity(deps),
     VideoTag: resolveVideoTag(deps),
     VideoTagAttachEvent: resolveVideoTagAttachEvent(deps),
@@ -143,4 +141,8 @@ export const makeResolvers = (deps: ResolverDeps) =>
     VideoTitleEvent: resolveVideoTitleEvent(),
     VideoTitleSetPrimaryEvent: resolveVideoTitleSetPrimaryEvent(deps),
     VideoTitleUnsetPrimaryEvent: resolveVideoTitleUnsetPrimaryEvent(deps),
+    YoutubeVideoSource: resolveYoutubeVideoSource(deps),
+    YoutubeVideoSourceCreateEvent: resolveYoutubeVideoSourceCreateEvent(deps),
+    YoutubeVideoSourceEvent: resolveYoutubeVideoSourceEvent(),
+    YoutubeVideoSourceEventConnection: resolverYoutubeVideoSourceEventConnection(),
   } satisfies Resolvers);

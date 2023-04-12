@@ -1,7 +1,7 @@
 import { TransactionPromise } from "neo4j-driver-core";
 
 import { err, ok, Result } from "../../../utils/Result.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 
 // VideoTagのVideoのタグ全てについて更新を掛けている
 export const updateWholeVideoTags = async (
@@ -14,9 +14,9 @@ export const updateWholeVideoTags = async (
       video.tags.map(({ videoId, tagId }) =>
         tx.run(
           `
-          MERGE (v:Video {id: $video_id})
-          MERGE (t:Tag {id: $tag_id})
-          MERGE r=(v)-[:TAGGED_BY]->(t)
+          MERGE (t:Tag {uid: $tag_id})
+          MERGE (v:Video {uid: $video_id})
+          MERGE (t)-[r:TAGGED_TO]->(v)
           RETURN r
           `,
           { tag_id: tagId, video_id: videoId }

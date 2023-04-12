@@ -2,16 +2,10 @@ type User implements Node {
   id: ID!
   name: String!
   displayName: String!
-  icon: String
+  icon: String!
 
   mylist(id: ID!): Mylist
 
   isEditor: Boolean!
   isAdministrator: Boolean!
-}
-
-enum UserRole {
-  USER
-  EDITOR
-  ADMINISTRATOR
 }

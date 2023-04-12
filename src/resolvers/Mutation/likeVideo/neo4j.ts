@@ -1,7 +1,7 @@
 import { TransactionPromise } from "neo4j-driver-core";
 
 import { err, ok, Result } from "../../../utils/Result.js";
-import { ResolverDeps } from "../../index.js";
+import { ResolverDeps } from "../../types.js";
 
 export const updateRegisterationInNeo4j = async (
   { prisma, tx }: Pick<ResolverDeps, "prisma"> & { tx: TransactionPromise },
@@ -10,9 +10,9 @@ export const updateRegisterationInNeo4j = async (
   prisma.mylistRegistration.findUniqueOrThrow({ where: { id: registerationId } }).then(({ mylistId, videoId }) => {
     tx.run(
       `
-      MERGE (l:Mylist {id: $mylist_id })
-      MERGE (v:Video {id: $video_id })
-      MERGE (l)-[r:CONTAINS_VIDEO]->(v)
+      MERGE (m:Mylist {uid: $mylist_id })
+      MERGE (v:Video {uid: $video_id })
+      MERGE (m)-[r:REGISTERED_TO]->(v)
       RETURN r
       `,
       { mylist_id: mylistId, video_id: videoId }

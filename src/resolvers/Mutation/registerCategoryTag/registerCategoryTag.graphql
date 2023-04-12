@@ -1,15 +1,13 @@
 type Mutation {
   registerCategoryTag(input: RegisterCategoryTagInput!): RegisterCategoryTagResultUnion!
+    @auth(scopes: ["create:category_tag"])
 }
 
 input RegisterCategoryTagInput {
   primaryName: String!
 }
 
-union RegisterCategoryTagResultUnion =
-    MutationAuthenticationError
-  | RegisterCategoryTagOtherErrorsFallback
-  | RegisterCategoryTagSucceededPayload
+union RegisterCategoryTagResultUnion = RegisterCategoryTagOtherErrorsFallback | RegisterCategoryTagSucceededPayload
 
 "その他のエラー"
 type RegisterCategoryTagOtherErrorsFallback {

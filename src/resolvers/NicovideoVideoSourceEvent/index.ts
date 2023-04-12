@@ -2,20 +2,16 @@ import { NicovideoVideoSourceEventType } from "@prisma/client";
 
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
-import { ResolverDeps } from "../index.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
-import { UserModel } from "../User/model.js";
+import { ResolverDeps } from "../types.js";
 
-export const resolveNicovideoVideoSourceEventCommonProps = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveNicovideoVideoSourceEventCommonProps = ({
+  prisma,
+  userRepository,
+}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     id: ({ id }): string => buildGqlId("NicovideoVideoSourceEvent", id),
-    user: ({ userId }) =>
-      prisma.user
-        .findUniqueOrThrow({ where: { id: userId } })
-        .then((u) => new UserModel(u))
-        .catch(() => {
-          throw new GraphQLNotExistsInDBError("User", userId);
-        }),
+    user: async ({ userId }) => userRepository.getById(userId),
     source: ({ sourceId: videoSourceId }) =>
       prisma.nicovideoVideoSource
         .findUniqueOrThrow({ where: { id: videoSourceId } })
@@ -35,7 +31,7 @@ export const resolveNicovideoVideoSourceEvent = () =>
     },
   } satisfies Resolvers["NicovideoVideoSourceEvent"]);
 
-export const resolveNicovideoVideoSourceCreateEvent = (deps: Pick<ResolverDeps, "prisma">) =>
+export const resolveNicovideoVideoSourceCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     ...resolveNicovideoVideoSourceEventCommonProps(deps),
   } satisfies Resolvers["NicovideoVideoSourceCreateEvent"]);

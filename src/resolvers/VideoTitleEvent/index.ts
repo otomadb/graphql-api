@@ -2,20 +2,16 @@ import { VideoTitleEventType } from "@prisma/client";
 
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
-import { ResolverDeps } from "../index.js";
-import { UserModel } from "../User/model.js";
+import { ResolverDeps } from "../types.js";
 import { VideoTitleModel } from "../VideoTitle/model.js";
 
-export const resolveVideoEventCommonProps = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveVideoEventCommonProps = ({
+  prisma,
+  userRepository,
+}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     id: ({ id }): string => buildGqlId("VideoTitleEvent", id),
-    user: ({ userId }) =>
-      prisma.user
-        .findUniqueOrThrow({ where: { id: userId } })
-        .then((u) => new UserModel(u))
-        .catch(() => {
-          throw new GraphQLNotExistsInDBError("User", userId);
-        }),
+    user: async ({ userId }) => userRepository.getById(userId),
     videoTitle: ({ videoTitleId }) =>
       prisma.videoTitle
         .findUniqueOrThrow({ where: { id: videoTitleId } })
@@ -39,17 +35,17 @@ export const resolveVideoTitleEvent = () =>
     },
   } satisfies Resolvers["VideoTitleEvent"]);
 
-export const resolveVideoTitleCreateEvent = (deps: Pick<ResolverDeps, "prisma">) =>
+export const resolveVideoTitleCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     ...resolveVideoEventCommonProps(deps),
   } satisfies Resolvers["VideoTitleCreateEvent"]);
 
-export const resolveVideoTitleSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma">) =>
+export const resolveVideoTitleSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     ...resolveVideoEventCommonProps(deps),
   } satisfies Resolvers["VideoTitleSetPrimaryEvent"]);
 
-export const resolveVideoTitleUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma">) =>
+export const resolveVideoTitleUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     ...resolveVideoEventCommonProps(deps),
   } satisfies Resolvers["VideoTitleUnsetPrimaryEvent"]);

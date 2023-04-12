@@ -1,5 +1,5 @@
 type Mutation {
-  registerTag(input: RegisterTagInput!): RegisterTagReturnUnion!
+  registerTag(input: RegisterTagInput!): RegisterTagReturnUnion! @auth(scopes: ["create:tag"])
 }
 
 input RegisterTagInput {
@@ -13,8 +13,7 @@ input RegisterTagInput {
 }
 
 union RegisterTagReturnUnion =
-    MutationAuthenticationError
-  | MutationInvalidTagIdError
+    MutationInvalidTagIdError
   | MutationTagNotFoundError
   | MutationInvalidSemitagIdError
   | MutationSemitagNotFoundError

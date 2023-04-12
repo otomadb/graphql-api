@@ -3,5 +3,10 @@ type Query {
 }
 
 input FindMylistInput {
-  id: ID
+  pair: FindMylistInputHolderNameMylistSlugPair!
+}
+
+input FindMylistInputHolderNameMylistSlugPair {
+  holderName: String!
+  mylistSlug: String!
 }

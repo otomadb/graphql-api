@@ -2,14 +2,16 @@ import { GraphQLError } from "graphql";
 
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
-import { ResolverDeps } from "../index.js";
-import { MylistRegistrationModel } from "../MylistRegistration/model.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
 import { SemitagModel } from "../Semitag/model.js";
+import { ResolverDeps } from "../types.js";
 import { VideoEventModel } from "../VideoEvent/model.js";
 import { VideoThumbnailModel } from "../VideoThumbnail/model.js";
 import { VideoTitleModel } from "../VideoTitle/model.js";
-import { resolveSimilarVideos } from "./similarVideos.js";
+import { YoutubeVideoSourceModel } from "../YoutubeVideoSource/model.js";
+import { resolveVideoIsLiked } from "./isLiked/resolver.js";
+import { resolveVideoLike } from "./like/resolver.js";
+import { resolveSimilarVideos as resolverVideoSimilarVideos } from "./similarVideos/resolver.js";
 import { resolveTaggings } from "./taggings/resolver.js";
 
 export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
@@ -42,17 +44,22 @@ export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pris
         .findUnique({ where: { videoId_tagId: { videoId, tagId: parseGqlID("Tag", tagGqlId) } } })
         .then((v) => !!v && !v.isRemoved),
 
-    similarVideos: resolveSimilarVideos({ neo4j, logger }),
+    similarVideos: resolverVideoSimilarVideos({ neo4j, logger }),
 
     nicovideoSources: async ({ id: videoId }) =>
       prisma.nicovideoVideoSource
         .findMany({ where: { videoId } })
         .then((ss) => ss.map((s) => new NicovideoVideoSourceModel(s))),
 
+    youtubeSources: async ({ id: videoId }) =>
+      prisma.youtubeVideoSource
+        .findMany({ where: { videoId } })
+        .then((ss) => ss.map((s) => YoutubeVideoSourceModel.fromPrisma(s))),
+
     semitags: ({ id: videoId }, { checked }) =>
       prisma.semitag
         .findMany({ where: { videoId, isChecked: checked?.valueOf() } })
-        .then((semitags) => semitags.map((semitag) => new SemitagModel(semitag))),
+        .then((semitags) => semitags.map((semitag) => SemitagModel.fromPrisma(semitag))),
 
     events: async ({ id: videoId }, { input }) => {
       const nodes = await prisma.videoEvent
@@ -66,17 +73,6 @@ export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pris
       return { nodes };
     },
 
-    isLiked: ({ id: videoId }, _args, { user }) => {
-      if (!user) throw new GraphQLError("Not logged in");
-      return prisma.mylistRegistration
-        .findFirst({ where: { videoId, mylist: { holderId: user.id }, isRemoved: false } })
-        .then((r) => !!r);
-    },
-
-    like: async ({ id: videoId }, _args, { user }) => {
-      if (!user) return null;
-      return prisma.mylistRegistration
-        .findFirst({ where: { videoId, mylist: { holderId: user.id }, isRemoved: false } })
-        .then((r) => MylistRegistrationModel.fromPrisma(r));
-    },
+    isLiked: resolveVideoIsLiked({ prisma, logger }),
+    like: resolveVideoLike({ prisma, logger }),
   } satisfies Resolvers["Video"]);

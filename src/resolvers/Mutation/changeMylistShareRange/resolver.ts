@@ -2,25 +2,17 @@ import { isErr } from "../../../utils/Result.js";
 import {
   ChangeMylistShareRangeOtherErrorMessage,
   ChangeMylistShareRangeOtherErrorsFallback,
-  MutationAuthenticationError,
   MutationMylistNotFoundError,
   MutationResolvers,
   MutationWrongMylistHolderError,
-  UserRole as GraphQLUserRole,
 } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { MylistModel } from "../../Mylist/model.js";
+import { ResolverDeps } from "../../types.js";
 import { update } from "./prisma.js";
 
 export const resolverChangeMylistShareRange = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { input: { mylistId: mylistGqlId, range } }, { user: ctxUser }, info) => {
-    if (!ctxUser)
-      return {
-        __typename: "MutationAuthenticationError",
-        requiredRole: GraphQLUserRole.User,
-      } satisfies MutationAuthenticationError;
-
+  (async (_parent, { input: { mylistId: mylistGqlId, range } }, { currentUser }, info) => {
     const mylistId = parseGqlID2("Mylist", mylistGqlId);
     if (isErr(mylistId)) {
       return {
@@ -29,7 +21,7 @@ export const resolverChangeMylistShareRange = ({ prisma, logger }: Pick<Resolver
       };
     }
 
-    const result = await update(prisma, { mylistId: mylistId.data, userId: ctxUser.id, range });
+    const result = await update(prisma, { mylistId: mylistId.data, userId: currentUser.id, range });
     if (isErr(result)) {
       switch (result.error.message) {
         case "MYLIST_NOT_FOUND":

@@ -1,7 +1,7 @@
 import { Resolvers } from "../graphql.js";
 import { GraphQLNotExistsInDBError } from "../id.js";
-import { ResolverDeps } from "../index.js";
 import { MylistModel } from "../Mylist/model.js";
+import { ResolverDeps } from "../types.js";
 import { VideoModel } from "../Video/model.js";
 
 export const resolveMylistVideoRecommendation = ({ prisma }: Pick<ResolverDeps, "prisma">) =>

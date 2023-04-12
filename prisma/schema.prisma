@@ -12,7 +12,8 @@ datasource db {
 }
 
 model Mylist {
-  id String @id @default(cuid())
+  id   String @id @default(cuid())
+  slug String @db.Citext()
 
   title String
 
@@ -31,6 +32,8 @@ model Mylist {
   includedGroups MylistGroupMylistInclsion[]
 
   events MylistEvent[]
+
+  @@unique([holderId, slug])
 }
 
 enum MylistShareRange {
@@ -179,21 +182,6 @@ enum MylistGroupMylistInclsionEventType {
 
   EXCLUDE
   REINCLUDE
-}
-
-model Session {
-  id String @id @default(cuid())
-
-  secret String @db.VarChar(64)
-
-  expiredAt DateTime
-  isExpired Boolean  @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
 }
 
 model Tag {
@@ -348,56 +336,32 @@ enum TagParentEventType {
 }
 
 model User {
-  id   String @id @default(cuid())
-  name String @unique @db.Citext
-
-  email            String  @unique()
-  isEmailConfirmed Boolean @default(false)
-
-  role UserRole @default(NORMAL)
-
-  displayName String
-
-  icon String?
-
-  password String
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  mylists Mylist[]
-
+  mylists      Mylist[]
   mylistGroups MylistGroup[]
 
-  sessions Session[]
-
-  eventTag        TagEvent[]
-  eventsTagName   TagNameEvent[]
-  eventsTagParent TagParentEvent[]
-
-  eventsVideo           VideoEvent[]
-  eventsVideoTag        VideoTagEvent[]
-  eventsVideoTitle      VideoTitleEvent[]
-  eventsVideoThumbnail  VideoThumbnailEvent[]
-  eventsNicovideoSource NicovideoVideoSourceEvent[]
-  eventsSemitag         SemitagEvent[]
-
-  eventsMylist                   MylistEvent[]
-  eventMylistRegistration        MylistRegistrationEvent[]
-  eventMylistGroup               MylistGroupEvent[]
-  eventMylistGroupMylistInclsion MylistGroupMylistInclsionEvent[]
-
-  NicovideoRegistrationRequests         NicovideoRegistrationRequest[]
-  NicovideoRegistrationRequestCheckings NicovideoRegistrationRequestChecking[]
-  NicovideoRegistrationRequestEvents    NicovideoRegistrationRequestEvent[]
-
-  CategoryTagTyping CategoryTagTyping[]
-}
-
-enum UserRole {
-  NORMAL
-  EDITOR
-  ADMINISTRATOR
+  MylistEvent                          MylistEvent[]
+  MylistRegistrationEvent              MylistRegistrationEvent[]
+  MylistGroupEvent                     MylistGroupEvent[]
+  MylistGroupMylistInclsionEvent       MylistGroupMylistInclsionEvent[]
+  CategoryTagTyping                    CategoryTagTyping[]
+  TagEvent                             TagEvent[]
+  TagNameEvent                         TagNameEvent[]
+  TagParentEvent                       TagParentEvent[]
+  VideoEvent                           VideoEvent[]
+  VideoTitleEvent                      VideoTitleEvent[]
+  VideoThumbnailEvent                  VideoThumbnailEvent[]
+  VideoTagEvent                        VideoTagEvent[]
+  SemitagEvent                         SemitagEvent[]
+  NicovideoVideoSourceEvent            NicovideoVideoSourceEvent[]
+  NicovideoRegistrationRequest         NicovideoRegistrationRequest[]
+  NicovideoRegistrationRequestChecking NicovideoRegistrationRequestChecking[]
+  NicovideoRegistrationRequestEvent    NicovideoRegistrationRequestEvent[]
+  YoutubeVideoSourceEvent              YoutubeVideoSourceEvent[]
 }
 
 model Video {
@@ -414,6 +378,7 @@ model Video {
   semitags Semitag[]
 
   nicovideoSources NicovideoVideoSource[]
+  youtubeSources   YoutubeVideoSource[]
 
   mylists MylistRegistration[]
 
@@ -745,4 +710,40 @@ enum NicovideoRegistrationRequestEventType {
 
   ACCEPT
   REJECT
+}
+
+model YoutubeVideoSource {
+  id String @id @default(cuid())
+
+  sourceId String @unique @db.Citext
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  events YoutubeVideoSourceEvent[]
+
+  @@unique([sourceId, videoId])
+}
+
+model YoutubeVideoSourceEvent {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  source   YoutubeVideoSource @relation(fields: [sourceId], references: [id])
+  sourceId String
+
+  type    YoutubeVideoSourceEventType
+  payload Json
+}
+
+enum YoutubeVideoSourceEventType {
+  CREATE
 }

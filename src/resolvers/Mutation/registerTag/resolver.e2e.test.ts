@@ -5,35 +5,40 @@ import { parse } from "graphql";
 import { createSchema, createYoga } from "graphql-yoga";
 import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
-import { mock, mockReset } from "vitest-mock-extended";
+import { DeepMockProxy, mock, mockDeep, mockReset } from "vitest-mock-extended";
 
+import typeDefs from "../../../schema.graphql";
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import { ServerContext, UserContext } from "../../context.js";
-import { typeDefs } from "../../graphql.js";
 import { buildGqlId } from "../../id.js";
-import { makeResolvers, ResolverDeps } from "../../index.js";
+import { makeResolvers } from "../../index.js";
+import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
 
 describe("Mutation.registerTag e2e", () => {
   let prisma: ResolverDeps["prisma"];
   let neo4j: ResolverDeps["neo4j"];
   let logger: ResolverDeps["logger"];
-  let config: ResolverDeps["config"];
+  let meilisearch: DeepMockProxy<ResolverDeps["meilisearch"]>;
+  let userRepository: DeepMockProxy<ResolverDeps["userRepository"]>;
 
   let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
 
   beforeAll(async () => {
-    prisma = new PrismaClient({ datasources: { db: { url: process.env.TEST_PRISMA_DATABASE_URL } } });
+    prisma = new PrismaClient();
     await prisma.$connect();
 
     neo4j = createNeo4jDriver(
-      process.env.TEST_NEO4J_URL,
-      neo4jAuth.basic(process.env.TEST_NEO4J_USERNAME, process.env.TEST_NEO4J_PASSWORD)
+      process.env.NEO4J_URL,
+      neo4jAuth.basic(process.env.NEO4J_USERNAME, process.env.NEO4J_PASSWORD)
     );
 
     logger = mock<ResolverDeps["logger"]>();
-    config = mock<ResolverDeps["config"]>();
+    meilisearch = mockDeep<ResolverDeps["meilisearch"]>();
+    userRepository = mockDeep<ResolverDeps["userRepository"]>();
 
-    const schema = createSchema({ typeDefs, resolvers: makeResolvers({ prisma, neo4j, logger, config }) });
+    const schema = createSchema({
+      typeDefs,
+      resolvers: makeResolvers({ prisma, neo4j, logger, meilisearch, userRepository }),
+    });
     const yoga = createYoga<ServerContext, UserContext>({ schema });
     executor = buildHTTPExecutor({ fetch: yoga.fetch });
   });
@@ -43,7 +48,6 @@ describe("Mutation.registerTag e2e", () => {
     // TODO: neo4jのreset処理
 
     mockReset(logger);
-    mockReset(config);
   });
 
   afterAll(async () => {
@@ -155,7 +159,12 @@ describe("Mutation.registerTag e2e", () => {
         }
       `),
       variables: { input },
-      context: { user: { id: "u1", role: "EDITOR" } } satisfies UserContext,
+      context: {
+        currentUser: {
+          id: "u1",
+          scopes: ["create:tag"],
+        } satisfies CurrentUser,
+      },
     });
 
     expect(requestResult.data).toStrictEqual({

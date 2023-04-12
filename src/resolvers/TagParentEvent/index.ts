@@ -2,20 +2,16 @@ import { TagParentEventType } from "@prisma/client";
 
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
-import { ResolverDeps } from "../index.js";
 import { TagParentModel } from "../TagParent/model.js";
-import { UserModel } from "../User/model.js";
+import { ResolverDeps } from "../types.js";
 
-export const resolveTagParentEventCommonProps = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveTagParentEventCommonProps = ({
+  prisma,
+  userRepository,
+}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
     id: ({ id }): string => buildGqlId("TagParentEvent", id),
-    user: ({ userId }) =>
-      prisma.user
-        .findUniqueOrThrow({ where: { id: userId } })
-        .then((u) => new UserModel(u))
-        .catch(() => {
-          throw new GraphQLNotExistsInDBError("User", userId);
-        }),
+    user: async ({ userId }) => userRepository.getById(userId),
     tagParent: ({ tagParentId }) =>
       prisma.tagParent
         .findUniqueOrThrow({ where: { id: tagParentId } })
@@ -39,17 +35,17 @@ export const resolveTagParentEvent = () =>
     },
   } satisfies Resolvers["TagParentEvent"]);
 
-export const resolveTagParentCreateEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveTagParentCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
-    ...resolveTagParentEventCommonProps({ prisma }),
+    ...resolveTagParentEventCommonProps(deps),
   } satisfies Resolvers["TagParentCreateEvent"]);
 
-export const resolveTagParentSetPrimaryEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveTagParentSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
-    ...resolveTagParentEventCommonProps({ prisma }),
+    ...resolveTagParentEventCommonProps(deps),
   } satisfies Resolvers["TagParentSetPrimaryEvent"]);
 
-export const resolveTagParentUnsetPrimaryEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveTagParentUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
   ({
-    ...resolveTagParentEventCommonProps({ prisma }),
+    ...resolveTagParentEventCommonProps(deps),
   } satisfies Resolvers["TagParentUnsetPrimaryEvent"]);

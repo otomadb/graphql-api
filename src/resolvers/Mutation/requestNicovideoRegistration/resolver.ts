@@ -1,26 +1,23 @@
 import { isErr } from "../../../utils/Result.js";
 import {
-  MutationAuthenticationError,
   MutationInvalidTagIdError,
   MutationResolvers,
   RequestNicovideoRegistrationOtherErrorMessage,
   RequestNicovideoRegistrationOtherErrorsFallback,
-  UserRole as GraphQLUserRole,
 } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
-import { ResolverDeps } from "../../index.js";
 import { NicovideoRegistrationRequestModel } from "../../NicovideoRegistrationRequest/model.js";
 import { NicovideoVideoSourceModel } from "../../NicovideoVideoSource/model.js";
+import { ResolverDeps } from "../../types.js";
 import { requestRegistration } from "./request.js";
 
 export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_, { input: { title, thumbnailUrl, sourceId, taggings: gqlTaggings, semitaggings } }, { user }, info) => {
-    if (!user)
-      return {
-        __typename: "MutationAuthenticationError",
-        requiredRole: GraphQLUserRole.User,
-      } satisfies MutationAuthenticationError;
-
+  (async (
+    _,
+    { input: { title, thumbnailUrl, sourceId, taggings: gqlTaggings, semitaggings } },
+    { currentUser: user },
+    info
+  ) => {
     const taggings: { tagId: string; note: string | null }[] = [];
     for (const { tagId, note } of gqlTaggings) {
       const parsed = parseGqlID2("Tag", tagId);

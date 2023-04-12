@@ -6,7 +6,11 @@ declare namespace NodeJS {
 
     readonly ENABLE_GRAPHIQL?: string;
     // readonly ENABLE_INTROSPECTION?: string;
-    readonly ENABLE_SAME_SITE_NONE?: string;
+
+    readonly AUTH0_DOMAIN: string;
+    readonly AUTH0_MANAGEMENT_API_TOKEN: string | undefined;
+    readonly AUTH0_CLIENT_ID: string;
+    readonly AUTH0_CLIENT_SECRET: string;
 
     readonly PRISMA_DATABASE_URL: string;
 
@@ -14,10 +18,9 @@ declare namespace NodeJS {
     readonly NEO4J_USERNAME: string;
     readonly NEO4J_PASSWORD: string;
 
-    /* test */
-    readonly TEST_PRISMA_DATABASE_URL: string;
-    readonly TEST_NEO4J_URL: string;
-    readonly TEST_NEO4J_USERNAME: string;
-    readonly TEST_NEO4J_PASSWORD: string;
+    readonly REDIS_URL: string;
+
+    /* Meilisearch */
+    readonly MEILISEARCH_URL: string;
   }
 }

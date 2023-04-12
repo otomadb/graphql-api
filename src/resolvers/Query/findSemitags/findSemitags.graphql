@@ -6,15 +6,14 @@ type Query {
     last: Int
     before: String
 
-    orderBy: FindSemitagsOrderBy! = { createdAt: DESC }
-
-    expect: [ID!]! = [] @deprecated
+    orderBy: FindSemitagsOrderBy! = { name: ASC }
 
     checked: Boolean
   ): SemitagConnection!
 }
 
 input FindSemitagsOrderBy {
+  name: SortOrder
   updatedAt: SortOrder
   createdAt: SortOrder
 }

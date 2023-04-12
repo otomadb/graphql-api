@@ -3,20 +3,15 @@ import { GraphQLError } from "graphql";
 
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
-import { ResolverDeps } from "../index.js";
-import { SemitagModel, SemitagRejectingModel, SemitagResolvingModel } from "../Semitag/model.js";
-import { UserModel } from "../User/model.js";
+import { SemitagModel } from "../Semitag/model.js";
+import { SemitagRejectingModel } from "../SemitagRejecting/model.js";
+import { SemitagResolvingModel } from "../SemitagResolving/model.js";
+import { ResolverDeps } from "../types.js";
 
-export const resolveSemitagEventCommonProps = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveSemitagEventCommonProps = ({ userRepository }: Pick<ResolverDeps, "userRepository">) =>
   ({
     id: ({ id }): string => buildGqlId("SemitagEvent", id),
-    user: ({ userId }) =>
-      prisma.user
-        .findUniqueOrThrow({ where: { id: userId } })
-        .then((u) => new UserModel(u))
-        .catch(() => {
-          throw new GraphQLNotExistsInDBError("User", userId);
-        }),
+    user: async ({ userId }) => userRepository.getById(userId),
   } satisfies Omit<Exclude<Resolvers["SemitagEvent"], undefined>, "__resolveType">);
 
 export const resolveSemitagEvent = () =>
@@ -33,21 +28,29 @@ export const resolveSemitagEvent = () =>
     },
   } satisfies Resolvers["SemitagEvent"]);
 
-export const resolveSemitagEventAttachEvent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolveSemitagEventAttachEvent = ({
+  prisma,
+  userRepository,
+  logger,
+}: Pick<ResolverDeps, "prisma" | "userRepository" | "logger">) =>
   ({
-    ...resolveSemitagEventCommonProps({ prisma }),
+    ...resolveSemitagEventCommonProps({ userRepository }),
     semitag: ({ semitagId }) =>
       prisma.semitag
         .findUniqueOrThrow({ where: { id: semitagId } })
-        .then((v) => new SemitagModel(v))
+        .then((v) => SemitagModel.fromPrisma(v))
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Semitag", semitagId);
         }),
   } satisfies Resolvers["SemitagAttachEvent"]);
 
-export const resolveSemitagEventResolveEvent = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolveSemitagEventResolveEvent = ({
+  prisma,
+  userRepository,
+  logger,
+}: Pick<ResolverDeps, "prisma" | "logger" | "userRepository">) =>
   ({
-    ...resolveSemitagEventCommonProps({ prisma }),
+    ...resolveSemitagEventCommonProps({ userRepository }),
     resolving: async ({ semitagId }, _args, _context, info) => {
       const checking = await prisma.semitagChecking.findUniqueOrThrow({ where: { semitagId } });
       if (!checking.videoTagId) {
@@ -59,13 +62,17 @@ export const resolveSemitagEventResolveEvent = ({ prisma, logger }: Pick<Resolve
       }
 
       const { videoTagId, note } = checking;
-      return new SemitagResolvingModel({ semitagId, videoTagId, note });
+      return SemitagResolvingModel.make({ semitagId, videoTagId, note });
     },
   } satisfies Resolvers["SemitagResolveEvent"]);
 
-export const resolveSemitagEventRejectEvent = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolveSemitagEventRejectEvent = ({
+  prisma,
+  logger,
+  userRepository,
+}: Pick<ResolverDeps, "prisma" | "logger" | "userRepository">) =>
   ({
-    ...resolveSemitagEventCommonProps({ prisma }),
+    ...resolveSemitagEventCommonProps({ userRepository }),
     rejecting: async ({ semitagId }, _args, _context, info) => {
       const checking = await prisma.semitagChecking.findUniqueOrThrow({ where: { semitagId } });
       if (checking.videoTagId) {
@@ -74,6 +81,6 @@ export const resolveSemitagEventRejectEvent = ({ prisma, logger }: Pick<Resolver
       }
 
       const { note } = checking;
-      return new SemitagRejectingModel({ semitagId, note });
+      return SemitagRejectingModel.make({ semitagId, note });
     },
   } satisfies Resolvers["SemitagRejectEvent"]);
