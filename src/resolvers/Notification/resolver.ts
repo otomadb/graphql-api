@@ -14,5 +14,6 @@ export const resolverNotification = ({ prisma, userRepository }: Pick<ResolverDe
     },
     id: ({ dbId }) => buildGqlId("Notification", dbId),
     notifyTo: ({ notifyToId: forId }) => userRepository.getById(forId),
+    createdAt: ({ createdAt }) => createdAt,
     watched: ({ isWatched }) => isWatched,
   } satisfies Resolvers["Notification"]);
