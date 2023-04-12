@@ -6,13 +6,14 @@ export class NotificationModel {
       id: string;
       notifyToId: string;
       isWatched: boolean;
+      createdAt: Date;
       type: Notification["type"];
       payload: Notification["payload"];
     }
   ) {}
 
-  public static fromPrisma({ id, type, payload, notifyToId, isWatched }: Notification) {
-    return new NotificationModel({ id, type, payload, notifyToId, isWatched });
+  public static fromPrisma({ id, type, payload, notifyToId, isWatched, createdAt }: Notification) {
+    return new NotificationModel({ id, type, payload, notifyToId, isWatched, createdAt });
   }
 
   get dbId() {
@@ -21,6 +22,10 @@ export class NotificationModel {
 
   get notifyToId() {
     return this.entity.notifyToId;
+  }
+
+  get createdAt() {
+    return this.entity.createdAt;
   }
 
   get type() {
