@@ -49,6 +49,6 @@ export const resolverRejectRequestNicovideoRegistration = ({
     const checking = result.data;
     return {
       __typename: "RejectNicovideoRegistrationRequestSucceededPayload",
-      rejecting: new NicovideoRegistrationRequestRejectingModel(checking),
+      rejecting: NicovideoRegistrationRequestRejectingModel.fromPrisma(checking),
     };
   }) satisfies MutationResolvers["rejectNicovideoRegistrationRequest"];
