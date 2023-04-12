@@ -1,0 +1,11 @@
+type NotificationConnection {
+  nodes: [Notification!]!
+  edges: [NotificationEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type NotificationEdge {
+  cursor: String!
+  node: Notification!
+}

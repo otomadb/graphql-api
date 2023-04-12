@@ -12,6 +12,7 @@ export type NodeType =
   | "NicovideoRegistrationRequestTagging"
   | "NicovideoVideoSource"
   | "NicovideoVideoSourceEvent"
+  | "Notification"
   | "Semitag"
   | "SemitagEvent"
   | "Session"

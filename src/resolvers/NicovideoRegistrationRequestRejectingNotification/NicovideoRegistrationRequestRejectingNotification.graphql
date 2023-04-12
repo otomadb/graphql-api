@@ -1,0 +1,8 @@
+type NicovideoRegistrationRequestRejectingNotification implements Node & Notification {
+  id: ID!
+  createdAt: DateTime!
+  notifyTo: User!
+  watched: Boolean!
+
+  rejecting: NicovideoRegistrationRequestRejecting!
+}

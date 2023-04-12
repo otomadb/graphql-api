@@ -7,6 +7,7 @@ import { ResolverDeps } from "../types.js";
 import { resolverUserLikes } from "./likes/resolver.js";
 import { resolverUserMylists } from "./mylists/resolver.js";
 import { resolverUserNicovideoRegistrationRequests } from "./nicovideoRegistrationRequests/resolver.js";
+import { resolverUserNotifications } from "./notifications/resolver.js";
 
 export const resolveUser = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   ({
@@ -24,6 +25,8 @@ export const resolveUser = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "l
     },
 
     mylists: resolverUserMylists({ prisma, logger }),
+
+    notifications: resolverUserNotifications({ logger, prisma }),
 
     isEditor: () => false,
     isAdministrator: () => false,
