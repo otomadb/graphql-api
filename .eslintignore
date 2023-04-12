@@ -7,3 +7,4 @@ src/db/migrations/
 
 # codegen
 src/resolvers/graphql.ts
+src/gql

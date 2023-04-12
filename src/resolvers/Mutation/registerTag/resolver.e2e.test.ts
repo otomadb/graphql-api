@@ -1,18 +1,39 @@
-import { buildHTTPExecutor, HTTPExecutorOptions } from "@graphql-tools/executor-http";
-import { SyncExecutor } from "@graphql-tools/utils";
 import { PrismaClient } from "@prisma/client";
-import { parse } from "graphql";
 import { createSchema, createYoga } from "graphql-yoga";
 import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { DeepMockProxy, mock, mockDeep, mockReset } from "vitest-mock-extended";
 
+import { graphql } from "../../../gql/gql.js";
 import typeDefs from "../../../schema.graphql";
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
+import { makeExecutor } from "../../../test/makeExecutor.js";
 import { buildGqlId } from "../../id.js";
 import { makeResolvers } from "../../index.js";
 import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
 
+const Mutation = graphql(`
+  mutation E2E_RegisterTag($input: RegisterTagInput!) {
+    registerTag(input: $input) {
+      __typename
+      ... on MutationInvalidTagIdError {
+        tagId
+      }
+      ... on MutationInvalidSemitagIdError {
+        semitagId
+      }
+      ... on RegisterTagTagIdCollidedBetweenExplicitAndImplicitError {
+        tagId
+      }
+      ... on RegisterTagImplicitParentIdsDuplicatedError {
+        tagId
+      }
+      ... on RegisterTagResolveSemitagIdsDuplicatedError {
+        semitagId
+      }
+    }
+  }
+`);
 describe("Mutation.registerTag e2e", () => {
   let prisma: ResolverDeps["prisma"];
   let neo4j: ResolverDeps["neo4j"];
@@ -20,7 +41,7 @@ describe("Mutation.registerTag e2e", () => {
   let meilisearch: DeepMockProxy<ResolverDeps["meilisearch"]>;
   let userRepository: DeepMockProxy<ResolverDeps["userRepository"]>;
 
-  let executor: SyncExecutor<unknown, HTTPExecutorOptions>;
+  let executor: ReturnType<typeof makeExecutor>;
 
   beforeAll(async () => {
     prisma = new PrismaClient();
@@ -37,10 +58,16 @@ describe("Mutation.registerTag e2e", () => {
 
     const schema = createSchema({
       typeDefs,
-      resolvers: makeResolvers({ prisma, neo4j, logger, meilisearch, userRepository }),
+      resolvers: makeResolvers({
+        prisma,
+        neo4j,
+        logger,
+        meilisearch,
+        userRepository,
+      }),
     });
     const yoga = createYoga<ServerContext, UserContext>({ schema });
-    executor = buildHTTPExecutor({ fetch: yoga.fetch });
+    executor = makeExecutor(yoga);
   });
 
   beforeEach(async () => {
@@ -135,29 +162,8 @@ describe("Mutation.registerTag e2e", () => {
       },
     ],
   ])("不適当なinput: %#", async (input, expected) => {
-    const requestResult = await executor({
-      document: parse(/* GraphQL */ `
-        mutation E2ETest_Mutation_RegisterTag_Invalid_Input($input: RegisterTagInput!) {
-          registerTag(input: $input) {
-            __typename
-            ... on MutationInvalidTagIdError {
-              tagId
-            }
-            ... on MutationInvalidSemitagIdError {
-              semitagId
-            }
-            ... on RegisterTagTagIdCollidedBetweenExplicitAndImplicitError {
-              tagId
-            }
-            ... on RegisterTagImplicitParentIdsDuplicatedError {
-              tagId
-            }
-            ... on RegisterTagResolveSemitagIdsDuplicatedError {
-              semitagId
-            }
-          }
-        }
-      `),
+    const result = await executor({
+      operation: Mutation,
       variables: { input },
       context: {
         currentUser: {
@@ -166,8 +172,7 @@ describe("Mutation.registerTag e2e", () => {
         } satisfies CurrentUser,
       },
     });
-
-    expect(requestResult.data).toStrictEqual({
+    expect(result.data).toStrictEqual({
       registerTag: expected,
     });
   });
