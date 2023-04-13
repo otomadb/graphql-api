@@ -6,6 +6,6 @@ type User implements Node {
 
   mylist(id: ID!): Mylist
 
-  isEditor: Boolean!
-  isAdministrator: Boolean!
+  isEditor: Boolean! @deprecated(reason: "Use hasRole instead.")
+  isAdministrator: Boolean! @deprecated(reason: "Use hasRole instead.")
 }

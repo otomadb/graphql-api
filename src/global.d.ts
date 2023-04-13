@@ -11,6 +11,8 @@ declare namespace NodeJS {
     readonly AUTH0_MANAGEMENT_API_TOKEN: string | undefined;
     readonly AUTH0_CLIENT_ID: string;
     readonly AUTH0_CLIENT_SECRET: string;
+    readonly AUTH0_EDITOR_ROLE_ID: string;
+    readonly AUTH0_ADMIN_ROLE_ID: string;
 
     readonly PRISMA_DATABASE_URL: string;
 
