@@ -33,6 +33,9 @@ export class UserModel {
       async hasRole(id: string, role: "EDITOR" | "ADMIN") {
         return UserModel.hasRole({ logger, redis, auth0Management, env }, id, role);
       },
+      async changeDisplayName(userId: string, renameTo: string) {
+        return UserModel.changeDisplayName({ logger, redis, auth0Management, prisma }, userId, renameTo);
+      },
     };
   }
 
@@ -170,6 +173,26 @@ export class UserModel {
     } catch (error) {
       logger.error({ error, userId }, "Failed to fetch roles from Auth0");
       throw new Error("Failed to fetch user from Auth0");
+    }
+  }
+
+  private static async changeDisplayName(
+    {
+      auth0Management,
+      logger,
+      redis,
+      prisma,
+    }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "auth0Management" | "logger" | "redis" | "prisma">,
+    userId: string,
+    renameTo: string
+  ): Promise<UserModel> {
+    try {
+      const updated = await auth0Management.updateUser({ id: userId }, { nickname: renameTo });
+      await redis.del(`auth0:${userId}`);
+      return UserModel.fromAuth0User({ logger, redis, prisma }, updated);
+    } catch (error) {
+      logger.error({ error, userId, renameTo }, "Failed to update user in Auth0");
+      throw new Error("Failed to update user in Auth0");
     }
   }
 
