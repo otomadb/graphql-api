@@ -12,11 +12,16 @@ export class UserModel {
     logger,
     redis,
     auth0Management,
+    env,
   }: {
     prisma: PrismaClient;
     auth0Management: ManagementClient<AppMetadata, UserMetadata>;
     logger: Logger;
     redis: Redis;
+    env: {
+      editorRoleId: string;
+      adminRoleId: string;
+    };
   }) {
     return {
       async getById(id: string) {
@@ -24,6 +29,9 @@ export class UserModel {
       },
       async findByName(name: string) {
         return UserModel.findByNameFromAuth0({ logger, redis, auth0Management, prisma }, name);
+      },
+      async hasRole(id: string, role: "EDITOR" | "ADMIN") {
+        return UserModel.hasRole({ logger, redis, auth0Management, env }, id, role);
       },
     };
   }
@@ -115,6 +123,54 @@ export class UserModel {
       return null;
     }
     return UserModel.fromAuth0User({ logger, redis, prisma }, auth0user);
+  }
+
+  private static async hasRole(
+    {
+      auth0Management,
+      logger,
+      redis,
+      env,
+    }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "auth0Management" | "logger" | "redis" | "env">,
+    userId: string,
+    role: "EDITOR" | "ADMIN"
+  ): Promise<boolean> {
+    try {
+      switch (role) {
+        case "EDITOR": {
+          const cached = await redis.get(`auth0:${userId}:is-editor`);
+          if (cached) return parseInt(cached, 10) === 1;
+          break;
+        }
+        case "ADMIN": {
+          const cached = await redis.get(`auth0:${userId}:is-admin`);
+          if (cached) return parseInt(cached, 10) === 1;
+          break;
+        }
+      }
+    } catch (error) {
+      logger.error({ error, userId, role }, "Failed to check role from redis");
+    }
+    try {
+      const roles = await auth0Management.getUserRoles({ id: userId });
+
+      const isEditor = roles.some(({ id }) => id === env.editorRoleId);
+      await redis.setex(`auth0:${userId}:is-editor`, 60 * 3, isEditor ? 1 : 0);
+
+      const isAdmin = roles.some(({ id }) => id === env.adminRoleId);
+      await redis.setex(`auth0:${userId}:is-admin`, 60 * 3, isAdmin ? 1 : 0);
+
+      logger.trace({ userId, want: role, isEditor, isAdmin, roles }, "Roles");
+      switch (role) {
+        case "EDITOR":
+          return isEditor;
+        case "ADMIN":
+          return isAdmin;
+      }
+    } catch (error) {
+      logger.error({ error, userId }, "Failed to fetch roles from Auth0");
+      throw new Error("Failed to fetch user from Auth0");
+    }
   }
 
   get id() {

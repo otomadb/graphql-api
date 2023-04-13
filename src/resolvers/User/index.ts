@@ -4,11 +4,16 @@ import { Resolvers } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
 import { MylistModel } from "../Mylist/model.js";
 import { ResolverDeps } from "../types.js";
+import { resolverUserHasRole } from "./hasRole/resolver.js";
 import { resolverUserLikes } from "./likes/resolver.js";
 import { resolverUserMylists } from "./mylists/resolver.js";
 import { resolverUserNicovideoRegistrationRequests } from "./nicovideoRegistrationRequests/resolver.js";
 
-export const resolveUser = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolveUser = ({
+  prisma,
+  logger,
+  userRepository,
+}: Pick<ResolverDeps, "prisma" | "logger" | "userRepository">) =>
   ({
     id: ({ id }): string => buildGqlId("User", id),
     likes: resolverUserLikes({ prisma, logger }),
@@ -27,4 +32,6 @@ export const resolveUser = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "l
 
     isEditor: () => false,
     isAdministrator: () => false,
+
+    hasRole: resolverUserHasRole({ userRepository, logger }),
   } satisfies Resolvers["User"]);
