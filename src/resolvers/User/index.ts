@@ -33,5 +33,5 @@ export const resolveUser = ({
     isEditor: () => false,
     isAdministrator: () => false,
 
-    hasRole: resolverUserHasRole({ userRepository, logger }),
+    hasRole: resolverUserHasRole({ userRepository }),
   } satisfies Resolvers["User"]);
