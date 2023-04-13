@@ -1,0 +1,13 @@
+type Mutation {
+  changeUserDisplayName(renameTo: String!): ChangeUserDisplayNameReturnUnion! @auth
+}
+
+union ChangeUserDisplayNameReturnUnion = ChangeUserDisplayNameInvalidNameError | ChangeUserDisplayNameSucceededPayload
+
+type ChangeUserDisplayNameInvalidNameError {
+  name: String!
+}
+
+type ChangeUserDisplayNameSucceededPayload {
+  user: User!
+}

@@ -7,6 +7,7 @@ import { addSemitagToVideo } from "./addSemitagToVideo/addSemitagToVideo.js";
 import { resolverAddTagToVideo } from "./addTagToVideo/resolver.js";
 import { addVideoToMylist } from "./addVideoToMylist/addVideoToMylist.js";
 import { resolverChangeMylistShareRange } from "./changeMylistShareRange/resolver.js";
+import { resolverChangeUserDisplayName } from "./changeUserDisplayName/resolver.js";
 import { createMylist } from "./createMylist/createMylist.js";
 import { createMylistGroup } from "./createMylistGroup/createMylistGroup.js";
 import { resolverExplicitizeTagParent } from "./explicitizeTagParent/resolver.js";
@@ -32,6 +33,7 @@ export const resolveMutation = (deps: ResolverDeps) =>
     addTagToVideo: resolverAddTagToVideo(deps),
     addVideoToMylist: addVideoToMylist(deps),
     changeMylistShareRange: resolverChangeMylistShareRange(deps),
+    changeUserDisplayName: resolverChangeUserDisplayName(deps),
     createMylist: createMylist(deps),
     createMylistGroup: createMylistGroup(deps),
     explicitizeTagParent: resolverExplicitizeTagParent(deps),
