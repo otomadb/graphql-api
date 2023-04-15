@@ -1,10 +1,7 @@
+import { GraphQLError } from "graphql";
+
 import { isErr } from "../../../utils/Result.js";
-import {
-  MutationInvalidTagIdError,
-  MutationResolvers,
-  RequestNicovideoRegistrationOtherErrorMessage,
-  RequestNicovideoRegistrationOtherErrorsFallback,
-} from "../../graphql.js";
+import { MutationResolvers, ResolversTypes } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { NicovideoRegistrationRequestModel } from "../../NicovideoRegistrationRequest/model.js";
 import { NicovideoVideoSourceModel } from "../../NicovideoVideoSource/model.js";
@@ -25,7 +22,7 @@ export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<Re
         return {
           __typename: "MutationInvalidTagIdError",
           tagId,
-        };
+        } satisfies ResolversTypes["RequestNicovideoRegistrationReturnUnion"];
       }
       taggings.push({ tagId: parsed.data, note: note ?? null });
     }
@@ -45,18 +42,15 @@ export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<Re
           return {
             __typename: "MutationInvalidTagIdError",
             tagId: result.error.tagId,
-          } satisfies MutationInvalidTagIdError;
+          } satisfies ResolversTypes["RequestNicovideoRegistrationReturnUnion"];
         case "VIDEO_ALREADY_REGISTERED":
           return {
             __typename: "RequestNicovideoRegistrationVideoAlreadyRegisteredError",
             source: new NicovideoVideoSourceModel(result.error.source),
-          }; // TODO: 何らかのsatisfiesを使う
+          } satisfies ResolversTypes["RequestNicovideoRegistrationReturnUnion"];
         case "INTERNAL_SERVER_ERROR":
           logger.error({ error: result.error.error, path: info.path }, "Something error happens");
-          return {
-            __typename: "RequestNicovideoRegistrationOtherErrorsFallback",
-            message: RequestNicovideoRegistrationOtherErrorMessage.InternalServerError,
-          } satisfies RequestNicovideoRegistrationOtherErrorsFallback;
+          throw new GraphQLError("Internal server error");
       }
     }
 
@@ -64,5 +58,5 @@ export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<Re
     return {
       __typename: "RequestNicovideoRegistrationSucceededPayload",
       request: new NicovideoRegistrationRequestModel(request),
-    };
+    } satisfies ResolversTypes["RequestNicovideoRegistrationReturnUnion"];
   }) satisfies MutationResolvers["requestNicovideoRegistration"];

@@ -27,21 +27,11 @@ union RequestNicovideoRegistrationReturnUnion =
     MutationInvalidTagIdError
   | MutationTagNotFoundError
   | RequestNicovideoRegistrationVideoAlreadyRegisteredError
-  | RequestNicovideoRegistrationOtherErrorsFallback
   | RequestNicovideoRegistrationSucceededPayload
 
 "動画が既に登録されている場合のエラー"
 type RequestNicovideoRegistrationVideoAlreadyRegisteredError {
   source: NicovideoVideoSource!
-}
-
-"その他のエラー"
-type RequestNicovideoRegistrationOtherErrorsFallback {
-  message: RequestNicovideoRegistrationOtherErrorMessage!
-}
-
-enum RequestNicovideoRegistrationOtherErrorMessage {
-  INTERNAL_SERVER_ERROR
 }
 
 type RequestNicovideoRegistrationSucceededPayload {
