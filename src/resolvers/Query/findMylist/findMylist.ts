@@ -8,7 +8,7 @@ export const resolverFindMylist = ({
   prisma,
   logger,
   userRepository,
-}: Pick<ResolverDeps, "prisma" | "logger" | "userRepository">) =>
+}: Pick<ResolverDeps, "logger" | "prisma" | "userRepository">) =>
   (async (_parent, { input }, { currentUser }, info) => {
     const { pair } = input;
 

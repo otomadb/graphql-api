@@ -4,7 +4,7 @@ import { QueryResolvers } from "../../graphql.js";
 import { NicovideoVideoSourceModel } from "../../NicovideoVideoSource/model.js";
 import { ResolverDeps } from "../../types.js";
 
-export const findNicovideoVideoSource = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const findNicovideoVideoSource = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async (_, { input: { sourceId } }, { currentUser: ctxUser }, info) => {
     if (!sourceId) {
       logger.error({ path: info.path, args: { input: { sourceId } }, userId: ctxUser?.id }, "Invalid input");

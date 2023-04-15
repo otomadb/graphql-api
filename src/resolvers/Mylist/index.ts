@@ -12,7 +12,7 @@ export const resolveMylist = ({
   logger,
   neo4j,
   userRepository,
-}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "userRepository">) =>
+}: Pick<ResolverDeps, "logger" | "neo4j" | "prisma" | "userRepository">) =>
   ({
     id: ({ id }) => buildGqlId("Mylist", id),
     range: ({ shareRange }) => {

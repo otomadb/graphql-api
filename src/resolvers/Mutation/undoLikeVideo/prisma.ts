@@ -8,10 +8,10 @@ export const undo = async (
   { videoId, userId }: { videoId: string; userId: string }
 ): Promise<
   Result<
-    | { type: "VIDEO_NOT_FOUND"; videoId: string }
-    | { type: "NOT_LIKED"; mylist: Mylist; video: Video }
     | { type: "ALREADY_REMOVED"; mylist: Mylist; video: Video }
-    | { type: "INTERNAL_SERVER_ERROR"; error: unknown },
+    | { type: "INTERNAL_SERVER_ERROR"; error: unknown }
+    | { type: "NOT_LIKED"; mylist: Mylist; video: Video }
+    | { type: "VIDEO_NOT_FOUND"; videoId: string },
     MylistRegistration
   >
 > => {

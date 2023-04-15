@@ -6,7 +6,7 @@ import { MylistModel } from "../../Mylist/model.js";
 import { ResolverDeps } from "../../types.js";
 import { get } from "./prisma.js";
 
-export const resolverUserLikes = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolverUserLikes = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async ({ id: userId }, _args, { currentUser }, info) => {
     const result = await get(prisma, { holderId: userId, currentUserId: currentUser?.id || null });
 

@@ -8,7 +8,7 @@ import { MylistRegistrationConnectionModel } from "../../MylistRegistrationConne
 import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
 import { ResolverDeps } from "../../types.js";
 
-export const resolverMylistRegistrations = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolverMylistRegistrations = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async ({ id: mylistId }, { orderBy, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([

@@ -9,9 +9,9 @@ export const like = async (
   { videoId, userId }: { videoId: string; userId: string }
 ): Promise<
   Result<
-    | { type: "VIDEO_NOT_FOUND"; videoId: string }
     | { type: "ALREADY_REGISTERED"; registration: MylistRegistration }
-    | { type: "INTERNAL_SERVER_ERROR"; error: unknown },
+    | { type: "INTERNAL_SERVER_ERROR"; error: unknown }
+    | { type: "VIDEO_NOT_FOUND"; videoId: string },
     MylistRegistration
   >
 > => {

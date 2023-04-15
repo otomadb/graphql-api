@@ -14,7 +14,7 @@ import { reject } from "./reject.js";
 export const resolverRejectRequestNicovideoRegistration = ({
   prisma,
   logger,
-}: Pick<ResolverDeps, "prisma" | "logger">) =>
+}: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async (_, { input: { requestId: requestGqlId, note } }, { currentUser: user }, info) => {
     const requestId = parseGqlID2("NicovideoRegistrationRequest", requestGqlId);
     if (isErr(requestId)) {

@@ -3,7 +3,7 @@ import { GraphQLNotExistsInDBError, parseGqlID } from "../../id.js";
 import { TagModel } from "../../Tag/model.js";
 import { ResolverDeps } from "../../types.js";
 
-export const getTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const getTag = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async (_parent, { id }, { currentUser: ctxUser }, info) =>
     prisma.tag
       .findUniqueOrThrow({ where: { id: parseGqlID("Tag", id) } })

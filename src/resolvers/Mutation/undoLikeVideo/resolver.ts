@@ -10,7 +10,7 @@ import { VideoModel } from "../../Video/model.js";
 import { undoLikeVideoInNeo4j } from "./neo4j.js";
 import { undo } from "./prisma.js";
 
-export const resolverUndoLikeVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+export const resolverUndoLikeVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "logger" | "neo4j" | "prisma">) =>
   (async (_parent, { input: { videoId: videoGqlId } }, { currentUser: user }, info) => {
     const videoId = parseGqlID3("Video", videoGqlId);
     if (isErr(videoId)) {

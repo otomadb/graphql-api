@@ -6,7 +6,7 @@ import { parseGqlID } from "../../id.js";
 import { NicovideoRegistrationRequestModel } from "../../NicovideoRegistrationRequest/model.js";
 import { ResolverDeps } from "../../types.js";
 
-export const resolverFindNicovideoRegistrationRequest = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolverFindNicovideoRegistrationRequest = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async (_, { input: unparsedInput }, { currentUser: ctxUser }, info) => {
     const parsed = z.union([z.object({ id: z.string() }), z.object({ sourceId: z.string() })]).safeParse(unparsedInput);
     if (!parsed.success) {

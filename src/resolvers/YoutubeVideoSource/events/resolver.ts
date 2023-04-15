@@ -10,7 +10,7 @@ import { parseOrderBy } from "../../parseSortOrder.js";
 import { ResolverDeps } from "../../types.js";
 import { YoutubeVideoSourceEventConnectionModel } from "../../YoutubeVideoSourceEventConnection/model.js";
 
-export const resolveYoutubeVideoSourceEvents = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolveYoutubeVideoSourceEvents = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async ({ id }, { orderBy: unparsedOrderBy, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([

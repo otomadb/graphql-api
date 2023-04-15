@@ -17,9 +17,9 @@ export const reject = async (
   }
 ): Promise<
   Result<
-    | { message: "REQUEST_NOT_FOUND"; requestId: string }
+    | { message: "INTERNAL_SERVER_ERROR"; error: unknown }
     | { message: "REQUEST_ALREADY_CHECKED"; request: NicovideoRegistrationRequest }
-    | { message: "INTERNAL_SERVER_ERROR"; error: unknown },
+    | { message: "REQUEST_NOT_FOUND"; requestId: string },
     NicovideoRegistrationRequestChecking
   >
 > => {

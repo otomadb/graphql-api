@@ -13,7 +13,7 @@ export const resolveUser = ({
   prisma,
   logger,
   userRepository,
-}: Pick<ResolverDeps, "prisma" | "logger" | "userRepository">) =>
+}: Pick<ResolverDeps, "logger" | "prisma" | "userRepository">) =>
   ({
     id: ({ id }): string => buildGqlId("User", id),
     likes: resolverUserLikes({ prisma, logger }),

@@ -11,7 +11,7 @@ export const resolverRemoveTagFromVideo = ({
   prisma,
   neo4j,
   logger,
-}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+}: Pick<ResolverDeps, "logger" | "neo4j" | "prisma">) =>
   (async (_parent, { input: { tagId: tagGqlId, videoId: videoGqlId } }, { currentUser: user }, info) => {
     const videoId = parseGqlID2("Video", videoGqlId);
     if (isErr(videoId))

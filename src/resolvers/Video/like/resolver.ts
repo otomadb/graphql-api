@@ -6,7 +6,7 @@ import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
 import { ResolverDeps } from "../../types.js";
 import { findLike } from "./findLike.js";
 
-export const resolveVideoLike = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolveVideoLike = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async ({ id: videoId }, _args, { currentUser }, info) => {
     const like = await findLike(prisma, { videoId, holderId: currentUser.id });
     if (isErr(like)) {

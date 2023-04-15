@@ -8,9 +8,9 @@ export const explicitize = async (
   { userId, relationId }: { userId: string; relationId: string }
 ): Promise<
   Result<
-    | { type: "UNKNOWN"; error: unknown }
+    | { type: "IS_EXPLICIT"; relation: TagParent }
     | { type: "NOT_EXISTS"; id: string }
-    | { type: "IS_EXPLICIT"; relation: TagParent },
+    | { type: "UNKNOWN"; error: unknown },
     TagParent
   >
 > => {

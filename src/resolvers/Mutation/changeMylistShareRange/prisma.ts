@@ -8,9 +8,9 @@ export const update = async (
   { userId, mylistId, range }: { userId: string; mylistId: string; range: MylistShareRange }
 ): Promise<
   Result<
+    | { message: "INTERNAL_SERVER_ERROR"; error: unknown }
     | { message: "MYLIST_NOT_FOUND"; mylistId: string }
-    | { message: "MYLIST_WRONG_HOLDER"; mylistId: string }
-    | { message: "INTERNAL_SERVER_ERROR"; error: unknown },
+    | { message: "MYLIST_WRONG_HOLDER"; mylistId: string },
     Mylist
   >
 > => {

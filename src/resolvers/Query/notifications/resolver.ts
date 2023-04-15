@@ -9,7 +9,7 @@ import { NotificationConnectionModel } from "../../NotificationConnection/model.
 import { parseOrderBy } from "../../parseSortOrder.js";
 import { ResolverDeps } from "../../types.js";
 
-export const resolverNotifications = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolverNotifications = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async (_parent, { orderBy: unparsedOrderBy, filter, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([

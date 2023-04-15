@@ -7,7 +7,7 @@ import { ResolverDeps } from "../types.js";
 import { VideoModel } from "../Video/model.js";
 import { resolverSemitagSuggestTags } from "./suggestTags/resolver.js";
 
-export const resolveSemitag = ({ prisma, meilisearch }: Pick<ResolverDeps, "prisma" | "meilisearch">) =>
+export const resolveSemitag = ({ prisma, meilisearch }: Pick<ResolverDeps, "meilisearch" | "prisma">) =>
   ({
     id: ({ dbId }): string => buildGqlId("Semitag", dbId),
     video: ({ videoId }) =>

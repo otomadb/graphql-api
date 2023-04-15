@@ -10,7 +10,7 @@ export const resolverNicovideoRegistrationRequestAcceptingNotification = ({
   prisma,
   userRepository,
   logger,
-}: Pick<ResolverDeps, "prisma" | "userRepository" | "logger">) =>
+}: Pick<ResolverDeps, "logger" | "prisma" | "userRepository">) =>
   ({
     ...resolverNotification({ prisma, userRepository }),
     accepting: ({ dbId, payload }, _args, _ctx, info) => {

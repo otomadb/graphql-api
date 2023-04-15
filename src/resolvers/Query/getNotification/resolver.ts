@@ -3,7 +3,7 @@ import { GraphQLNotExistsInDBError, parseGqlID } from "../../id.js";
 import { NotificationModel } from "../../Notification/model.js";
 import { ResolverDeps } from "../../types.js";
 
-export const getNotification = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const getNotification = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async (_parent, { id }, { currentUser: ctxUser }, info) =>
     prisma.notification
       .findUniqueOrThrow({ where: { id: parseGqlID("Notification", id) } })

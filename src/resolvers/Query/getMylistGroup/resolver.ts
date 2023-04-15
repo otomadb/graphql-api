@@ -3,7 +3,7 @@ import { GraphQLNotExistsInDBError, parseGqlID } from "../../id.js";
 import { MylistGroupModel } from "../../MylistGroup/model.js";
 import { ResolverDeps } from "../../types.js";
 
-export const getMylistGroup = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const getMylistGroup = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async (_parent, { id }, { currentUser: ctxUser }, info) =>
     prisma.mylistGroup
       .findUniqueOrThrow({ where: { id: parseGqlID("MylistGroup", id) } })

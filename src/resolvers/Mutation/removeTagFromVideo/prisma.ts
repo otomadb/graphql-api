@@ -6,7 +6,7 @@ import { ResolverDeps } from "../../types.js";
 export const remove = async (
   prisma: ResolverDeps["prisma"],
   { authUserId, videoId, tagId }: { authUserId: string; videoId: string; tagId: string }
-): Promise<Result<"NO_VIDEO" | "NO_TAG" | "NO_TAGGING" | "REMOVED_TAGGING", VideoTag & { video: Video; tag: Tag }>> => {
+): Promise<Result<"NO_TAG" | "NO_TAGGING" | "NO_VIDEO" | "REMOVED_TAGGING", VideoTag & { video: Video; tag: Tag }>> => {
   if ((await prisma.video.findUnique({ where: { id: videoId } })) === null) return err("NO_VIDEO");
   if ((await prisma.tag.findUnique({ where: { id: tagId } })) === null) return err("NO_TAG");
 

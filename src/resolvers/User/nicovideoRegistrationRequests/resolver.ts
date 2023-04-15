@@ -11,7 +11,7 @@ import { ResolverDeps } from "../../types.js";
 export const resolverUserNicovideoRegistrationRequests = ({
   prisma,
   logger,
-}: Pick<ResolverDeps, "prisma" | "logger">) =>
+}: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async ({ id: userId }, { orderBy, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([

@@ -4,7 +4,7 @@ import { MylistModel } from "../../Mylist/model.js";
 import { ResolverDeps } from "../../types.js";
 import { create } from "./create.js";
 
-export const createMylist = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const createMylist = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async (_parent, { input: { slug, title, range } }, { currentUser }, info) => {
     const result = await create(prisma, { title, userId: currentUser.id, range, slug });
     if (isErr(result)) {

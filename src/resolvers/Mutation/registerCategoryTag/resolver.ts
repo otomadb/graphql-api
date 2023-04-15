@@ -3,7 +3,7 @@ import { TagModel } from "../../Tag/model.js";
 import { ResolverDeps } from "../../types.js";
 import { register } from "./register.js";
 
-export const registerCategoryTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const registerCategoryTag = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async (_: unknown, { input }, { currentUser: user }, info) => {
     const result = await register(prisma, {
       userId: user.id,

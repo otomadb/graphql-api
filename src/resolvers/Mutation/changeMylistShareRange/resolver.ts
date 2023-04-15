@@ -11,7 +11,7 @@ import { MylistModel } from "../../Mylist/model.js";
 import { ResolverDeps } from "../../types.js";
 import { update } from "./prisma.js";
 
-export const resolverChangeMylistShareRange = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolverChangeMylistShareRange = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async (_parent, { input: { mylistId: mylistGqlId, range } }, { currentUser }, info) => {
     const mylistId = parseGqlID2("Mylist", mylistGqlId);
     if (isErr(mylistId)) {

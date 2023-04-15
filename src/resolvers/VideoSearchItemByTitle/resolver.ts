@@ -4,7 +4,7 @@ import { ResolverDeps } from "../types.js";
 import { VideoModel } from "../Video/model.js";
 import { VideoTitleModel } from "../VideoTitle/model.js";
 
-export const resolverVideoSearchItemByTitle = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolverVideoSearchItemByTitle = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   ({
     video: ({ videoId }, _args, { currentUser: ctxUser }, info) =>
       prisma.video

@@ -20,7 +20,7 @@ export const updateRegisterationInNeo4j = async (
   });
 
 export const likeVideoInNeo4j = async (
-  { prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">,
+  { prisma, neo4j }: Pick<ResolverDeps, "neo4j" | "prisma">,
   registerationId: string
 ): Promise<Result<unknown, true>> => {
   const session = neo4j.session();

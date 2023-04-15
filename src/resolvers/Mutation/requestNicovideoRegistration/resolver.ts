@@ -11,7 +11,7 @@ import { NicovideoVideoSourceModel } from "../../NicovideoVideoSource/model.js";
 import { ResolverDeps } from "../../types.js";
 import { requestRegistration } from "./request.js";
 
-export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async (
     _,
     { input: { title, thumbnailUrl, sourceId, taggings: gqlTaggings, semitaggings } },

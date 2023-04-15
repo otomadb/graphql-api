@@ -8,7 +8,7 @@ import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
 import { ResolverDeps } from "../../types.js";
 import { VideoConnectionModel } from "../../VideoConnection/model.js";
 
-export const findVideos = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const findVideos = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   ((_parent, { orderBy, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([

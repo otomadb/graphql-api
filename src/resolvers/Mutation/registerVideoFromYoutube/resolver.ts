@@ -12,7 +12,7 @@ export const resolverRegisterVideoFromYoutube = ({
   prisma,
   logger,
   neo4j,
-}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+}: Pick<ResolverDeps, "logger" | "neo4j" | "prisma">) =>
   (async (_parent, { input }, { currentUser: user }) => {
     // TagのIDの妥当性及び重複チェック
     const tagIds = parseGqlIDs3("Tag", input.tagIds);

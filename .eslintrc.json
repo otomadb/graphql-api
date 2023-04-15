@@ -35,7 +35,9 @@
       "extends": ["plugin:@typescript-eslint/recommended"],
       "plugins": ["@typescript-eslint"],
       "parser": "@typescript-eslint/parser",
-      "rules": {}
+      "rules": {
+        "@typescript-eslint/sort-type-constituents": [2]
+      }
     },
     {
       "files": ["*.test.ts", "*.test.tsx", "test/**/*.ts"],

@@ -12,7 +12,7 @@ export const resolverRegisterTag = ({
   neo4j,
   logger,
   meilisearch,
-}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "meilisearch">) =>
+}: Pick<ResolverDeps, "logger" | "meilisearch" | "neo4j" | "prisma">) =>
   (async (_: unknown, { input }, { currentUser: user }, info) => {
     const explicitParentId = input.explicitParent ? parseGqlID3("Tag", input.explicitParent) : ok(null);
     if (isErr(explicitParentId))

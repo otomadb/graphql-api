@@ -3,7 +3,7 @@ import { ResolverDeps } from "../../types.js";
 import { updateWholeVideoTags } from "../resolveSemitag/neo4j.js";
 
 export const registerVideoInNeo4j = async (
-  { prisma, neo4j }: Pick<ResolverDeps, "prisma" | "logger" | "neo4j">,
+  { prisma, neo4j }: Pick<ResolverDeps, "logger" | "neo4j" | "prisma">,
   videoId: string
 ): Promise<Result<unknown, true>> => {
   const session = neo4j.session();

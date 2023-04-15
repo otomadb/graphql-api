@@ -14,7 +14,7 @@ import { resolveVideoLike } from "./like/resolver.js";
 import { resolveSimilarVideos as resolverVideoSimilarVideos } from "./similarVideos/resolver.js";
 import { resolveTaggings } from "./taggings/resolver.js";
 
-export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "logger" | "neo4j" | "prisma">) =>
   ({
     id: ({ id }): string => buildGqlId("Video", id),
 

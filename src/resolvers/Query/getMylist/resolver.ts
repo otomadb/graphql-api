@@ -6,7 +6,7 @@ import { parseGqlID } from "../../id.js";
 import { MylistModel } from "../../Mylist/model.js";
 import { ResolverDeps } from "../../types.js";
 
-export const getMylist = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const getMylist = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async (_parent, { id }, { currentUser: ctxUser }, info) => {
     const mylist = await prisma.mylist.findFirst({ where: { id: parseGqlID("Mylist", id) } });
 

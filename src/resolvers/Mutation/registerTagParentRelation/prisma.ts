@@ -19,10 +19,10 @@ export const register = async (
   }
 ): Promise<
   Result<
-    | { type: "PARENT_TAG_NOT_FOUND"; tagId: string }
-    | { type: "CHILD_TAG_NOT_FOUND"; tagId: string }
     | { type: "ALREADY_REGISTERED"; relation: TagParent }
+    | { type: "CHILD_TAG_NOT_FOUND"; tagId: string }
     | { type: "EXPLICIT_RELATION"; relation: TagParent }
+    | { type: "PARENT_TAG_NOT_FOUND"; tagId: string }
     | { type: "UNKNOWN"; error: unknown },
     TagParent
   >

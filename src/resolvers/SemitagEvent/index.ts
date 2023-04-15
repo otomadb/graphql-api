@@ -32,7 +32,7 @@ export const resolveSemitagEventAttachEvent = ({
   prisma,
   userRepository,
   logger,
-}: Pick<ResolverDeps, "prisma" | "userRepository" | "logger">) =>
+}: Pick<ResolverDeps, "logger" | "prisma" | "userRepository">) =>
   ({
     ...resolveSemitagEventCommonProps({ userRepository }),
     semitag: ({ semitagId }) =>
@@ -48,7 +48,7 @@ export const resolveSemitagEventResolveEvent = ({
   prisma,
   userRepository,
   logger,
-}: Pick<ResolverDeps, "prisma" | "logger" | "userRepository">) =>
+}: Pick<ResolverDeps, "logger" | "prisma" | "userRepository">) =>
   ({
     ...resolveSemitagEventCommonProps({ userRepository }),
     resolving: async ({ semitagId }, _args, _context, info) => {
@@ -70,7 +70,7 @@ export const resolveSemitagEventRejectEvent = ({
   prisma,
   logger,
   userRepository,
-}: Pick<ResolverDeps, "prisma" | "logger" | "userRepository">) =>
+}: Pick<ResolverDeps, "logger" | "prisma" | "userRepository">) =>
   ({
     ...resolveSemitagEventCommonProps({ userRepository }),
     rejecting: async ({ semitagId }, _args, _context, info) => {

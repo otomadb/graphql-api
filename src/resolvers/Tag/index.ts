@@ -11,7 +11,7 @@ import { resolverParents } from "./parents/resolver.js";
 import { resolveTaggedVideos } from "./taggedVideos/resolver.js";
 import { resolveTagType } from "./type/resolver.js";
 
-export const resolveTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolveTag = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   ({
     id: ({ id }): string => buildGqlId("Tag", id),
     type: resolveTagType({ prisma }),

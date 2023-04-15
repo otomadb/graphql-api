@@ -5,7 +5,7 @@ import { VideoResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../types.js";
 import { findLike } from "../like/findLike.js";
 
-export const resolveVideoIsLiked = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolveVideoIsLiked = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async ({ id: videoId }, _args, { currentUser }, info) => {
     const like = await findLike(prisma, { videoId, holderId: currentUser.id });
     if (isErr(like)) {

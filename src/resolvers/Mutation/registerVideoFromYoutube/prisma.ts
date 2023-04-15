@@ -31,7 +31,7 @@ export const register = async (
     semitagNames: string[];
     sourceIds: string[];
   }
-): Promise<Result<{ type: "NO_TAG"; tagId: string } | { type: "INTERNAL_SERVER_ERROR"; error: unknown }, Video>> => {
+): Promise<Result<{ type: "INTERNAL_SERVER_ERROR"; error: unknown } | { type: "NO_TAG"; tagId: string }, Video>> => {
   const videoId = ulid();
   const dataTitles = [
     { id: ulid(), title: primaryTitle, isPrimary: true },

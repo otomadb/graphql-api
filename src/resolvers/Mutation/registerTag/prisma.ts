@@ -32,9 +32,9 @@ export const register = async (
   }
 ): Promise<
   Result<
-    | { type: "TAG_NOT_FOUND"; id: string }
-    | { type: "SEMITAG_NOT_FOUND"; id: string }
     | { type: "SEMITAG_ALREADY_CHECKED"; id: string }
+    | { type: "SEMITAG_NOT_FOUND"; id: string }
+    | { type: "TAG_NOT_FOUND"; id: string }
     | { type: "UNKNOWN"; error: unknown },
     Tag
   >

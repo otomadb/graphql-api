@@ -25,7 +25,7 @@ export const updateWholeVideoTags = async (
     );
 
 export const resolve = async (
-  { prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">,
+  { prisma, neo4j }: Pick<ResolverDeps, "neo4j" | "prisma">,
   videotagId: string
 ): Promise<Result<unknown, true>> => {
   const session = neo4j.session();

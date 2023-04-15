@@ -15,7 +15,7 @@ import { ResolverDeps } from "../../types.js";
 import { add } from "./add.js";
 import { addVideoToMylistInNeo4j } from "./neo4j.js";
 
-export const addVideoToMylist = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+export const addVideoToMylist = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "logger" | "neo4j" | "prisma">) =>
   (async (_parent, { input: { mylistId: mylistGqlId, note, videoId: videoGqlId } }, { currentUser: ctxUser }, info) => {
     const mylistId = parseGqlID3("Mylist", mylistGqlId);
     if (isErr(mylistId))

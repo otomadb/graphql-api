@@ -113,7 +113,7 @@ const yoga = createYoga<ServerContext, UserContext>({
         const token = req.headers.authorization?.split(" ").at(1);
         if (token) {
           logger.trace({ token });
-          const result = await new Promise<{ error: jwt.VerifyErrors } | { decoded: jwt.Jwt }>((resolve, reject) =>
+          const result = await new Promise<{ decoded: jwt.Jwt } | { error: jwt.VerifyErrors }>((resolve, reject) =>
             jwt.verify(token, getPublicKey, { complete: true }, (error, decoded) => {
               if (error) return resolve({ error });
               if (decoded) resolve({ decoded });

@@ -14,7 +14,7 @@ export const remove = async (
   { videoId, mylistId, userId }: { userId: string; videoId: string; mylistId: string }
 ): Promise<
   Result<
-    "VIDEO_NOT_FOUND" | "MYLIST_NOT_FOUND" | "NOT_MYLIST_HOLDER" | "NOT_REGISTERED" | "ALREADY_UNREGISTERED",
+    "ALREADY_UNREGISTERED" | "MYLIST_NOT_FOUND" | "NOT_MYLIST_HOLDER" | "NOT_REGISTERED" | "VIDEO_NOT_FOUND",
     MylistRegistration & { mylist: Mylist; video: Video }
   >
 > => {
@@ -39,7 +39,7 @@ export const remove = async (
   return ok(registration);
 };
 
-export const removeVideoFromMylist = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+export const removeVideoFromMylist = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "logger" | "neo4j" | "prisma">) =>
   (async (_, { input: { mylistId: mylistGqlId, videoId: videoGqlId } }, { currentUser: user }, info) => {
     const videoId = parseGqlID2("Video", videoGqlId);
     if (isErr(videoId))

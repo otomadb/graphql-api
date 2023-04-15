@@ -4,7 +4,7 @@ import { TagParentModel } from "../../TagParent/model.js";
 import { ResolverDeps } from "../../types.js";
 import { implicitize } from "./prisma.js";
 
-export const resolverImplicitizeTagParent = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolverImplicitizeTagParent = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async (_parent, { input: { relationId: relationGqlId } }, { currentUser: ctxUser }, info) => {
     const relationId = parseGqlID3("TagParent", relationGqlId);
     if (relationId.status === "error") {

@@ -10,8 +10,8 @@ export const reject = async (
 ): Promise<
   Result<
     | { type: "INTERNAL_SERVER_ERROR"; error: unknown }
-    | { type: "SEMITAG_NOT_FOUND" }
-    | { type: "SEMITAG_ALREADY_CHECKED"; semitag: Semitag },
+    | { type: "SEMITAG_ALREADY_CHECKED"; semitag: Semitag }
+    | { type: "SEMITAG_NOT_FOUND" },
     { note: null; semitagId: string }
   >
 > => {

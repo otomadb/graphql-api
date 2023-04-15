@@ -9,7 +9,7 @@ import { MylistConnectionModel } from "../../MylistConnection/model.js";
 import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
 import { ResolverDeps } from "../../types.js";
 
-export const resolverUserMylists = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolverUserMylists = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async ({ id: userId }, { orderBy, range, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([

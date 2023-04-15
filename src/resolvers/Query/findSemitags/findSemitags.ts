@@ -10,7 +10,7 @@ import { parseOrderBy } from "../../parseSortOrder.js";
 import { SemitagConnectionModel } from "../../SemitagConnection/model.js";
 import { ResolverDeps } from "../../types.js";
 
-export const findSemitags = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const findSemitags = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async (_parent, args, { currentUser: ctxUser }, info) => {
     const { orderBy: unparsedOrderBy, checked, ...unparsedConnectionArgs } = args;
     const connectionArgs = z

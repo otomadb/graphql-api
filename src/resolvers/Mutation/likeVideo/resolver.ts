@@ -8,7 +8,7 @@ import { ResolverDeps } from "../../types.js";
 import { likeVideoInNeo4j } from "./neo4j.js";
 import { like } from "./prisma.js";
 
-export const resolverLikeVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+export const resolverLikeVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "logger" | "neo4j" | "prisma">) =>
   (async (_parent, { input: { videoId: videoGqlId } }, { currentUser: user }, info) => {
     const videoId = parseGqlID3("Video", videoGqlId);
     if (isErr(videoId)) {

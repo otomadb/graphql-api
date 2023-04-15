@@ -10,9 +10,9 @@ export const resolve = async (
 ): Promise<
   Result<
     | { type: "INTERNAL_SERVER_ERROR"; error: unknown }
+    | { type: "SEMITAG_ALREADY_CHECKED"; semitag: Semitag }
     | { type: "SEMITAG_NOT_FOUND"; semitagId: string }
     | { type: "TAG_NOT_FOUND"; tagId: string }
-    | { type: "SEMITAG_ALREADY_CHECKED"; semitag: Semitag }
     | { type: "VIDEO_ALREADY_TAGGED"; tagging: VideoTag },
     { videoTagId: string; note: null; semitagId: string }
   >

@@ -35,7 +35,7 @@ const convertTagType = (g: GqlTagType): Result<GqlTagType, CategoryTagType> => {
   }
 };
 
-export const resolverRegisterCategoryTagTyping = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolverRegisterCategoryTagTyping = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async (_: unknown, { input }, { currentUser: user }, info) => {
     const tagId = parseGqlID3("Tag", input.tagId);
     if (isErr(tagId))

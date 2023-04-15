@@ -16,11 +16,11 @@ export const register = async (
   }
 ): Promise<
   Result<
-    | { type: "UNKNOWN"; error: unknown }
-    | { type: "TYPE_ALREADY"; tag: Tag }
-    | { type: "TAG_NOT_FOUND"; id: string }
     | { type: "TAG_NOT_CATEGORY_TAG"; tag: Tag }
-    | { type: "TAG_TYPE_ALREADY"; tag: Tag },
+    | { type: "TAG_NOT_FOUND"; id: string }
+    | { type: "TAG_TYPE_ALREADY"; tag: Tag }
+    | { type: "TYPE_ALREADY"; tag: Tag }
+    | { type: "UNKNOWN"; error: unknown },
     Tag
   >
 > => {

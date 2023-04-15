@@ -4,7 +4,7 @@ import { TagModel } from "../Tag/model.js";
 import { TagNameModel } from "../TagName/model.js";
 import { ResolverDeps } from "../types.js";
 
-export const resolverSemitagSuggestTagsItem = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolverSemitagSuggestTagsItem = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   ({
     tag: ({ tagId }, _args, { currentUser: ctxUser }, info) =>
       prisma.tag

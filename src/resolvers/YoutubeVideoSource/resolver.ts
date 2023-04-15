@@ -4,7 +4,7 @@ import { ResolverDeps } from "../types.js";
 import { VideoModel } from "../Video/model.js";
 import { resolveYoutubeVideoSourceEvents } from "./events/resolver.js";
 
-export const resolveYoutubeVideoSource = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolveYoutubeVideoSource = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   ({
     id: ({ id }) => buildGqlId("YoutubeVideoSource", id),
     url: ({ sourceId }) => `https://www.youtube.com/watch?v=${sourceId}`,

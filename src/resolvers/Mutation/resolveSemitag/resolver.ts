@@ -8,7 +8,7 @@ import { VideoTagModel } from "../../VideoTag/model.js";
 import { resolve as resolveSemitagInNeo4j } from "./neo4j.js";
 import { resolve } from "./prisma.js";
 
-export const resolverResolveSemitag = ({ prisma, logger, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+export const resolverResolveSemitag = ({ prisma, logger, neo4j }: Pick<ResolverDeps, "logger" | "neo4j" | "prisma">) =>
   (async (_, { semitagId: semitagGqlId, tagId: tagGqlId }, { currentUser: user }, info) => {
     const semitagId = parseGqlID3("Semitag", semitagGqlId);
     if (isErr(semitagId))

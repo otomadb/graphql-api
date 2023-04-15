@@ -20,9 +20,9 @@ export const getRequestCheck = async (
   { requestId, videoId, userId }: { requestId: string | null; userId: string; videoId: string }
 ): Promise<
   Result<
-    | { type: "REQUEST_NOT_FOUND"; requestId: string }
+    | { type: "INTERNAL_SERVER_ERROR"; error: unknown }
     | { type: "REQUEST_ALREADY_CHECKED"; requestId: string }
-    | { type: "INTERNAL_SERVER_ERROR"; error: unknown },
+    | { type: "REQUEST_NOT_FOUND"; requestId: string },
     (
       | Prisma.Prisma__NicovideoRegistrationRequestClient<NicovideoRegistrationRequest, never>
       | Prisma.Prisma__NotificationClient<Notification, never>
@@ -89,10 +89,10 @@ export const register = async (
   }
 ): Promise<
   Result<
+    | { type: "INTERNAL_SERVER_ERROR"; error: unknown }
     | { type: "NO_TAG"; tagId: string }
-    | { type: "REQUEST_NOT_FOUND"; requestId: string }
     | { type: "REQUEST_ALREADY_CHECKED"; requestId: string }
-    | { type: "INTERNAL_SERVER_ERROR"; error: unknown },
+    | { type: "REQUEST_NOT_FOUND"; requestId: string },
     Video
   >
 > => {

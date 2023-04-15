@@ -30,7 +30,7 @@ export class UserModel {
       async findByName(name: string) {
         return UserModel.findByNameFromAuth0({ logger, redis, auth0Management, prisma }, name);
       },
-      async hasRole(id: string, role: "EDITOR" | "ADMIN") {
+      async hasRole(id: string, role: "ADMIN" | "EDITOR") {
         return UserModel.hasRole({ logger, redis, auth0Management, env }, id, role);
       },
       async changeDisplayName(userId: string, renameTo: string) {
@@ -40,7 +40,7 @@ export class UserModel {
   }
 
   private static async fromAuth0User(
-    { logger, redis, prisma }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "logger" | "redis" | "prisma">,
+    { logger, redis, prisma }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "logger" | "prisma" | "redis">,
     auth0user: User<AppMetadata, UserMetadata>
   ) {
     const parsed = z
@@ -86,7 +86,7 @@ export class UserModel {
       logger,
       redis,
       prisma,
-    }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "auth0Management" | "logger" | "redis" | "prisma">,
+    }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "auth0Management" | "logger" | "prisma" | "redis">,
     userId: string
   ) {
     const cached = await redis.get(`auth0:${userId}`);
@@ -117,7 +117,7 @@ export class UserModel {
       logger,
       redis,
       prisma,
-    }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "auth0Management" | "logger" | "redis" | "prisma">,
+    }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "auth0Management" | "logger" | "prisma" | "redis">,
     name: string
   ) {
     const auth0user = (await auth0Management.getUsers({ q: `username:"${name}"` })).at(0);
@@ -134,9 +134,9 @@ export class UserModel {
       logger,
       redis,
       env,
-    }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "auth0Management" | "logger" | "redis" | "env">,
+    }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "auth0Management" | "env" | "logger" | "redis">,
     userId: string,
-    role: "EDITOR" | "ADMIN"
+    role: "ADMIN" | "EDITOR"
   ): Promise<boolean> {
     try {
       switch (role) {
@@ -182,7 +182,7 @@ export class UserModel {
       logger,
       redis,
       prisma,
-    }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "auth0Management" | "logger" | "redis" | "prisma">,
+    }: Pick<Parameters<(typeof UserModel)["makeRepository"]>[0], "auth0Management" | "logger" | "prisma" | "redis">,
     userId: string,
     renameTo: string
   ): Promise<UserModel> {

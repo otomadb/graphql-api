@@ -23,9 +23,9 @@ export const requestRegistration = async (
   }
 ): Promise<
   Result<
+    | { message: "INTERNAL_SERVER_ERROR"; error: unknown }
     | { message: "TAG_NOT_FOUND"; tagId: string }
-    | { message: "VIDEO_ALREADY_REGISTERED"; source: NicovideoVideoSource }
-    | { message: "INTERNAL_SERVER_ERROR"; error: unknown },
+    | { message: "VIDEO_ALREADY_REGISTERED"; source: NicovideoVideoSource },
     NicovideoRegistrationRequest
   >
 > => {

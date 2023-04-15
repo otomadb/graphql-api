@@ -3,7 +3,7 @@ import { GraphQLNotExistsInDBError, parseGqlID } from "../../id.js";
 import { ResolverDeps } from "../../types.js";
 import { YoutubeVideoSourceModel } from "../../YoutubeVideoSource/model.js";
 
-export const getYoutubeVideoSource = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const getYoutubeVideoSource = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async (_parent, { id }, { currentUser: ctxUser }, info) =>
     prisma.youtubeVideoSource
       .findUniqueOrThrow({ where: { id: parseGqlID("YoutubeVideoSource", id) } })

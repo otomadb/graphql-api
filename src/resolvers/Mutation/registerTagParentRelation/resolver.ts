@@ -5,7 +5,7 @@ import { TagParentModel } from "../../TagParent/model.js";
 import { ResolverDeps } from "../../types.js";
 import { register } from "./prisma.js";
 
-export const resolverRegisterTagParentRelation = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolverRegisterTagParentRelation = ({ prisma, logger }: Pick<ResolverDeps, "logger" | "prisma">) =>
   (async (_: unknown, { input }, { currentUser: user }, info) => {
     const parentId = parseGqlID3("Tag", input.parentId);
     if (isErr(parentId))

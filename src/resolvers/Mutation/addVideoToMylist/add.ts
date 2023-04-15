@@ -9,11 +9,11 @@ export const add = async (
   { userId, mylistId, videoId, note }: { userId: string; mylistId: string; videoId: string; note: string | null }
 ): Promise<
   Result<
+    | { message: "ALREADY_REGISTERED"; registration: MylistRegistration }
+    | { message: "INTERNAL_SERVER_ERROR"; error: unknown }
     | { message: "MYLIST_NOT_FOUND"; mylistId: string }
     | { message: "MYLIST_WRONG_HOLDER"; mylistId: string }
-    | { message: "VIDEO_NOT_FOUND"; videoId: string }
-    | { message: "ALREADY_REGISTERED"; registration: MylistRegistration }
-    | { message: "INTERNAL_SERVER_ERROR"; error: unknown },
+    | { message: "VIDEO_NOT_FOUND"; videoId: string },
     MylistRegistration
   >
 > => {

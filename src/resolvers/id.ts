@@ -70,7 +70,7 @@ export function parseGqlID3(type: NodeType, gqlId: string): Result<{ type: "INVA
 export function parseGqlIDs3(
   type: NodeType,
   gqlIds: string[]
-): Result<{ type: "INVALID_ID"; invalidId: string } | { type: "DUPLICATED"; duplicatedId: string }, string[]> {
+): Result<{ type: "DUPLICATED"; duplicatedId: string } | { type: "INVALID_ID"; invalidId: string }, string[]> {
   const ids: string[] = [];
   for (const gqlId of gqlIds) {
     const id = parseGqlID3(type, gqlId);
