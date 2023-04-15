@@ -1,7 +1,7 @@
 import { checkDuplicate } from "../../../utils/checkDuplicate.js";
 import { isValidNicovideoSourceId } from "../../../utils/isValidNicovideoSourceId.js";
 import { isErr } from "../../../utils/Result.js";
-import { MutationResolvers, RegisterVideoFromNicovideoFailedMessage, ResolversTypes } from "../../graphql.js";
+import { MutationResolvers, ResolversTypes } from "../../graphql.js";
 import { parseGqlID3, parseGqlIDs3 } from "../../id.js";
 import { ResolverDeps } from "../../types.js";
 import { VideoModel } from "../../Video/model.js";
@@ -13,7 +13,7 @@ export const resolverRegisterVideoFromNicovideo = ({
   logger,
   neo4j,
 }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
-  (async (_parent, { input }, { currentUser: user }) => {
+  (async (_parent, { input }, { currentUser: user }, info) => {
     // TagのIDの妥当性及び重複チェック
     const tagIds = parseGqlIDs3("Tag", input.tagIds);
     if (isErr(tagIds)) {
@@ -95,10 +95,8 @@ export const resolverRegisterVideoFromNicovideo = ({
             requestId: result.error.requestId,
           } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
         case "INTERNAL_SERVER_ERROR":
-          return {
-            __typename: "RegisterVideoFromNicovideoOtherErrorsFallback",
-            message: RegisterVideoFromNicovideoFailedMessage.InternalServerError,
-          } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
+          logger.error({ error: result.error.error, path: info.path }, "Something error happens");
+          throw new Error("Internal server error");
       }
     }
 
