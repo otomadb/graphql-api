@@ -50,7 +50,7 @@ export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<Re
           } satisfies ResolversTypes["RequestNicovideoRegistrationReturnUnion"];
         case "INTERNAL_SERVER_ERROR":
           logger.error({ error: result.error.error, path: info.path }, "Something error happens");
-          throw new GraphQLError("Something wrong happend");
+          throw new GraphQLError("Internal server error");
       }
     }
 
