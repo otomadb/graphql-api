@@ -36,7 +36,7 @@ export const resolverRejectRequestNicovideoRegistration = ({
           } satisfies ResolversTypes["RejectNicovideoRegistrationRequestReturnUnion"];
         case "INTERNAL_SERVER_ERROR":
           logger.error({ error: result.error.error, path: info.path }, "Something error happens");
-          throw new GraphQLError("Something wrong");
+          throw new GraphQLError("Internal server error");
       }
     }
 
