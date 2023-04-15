@@ -27,7 +27,6 @@ union RegisterVideoFromNicovideoPayload =
   | MutationNicovideoRegistrationRequestAlreadyCheckedError
   | RegisterVideoFromNicovideoInvalidNicovideoSourceIdError
   | RegisterVideoFromNicovideoSemitagTooLongError
-  | RegisterVideoFromNicovideoOtherErrorsFallback
   | RegisterVideoFromNicovideoSucceededPayload
 
 "タグのIDが重複している"
@@ -48,15 +47,6 @@ type RegisterVideoFromNicovideoSemitagTooLongError {
 "ニコニコ動画のソースIDとして不正な場合のエラー"
 type RegisterVideoFromNicovideoInvalidNicovideoSourceIdError {
   sourceID: String!
-}
-
-"その他のエラー"
-type RegisterVideoFromNicovideoOtherErrorsFallback {
-  message: RegisterVideoFromNicovideoFailedMessage!
-}
-
-enum RegisterVideoFromNicovideoFailedMessage {
-  INTERNAL_SERVER_ERROR
 }
 
 "成功した場合"
