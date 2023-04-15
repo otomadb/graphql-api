@@ -1,10 +1,7 @@
+import { GraphQLError } from "graphql";
+
 import { isErr } from "../../../utils/Result.js";
-import {
-  MutationNicovideoRegistrationRequestNotFoundError,
-  MutationResolvers,
-  RejectNicovideoRegistrationRequestOtherErrorMessage,
-  RejectNicovideoRegistrationRequestOtherErrorsFallback,
-} from "../../graphql.js";
+import { MutationResolvers, ResolversTypes } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { NicovideoRegistrationRequestModel } from "../../NicovideoRegistrationRequest/model.js";
 import { NicovideoRegistrationRequestRejectingModel } from "../../NicovideoRegistrationRequestRejecting/model.js";
@@ -21,7 +18,7 @@ export const resolverRejectRequestNicovideoRegistration = ({
       return {
         __typename: "MutationNicovideoRegistrationRequestNotFoundError",
         requestId: requestGqlId,
-      } satisfies MutationNicovideoRegistrationRequestNotFoundError;
+      } satisfies ResolversTypes["RejectNicovideoRegistrationRequestReturnUnion"];
     }
 
     const result = await reject(prisma, { userId: user.id, requestId: requestId.data, note });
@@ -31,18 +28,15 @@ export const resolverRejectRequestNicovideoRegistration = ({
           return {
             __typename: "MutationNicovideoRegistrationRequestNotFoundError",
             requestId: result.error.requestId,
-          } satisfies MutationNicovideoRegistrationRequestNotFoundError;
+          } satisfies ResolversTypes["RejectNicovideoRegistrationRequestReturnUnion"];
         case "REQUEST_ALREADY_CHECKED":
           return {
             __typename: "RejectNicovideoRegistrationRequestRequestAlreadyCheckedError",
             request: new NicovideoRegistrationRequestModel(result.error.request),
-          };
+          } satisfies ResolversTypes["RejectNicovideoRegistrationRequestReturnUnion"];
         case "INTERNAL_SERVER_ERROR":
           logger.error({ error: result.error.error, path: info.path }, "Something error happens");
-          return {
-            __typename: "RejectNicovideoRegistrationRequestOtherErrorsFallback",
-            message: RejectNicovideoRegistrationRequestOtherErrorMessage.InternalServerError,
-          } satisfies RejectNicovideoRegistrationRequestOtherErrorsFallback;
+          throw new GraphQLError("Something wrong");
       }
     }
 
@@ -50,5 +44,5 @@ export const resolverRejectRequestNicovideoRegistration = ({
     return {
       __typename: "RejectNicovideoRegistrationRequestSucceededPayload",
       rejecting: NicovideoRegistrationRequestRejectingModel.fromPrisma(checking),
-    };
+    } satisfies ResolversTypes["RejectNicovideoRegistrationRequestReturnUnion"];
   }) satisfies MutationResolvers["rejectNicovideoRegistrationRequest"];
