@@ -26,6 +26,7 @@ import { removeVideoFromMylist } from "./removeVideoFromMylist/removeVideoFromMy
 import { resolverRequestNicovideoRegistration as requestNicovideoRegistration } from "./requestNicovideoRegistration/resolver.js";
 import { resolverResolveSemitag } from "./resolveSemitag/resolver.js";
 import { resolverUndoLikeVideo } from "./undoLikeVideo/resolver.js";
+import { resolverWatchNotifications } from "./watchNotifications/resolver.js";
 
 export const resolveMutation = (deps: ResolverDeps) =>
   ({
@@ -53,4 +54,5 @@ export const resolveMutation = (deps: ResolverDeps) =>
     requestNicovideoRegistration: requestNicovideoRegistration(deps),
     resovleSemitag: resolverResolveSemitag(deps),
     undoLikeVideo: resolverUndoLikeVideo(deps),
+    watchNotifications: resolverWatchNotifications(deps),
   } satisfies Resolvers["Mutation"]);
