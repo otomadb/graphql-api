@@ -1,0 +1,14 @@
+type Mutation {
+  "通知を見たことにする"
+  watchNotifications(input: WatchNotificationsInput!): WatchNotificationsReturnUnion! @auth
+}
+
+input WatchNotificationsInput {
+  notificationIds: [ID!]!
+}
+
+union WatchNotificationsReturnUnion = WatchNotificationsSucceededPayload
+
+type WatchNotificationsSucceededPayload {
+  notifications: [Notification!]!
+}

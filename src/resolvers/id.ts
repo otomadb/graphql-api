@@ -81,6 +81,22 @@ export function parseGqlIDs3(
   return ok(ids);
 }
 
+/**
+ * 重複チェックは無視する
+ */
+export function parseGqlIDs3SkipDupl(
+  type: NodeType,
+  gqlIds: string[]
+): Result<{ type: "INVALID_ID"; invalidId: string }, string[]> {
+  const ids: string[] = [];
+  for (const gqlId of gqlIds) {
+    const id = parseGqlID3(type, gqlId);
+    if (isErr(id)) return id;
+    ids.push(id.data);
+  }
+  return ok(ids);
+}
+
 export function parseGqlIDs2(
   type: NodeType,
   gqlIds: string[]
