@@ -1,5 +1,4 @@
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection";
-import { Prisma } from "@prisma/client";
 import { GraphQLError } from "graphql";
 import z from "zod";
 
@@ -31,9 +30,9 @@ export const findSemitags = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "
       throw new GraphQLError("Pagination args error");
     }
 
-    const orderBy = parseOrderBy(unparsedOrderBy, ["name", Prisma.SortOrder.desc]);
+    const orderBy = parseOrderBy(unparsedOrderBy);
     if (isErr(orderBy)) {
-      logger.error({ path: info.path, args: unparsedOrderBy, userId: ctxUser?.id }, "OrderBy args error");
+      logger.error({ path: info.path, args: unparsedOrderBy }, "OrderBy args error");
       throw new GraphQLError("Wrong args");
     }
 

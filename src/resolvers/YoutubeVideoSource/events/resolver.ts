@@ -1,5 +1,4 @@
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection";
-import { Prisma } from "@prisma/client";
 import { GraphQLError } from "graphql";
 import z from "zod";
 
@@ -25,13 +24,13 @@ export const resolveYoutubeVideoSourceEvents = ({ prisma, logger }: Pick<Resolve
       ])
       .safeParse(unparsedConnectionArgs);
     if (!connectionArgs.success) {
-      logger.error({ path: info.path, args: unparsedConnectionArgs, userId: ctxUser?.id }, "Wrong args");
+      logger.error({ path: info.path, args: unparsedConnectionArgs }, "Wrong args");
       throw new GraphQLError("Wrong args");
     }
 
-    const orderBy = parseOrderBy(unparsedOrderBy, ["createdAt", Prisma.SortOrder.desc]);
+    const orderBy = parseOrderBy(unparsedOrderBy);
     if (isErr(orderBy)) {
-      logger.error({ path: info.path, args: unparsedOrderBy, userId: ctxUser?.id }, "OrderBy args error");
+      logger.error({ path: info.path, args: unparsedOrderBy }, "OrderBy args error");
       throw new GraphQLError("Wrong args");
     }
 
