@@ -2,14 +2,18 @@ import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection
 import { GraphQLError } from "graphql";
 import z from "zod";
 
+import { isErr } from "../../../utils/Result.js";
 import { cursorOptions } from "../../connection.js";
 import { QueryResolvers } from "../../graphql.js";
 import { NicovideoRegistrationRequestConnectionModel } from "../../NicovideoRegistrationRequestConnection/model.js";
-import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
+import { parseOrderBy2 } from "../../parseSortOrder.js";
 import { ResolverDeps } from "../../types.js";
 
-export const findNicovideoRegistrationRequests = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_, { orderBy, checked, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
+export const resolverFindUncheckedNicovideoRegistrationRequests = ({
+  prisma,
+  logger,
+}: Pick<ResolverDeps, "prisma" | "logger">) =>
+  (async (_, { input: { orderBy: unparsedOrderBy, ...unparsedConnectionArgs } }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([
         z.object({
@@ -30,15 +34,24 @@ export const findNicovideoRegistrationRequests = ({ prisma, logger }: Pick<Resol
       throw new GraphQLError("Wrong args");
     }
 
+    const orderBy = parseOrderBy2(unparsedOrderBy);
+    if (isErr(orderBy)) {
+      logger.error({ path: info.path, args: unparsedOrderBy, userId: ctxUser?.id }, "OrderBy args error");
+      throw new GraphQLError("Wrong args");
+    }
+
     return findManyCursorConnection(
       (args) =>
         prisma.nicovideoRegistrationRequest.findMany({
-          where: { isChecked: checked?.valueOf() },
-          orderBy: { createdAt: parseOrderBy(orderBy.createdAt) },
+          where: { isChecked: false },
+          orderBy: orderBy.data,
           ...args,
         }),
-      () => prisma.nicovideoRegistrationRequest.count({ where: { isChecked: checked?.valueOf() } }),
+      () =>
+        prisma.nicovideoRegistrationRequest.count({
+          where: { isChecked: false },
+        }),
       connectionArgs.data,
       { resolveInfo: info, ...cursorOptions }
     ).then((c) => NicovideoRegistrationRequestConnectionModel.fromPrisma(c));
-  }) satisfies QueryResolvers["findNicovideoRegistrationRequests"];
+  }) satisfies QueryResolvers["findUncheckedNicovideoRegistrationRequests"];

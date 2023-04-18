@@ -11,6 +11,7 @@ import { findNicovideoVideoSource } from "./findNicovideoVideoSource/findNicovid
 import { findSemitags } from "./findSemitags/findSemitags.js";
 import { findTag } from "./findTag/findTag.js";
 import { findTags } from "./findTags/findTags.js";
+import { resolverFindUncheckedNicovideoRegistrationRequests } from "./findUncheckedNicovideoRegistrationRequests/resolver.js";
 import { findUser } from "./findUser/findUser.js";
 import { findVideo } from "./findVideo/findVideos.js";
 import { findVideos } from "./findVideos/findVideos.js";
@@ -41,6 +42,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
     findSemitags: findSemitags(deps),
     findTag: findTag(deps),
     findTags: findTags(deps),
+    findUncheckedNicovideoRegistrationRequests: resolverFindUncheckedNicovideoRegistrationRequests(deps),
     findUser: findUser(deps),
     findVideo: findVideo(deps),
     findVideos: findVideos(deps),

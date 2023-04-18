@@ -1,0 +1,19 @@
+type Query {
+  findUncheckedNicovideoRegistrationRequests(
+    input: FindUncheckedNicovideoRegistrationRequestsInput!
+  ): NicovideoRegistrationRequestConnection!
+}
+
+input FindUncheckedNicovideoRegistrationRequestsInput {
+  first: Int
+  after: String
+
+  last: Int
+  before: String
+
+  orderBy: FindUncheckedNicovideoRegistrationRequestsOrderBy! = { createdAt: DESC }
+}
+
+input FindUncheckedNicovideoRegistrationRequestsOrderBy {
+  createdAt: SortOrder
+}
