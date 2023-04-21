@@ -1,5 +1,5 @@
 # Builder
-FROM node:19-slim AS builder
+FROM node:20-slim AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json .npmrc ./
@@ -16,7 +16,7 @@ COPY ./tsconfig.json rollup.config.js ./
 RUN npm run rollup:build
 
 # Runner
-FROM node:19-slim AS runner
+FROM node:20-slim AS runner
 WORKDIR /app
 
 ## install tini
