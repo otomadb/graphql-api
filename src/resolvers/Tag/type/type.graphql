@@ -25,4 +25,7 @@ enum TagType {
   SUBTLE
   "タイプを算出できなかった場合"
   UNKNOWN
+
+  "カテゴリー"
+  CATEGORY
 }

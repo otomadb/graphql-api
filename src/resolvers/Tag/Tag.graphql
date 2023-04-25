@@ -8,7 +8,7 @@ type Tag implements Node {
   explicitParent: Tag
 
   meaningless: Boolean! @deprecated
-  isCategoryTag: Boolean!
+  isCategoryTag: Boolean! @deprecated
 
   """
   動画に対してタグを付けることができるか

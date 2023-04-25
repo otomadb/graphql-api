@@ -4,7 +4,9 @@ import { TagResolvers, TagType as GqlTagType } from "../../graphql.js";
 import { ResolverDeps } from "../../types.js";
 
 export const resolveTagType = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
-  (async ({ id: tagId }) => {
+  (async ({ id: tagId, isCategoryTag }) => {
+    if (isCategoryTag) return GqlTagType.Category;
+
     const typings = await prisma.tagParent
       .findMany({
         where: { childId: tagId, parent: { isCategoryTag: true } },
