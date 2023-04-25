@@ -8,7 +8,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
-    prisma-engines.url = "github:prisma/prisma-engines/4.12.0";
+    prisma-engines.url = "github:prisma/prisma-engines/4.13.0";
   };
 
   outputs = {
