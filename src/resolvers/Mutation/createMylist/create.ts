@@ -14,7 +14,6 @@ export const create = async (
         slug,
         shareRange: range,
         holderId: userId,
-        isLikeList: false,
       },
     });
     return ok(mylist);

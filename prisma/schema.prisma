@@ -22,8 +22,6 @@ model Mylist {
 
   shareRange MylistShareRange @default(PRIVATE)
 
-  isLikeList Boolean @default(false)
-
   holderId String
   holder   User   @relation(fields: [holderId], references: [id])
 

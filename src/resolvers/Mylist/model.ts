@@ -19,10 +19,6 @@ export class MylistModel {
     return this.mylist.title;
   }
 
-  public get isLikeList() {
-    return this.mylist.isLikeList;
-  }
-
   public get createdAt() {
     return this.mylist.createdAt;
   }
