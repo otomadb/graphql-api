@@ -30,4 +30,10 @@ type NicovideoOriginalSource {
   "動画の長さ"
   duration: Int!
   registeredAt: DateTime!
+
+  "ニコニコ動画の動画URL"
+  url: String!
+
+  "ニコニコ動画の埋め込み用URL"
+  embedUrl: String!
 }

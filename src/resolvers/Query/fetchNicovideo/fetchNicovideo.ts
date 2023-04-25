@@ -78,6 +78,9 @@ export const fetchNicovideo = () =>
 
         registeredAt: video.registeredAt,
         duration: video.duration,
+
+        url: `https://www.nicovideo.jp/watch/${video.id}`,
+        embedUrl: `https://embed.nicovideo.jp/watch/${video.id}`,
       },
     };
   }) satisfies QueryResolvers["fetchNicovideo"];
