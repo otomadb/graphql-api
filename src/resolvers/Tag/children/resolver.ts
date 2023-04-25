@@ -2,14 +2,20 @@ import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection
 import { GraphQLError } from "graphql";
 import z from "zod";
 
+import { isErr } from "../../../utils/Result.js";
 import { cursorOptions } from "../../connection.js";
 import { TagResolvers } from "../../graphql.js";
-import { parseSortOrder as parseOrderBy } from "../../parseSortOrder.js";
+import { parseOrderBy } from "../../parseSortOrder.js";
 import { TagParentConnectionModel } from "../../TagParentConnection/model.js";
 import { ResolverDeps } from "../../types.js";
 
 export const resolverChildren = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async ({ id: tagId, isCategoryTag }, { orderBy, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
+  (async (
+    { id: tagId, isCategoryTag },
+    { orderBy: unparsedOrderBy, ...unparsedConnectionArgs },
+    { currentUser: ctxUser },
+    info
+  ) => {
     const connectionArgs = z
       .union(
         isCategoryTag
@@ -25,10 +31,13 @@ export const resolverChildren = ({ prisma, logger }: Pick<ResolverDeps, "prisma"
       )
       .safeParse(unparsedConnectionArgs);
     if (!connectionArgs.success) {
-      logger.error(
-        { path: info.path, args: { orderBy, ...unparsedConnectionArgs }, userId: ctxUser?.id },
-        "Wrong args"
-      );
+      logger.error({ path: info.path, args: unparsedConnectionArgs }, "Wrong args");
+      throw new GraphQLError("Wrong args");
+    }
+
+    const orderBy = parseOrderBy(unparsedOrderBy);
+    if (isErr(orderBy)) {
+      logger.error({ path: info.path, args: unparsedOrderBy }, "OrderBy args error");
       throw new GraphQLError("Wrong args");
     }
 
@@ -37,7 +46,7 @@ export const resolverChildren = ({ prisma, logger }: Pick<ResolverDeps, "prisma"
         prisma.tagParent.findMany({
           ...args,
           where: { parentId: tagId },
-          orderBy: { createdAt: parseOrderBy(orderBy.createdAt) },
+          orderBy: orderBy.data,
         }),
       () =>
         prisma.tagParent.count({

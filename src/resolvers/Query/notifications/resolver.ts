@@ -25,13 +25,13 @@ export const resolverNotifications = ({ prisma, logger }: Pick<ResolverDeps, "pr
       ])
       .safeParse(unparsedConnectionArgs);
     if (!connectionArgs.success) {
-      logger.error({ path: info.path, args: unparsedConnectionArgs, userId: ctxUser?.id }, "Wrong args");
+      logger.error({ path: info.path, args: unparsedConnectionArgs }, "Wrong args");
       throw new GraphQLError("Wrong args");
     }
 
-    const orderBy = parseOrderBy(unparsedOrderBy, ["createdAt", "asc"]);
+    const orderBy = parseOrderBy(unparsedOrderBy);
     if (isErr(orderBy)) {
-      logger.error({ path: info.path, args: unparsedOrderBy, userId: ctxUser?.id }, "OrderBy args error");
+      logger.error({ path: info.path, args: unparsedOrderBy }, "OrderBy args error");
       throw new GraphQLError("Wrong args");
     }
     return findManyCursorConnection(

@@ -6,7 +6,7 @@ import { isErr } from "../../../utils/Result.js";
 import { cursorOptions } from "../../connection.js";
 import { QueryResolvers } from "../../graphql.js";
 import { NicovideoRegistrationRequestConnectionModel } from "../../NicovideoRegistrationRequestConnection/model.js";
-import { parseOrderBy2 } from "../../parseSortOrder.js";
+import { parseOrderBy } from "../../parseSortOrder.js";
 import { ResolverDeps } from "../../types.js";
 
 export const resolverFindUncheckedNicovideoRegistrationRequests = ({
@@ -34,9 +34,9 @@ export const resolverFindUncheckedNicovideoRegistrationRequests = ({
       throw new GraphQLError("Wrong args");
     }
 
-    const orderBy = parseOrderBy2(unparsedOrderBy);
+    const orderBy = parseOrderBy(unparsedOrderBy);
     if (isErr(orderBy)) {
-      logger.error({ path: info.path, args: unparsedOrderBy, userId: ctxUser?.id }, "OrderBy args error");
+      logger.error({ path: info.path, args: unparsedOrderBy }, "OrderBy args error");
       throw new GraphQLError("Wrong args");
     }
 
