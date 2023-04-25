@@ -1,0 +1,21 @@
+type Query {
+  findUncheckedNicovideoRegistrationRequestsByOffset(
+    input: findUncheckedNicovideoRegistrationRequestsByOffsetInput!
+  ): FindUncheckedNicovideoRegistrationRequestsByOffsetPayload!
+}
+
+input findUncheckedNicovideoRegistrationRequestsByOffsetInput {
+  take: Int! = 20
+  skip: Int! = 0
+
+  orderBy: findUncheckedNicovideoRegistrationRequestsByOffsetOrderBy! = { createdAt: DESC }
+}
+
+input findUncheckedNicovideoRegistrationRequestsByOffsetOrderBy {
+  createdAt: SortOrder
+}
+
+type FindUncheckedNicovideoRegistrationRequestsByOffsetPayload {
+  nodes: [NicovideoRegistrationRequest!]!
+  totalCount: Int!
+}
