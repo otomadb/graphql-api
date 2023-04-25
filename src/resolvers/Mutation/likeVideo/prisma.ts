@@ -25,7 +25,6 @@ export const like = async (
       slug: "likes",
       title: "likes",
       shareRange: MylistShareRange.PRIVATE,
-      isLikeList: false,
     },
     update: {},
   });

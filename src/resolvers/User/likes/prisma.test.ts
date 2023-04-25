@@ -35,7 +35,7 @@ describe("Get user likes by Prisma", () => {
             id: "m1",
             title: "Mylist 1",
             shareRange: MylistShareRange.PUBLIC,
-            isLikeList: true,
+
             holderId: "u1",
             slug: "likes",
           },
@@ -51,7 +51,7 @@ describe("Get user likes by Prisma", () => {
         id: "m1",
         title: "Mylist 1",
         shareRange: MylistShareRange.PUBLIC,
-        isLikeList: true,
+
         holderId: "u1",
         slug: "likes",
         createdAt: expect.any(Date),
@@ -67,7 +67,7 @@ describe("Get user likes by Prisma", () => {
         id: "m1",
         title: "Mylist 1",
         shareRange: MylistShareRange.PUBLIC,
-        isLikeList: true,
+
         holderId: "u1",
         slug: "likes",
         createdAt: expect.any(Date),
@@ -82,7 +82,7 @@ describe("Get user likes by Prisma", () => {
         id: "m1",
         title: "Mylist 1",
         shareRange: MylistShareRange.PUBLIC,
-        isLikeList: true,
+
         holderId: "u1",
         slug: "likes",
         createdAt: expect.any(Date),
@@ -104,7 +104,7 @@ describe("Get user likes by Prisma", () => {
             id: "m1",
             title: "Mylist 1",
             shareRange: MylistShareRange.KNOW_LINK,
-            isLikeList: true,
+
             holderId: "u1",
             slug: "likes",
           },
@@ -139,7 +139,7 @@ describe("Get user likes by Prisma", () => {
         id: "m1",
         title: "Mylist 1",
         shareRange: MylistShareRange.KNOW_LINK,
-        isLikeList: true,
+
         holderId: "u1",
         slug: "likes",
         createdAt: expect.any(Date),
@@ -161,7 +161,7 @@ describe("Get user likes by Prisma", () => {
             id: "m1",
             title: "Mylist 1",
             shareRange: MylistShareRange.PRIVATE,
-            isLikeList: true,
+
             holderId: "u1",
             slug: "likes",
           },
@@ -196,7 +196,6 @@ describe("Get user likes by Prisma", () => {
         id: "m1",
         title: "Mylist 1",
         shareRange: MylistShareRange.PRIVATE,
-        isLikeList: true,
         holderId: "u1",
         slug: "likes",
         createdAt: expect.any(Date),
@@ -244,7 +243,7 @@ describe("Get user likes by Prisma", () => {
         id: expect.any(String),
         title: "likes",
         shareRange: MylistShareRange.PRIVATE,
-        isLikeList: false,
+
         holderId: "u1",
         slug: "likes",
         createdAt: expect.any(Date),

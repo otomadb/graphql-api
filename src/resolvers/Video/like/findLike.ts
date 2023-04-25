@@ -15,7 +15,6 @@ export const findLike = async (
         slug: "likes",
         title: "likes",
         shareRange: MylistShareRange.PRIVATE,
-        isLikeList: false,
       },
       update: {},
     });

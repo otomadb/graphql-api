@@ -25,7 +25,6 @@ export const undo = async (
       slug: "likes",
       title: "likes",
       shareRange: MylistShareRange.PRIVATE,
-      isLikeList: false,
     },
     update: {},
   });
