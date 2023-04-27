@@ -1,0 +1,25 @@
+type TypeCategoryTag {
+  type: TypeCategoryTagType!
+  tag: Tag!
+}
+
+enum TypeCategoryTagType {
+  "曲"
+  MUSIC
+  "作品名"
+  COPYRIGHT
+  "キャラクター"
+  CHARACTER
+  "特徴的なセリフなど"
+  PHRASE
+  "シリーズ"
+  SERIES
+  "戦法"
+  TACTICS
+  "動画そのものに対しての性質，作風など"
+  STYLE
+  "動画の内容に依らない情報，分類など"
+  CLASS
+  "合作などのイベント"
+  EVENT
+}
