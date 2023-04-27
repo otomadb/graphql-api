@@ -1,3 +1,6 @@
+"""
+タグにタイプを与えることが出来るカテゴリータグ
+"""
 type TypeCategoryTag {
   type: TypeCategoryTagType!
   tag: Tag!
