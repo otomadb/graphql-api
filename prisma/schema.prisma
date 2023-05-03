@@ -220,14 +220,15 @@ model CategoryTagTyping {
 }
 
 enum CategoryTagType {
-  COPYRIGHT
   CHARACTER
-  SERIES
-  MUSIC
-  TACTICS
+  CLASS
+  COPYRIGHT
   EVENT
+  MUSIC
   PHRASE
+  SERIES
   STYLE
+  TACTICS
 }
 
 model TagEvent {

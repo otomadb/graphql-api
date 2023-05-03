@@ -1,33 +1,33 @@
 import { CategoryTagType } from "@prisma/client";
 import { GraphQLError } from "graphql";
 
-import { err, isErr, ok, Result } from "../../../utils/Result.js";
-import { MutationResolvers, ResolversTypes, TagType as GqlTagType } from "../../graphql.js";
+import { isErr } from "../../../utils/Result.js";
+import { MutationResolvers, ResolversTypes, TypeCategoryTagType } from "../../graphql.js";
 import { parseGqlID3 } from "../../id.js";
 import { TagModel } from "../../Tag/model.js";
 import { ResolverDeps } from "../../types.js";
 import { register } from "./register.js";
 
-const convertTagType = (g: GqlTagType): Result<GqlTagType, CategoryTagType> => {
+const convertPrismaTagType = (g: TypeCategoryTagType): CategoryTagType => {
   switch (g) {
-    case GqlTagType.Music:
-      return ok(CategoryTagType.MUSIC);
-    case GqlTagType.Copyright:
-      return ok(CategoryTagType.COPYRIGHT);
-    case GqlTagType.Character:
-      return ok(CategoryTagType.CHARACTER);
-    case GqlTagType.Event:
-      return ok(CategoryTagType.EVENT);
-    case GqlTagType.Phrase:
-      return ok(CategoryTagType.PHRASE);
-    case GqlTagType.Series:
-      return ok(CategoryTagType.SERIES);
-    case GqlTagType.Style:
-      return ok(CategoryTagType.STYLE);
-    case GqlTagType.Tactics:
-      return ok(CategoryTagType.TACTICS);
-    default:
-      return err(g);
+    case TypeCategoryTagType.Character:
+      return CategoryTagType.CHARACTER;
+    case TypeCategoryTagType.Class:
+      return CategoryTagType.CLASS;
+    case TypeCategoryTagType.Copyright:
+      return CategoryTagType.COPYRIGHT;
+    case TypeCategoryTagType.Event:
+      return CategoryTagType.EVENT;
+    case TypeCategoryTagType.Music:
+      return CategoryTagType.MUSIC;
+    case TypeCategoryTagType.Phrase:
+      return CategoryTagType.PHRASE;
+    case TypeCategoryTagType.Series:
+      return CategoryTagType.SERIES;
+    case TypeCategoryTagType.Style:
+      return CategoryTagType.STYLE;
+    case TypeCategoryTagType.Tactics:
+      return CategoryTagType.TACTICS;
   }
 };
 
@@ -38,19 +38,14 @@ export const resolverRegisterCategoryTagTyping = ({ prisma, logger }: Pick<Resol
       return {
         __typename: "MutationInvalidTagIdError",
         tagId: tagId.error.invalidId,
-      } satisfies ResolversTypes["MutationInvalidTagIdError"];
+      } satisfies ResolversTypes["RegisterCategoryTagTypingResultUnion"];
 
-    const tagtype = convertTagType(input.type);
-    if (isErr(tagtype))
-      return {
-        __typename: "RegisterCategoryTagTypingUnsupportedTagType",
-        type: tagtype.error,
-      } satisfies ResolversTypes["RegisterCategoryTagTypingUnsupportedTagType"];
+    const tagtype = convertPrismaTagType(input.type);
 
     const result = await register(prisma, {
       userId: user.id,
       tagId: tagId.data,
-      type: tagtype.data,
+      type: tagtype,
     });
 
     if (result.status === "error") {
@@ -59,22 +54,22 @@ export const resolverRegisterCategoryTagTyping = ({ prisma, logger }: Pick<Resol
           return {
             __typename: "RegisterCategoryTagTypingAlreadyTypeExistsError",
             already: new TagModel(result.error.tag),
-          } satisfies ResolversTypes["RegisterCategoryTagTypingAlreadyTypeExistsError"];
+          } satisfies ResolversTypes["RegisterCategoryTagTypingResultUnion"];
         case "TAG_NOT_FOUND":
           return {
             __typename: "MutationTagNotFoundError",
             tagId: result.error.id,
-          } satisfies ResolversTypes["MutationTagNotFoundError"];
+          } satisfies ResolversTypes["RegisterCategoryTagTypingResultUnion"];
         case "TAG_NOT_CATEGORY_TAG":
           return {
             __typename: "RegisterCategoryTagTypingNotCategoryTagError",
             tag: new TagModel(result.error.tag),
-          } satisfies ResolversTypes["RegisterCategoryTagTypingNotCategoryTagError"];
+          } satisfies ResolversTypes["RegisterCategoryTagTypingResultUnion"];
         case "TAG_TYPE_ALREADY":
           return {
             __typename: "RegisterCategoryTagTypingAlreadyTypedError",
             tag: new TagModel(result.error.tag),
-          } satisfies ResolversTypes["RegisterCategoryTagTypingAlreadyTypedError"];
+          } satisfies ResolversTypes["RegisterCategoryTagTypingResultUnion"];
         case "UNKNOWN":
           logger.error({ error: result.error, path: info.path }, "Resolver unknown error");
           throw new GraphQLError("Internal server error");
@@ -86,5 +81,5 @@ export const resolverRegisterCategoryTagTyping = ({ prisma, logger }: Pick<Resol
     return {
       __typename: "RegisterCategoryTagTypingSucceededPayload",
       tag: new TagModel(tag),
-    } satisfies ResolversTypes["RegisterCategoryTagTypingSucceededPayload"];
+    } satisfies ResolversTypes["RegisterCategoryTagTypingResultUnion"];
   }) satisfies MutationResolvers["registerCategoryTagTyping"];
