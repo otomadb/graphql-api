@@ -15,7 +15,6 @@ union RegisterCategoryTagTypingResultUnion =
   | RegisterCategoryTagTypingAlreadyTypeExistsError
   | RegisterCategoryTagTypingNotCategoryTagError
   | RegisterCategoryTagTypingAlreadyTypedError
-  | RegisterCategoryTagTypingOtherErrorsFallback
   | RegisterCategoryTagTypingSucceededPayload
 
 type RegisterCategoryTagTypingUnsupportedTagType {
@@ -35,15 +34,6 @@ type RegisterCategoryTagTypingNotCategoryTagError {
 "指定されたカテゴリータグに既にタイプがある場合のエラー"
 type RegisterCategoryTagTypingAlreadyTypedError {
   tag: Tag!
-}
-
-"その他のエラー"
-type RegisterCategoryTagTypingOtherErrorsFallback {
-  message: RegisterCategoryTagTypingOtherErrorMessage!
-}
-
-enum RegisterCategoryTagTypingOtherErrorMessage {
-  INTERNAL_SERVER_ERROR
 }
 
 type RegisterCategoryTagTypingSucceededPayload {
