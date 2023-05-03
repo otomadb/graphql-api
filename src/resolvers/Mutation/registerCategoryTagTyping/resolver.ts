@@ -1,12 +1,8 @@
 import { CategoryTagType } from "@prisma/client";
+import { GraphQLError } from "graphql";
 
 import { err, isErr, ok, Result } from "../../../utils/Result.js";
-import {
-  MutationResolvers,
-  RegisterCategoryTagTypingOtherErrorMessage,
-  ResolversTypes,
-  TagType as GqlTagType,
-} from "../../graphql.js";
+import { MutationResolvers, ResolversTypes, TagType as GqlTagType } from "../../graphql.js";
 import { parseGqlID3 } from "../../id.js";
 import { TagModel } from "../../Tag/model.js";
 import { ResolverDeps } from "../../types.js";
@@ -81,10 +77,7 @@ export const resolverRegisterCategoryTagTyping = ({ prisma, logger }: Pick<Resol
           } satisfies ResolversTypes["RegisterCategoryTagTypingAlreadyTypedError"];
         case "UNKNOWN":
           logger.error({ error: result.error, path: info.path }, "Resolver unknown error");
-          return {
-            __typename: "RegisterCategoryTagTypingOtherErrorsFallback",
-            message: RegisterCategoryTagTypingOtherErrorMessage.InternalServerError,
-          } satisfies ResolversTypes["RegisterCategoryTagTypingOtherErrorsFallback"];
+          throw new GraphQLError("Internal server error");
       }
     }
 
