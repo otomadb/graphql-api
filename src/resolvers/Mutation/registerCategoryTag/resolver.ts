@@ -1,4 +1,6 @@
-import { MutationResolvers, RegisterCategoryTagOtherErrorMessage, ResolversTypes } from "../../graphql.js";
+import { GraphQLError } from "graphql";
+
+import { MutationResolvers, ResolversTypes } from "../../graphql.js";
 import { TagModel } from "../../Tag/model.js";
 import { ResolverDeps } from "../../types.js";
 import { register } from "./register.js";
@@ -14,10 +16,7 @@ export const registerCategoryTag = ({ prisma, logger }: Pick<ResolverDeps, "pris
       switch (result.error.type) {
         case "UNKNOWN":
           logger.error({ error: result.error, path: info.path }, "Resolver unknown error");
-          return {
-            __typename: "RegisterCategoryTagOtherErrorsFallback",
-            message: RegisterCategoryTagOtherErrorMessage.InternalServerError,
-          } satisfies ResolversTypes["RegisterCategoryTagOtherErrorsFallback"];
+          throw new GraphQLError("Internal server error");
       }
     }
 
