@@ -1,15 +1,23 @@
+import { GraphQLError } from "graphql";
+
 import { Resolvers } from "../graphql.js";
 import { buildGqlId } from "../id.js";
 import { ResolverDeps } from "../types.js";
 
-export const resolverNotification = ({ prisma, userRepository }: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+export const resolverNotification = ({
+  logger,
+  userRepository,
+}: Pick<ResolverDeps, "prisma" | "userRepository" | "logger">) =>
   ({
-    __resolveType({ type }) {
+    __resolveType({ type }, _context, info) {
       switch (type) {
         case "ACCEPTING_NICOVIDEO_REGISTRATION_REQUEST":
           return "NicovideoRegistrationRequestAcceptingNotification";
         case "REJECTING_NICOVIDEO_REGISTRATION_REQUEST":
           return "NicovideoRegistrationRequestRejectingNotification";
+        default:
+          logger.error({ type, path: info.path }, "Unsupported notification type");
+          throw new GraphQLError("Unsupported");
       }
     },
     id: ({ dbId }) => buildGqlId("Notification", dbId),

@@ -12,7 +12,7 @@ export const resolverNicovideoRegistrationRequestAcceptingNotification = ({
   logger,
 }: Pick<ResolverDeps, "prisma" | "userRepository" | "logger">) =>
   ({
-    ...resolverNotification({ prisma, userRepository }),
+    ...resolverNotification({ prisma, userRepository, logger }),
     accepting: ({ dbId, payload }, _args, _ctx, info) => {
       const p = z.object({ id: z.string() }).safeParse(payload);
       if (!p.success) {
