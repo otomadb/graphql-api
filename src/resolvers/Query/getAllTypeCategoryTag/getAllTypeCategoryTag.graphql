@@ -1,4 +1,0 @@
-type Query {
-  "全てのTypeCategoryTagを取得する"
-  getAllTypeCategoryTag: [TypeCategoryTag!]!
-}

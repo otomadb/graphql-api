@@ -1,8 +1,0 @@
-type NicovideoRegistrationRequestAccepting {
-  request: NicovideoRegistrationRequest!
-
-  note: String
-  video: Video!
-
-  acceptedBy: User!
-}

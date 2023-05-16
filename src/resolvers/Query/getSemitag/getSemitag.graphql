@@ -1,3 +1,0 @@
-type Query {
-  getSemitag(id: ID!): Semitag!
-}

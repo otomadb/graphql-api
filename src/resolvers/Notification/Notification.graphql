@@ -1,6 +1,0 @@
-interface Notification implements Node {
-  id: ID!
-  createdAt: DateTime!
-  watched: Boolean!
-  notifyTo: User!
-}

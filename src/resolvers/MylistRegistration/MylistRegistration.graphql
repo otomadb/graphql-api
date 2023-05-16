@@ -1,9 +1,0 @@
-type MylistRegistration implements Node {
-  id: ID!
-  video: Video!
-  mylist: Mylist!
-
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  note: String
-}

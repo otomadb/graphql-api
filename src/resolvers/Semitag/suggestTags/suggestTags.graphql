@@ -1,7 +1,0 @@
-type Semitag {
-  suggestTags(limit: Int! = 3, skip: Int! = 0): SemitagSuggestTagsReturn!
-}
-
-type SemitagSuggestTagsReturn {
-  items: [SemitagSuggestTagsItem!]!
-}

@@ -1,13 +1,8 @@
 # codegen.yml
 schema:
-  - ./src/resolvers/**/*.graphql
+  - ./src/schema.graphql
 emitLegacyCommonJSImports: false
 generates:
-  ./src/schema.graphql:
-    plugins:
-      - schema-ast
-    config:
-      includeDirectives: true
   ./src/resolvers/graphql.ts:
     config:
       avoidOptionals:

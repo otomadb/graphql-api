@@ -21,7 +21,6 @@ dumps
 dump.sql
 
 # codegen
-schema.graphql
 src/resolvers/graphql.ts
 
 # tsc

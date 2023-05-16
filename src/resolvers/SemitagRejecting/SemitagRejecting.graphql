@@ -1,4 +1,0 @@
-type SemitagRejecting {
-  note: String
-  semitag: Semitag!
-}
