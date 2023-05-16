@@ -32,7 +32,10 @@ export type NodeType =
   | "VideoTitle"
   | "VideoTitleEvent"
   | "YoutubeVideoSource"
-  | "YoutubeVideoSourceEvent";
+  | "YoutubeVideoSourceEvent"
+  | "YoutubeRegistrationRequestTagging"
+  | "YoutubeRegistrationRequestSemitagging"
+  | "YoutubeRegistrationRequest";
 
 export const buildGqlId = (type: NodeType, dbId: string): string =>
   Buffer.from(`${type}:${dbId}`).toString("base64url");

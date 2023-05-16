@@ -1,0 +1,8 @@
+type Query {
+  findYoutubeRegistrationRequest(input: FindYoutubeRegistrationRequestInput): YoutubeRegistrationRequest
+}
+
+input FindYoutubeRegistrationRequestInput {
+  id: ID
+  sourceId: String
+}

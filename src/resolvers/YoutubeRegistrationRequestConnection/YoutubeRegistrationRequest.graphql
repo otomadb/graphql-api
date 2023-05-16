@@ -1,0 +1,11 @@
+type YoutubeRegistrationRequestConnection {
+  nodes: [YoutubeRegistrationRequest!]!
+  edges: [YoutubeRegistrationRequestEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type YoutubeRegistrationRequestEdge {
+  cursor: String!
+  node: YoutubeRegistrationRequest!
+}
