@@ -182,16 +182,16 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1681746687,
-        "narHash": "sha256-NJQvu+EREF40u5P3i8h2yGYC1vM6Q8xEXX9WyOnJkBM=",
+        "lastModified": 1683557008,
+        "narHash": "sha256-k849xZs+OW/56BsXiawPVgKmVUTJOE4ePXgYWMDQhQI=",
         "owner": "prisma",
         "repo": "prisma-engines",
-        "rev": "1e7af066ee9cb95cf3a403c78d9aab3e6b04f37a",
+        "rev": "d9a4c5988f480fa576d43970d5a23641aa77bc9c",
         "type": "github"
       },
       "original": {
         "owner": "prisma",
-        "ref": "4.13.0",
+        "ref": "4.14.0",
         "repo": "prisma-engines",
         "type": "github"
       }
