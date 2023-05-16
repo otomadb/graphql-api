@@ -7,7 +7,7 @@ export const resolverGetYoutubeRegistrationRequest = ({ prisma, logger }: Pick<R
   (async (_parent, { id }, _ctx, info) =>
     prisma.youtubeRegistrationRequest
       .findUniqueOrThrow({ where: { id: parseGqlID("YoutubeRegistrationRequest", id) } })
-      .then((v) => new YoutubeRegistrationRequestModel(v))
+      .then((v) => YoutubeRegistrationRequestModel.fromPrisma(v))
       .catch(() => {
         logger.error({ path: info.path, args: { id } }, "Not found");
         throw new GraphQLNotExistsInDBError("YoutubeRegistrationRequest", id);

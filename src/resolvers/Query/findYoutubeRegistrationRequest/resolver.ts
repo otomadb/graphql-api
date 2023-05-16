@@ -23,7 +23,7 @@ export const resolverFindYoutubeRegistrationRequest = ({ prisma, logger }: Pick<
         logger.info({ path: info.path, id: input.id, userId: ctxUser?.id }, "Not found");
         return null;
       }
-      return new YoutubeRegistrationRequestModel(req);
+      return YoutubeRegistrationRequestModel.fromPrisma(req);
     } else {
       const req = await prisma.youtubeRegistrationRequest.findUnique({
         where: { sourceId: input.sourceId },
@@ -32,6 +32,6 @@ export const resolverFindYoutubeRegistrationRequest = ({ prisma, logger }: Pick<
         logger.info({ path: info.path, sourceId: input.sourceId, userId: ctxUser?.id }, "Not found");
         return null;
       }
-      return new YoutubeRegistrationRequestModel(req);
+      return YoutubeRegistrationRequestModel.fromPrisma(req);
     }
   }) satisfies QueryResolvers["findYoutubeRegistrationRequest"];
