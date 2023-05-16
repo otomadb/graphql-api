@@ -5,21 +5,16 @@ type Mutation {
 
 input RegisterCategoryTagTypingInput {
   tagId: ID!
-  type: TagType!
+  type: TypeCategoryTagType!
 }
 
 union RegisterCategoryTagTypingResultUnion =
     MutationInvalidTagIdError
   | MutationTagNotFoundError
-  | RegisterCategoryTagTypingUnsupportedTagType
   | RegisterCategoryTagTypingAlreadyTypeExistsError
   | RegisterCategoryTagTypingNotCategoryTagError
   | RegisterCategoryTagTypingAlreadyTypedError
   | RegisterCategoryTagTypingSucceededPayload
-
-type RegisterCategoryTagTypingUnsupportedTagType {
-  type: TagType!
-}
 
 "指定されたタイプのカテゴリータグが既に存在する場合のエラー"
 type RegisterCategoryTagTypingAlreadyTypeExistsError {

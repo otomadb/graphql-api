@@ -9,6 +9,8 @@ export const resolverTypeCategoryTag = ({ prisma }: Pick<ResolverDeps, "prisma">
       switch (type) {
         case "CHARACTER":
           return TypeCategoryTagType.Character;
+        case "CLASS":
+          return TypeCategoryTagType.Class;
         case "COPYRIGHT":
           return TypeCategoryTagType.Copyright;
         case "EVENT":
