@@ -3,6 +3,7 @@
 import { type Resolvers } from "../graphql.js";
 import { ResolverDeps } from "../types.js";
 import { fetchNicovideo } from "./fetchNicovideo/fetchNicovideo.js";
+import { resolverFetchSoundcloud } from "./fetchSoundcloud/resolver.js";
 import { resolverFetchYoutube } from "./fetchYoutube/resolver.js";
 import { resolverFindMylist } from "./findMylist/findMylist.js";
 import { resolverFindNicovideoRegistrationRequest } from "./findNicovideoRegistrationRequest/resolver.js";
@@ -40,6 +41,7 @@ import { resolverWhoami } from "./whoami/resolver.js";
 export const resolveQuery = (deps: ResolverDeps) =>
   ({
     fetchNicovideo: fetchNicovideo(),
+    fetchSoundcloud: resolverFetchSoundcloud(deps),
     fetchYoutube: resolverFetchYoutube(),
     findMylist: resolverFindMylist(deps),
     findNicovideoRegistrationRequest: resolverFindNicovideoRegistrationRequest(deps),
