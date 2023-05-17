@@ -24,6 +24,7 @@ import { resolverRejectSemitag } from "./rejectSemitag/resolver.js";
 import { resolverRemoveTagFromVideo } from "./removeTagFromVideo/resolver.js";
 import { removeVideoFromMylist } from "./removeVideoFromMylist/removeVideoFromMylist.js";
 import { resolverRequestNicovideoRegistration as requestNicovideoRegistration } from "./requestNicovideoRegistration/resolver.js";
+import { resolverRequestYoutubeRegistration } from "./requestYoutubeRegistration/resolver.js";
 import { resolverResolveSemitag } from "./resolveSemitag/resolver.js";
 import { resolverUndoLikeVideo } from "./undoLikeVideo/resolver.js";
 import { resolverWatchNotifications } from "./watchNotifications/resolver.js";
@@ -52,6 +53,7 @@ export const resolveMutation = (deps: ResolverDeps) =>
     removeTagFromVideo: resolverRemoveTagFromVideo(deps),
     removeVideoFromMylist: removeVideoFromMylist(deps),
     requestNicovideoRegistration: requestNicovideoRegistration(deps),
+    requestYoutubeRegistration: resolverRequestYoutubeRegistration(deps),
     resovleSemitag: resolverResolveSemitag(deps),
     undoLikeVideo: resolverUndoLikeVideo(deps),
     watchNotifications: resolverWatchNotifications(deps),

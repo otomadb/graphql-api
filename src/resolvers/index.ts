@@ -78,6 +78,12 @@ import {
   resolveVideoTitleSetPrimaryEvent,
   resolveVideoTitleUnsetPrimaryEvent,
 } from "./VideoTitleEvent/index.js";
+import { resolverYoutubeRegistrationRequest } from "./YoutubeRegistrationRequest/resolver.js";
+import { resolverYoutubeRegistrationRequestAccepting } from "./YoutubeRegistrationRequestAccepting/resolver.js";
+import { resolverYoutubeRegistrationRequestAcceptingNotification } from "./YoutubeRegistrationRequestAcceptingNotification/resolver.js";
+import { resolverYoutubeRegistrationRequestConnection } from "./YoutubeRegistrationRequestConnection/resolver.js";
+import { resolverYoutubeRegistrationRequestRejecting } from "./YoutubeRegistrationRequestRejecting/resolver.js";
+import { resolverYoutubeRegistrationRequestRejectingNotification } from "./YoutubeRegistrationRequestRejectingNotification/resolver.js";
 import { resolveYoutubeVideoSource } from "./YoutubeVideoSource/resolver.js";
 import {
   resolveYoutubeVideoSourceCreateEvent,
@@ -153,6 +159,12 @@ export const makeResolvers = (deps: ResolverDeps) =>
     VideoTitleEvent: resolveVideoTitleEvent(),
     VideoTitleSetPrimaryEvent: resolveVideoTitleSetPrimaryEvent(deps),
     VideoTitleUnsetPrimaryEvent: resolveVideoTitleUnsetPrimaryEvent(deps),
+    YoutubeRegistrationRequest: resolverYoutubeRegistrationRequest(deps),
+    YoutubeRegistrationRequestAccepting: resolverYoutubeRegistrationRequestAccepting(deps),
+    YoutubeRegistrationRequestAcceptingNotification: resolverYoutubeRegistrationRequestAcceptingNotification(deps),
+    YoutubeRegistrationRequestConnection: resolverYoutubeRegistrationRequestConnection(),
+    YoutubeRegistrationRequestRejecting: resolverYoutubeRegistrationRequestRejecting(deps),
+    YoutubeRegistrationRequestRejectingNotification: resolverYoutubeRegistrationRequestRejectingNotification(deps),
     YoutubeVideoSource: resolveYoutubeVideoSource(deps),
     YoutubeVideoSourceCreateEvent: resolveYoutubeVideoSourceCreateEvent(deps),
     YoutubeVideoSourceEvent: resolveYoutubeVideoSourceEvent(),

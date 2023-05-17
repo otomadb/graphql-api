@@ -1,0 +1,7 @@
+type YoutubeRegistrationRequestRejecting {
+  request: YoutubeRegistrationRequest!
+
+  note: String
+
+  rejectedBy: User!
+}

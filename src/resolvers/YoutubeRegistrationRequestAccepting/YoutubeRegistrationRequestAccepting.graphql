@@ -1,0 +1,8 @@
+type YoutubeRegistrationRequestAccepting {
+  request: YoutubeRegistrationRequest!
+
+  note: String
+  video: Video!
+
+  acceptedBy: User!
+}

@@ -1,0 +1,19 @@
+type Query {
+  findUncheckedYoutubeRegistrationRequests(
+    input: FindUncheckedYoutubeRegistrationRequestsInput!
+  ): YoutubeRegistrationRequestConnection!
+}
+
+input FindUncheckedYoutubeRegistrationRequestsInput {
+  first: Int
+  after: String
+
+  last: Int
+  before: String
+
+  orderBy: FindUncheckedYoutubeRegistrationRequestsOrderBy! = { createdAt: DESC }
+}
+
+input FindUncheckedYoutubeRegistrationRequestsOrderBy {
+  createdAt: SortOrder
+}

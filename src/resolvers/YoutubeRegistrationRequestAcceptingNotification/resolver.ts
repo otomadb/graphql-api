@@ -2,11 +2,11 @@ import { GraphQLError } from "graphql";
 import z from "zod";
 
 import { Resolvers } from "../graphql.js";
-import { NicovideoRegistrationRequestAcceptingModel } from "../NicovideoRegistrationRequestAccepting/model.js";
 import { resolverNotification } from "../Notification/resolver.js";
 import { ResolverDeps } from "../types.js";
+import { YoutubeRegistrationRequestAcceptingModel } from "../YoutubeRegistrationRequestAccepting/model.js";
 
-export const resolverNicovideoRegistrationRequestAcceptingNotification = ({
+export const resolverYoutubeRegistrationRequestAcceptingNotification = ({
   prisma,
   userRepository,
   logger,
@@ -22,12 +22,12 @@ export const resolverNicovideoRegistrationRequestAcceptingNotification = ({
         );
         throw new GraphQLError("Something wrong happened");
       }
-      return prisma.nicovideoRegistrationRequestChecking
+      return prisma.youtubeRegistrationRequestChecking
         .findUniqueOrThrow({ where: { id: p.data.id } })
-        .then((c) => NicovideoRegistrationRequestAcceptingModel.fromPrisma(c))
+        .then((c) => YoutubeRegistrationRequestAcceptingModel.fromPrisma(c))
         .catch((e) => {
           logger.error({ error: e, path: info.path, id: p.data.id }, "Accepting not found");
           throw new GraphQLError("Something wrong happened");
         });
     },
-  } satisfies Resolvers["NicovideoRegistrationRequestAcceptingNotification"]);
+  } satisfies Resolvers["YoutubeRegistrationRequestAcceptingNotification"]);
