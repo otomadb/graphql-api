@@ -62,6 +62,11 @@ export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pris
         .findMany({ where: { videoId } })
         .then((ss) => ss.map((s) => SoundcloudVideoSourceDTO.fromPrisma(s))),
 
+    soundcloudSources: async ({ id: videoId }) =>
+      prisma.soundcloudVideoSource
+        .findMany({ where: { videoId } })
+        .then((ss) => ss.map((s) => SoundcloudVideoSourceDTO.fromPrisma(s))),
+
     semitags: ({ id: videoId }, { checked }) =>
       prisma.semitag
         .findMany({ where: { videoId, isChecked: checked?.valueOf() } })
