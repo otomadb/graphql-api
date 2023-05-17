@@ -1,5 +1,6 @@
 /* eslint sort-keys: [2, "asc", {caseSensitive: false}] */
 
+import { getSoundcloudVideoSource } from "../../Soundcloud/getSoundcloudVideoSource.resolver.js";
 import { type Resolvers } from "../graphql.js";
 import { ResolverDeps } from "../types.js";
 import { fetchNicovideo } from "./fetchNicovideo/fetchNicovideo.js";
@@ -28,7 +29,6 @@ import { getNicovideoRegistrationRequest } from "./getNicovideoRegistrationReque
 import { getNicovideoVideoSource } from "./getNicovideoVideoSource/resolver.js";
 import { getNotification } from "./getNotification/resolver.js";
 import { resolverGetSemitag } from "./getSemitag/resolver.js";
-import { getSoundcloudVideoSource } from "./getSoundcloudVideoSource/resolver.js";
 import { getTag } from "./getTag/resolver.js";
 import { getUser } from "./getUser/resolver.js";
 import { getVideo } from "./getVideo/resolver.js";

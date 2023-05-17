@@ -1,5 +1,6 @@
 /* eslint sort-keys: 2 */
 
+import { resolverRegisterMadFromSoundcloud } from "../../Soundcloud/registerMadFromSoundcloud.resolver.js";
 import { type Resolvers } from "../graphql.js";
 import { ResolverDeps } from "../types.js";
 import { addMylistToMylistGroup } from "./addMylistToMylistGroup/addMylistToMylistGroup.js";
@@ -15,7 +16,6 @@ import { resolverImplicitizeTagParent } from "./implicitizeTagParent/resolver.js
 import { resolverLikeVideo } from "./likeVideo/resolver.js";
 import { registerCategoryTag } from "./registerCategoryTag/resolver.js";
 import { resolverRegisterCategoryTagTyping } from "./registerCategoryTagTyping/resolver.js";
-import { resolverRegisterMadFromSoundcloud } from "./registerMadFromSoundcloud/resolver.js";
 import { resolverRegisterTag } from "./registerTag/resolver.js";
 import { resolverRegisterTagParentRelation } from "./registerTagParentRelation/resolver.js";
 import { resolverRegisterVideoFromNicovideo } from "./registerVideoFromNicovideo/resolver.js";

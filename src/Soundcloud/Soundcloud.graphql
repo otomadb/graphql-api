@@ -1,3 +1,60 @@
+type SoundcloudVideoSource implements Node & VideoSource {
+  id: ID!
+  sourceId: String!
+  video: Video!
+
+  url: String!
+  embedUrl: String!
+
+  events(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    orderBy: SoundcloudVideoSourceEventsOrderBy!
+  ): SoundcloudVideoSourceEventConnection!
+}
+
+input SoundcloudVideoSourceEventsOrderBy {
+  createdAt: SortOrder
+}
+
+type SoundcloudVideoSourceEventConnection {
+  nodes: [SoundcloudVideoSourceEvent!]!
+  edges: [SoundcloudVideoSourceEventEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type SoundcloudVideoSourceEventEdge {
+  cursor: String!
+  node: SoundcloudVideoSourceEvent!
+}
+
+interface SoundcloudVideoSourceEvent implements Node & Event {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  source: SoundcloudVideoSource!
+}
+
+type SoundcloudVideoSourceCreateEvent implements Node & Event & SoundcloudVideoSourceEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  source: SoundcloudVideoSource!
+}
+
+type Query {
+  getSoundcloudVideoSource(id: ID!): SoundcloudVideoSource!
+}
+
 type Mutation {
   registerMadFromSoundcloud(input: RegisterMadFromSoundcloudInput!): RegisterMadFromSoundcloudPayload!
     @auth(scopes: ["create:video"])

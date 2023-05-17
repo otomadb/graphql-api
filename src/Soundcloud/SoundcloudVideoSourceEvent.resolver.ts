@@ -1,9 +1,9 @@
 import { SoundcloudVideoSourceEventType } from "@prisma/client";
 
-import { Resolvers } from "../graphql.js";
-import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
-import { SoundcloudVideoSourceModel } from "../SoundcloudVideoSource/model.js";
-import { ResolverDeps } from "../types.js";
+import { Resolvers } from "../resolvers/graphql.js";
+import { buildGqlId, GraphQLNotExistsInDBError } from "../resolvers/id.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { SoundcloudVideoSourceDTO } from "./dto.js";
 
 export const resolveSoundcloudVideoSourceEventCommonProps = ({
   prisma,
@@ -15,7 +15,7 @@ export const resolveSoundcloudVideoSourceEventCommonProps = ({
     source: ({ sourceId: videoSourceId }) =>
       prisma.youtubeVideoSource
         .findUniqueOrThrow({ where: { id: videoSourceId } })
-        .then((v) => SoundcloudVideoSourceModel.fromPrisma(v))
+        .then((v) => SoundcloudVideoSourceDTO.fromPrisma(v))
         .catch(() => {
           throw new GraphQLNotExistsInDBError("SoundcloudVideoSource", videoSourceId);
         }),
