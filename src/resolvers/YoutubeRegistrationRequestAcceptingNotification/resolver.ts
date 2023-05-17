@@ -8,11 +8,11 @@ import { YoutubeRegistrationRequestAcceptingModel } from "../YoutubeRegistration
 
 export const resolverYoutubeRegistrationRequestAcceptingNotification = ({
   prisma,
-  userRepository,
+  userService,
   logger,
-}: Pick<ResolverDeps, "prisma" | "userRepository" | "logger">) =>
+}: Pick<ResolverDeps, "prisma" | "userService" | "logger">) =>
   ({
-    ...resolverNotification({ prisma, userRepository, logger }),
+    ...resolverNotification({ prisma, userService, logger }),
     accepting: ({ dbId, payload }, _args, _ctx, info) => {
       const p = z.object({ id: z.string() }).safeParse(payload);
       if (!p.success) {

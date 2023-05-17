@@ -5,13 +5,10 @@ import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
 import { TagNameModel } from "../TagName/model.js";
 import { ResolverDeps } from "../types.js";
 
-export const resolveTagNameEventCommonProps = ({
-  prisma,
-  userRepository,
-}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+export const resolveTagNameEventCommonProps = ({ prisma, userService }: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     id: ({ id }): string => buildGqlId("TagEvent", id),
-    user: async ({ userId }) => userRepository.getById(userId),
+    user: async ({ userId }) => userService.getById(userId),
     tagName: ({ tagNameId }) =>
       prisma.tagName
         .findUniqueOrThrow({ where: { id: tagNameId } })
@@ -35,17 +32,17 @@ export const resolveTagNameEvent = () =>
     },
   } satisfies Resolvers["TagNameEvent"]);
 
-export const resolveTagNameCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+export const resolveTagNameCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveTagNameEventCommonProps(deps),
   } satisfies Resolvers["TagNameCreateEvent"]);
 
-export const resolveTagNameSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+export const resolveTagNameSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveTagNameEventCommonProps(deps),
   } satisfies Resolvers["TagNameSetPrimaryEvent"]);
 
-export const resolveTagNameUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+export const resolveTagNameUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveTagNameEventCommonProps(deps),
   } satisfies Resolvers["TagNameUnsetPrimaryEvent"]);

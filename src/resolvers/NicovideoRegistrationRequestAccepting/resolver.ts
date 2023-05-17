@@ -9,8 +9,8 @@ import { VideoModel } from "../Video/model.js";
 export const resolverNicovideoRegistrationRequestAccepting = ({
   prisma,
   logger,
-  userRepository,
-}: Pick<ResolverDeps, "logger" | "prisma" | "userRepository">) =>
+  userService,
+}: Pick<ResolverDeps, "logger" | "prisma" | "userService">) =>
   ({
     request: ({ requestId }) =>
       prisma.nicovideoRegistrationRequest
@@ -19,7 +19,7 @@ export const resolverNicovideoRegistrationRequestAccepting = ({
         .catch(() => {
           throw new GraphQLNotExistsInDBError("NicovideoRegistrationRequest", requestId);
         }),
-    acceptedBy: async ({ checkedById }) => userRepository.getById(checkedById),
+    acceptedBy: async ({ checkedById }) => userService.getById(checkedById),
     video: async ({ videoId }, _args, _ctx, info) =>
       prisma.video
         .findUniqueOrThrow({ where: { id: videoId } })

@@ -9,10 +9,10 @@ import { ResolverDeps } from "../types.js";
 export const resolverNicovideoRegistrationRequestRejectingNotification = ({
   prisma,
   logger,
-  userRepository,
-}: Pick<ResolverDeps, "logger" | "prisma" | "userRepository">) =>
+  userService,
+}: Pick<ResolverDeps, "logger" | "prisma" | "userService">) =>
   ({
-    ...resolverNotification({ prisma, userRepository, logger }),
+    ...resolverNotification({ prisma, userService, logger }),
     rejecting: ({ dbId, payload }, _args, _ctx, info) => {
       const p = z.object({ id: z.string() }).safeParse(payload);
       if (!p.success) {

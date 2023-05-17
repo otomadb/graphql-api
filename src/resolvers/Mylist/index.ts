@@ -11,8 +11,8 @@ export const resolveMylist = ({
   prisma,
   logger,
   neo4j,
-  userRepository,
-}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "userRepository">) =>
+  userService,
+}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "userService">) =>
   ({
     id: ({ id }) => buildGqlId("Mylist", id),
     range: ({ shareRange }) => {
@@ -28,7 +28,7 @@ export const resolveMylist = ({
       }
     },
 
-    holder: async ({ holderId }) => userRepository.getById(holderId),
+    holder: async ({ holderId }) => userService.getById(holderId),
     registrations: resolverMylistRegistrations({ prisma, logger }),
 
     isIncludesVideo: async ({ id: mylistId }, { id: videoId }) =>

@@ -9,8 +9,8 @@ import { YoutubeRegistrationRequestModel } from "../YoutubeRegistrationRequest/m
 export const resolverYoutubeRegistrationRequestAccepting = ({
   prisma,
   logger,
-  userRepository,
-}: Pick<ResolverDeps, "logger" | "prisma" | "userRepository">) =>
+  userService,
+}: Pick<ResolverDeps, "logger" | "prisma" | "userService">) =>
   ({
     request: ({ requestId }) =>
       prisma.youtubeRegistrationRequest
@@ -19,7 +19,7 @@ export const resolverYoutubeRegistrationRequestAccepting = ({
         .catch(() => {
           throw new GraphQLNotExistsInDBError("YoutubeRegistrationRequest", requestId);
         }),
-    acceptedBy: async ({ checkedById }) => userRepository.getById(checkedById),
+    acceptedBy: async ({ checkedById }) => userService.getById(checkedById),
     video: async ({ videoId }, _args, _ctx, info) =>
       prisma.video
         .findUniqueOrThrow({ where: { id: videoId } })

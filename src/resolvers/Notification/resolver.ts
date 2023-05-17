@@ -6,8 +6,8 @@ import { ResolverDeps } from "../types.js";
 
 export const resolverNotification = ({
   logger,
-  userRepository,
-}: Pick<ResolverDeps, "prisma" | "userRepository" | "logger">) =>
+  userService,
+}: Pick<ResolverDeps, "prisma" | "userService" | "logger">) =>
   ({
     __resolveType({ type }, _context, info) {
       switch (type) {
@@ -21,7 +21,7 @@ export const resolverNotification = ({
       }
     },
     id: ({ dbId }) => buildGqlId("Notification", dbId),
-    notifyTo: ({ notifyToId: forId }) => userRepository.getById(forId),
+    notifyTo: ({ notifyToId: forId }) => userService.getById(forId),
     createdAt: ({ createdAt }) => createdAt,
     watched: ({ isWatched }) => isWatched,
   } satisfies Resolvers["Notification"]);

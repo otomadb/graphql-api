@@ -5,8 +5,8 @@ import { ResolverDeps } from "../types.js";
 
 export const resolverNicovideoRegistrationRequest = ({
   prisma,
-  userRepository,
-}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+  userService,
+}: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     id: ({ dbId: requestId }) => buildGqlId("NicovideoRegistrationRequest", requestId),
 
@@ -33,5 +33,5 @@ export const resolverNicovideoRegistrationRequest = ({
         }))
       );
     },
-    requestedBy: async ({ requestedById }) => userRepository.getById(requestedById),
+    requestedBy: async ({ requestedById }) => userService.getById(requestedById),
   } satisfies Resolvers["NicovideoRegistrationRequest"]);

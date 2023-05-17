@@ -5,8 +5,8 @@ import { YoutubeRegistrationRequestModel } from "../YoutubeRegistrationRequest/m
 
 export const resolverYoutubeRegistrationRequestRejecting = ({
   prisma,
-  userRepository,
-}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+  userService,
+}: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     request: ({ requestId }) =>
       prisma.youtubeRegistrationRequest
@@ -15,5 +15,5 @@ export const resolverYoutubeRegistrationRequestRejecting = ({
         .catch(() => {
           throw new GraphQLNotExistsInDBError("YoutubeRegistrationRequest", requestId);
         }),
-    rejectedBy: async ({ checkedById }) => userRepository.getById(checkedById),
+    rejectedBy: async ({ checkedById }) => userService.getById(checkedById),
   } satisfies Resolvers["YoutubeRegistrationRequestRejecting"]);

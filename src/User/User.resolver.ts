@@ -13,13 +13,13 @@ import { parseOrderBy } from "../resolvers/parseSortOrder.js";
 import { ResolverDeps } from "../resolvers/types.js";
 import { err, isErr, ok, Result } from "../utils/Result.js";
 
-export const resolverUserHasRole = ({ userRepository }: Pick<ResolverDeps, "userRepository">) =>
+export const resolverUserHasRole = ({ userService }: Pick<ResolverDeps, "userService">) =>
   (async ({ id: userId }, { role }) => {
     switch (role) {
       case UserRole.Admin:
-        return userRepository.hasRole(userId, "ADMIN");
+        return userService.hasRole(userId, "ADMIN");
       case UserRole.Editor:
-        return userRepository.hasRole(userId, "EDITOR");
+        return userService.hasRole(userId, "EDITOR");
     }
   }) satisfies UserResolvers["hasRole"];
 
@@ -189,11 +189,7 @@ export const resolverUserNicovideoRegistrationRequests = ({
     ).then((c) => NicovideoRegistrationRequestConnectionModel.fromPrisma(c));
   }) satisfies UserResolvers["nicovideoRegistrationRequests"];
 
-export const resolveUser = ({
-  prisma,
-  logger,
-  userRepository,
-}: Pick<ResolverDeps, "prisma" | "logger" | "userRepository">) =>
+export const resolveUser = ({ prisma, logger, userService }: Pick<ResolverDeps, "prisma" | "logger" | "userService">) =>
   ({
     id: ({ id }): string => buildGqlId("User", id),
     likes: resolverUserLikes({ prisma, logger }),
@@ -213,5 +209,5 @@ export const resolveUser = ({
     isEditor: () => false,
     isAdministrator: () => false,
 
-    hasRole: resolverUserHasRole({ userRepository }),
+    hasRole: resolverUserHasRole({ userService }),
   } satisfies Resolvers["User"]);
