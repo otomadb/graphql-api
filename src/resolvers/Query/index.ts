@@ -1,6 +1,7 @@
 /* eslint sort-keys: [2, "asc", {caseSensitive: false}] */
 
 import { getSoundcloudVideoSource } from "../../SoundcloudVideoSource/getSoundcloudVideoSource.resolver.js";
+import { resolverFindUncheckedYoutubeRegistrationRequests } from "../../YoutubeRegistrationRequest/findUncheckedYoutubeRegistrationRequests.resolver.js";
 import { resolverFindYoutubeRegistrationRequest } from "../../YoutubeRegistrationRequest/findYoutubeRegistrationRequest.resolver.js";
 import { resolverGetYoutubeRegistrationRequest } from "../../YoutubeRegistrationRequest/getYoutubeRegistrationRequest.resolver.js";
 import { resolverFindYoutubeVideoSource } from "../../YoutubeVideoSource/findYoutubeVideoSource.resolver.js";
@@ -19,7 +20,6 @@ import { findTag } from "./findTag/findTag.js";
 import { findTags } from "./findTags/findTags.js";
 import { resolverFindUncheckedNicovideoRegistrationRequests } from "./findUncheckedNicovideoRegistrationRequests/resolver.js";
 import { resolverFindUncheckedNicovideoRegistrationRequestsByOffset } from "./findUncheckedNicovideoRegistrationRequestsByOffset/resolver.js";
-import { resolverFindUncheckedYoutubeRegistrationRequests } from "../../YoutubeRegistrationRequest/findUncheckedYoutubeRegistrationRequests.resolver.js";
 import { findUser } from "./findUser/findUser.js";
 import { findVideo } from "./findVideo/findVideos.js";
 import { findVideos } from "./findVideos/findVideos.js";
