@@ -7,11 +7,11 @@ import { VideoThumbnailModel } from "../VideoThumbnail/model.js";
 
 export const resolveVideoThumbnailEventCommonProps = ({
   prisma,
-  userRepository,
-}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+  userService,
+}: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     id: ({ id }): string => buildGqlId("VideoThumbnailEvent", id),
-    user: async ({ userId }) => userRepository.getById(userId),
+    user: async ({ userId }) => userService.getById(userId),
     videoThumbnail: ({ videoThumbnailId }) =>
       prisma.videoThumbnail
         .findUniqueOrThrow({ where: { id: videoThumbnailId } })
@@ -35,17 +35,17 @@ export const resolveVideoThumbnailEvent = () =>
     },
   } satisfies Resolvers["VideoThumbnailEvent"]);
 
-export const resolveVideoThumbnailCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+export const resolveVideoThumbnailCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveVideoThumbnailEventCommonProps(deps),
   } satisfies Resolvers["VideoThumbnailCreateEvent"]);
 
-export const resolveVideoThumbnailSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+export const resolveVideoThumbnailSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveVideoThumbnailEventCommonProps(deps),
   } satisfies Resolvers["VideoThumbnailSetPrimaryEvent"]);
 
-export const resolveVideoThumbnailUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+export const resolveVideoThumbnailUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveVideoThumbnailEventCommonProps(deps),
   } satisfies Resolvers["VideoThumbnailUnsetPrimaryEvent"]);

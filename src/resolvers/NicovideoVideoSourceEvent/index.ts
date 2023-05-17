@@ -7,11 +7,11 @@ import { ResolverDeps } from "../types.js";
 
 export const resolveNicovideoVideoSourceEventCommonProps = ({
   prisma,
-  userRepository,
-}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+  userService,
+}: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     id: ({ id }): string => buildGqlId("NicovideoVideoSourceEvent", id),
-    user: async ({ userId }) => userRepository.getById(userId),
+    user: async ({ userId }) => userService.getById(userId),
     source: ({ sourceId: videoSourceId }) =>
       prisma.nicovideoVideoSource
         .findUniqueOrThrow({ where: { id: videoSourceId } })
@@ -31,7 +31,7 @@ export const resolveNicovideoVideoSourceEvent = () =>
     },
   } satisfies Resolvers["NicovideoVideoSourceEvent"]);
 
-export const resolveNicovideoVideoSourceCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+export const resolveNicovideoVideoSourceCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveNicovideoVideoSourceEventCommonProps(deps),
   } satisfies Resolvers["NicovideoVideoSourceCreateEvent"]);

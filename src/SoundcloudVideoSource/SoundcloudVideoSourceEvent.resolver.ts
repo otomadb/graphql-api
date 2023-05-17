@@ -7,11 +7,11 @@ import { SoundcloudVideoSourceDTO } from "./dto.js";
 
 export const resolveSoundcloudVideoSourceEventCommonProps = ({
   prisma,
-  userRepository,
-}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+  userService,
+}: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     id: ({ id }): string => buildGqlId("SoundcloudVideoSourceEvent", id),
-    user: async ({ userId }) => userRepository.getById(userId),
+    user: async ({ userId }) => userService.getById(userId),
     source: ({ sourceId: videoSourceId }) =>
       prisma.youtubeVideoSource
         .findUniqueOrThrow({ where: { id: videoSourceId } })
@@ -31,5 +31,5 @@ export const resolveSoundcloudVideoSourceEvent = () =>
     },
   } satisfies Resolvers["SoundcloudVideoSourceEvent"]);
 
-export const resolveSoundcloudVideoSourceCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+export const resolveSoundcloudVideoSourceCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({ ...resolveSoundcloudVideoSourceEventCommonProps(deps) } satisfies Resolvers["SoundcloudVideoSourceCreateEvent"]);

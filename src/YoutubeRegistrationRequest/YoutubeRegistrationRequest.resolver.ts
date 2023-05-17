@@ -5,8 +5,8 @@ import { ResolverDeps } from "../resolvers/types.js";
 
 export const resolverYoutubeRegistrationRequest = ({
   prisma,
-  userRepository,
-}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+  userService,
+}: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     id: ({ dbId: requestId }) => buildGqlId("YoutubeRegistrationRequest", requestId),
 
@@ -33,5 +33,5 @@ export const resolverYoutubeRegistrationRequest = ({
         }))
       );
     },
-    requestedBy: async ({ requestedById }) => userRepository.getById(requestedById),
+    requestedBy: async ({ requestedById }) => userService.getById(requestedById),
   } satisfies Resolvers["YoutubeRegistrationRequest"]);

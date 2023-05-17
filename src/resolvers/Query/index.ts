@@ -1,6 +1,8 @@
 /* eslint sort-keys: [2, "asc", {caseSensitive: false}] */
 
 import { getSoundcloudVideoSource } from "../../SoundcloudVideoSource/getSoundcloudVideoSource.resolver.js";
+import { resolverFindUser } from "../../User/findUser.resolver.js";
+import { resolverGetUser } from "../../User/getUser.resolver.js";
 import { resolverFindUncheckedYoutubeRegistrationRequests } from "../../YoutubeRegistrationRequest/findUncheckedYoutubeRegistrationRequests.resolver.js";
 import { resolverFindYoutubeRegistrationRequest } from "../../YoutubeRegistrationRequest/findYoutubeRegistrationRequest.resolver.js";
 import { resolverGetYoutubeRegistrationRequest } from "../../YoutubeRegistrationRequest/getYoutubeRegistrationRequest.resolver.js";
@@ -20,7 +22,6 @@ import { findTag } from "./findTag/findTag.js";
 import { findTags } from "./findTags/findTags.js";
 import { resolverFindUncheckedNicovideoRegistrationRequests } from "./findUncheckedNicovideoRegistrationRequests/resolver.js";
 import { resolverFindUncheckedNicovideoRegistrationRequestsByOffset } from "./findUncheckedNicovideoRegistrationRequestsByOffset/resolver.js";
-import { findUser } from "./findUser/findUser.js";
 import { findVideo } from "./findVideo/findVideos.js";
 import { findVideos } from "./findVideos/findVideos.js";
 import { resolverGetAllCategoryTag } from "./getAllCategoryTag/resolver.js";
@@ -32,7 +33,6 @@ import { getNicovideoVideoSource } from "./getNicovideoVideoSource/resolver.js";
 import { getNotification } from "./getNotification/resolver.js";
 import { resolverGetSemitag } from "./getSemitag/resolver.js";
 import { getTag } from "./getTag/resolver.js";
-import { getUser } from "./getUser/resolver.js";
 import { getVideo } from "./getVideo/resolver.js";
 import { resolverNotifications } from "./notifications/resolver.js";
 import { searchTags } from "./searchTags/resolver.js";
@@ -55,7 +55,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
     findUncheckedNicovideoRegistrationRequestsByOffset:
       resolverFindUncheckedNicovideoRegistrationRequestsByOffset(deps),
     findUncheckedYoutubeRegistrationRequests: resolverFindUncheckedYoutubeRegistrationRequests(deps),
-    findUser: findUser(deps),
+    findUser: resolverFindUser(deps),
     findVideo: findVideo(deps),
     findVideos: findVideos(deps),
     findYoutubeRegistrationRequest: resolverFindYoutubeRegistrationRequest(deps),
@@ -70,7 +70,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
     getSemitag: resolverGetSemitag(deps),
     getSoundcloudVideoSource: getSoundcloudVideoSource(deps),
     getTag: getTag(deps),
-    getUser: getUser(deps),
+    getUser: resolverGetUser(deps),
     getVideo: getVideo(deps),
     getYoutubeRegistrationRequest: resolverGetYoutubeRegistrationRequest(deps),
     getYoutubeVideoSource: getYoutubeVideoSource(deps),

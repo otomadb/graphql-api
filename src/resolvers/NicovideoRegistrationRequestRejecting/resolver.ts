@@ -5,8 +5,8 @@ import { ResolverDeps } from "../types.js";
 
 export const resolverNicovideoRegistrationRequestRejecting = ({
   prisma,
-  userRepository,
-}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+  userService,
+}: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     request: ({ requestId }) =>
       prisma.nicovideoRegistrationRequest
@@ -15,5 +15,5 @@ export const resolverNicovideoRegistrationRequestRejecting = ({
         .catch(() => {
           throw new GraphQLNotExistsInDBError("NicovideoRegistrationRequest", requestId);
         }),
-    rejectedBy: async ({ checkedById }) => userRepository.getById(checkedById),
+    rejectedBy: async ({ checkedById }) => userService.getById(checkedById),
   } satisfies Resolvers["NicovideoRegistrationRequestRejecting"]);

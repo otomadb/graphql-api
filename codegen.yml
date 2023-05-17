@@ -68,7 +68,7 @@ generates:
         TagRegisterEvent: ./TagEvent/model.js#TagEventModel
         TagSearchItemByName: ./TagSearchItemByName/model.js#TagSearchItemByNameModel
         TypeCategoryTag: ./TypeCategoryTag/model.js#TypeCategoryTagModel
-        User: ./User/model.js#UserModel
+        User: ../User/dto.js#UserDTO
         Video: ./Video/model.js#VideoModel
         VideoAddNicovideoSourceEvent: ./VideoEvent/model.js#VideoEventModel
         VideoConnection: ./VideoConnection/model.js#VideoConnectionModel
