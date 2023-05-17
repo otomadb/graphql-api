@@ -17,9 +17,9 @@ import z from "zod";
 
 import { makeResolvers } from "./resolvers/index.js";
 import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
-import { UserModel } from "./resolvers/User/model.js";
 import typeDefs from "./schema.graphql";
 import { SoundcloudService } from "./SoundcloudVideoSource/service.js";
+import { UserModel } from "./User/model.js";
 
 const jwksClient = createJwksClient({
   jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`,

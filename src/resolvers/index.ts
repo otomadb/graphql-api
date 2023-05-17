@@ -3,6 +3,7 @@
 import { resolveSoundcloudVideoSource } from "../SoundcloudVideoSource/SoundcloudVideoSource.resolver.js";
 import { resolveSoundcloudVideoSourceEvent } from "../SoundcloudVideoSource/SoundcloudVideoSourceEvent.resolver.js";
 import { resolverSoundcloudVideoSourceEventConnection } from "../SoundcloudVideoSource/SoundcloudVideoSourceEventConnection.resolver.js";
+import { resolveUser } from "../User/User.resolver.js";
 import { type Resolvers } from "./graphql.js";
 import { resolveMutation } from "./Mutation/index.js";
 import { resolveMylist } from "./Mylist/index.js";
@@ -54,7 +55,6 @@ import { resolverTagParentConnection } from "./TagParentConnection/resolver.js";
 import { resolverTagSearchItemByName } from "./TagSearchItemByName/resolver.js";
 import { resolverTypeCategoryTag } from "./TypeCategoryTag/resolver.js";
 import { ResolverDeps } from "./types.js";
-import { resolveUser } from "./User/index.js";
 import { resolveVideo } from "./Video/index.js";
 import { resolverVideoConnection } from "./VideoConnection/resolver.js";
 import { resolveVideoEvent, resolveVideoRegisterEvent } from "./VideoEvent/index.js";
