@@ -1,8 +1,8 @@
 import { GraphQLError } from "graphql";
 
-import { QueryResolvers } from "../../graphql.js";
-import { ResolverDeps } from "../../types.js";
-import { YoutubeVideoSourceModel } from "../../YoutubeVideoSource/model.js";
+import { QueryResolvers } from "../resolvers/graphql.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { YoutubeVideoSourceDTO } from "./dto.js";
 
 export const resolverFindYoutubeVideoSource = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async (_, { sourceId }, { currentUser: ctxUser }, info) => {
@@ -17,5 +17,5 @@ export const resolverFindYoutubeVideoSource = ({ prisma, logger }: Pick<Resolver
       return null;
     }
 
-    return YoutubeVideoSourceModel.fromPrisma(source);
+    return YoutubeVideoSourceDTO.fromPrisma(source);
   }) satisfies QueryResolvers["findYoutubeVideoSource"];

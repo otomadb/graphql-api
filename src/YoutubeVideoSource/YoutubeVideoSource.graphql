@@ -1,3 +1,61 @@
+type YoutubeVideoSource implements Node & VideoSource {
+  id: ID!
+  sourceId: String!
+  video: Video!
+
+  url: String!
+  embedUrl: String!
+
+  events(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    orderBy: YoutubeVideoSourceEventsOrderBy!
+  ): YoutubeVideoSourceEventConnection!
+}
+
+input YoutubeVideoSourceEventsOrderBy {
+  createdAt: SortOrder
+}
+
+type YoutubeVideoSourceEventConnection {
+  nodes: [YoutubeVideoSourceEvent!]!
+  edges: [YoutubeVideoSourceEventEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type YoutubeVideoSourceEventEdge {
+  cursor: String!
+  node: YoutubeVideoSourceEvent!
+}
+
+interface YoutubeVideoSourceEvent implements Node & Event {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  source: YoutubeVideoSource!
+}
+
+type YoutubeVideoSourceCreateEvent implements Node & Event & YoutubeVideoSourceEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  source: YoutubeVideoSource!
+}
+
+type Query {
+  findYoutubeVideoSource(sourceId: String): YoutubeVideoSource
+  getYoutubeVideoSource(id: ID!): YoutubeVideoSource!
+}
+
 type Mutation {
   registerVideoFromYoutube(input: RegisterVideoFromYoutubeInput!): RegisterVideoFromYoutubePayload!
     @auth(scopes: ["create:video"])

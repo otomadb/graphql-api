@@ -98,10 +98,10 @@ generates:
         YoutubeRegistrationRequestConnection: ./YoutubeRegistrationRequestConnection/model.js#YoutubeRegistrationRequestConnectionModel
         YoutubeRegistrationRequestRejecting: ./YoutubeRegistrationRequestRejecting/model.js#YoutubeRegistrationRequestRejectingModel
         YoutubeRegistrationRequestRejectingNotification: ./Notification/model.js#NotificationModel
-        YoutubeVideoSource: ./YoutubeVideoSource/model.js#YoutubeVideoSourceModel
-        YoutubeVideoSourceCreateEvent: ./YoutubeVideoSourceEvent/model.js#YoutubeVideoSourceEventModel
-        YoutubeVideoSourceEvent: ./YoutubeVideoSourceEvent/model.js#YoutubeVideoSourceEventModel
-        YoutubeVideoSourceEventConnection: ./YoutubeVideoSourceEventConnection/model.js#YoutubeVideoSourceEventConnectionModel
+        YoutubeVideoSource: ../YoutubeVideoSource/dto.js#YoutubeVideoSourceDTO
+        YoutubeVideoSourceCreateEvent: ../YoutubeVideoSource/dto.js#YoutubeVideoSourceEventDTO
+        YoutubeVideoSourceEvent: ../YoutubeVideoSource/dto.js#YoutubeVideoSourceEventDTO
+        YoutubeVideoSourceEventConnection: ../YoutubeVideoSource/dto.js#YoutubeVideoSourceEventConnectionDTO
       makeResolverTypeCallable: true
     plugins:
       - typescript

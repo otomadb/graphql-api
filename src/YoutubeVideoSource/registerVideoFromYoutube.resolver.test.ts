@@ -20,10 +20,10 @@ import {
 } from "@prisma/client";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
-import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import { isOk, OkData, ReturnOk } from "../../../utils/Result.js";
-import { ResolverDeps } from "../../types.js";
-import { register } from "./prisma.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { cleanPrisma } from "../test/cleanPrisma.js";
+import { isOk, OkData, ReturnOk } from "../utils/Result.js";
+import { register } from "./registerVideoFromYoutube.resolver.js";
 
 describe("Register video by Prisma", () => {
   let prisma: ResolverDeps["prisma"];
