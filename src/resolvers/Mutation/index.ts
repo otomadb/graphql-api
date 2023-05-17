@@ -1,5 +1,6 @@
 /* eslint sort-keys: 2 */
 
+import { resolverRegisterMadFromSoundcloud } from "../../SoundcloudVideoSource/registerMadFromSoundcloud.resolver.js";
 import { type Resolvers } from "../graphql.js";
 import { ResolverDeps } from "../types.js";
 import { addMylistToMylistGroup } from "./addMylistToMylistGroup/addMylistToMylistGroup.js";
@@ -44,6 +45,7 @@ export const resolveMutation = (deps: ResolverDeps) =>
     likeVideo: resolverLikeVideo(deps),
     registerCategoryTag: registerCategoryTag(deps),
     registerCategoryTagTyping: resolverRegisterCategoryTagTyping(deps),
+    registerMadFromSoundcloud: resolverRegisterMadFromSoundcloud(deps),
     registerTag: resolverRegisterTag(deps),
     registerTagParentRelation: resolverRegisterTagParentRelation(deps),
     registerVideoFromNicovideo: resolverRegisterVideoFromNicovideo(deps),

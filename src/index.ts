@@ -19,7 +19,7 @@ import { makeResolvers } from "./resolvers/index.js";
 import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
 import { UserModel } from "./resolvers/User/model.js";
 import typeDefs from "./schema.graphql";
-import { makeSoundcloudService } from "./Soundcloud/service.js";
+import { SoundcloudService } from "./SoundcloudVideoSource/service.js";
 
 const jwksClient = createJwksClient({
   jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`,
@@ -84,7 +84,7 @@ const yoga = createYoga<ServerContext, UserContext>({
   schema: createSchema({
     typeDefs,
     resolvers: makeResolvers({
-      soundcloudService: makeSoundcloudService({
+      soundcloudService: SoundcloudService.make({
         env: { clientId: process.env.SOUNDCLOUD_CLIENT_ID },
       }),
 

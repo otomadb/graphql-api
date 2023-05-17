@@ -1,5 +1,6 @@
 import { GraphQLError } from "graphql";
 
+import { SoundcloudService } from "../../../SoundcloudVideoSource/service.js";
 import { isErr } from "../../../utils/Result.js";
 import { QueryResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../types.js";
@@ -20,7 +21,7 @@ export const resolverFetchSoundcloud = ({
 
     return {
       source: {
-        artworkUrl: sc.enlargeArtwork(value.artwork_url),
+        artworkUrl: SoundcloudService.enlargeArtwork(value.artwork_url),
         sourceId: value.id.toString(),
         title: value.title,
         uri: value.uri,

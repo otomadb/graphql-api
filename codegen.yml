@@ -1,6 +1,8 @@
 # codegen.yml
 schema:
   - ./src/resolvers/**/*.graphql
+  - ./src/**/*.graphql
+  - "!./src/schema.graphql"
 emitLegacyCommonJSImports: false
 generates:
   ./src/schema.graphql:
@@ -46,6 +48,10 @@ generates:
         SemitagResolveEvent: ./SemitagEvent/model.js#SemitagEventModel
         SemitagResolving: ./SemitagResolving/model.js#SemitagResolvingModel
         SemitagSuggestTagsItem: ./SemitagSuggestTagsItem/model.js#SemitagSuggestTagsItemModel
+        SoundcloudVideoSource: ../SoundcloudVideoSource/dto.js#SoundcloudVideoSourceDTO
+        SoundcloudVideoSourceCreateEvent: ../SoundcloudVideoSource/dto.js#SoundcloudVideoSourceEventDTO
+        SoundcloudVideoSourceEvent: ../SoundcloudVideoSource/dto.js#SoundcloudVideoSourceEventDTO
+        SoundcloudVideoSourceEventConnection: ../SoundcloudVideoSource/dto.js#SoundcloudVideoSourceEventConnectionDTO
         Tag: ./Tag/model.js#TagModel
         TagEvent: ./TagEvent/model.js#TagEventModel
         TagName: ./TagName/model.js#TagNameModel

@@ -6,7 +6,7 @@ import { MeiliSearch } from "meilisearch";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 import { Logger } from "pino";
 
-import { makeSoundcloudService } from "../Soundcloud/service.js";
+import { SoundcloudService } from "../SoundcloudVideoSource/service.js";
 import { UserModel } from "./User/model.js";
 
 export type Auth0User = User<AppMetadata, UserMetadata>;
@@ -18,7 +18,7 @@ export type ResolverDeps = {
   logger: Logger;
   userRepository: ReturnType<typeof UserModel.makeRepository>;
 
-  soundcloudService: ReturnType<typeof makeSoundcloudService>;
+  soundcloudService: SoundcloudService;
 };
 export type ServerContext = {
   req: IncomingMessage;

@@ -1,5 +1,6 @@
 /* eslint sort-keys: [2, "asc", {caseSensitive: false}] */
 
+import { getSoundcloudVideoSource } from "../../SoundcloudVideoSource/getSoundcloudVideoSource.resolver.js";
 import { type Resolvers } from "../graphql.js";
 import { ResolverDeps } from "../types.js";
 import { fetchNicovideo } from "./fetchNicovideo/fetchNicovideo.js";
@@ -67,6 +68,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
     getNicovideoVideoSource: getNicovideoVideoSource(deps),
     getNotification: getNotification(deps),
     getSemitag: resolverGetSemitag(deps),
+    getSoundcloudVideoSource: getSoundcloudVideoSource(deps),
     getTag: getTag(deps),
     getUser: getUser(deps),
     getVideo: getVideo(deps),
