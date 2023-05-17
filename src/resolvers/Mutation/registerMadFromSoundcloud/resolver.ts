@@ -1,18 +1,20 @@
+import { GraphQLError } from "graphql";
+
 import { checkDuplicate } from "../../../utils/checkDuplicate.js";
 import { isErr } from "../../../utils/Result.js";
-import { MutationResolvers, RegisterVideoFromSoundcloudFailedMessage, ResolversTypes } from "../../graphql.js";
+import { MutationResolvers, ResolversTypes } from "../../graphql.js";
 import { parseGqlIDs3 } from "../../id.js";
 import { ResolverDeps } from "../../types.js";
 import { VideoModel } from "../../Video/model.js";
 import { registerVideoInNeo4j as registerInNeo4j } from "./neo4j.js";
 import { register } from "./prisma.js";
 
-export const resolverRegisterVideoFromSoundcloud = ({
+export const resolverRegisterMadFromSoundcloud = ({
   prisma,
   logger,
   neo4j,
 }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
-  (async (_parent, { input }, { currentUser: user }) => {
+  (async (_parent, { input }, { currentUser: user }, info) => {
     // TagのIDの妥当性及び重複チェック
     const tagIds = parseGqlIDs3("Tag", input.tagIds);
     if (isErr(tagIds)) {
@@ -21,21 +23,21 @@ export const resolverRegisterVideoFromSoundcloud = ({
           return {
             __typename: "MutationInvalidTagIdError",
             tagId: tagIds.error.type,
-          } satisfies ResolversTypes["RegisterVideoFromSoundcloudPayload"];
+          } satisfies ResolversTypes["RegisterMadFromSoundcloudPayload"];
         case "DUPLICATED":
           return {
-            __typename: "RegisterVideoFromSoundcloudTagIdsDuplicatedError",
+            __typename: "RegisterMadFromSoundcloudTagIdsDuplicatedError",
             tagId: tagIds.error.duplicatedId,
-          } satisfies ResolversTypes["RegisterVideoFromSoundcloudPayload"];
+          } satisfies ResolversTypes["RegisterMadFromSoundcloudPayload"];
       }
     }
     // Semitagのnameの重複チェック
     const semitagNames = checkDuplicate(input.semitagNames);
     if (isErr(semitagNames)) {
       return {
-        __typename: "RegisterVideoFromSoundcloudSemitagNamesDuplicatedError",
+        __typename: "RegisterMadFromSoundcloudSemitagNamesDuplicatedError",
         name: semitagNames.error,
-      } satisfies ResolversTypes["RegisterVideoFromSoundcloudPayload"];
+      } satisfies ResolversTypes["RegisterMadFromSoundcloudPayload"];
     }
 
     /*
@@ -43,9 +45,9 @@ export const resolverRegisterVideoFromSoundcloud = ({
     for (const id of input.sourceIds) {
       if (!isValidSoundcloudSourceId(id))
         return {
-          __typename: "RegisterVideoFromSoundcloudInvalidSoundcloudSourceIdError",
+          __typename: "RegisterMadFromSoundcloudInvalidSoundcloudSourceIdError",
           sourceID: id,
-        } satisfies ResolversTypes["RegisterVideoFromSoundcloudPayload"];
+        } satisfies ResolversTypes["RegisterMadFromSoundcloudPayload"];
     }
     */
 
@@ -65,12 +67,10 @@ export const resolverRegisterVideoFromSoundcloud = ({
           return {
             __typename: "MutationTagNotFoundError",
             tagId: result.error.tagId,
-          } satisfies ResolversTypes["RegisterVideoFromSoundcloudPayload"];
+          } satisfies ResolversTypes["RegisterMadFromSoundcloudPayload"];
         case "INTERNAL_SERVER_ERROR":
-          return {
-            __typename: "RegisterVideoFromSoundcloudOtherErrorsFallback",
-            message: RegisterVideoFromSoundcloudFailedMessage.InternalServerError,
-          } satisfies ResolversTypes["RegisterVideoFromSoundcloudPayload"];
+          logger.error({ error: result.error, path: info.path }, "Internal Server Error");
+          throw new GraphQLError("Internal Server Error");
       }
     }
 
@@ -78,7 +78,7 @@ export const resolverRegisterVideoFromSoundcloud = ({
     await registerInNeo4j({ prisma, logger, neo4j }, video.id);
 
     return {
-      __typename: "RegisterVideoFromSoundcloudSucceededPayload",
-      video: new VideoModel(video),
-    } satisfies ResolversTypes["RegisterVideoFromSoundcloudPayload"];
-  }) satisfies MutationResolvers["registerVideoFromSoundcloud"];
+      __typename: "RegisterMadFromSoundcloudSucceededPayload",
+      mad: new VideoModel(video),
+    } satisfies ResolversTypes["RegisterMadFromSoundcloudPayload"];
+  }) satisfies MutationResolvers["registerMadFromSoundcloud"];
