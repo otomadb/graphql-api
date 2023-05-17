@@ -1,10 +1,10 @@
 import { GraphQLError } from "graphql";
 
-import { Resolvers } from "../graphql.js";
-import { GraphQLNotExistsInDBError } from "../id.js";
-import { ResolverDeps } from "../types.js";
-import { VideoModel } from "../Video/model.js";
-import { YoutubeRegistrationRequestModel } from "../YoutubeRegistrationRequest/model.js";
+import { Resolvers } from "../resolvers/graphql.js";
+import { GraphQLNotExistsInDBError } from "../resolvers/id.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { VideoModel } from "../resolvers/Video/model.js";
+import { YoutubeRegistrationRequestDTO } from "./dto.js";
 
 export const resolverYoutubeRegistrationRequestAccepting = ({
   prisma,
@@ -15,7 +15,7 @@ export const resolverYoutubeRegistrationRequestAccepting = ({
     request: ({ requestId }) =>
       prisma.youtubeRegistrationRequest
         .findUniqueOrThrow({ where: { id: requestId } })
-        .then((u) => YoutubeRegistrationRequestModel.fromPrisma(u))
+        .then((u) => YoutubeRegistrationRequestDTO.fromPrisma(u))
         .catch(() => {
           throw new GraphQLNotExistsInDBError("YoutubeRegistrationRequest", requestId);
         }),

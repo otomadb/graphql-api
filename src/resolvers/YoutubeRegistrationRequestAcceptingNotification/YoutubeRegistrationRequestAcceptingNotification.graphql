@@ -1,8 +1,0 @@
-type YoutubeRegistrationRequestAcceptingNotification implements Node & Notification {
-  id: ID!
-  createdAt: DateTime!
-  notifyTo: User!
-  watched: Boolean!
-
-  accepting: YoutubeRegistrationRequestAccepting!
-}

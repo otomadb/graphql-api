@@ -1,10 +1,10 @@
 import { GraphQLError } from "graphql";
 import z from "zod";
 
-import { Resolvers } from "../graphql.js";
-import { resolverNotification } from "../Notification/resolver.js";
-import { ResolverDeps } from "../types.js";
-import { YoutubeRegistrationRequestRejectingModel } from "../YoutubeRegistrationRequestRejecting/model.js";
+import { Resolvers } from "../resolvers/graphql.js";
+import { resolverNotification } from "../resolvers/Notification/resolver.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { YoutubeRegistrationRequestRejectingDTO } from "./dto.js";
 
 export const resolverYoutubeRegistrationRequestRejectingNotification = ({
   prisma,
@@ -24,7 +24,7 @@ export const resolverYoutubeRegistrationRequestRejectingNotification = ({
       }
       return prisma.youtubeRegistrationRequestChecking
         .findUniqueOrThrow({ where: { id: p.data.id } })
-        .then((c) => YoutubeRegistrationRequestRejectingModel.fromPrisma(c))
+        .then((c) => YoutubeRegistrationRequestRejectingDTO.fromPrisma(c))
         .catch((e) => {
           logger.error({ error: e, path: info.path }, "Accepting not found");
           throw new GraphQLError("Something wrong happened");

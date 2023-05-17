@@ -1,7 +1,7 @@
-import { Resolvers } from "../graphql.js";
-import { buildGqlId } from "../id.js";
-import { TagModel } from "../Tag/model.js";
-import { ResolverDeps } from "../types.js";
+import { Resolvers } from "../resolvers/graphql.js";
+import { buildGqlId } from "../resolvers/id.js";
+import { TagModel } from "../resolvers/Tag/model.js";
+import { ResolverDeps } from "../resolvers/types.js";
 
 export const resolverYoutubeRegistrationRequest = ({
   prisma,

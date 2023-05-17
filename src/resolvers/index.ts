@@ -3,6 +3,12 @@
 import { resolveSoundcloudVideoSource } from "../SoundcloudVideoSource/SoundcloudVideoSource.resolver.js";
 import { resolveSoundcloudVideoSourceEvent } from "../SoundcloudVideoSource/SoundcloudVideoSourceEvent.resolver.js";
 import { resolverSoundcloudVideoSourceEventConnection } from "../SoundcloudVideoSource/SoundcloudVideoSourceEventConnection.resolver.js";
+import { resolverYoutubeRegistrationRequest } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequest.resolver.js";
+import { resolverYoutubeRegistrationRequestAccepting } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestAccepting.resolver.js";
+import { resolverYoutubeRegistrationRequestAcceptingNotification } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestAcceptingNotification.resolver.js";
+import { resolverYoutubeRegistrationRequestConnection } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestConnection.resolver.js";
+import { resolverYoutubeRegistrationRequestRejecting } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestRejecting.resolver.js";
+import { resolverYoutubeRegistrationRequestRejectingNotification } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestRejectingNotification.resolver.js";
 import { resolveYoutubeVideoSource } from "../YoutubeVideoSource/YoutubeVideoSource.resolver.js";
 import {
   resolveYoutubeVideoSourceCreateEvent,
@@ -87,12 +93,6 @@ import {
   resolveVideoTitleSetPrimaryEvent,
   resolveVideoTitleUnsetPrimaryEvent,
 } from "./VideoTitleEvent/index.js";
-import { resolverYoutubeRegistrationRequest } from "./YoutubeRegistrationRequest/resolver.js";
-import { resolverYoutubeRegistrationRequestAccepting } from "./YoutubeRegistrationRequestAccepting/resolver.js";
-import { resolverYoutubeRegistrationRequestAcceptingNotification } from "./YoutubeRegistrationRequestAcceptingNotification/resolver.js";
-import { resolverYoutubeRegistrationRequestConnection } from "./YoutubeRegistrationRequestConnection/resolver.js";
-import { resolverYoutubeRegistrationRequestRejecting } from "./YoutubeRegistrationRequestRejecting/resolver.js";
-import { resolverYoutubeRegistrationRequestRejectingNotification } from "./YoutubeRegistrationRequestRejectingNotification/resolver.js";
 
 export const makeResolvers = (deps: ResolverDeps) =>
   ({

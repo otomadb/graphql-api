@@ -1,13 +1,13 @@
-import { Resolvers } from "../graphql.js";
-import { YoutubeRegistrationRequestModel } from "../YoutubeRegistrationRequest/model.js";
+import { Resolvers } from "../resolvers/graphql.js";
+import { YoutubeRegistrationRequestDTO } from "./dto.js";
 
 export const resolverYoutubeRegistrationRequestConnection = () =>
   ({
-    nodes: ({ nodes }) => nodes.map((n) => YoutubeRegistrationRequestModel.fromPrisma(n)),
+    nodes: ({ nodes }) => nodes.map((n) => YoutubeRegistrationRequestDTO.fromPrisma(n)),
     edges: ({ edges }) =>
       edges.map(({ cursor, node }) => ({
         cursor,
-        node: YoutubeRegistrationRequestModel.fromPrisma(node),
+        node: YoutubeRegistrationRequestDTO.fromPrisma(node),
       })),
     pageInfo: ({ pageInfo }) => pageInfo,
     totalCount: ({ totalCount }) => totalCount,

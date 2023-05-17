@@ -1,0 +1,106 @@
+type YoutubeRegistrationRequestRejectingNotification implements Node & Notification {
+  id: ID!
+  createdAt: DateTime!
+  notifyTo: User!
+  watched: Boolean!
+
+  rejecting: YoutubeRegistrationRequestRejecting!
+}
+type YoutubeRegistrationRequestRejecting {
+  request: YoutubeRegistrationRequest!
+
+  note: String
+
+  rejectedBy: User!
+}
+type YoutubeRegistrationRequestConnection {
+  nodes: [YoutubeRegistrationRequest!]!
+  edges: [YoutubeRegistrationRequestEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type YoutubeRegistrationRequestEdge {
+  cursor: String!
+  node: YoutubeRegistrationRequest!
+}
+type YoutubeRegistrationRequestAcceptingNotification implements Node & Notification {
+  id: ID!
+  createdAt: DateTime!
+  notifyTo: User!
+  watched: Boolean!
+
+  accepting: YoutubeRegistrationRequestAccepting!
+}
+type YoutubeRegistrationRequestAccepting {
+  request: YoutubeRegistrationRequest!
+
+  note: String
+  video: Video!
+
+  acceptedBy: User!
+}
+type YoutubeRegistrationRequest {
+  id: ID!
+  title: String!
+
+  requestedBy: User!
+
+  sourceId: String!
+
+  title: String!
+  thumbnailUrl: String!
+
+  taggings: [YoutubeRegistrationRequestTagging!]!
+  semitaggings: [YoutubeRegistrationRequestSemitagging!]!
+
+  checked: Boolean!
+  checking: YoutubeRegistrationRequestChecking
+
+  originalUrl: String!
+  embedUrl: String!
+}
+
+type YoutubeRegistrationRequestTagging {
+  id: ID!
+  tag: Tag!
+  note: String
+}
+
+type YoutubeRegistrationRequestSemitagging {
+  id: ID!
+  name: String!
+  note: String
+}
+
+union YoutubeRegistrationRequestChecking = YoutubeRegistrationRequestAccepting | YoutubeRegistrationRequestRejecting
+type Query {
+  getYoutubeRegistrationRequest(id: ID!): YoutubeRegistrationRequest!
+}
+type Query {
+  findYoutubeRegistrationRequest(input: FindYoutubeRegistrationRequestInput): YoutubeRegistrationRequest
+}
+
+input FindYoutubeRegistrationRequestInput {
+  id: ID
+  sourceId: String
+}
+type Query {
+  findUncheckedYoutubeRegistrationRequests(
+    input: FindUncheckedYoutubeRegistrationRequestsInput!
+  ): YoutubeRegistrationRequestConnection!
+}
+
+input FindUncheckedYoutubeRegistrationRequestsInput {
+  first: Int
+  after: String
+
+  last: Int
+  before: String
+
+  orderBy: FindUncheckedYoutubeRegistrationRequestsOrderBy! = { createdAt: DESC }
+}
+
+input FindUncheckedYoutubeRegistrationRequestsOrderBy {
+  createdAt: SortOrder
+}

@@ -1,10 +1,10 @@
 import { GraphQLError } from "graphql";
 import z from "zod";
 
-import { QueryResolvers } from "../../graphql.js";
-import { parseGqlID } from "../../id.js";
-import { ResolverDeps } from "../../types.js";
-import { YoutubeRegistrationRequestModel } from "../../YoutubeRegistrationRequest/model.js";
+import { QueryResolvers } from "../resolvers/graphql.js";
+import { parseGqlID } from "../resolvers/id.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { YoutubeRegistrationRequestDTO } from "./dto.js";
 
 export const resolverFindYoutubeRegistrationRequest = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async (_, { input: unparsedInput }, { currentUser: ctxUser }, info) => {
@@ -23,7 +23,7 @@ export const resolverFindYoutubeRegistrationRequest = ({ prisma, logger }: Pick<
         logger.info({ path: info.path, id: input.id, userId: ctxUser?.id }, "Not found");
         return null;
       }
-      return YoutubeRegistrationRequestModel.fromPrisma(req);
+      return YoutubeRegistrationRequestDTO.fromPrisma(req);
     } else {
       const req = await prisma.youtubeRegistrationRequest.findUnique({
         where: { sourceId: input.sourceId },
@@ -32,6 +32,6 @@ export const resolverFindYoutubeRegistrationRequest = ({ prisma, logger }: Pick<
         logger.info({ path: info.path, sourceId: input.sourceId, userId: ctxUser?.id }, "Not found");
         return null;
       }
-      return YoutubeRegistrationRequestModel.fromPrisma(req);
+      return YoutubeRegistrationRequestDTO.fromPrisma(req);
     }
   }) satisfies QueryResolvers["findYoutubeRegistrationRequest"];

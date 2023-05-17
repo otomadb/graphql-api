@@ -1,6 +1,8 @@
 /* eslint sort-keys: [2, "asc", {caseSensitive: false}] */
 
 import { getSoundcloudVideoSource } from "../../SoundcloudVideoSource/getSoundcloudVideoSource.resolver.js";
+import { resolverFindYoutubeRegistrationRequest } from "../../YoutubeRegistrationRequest/findYoutubeRegistrationRequest.resolver.js";
+import { resolverGetYoutubeRegistrationRequest } from "../../YoutubeRegistrationRequest/getYoutubeRegistrationRequest.resolver.js";
 import { resolverFindYoutubeVideoSource } from "../../YoutubeVideoSource/findYoutubeVideoSource.resolver.js";
 import { getYoutubeVideoSource } from "../../YoutubeVideoSource/getYoutubeVideoSource.resolver.js";
 import { type Resolvers } from "../graphql.js";
@@ -17,11 +19,10 @@ import { findTag } from "./findTag/findTag.js";
 import { findTags } from "./findTags/findTags.js";
 import { resolverFindUncheckedNicovideoRegistrationRequests } from "./findUncheckedNicovideoRegistrationRequests/resolver.js";
 import { resolverFindUncheckedNicovideoRegistrationRequestsByOffset } from "./findUncheckedNicovideoRegistrationRequestsByOffset/resolver.js";
-import { resolverFindUncheckedYoutubeRegistrationRequests } from "./findUncheckedYoutubeRegistrationRequests/resolver.js";
+import { resolverFindUncheckedYoutubeRegistrationRequests } from "../../YoutubeRegistrationRequest/findUncheckedYoutubeRegistrationRequests.resolver.js";
 import { findUser } from "./findUser/findUser.js";
 import { findVideo } from "./findVideo/findVideos.js";
 import { findVideos } from "./findVideos/findVideos.js";
-import { resolverFindYoutubeRegistrationRequest } from "./findYoutubeRegistrationRequest/resolver.js";
 import { resolverGetAllCategoryTag } from "./getAllCategoryTag/resolver.js";
 import { resolverGetAllTypeCategoryTag } from "./getAllTypeCategoryTag/resolver.js";
 import { getMylist } from "./getMylist/resolver.js";
@@ -33,7 +34,6 @@ import { resolverGetSemitag } from "./getSemitag/resolver.js";
 import { getTag } from "./getTag/resolver.js";
 import { getUser } from "./getUser/resolver.js";
 import { getVideo } from "./getVideo/resolver.js";
-import { resolverGetYoutubeRegistrationRequest } from "./getYoutubeRegistrationRequest/resolver.js";
 import { resolverNotifications } from "./notifications/resolver.js";
 import { searchTags } from "./searchTags/resolver.js";
 import { searchVideos } from "./searchVideos/resolver.js";
