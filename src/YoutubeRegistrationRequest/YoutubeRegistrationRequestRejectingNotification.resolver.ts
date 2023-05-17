@@ -1,12 +1,12 @@
 import { GraphQLError } from "graphql";
 import z from "zod";
 
-import { Resolvers } from "../graphql.js";
-import { NicovideoRegistrationRequestRejectingModel } from "../NicovideoRegistrationRequestRejecting/model.js";
-import { resolverNotification } from "../Notification/resolver.js";
-import { ResolverDeps } from "../types.js";
+import { Resolvers } from "../resolvers/graphql.js";
+import { resolverNotification } from "../resolvers/Notification/resolver.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { YoutubeRegistrationRequestRejectingDTO } from "./dto.js";
 
-export const resolverNicovideoRegistrationRequestRejectingNotification = ({
+export const resolverYoutubeRegistrationRequestRejectingNotification = ({
   prisma,
   logger,
   userService,
@@ -22,12 +22,12 @@ export const resolverNicovideoRegistrationRequestRejectingNotification = ({
         );
         throw new GraphQLError("Something wrong happened");
       }
-      return prisma.nicovideoRegistrationRequestChecking
+      return prisma.youtubeRegistrationRequestChecking
         .findUniqueOrThrow({ where: { id: p.data.id } })
-        .then((c) => NicovideoRegistrationRequestRejectingModel.fromPrisma(c))
+        .then((c) => YoutubeRegistrationRequestRejectingDTO.fromPrisma(c))
         .catch((e) => {
           logger.error({ error: e, path: info.path }, "Accepting not found");
           throw new GraphQLError("Something wrong happened");
         });
     },
-  } satisfies Resolvers["NicovideoRegistrationRequestRejectingNotification"]);
+  } satisfies Resolvers["YoutubeRegistrationRequestRejectingNotification"]);

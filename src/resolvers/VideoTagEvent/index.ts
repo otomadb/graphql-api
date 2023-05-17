@@ -8,11 +8,11 @@ import { VideoTagModel } from "../VideoTag/model.js";
 
 export const resolveVideoTagEventCommonProps = ({
   prisma,
-  userRepository,
-}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+  userService,
+}: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     id: ({ id }): string => buildGqlId("VideoTagEvent", id),
-    user: async ({ userId }) => userRepository.getById(userId),
+    user: async ({ userId }) => userService.getById(userId),
     videoTag: ({ videoTagId }) =>
       prisma.videoTag
         .findUniqueOrThrow({ where: { id: videoTagId } })
@@ -38,17 +38,17 @@ export const resolveVideoTagEvent = () =>
     },
   } satisfies Resolvers["VideoTagEvent"]);
 
-export const resolveVideoTagAttachEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+export const resolveVideoTagAttachEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveVideoTagEventCommonProps(deps),
   } satisfies Resolvers["VideoTagAttachEvent"]);
 
-export const resolveVideoTagReattachEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+export const resolveVideoTagReattachEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveVideoTagEventCommonProps(deps),
   } satisfies Resolvers["VideoTagReattachEvent"]);
 
-export const resolveVideoTagDetachEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+export const resolveVideoTagDetachEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveVideoTagEventCommonProps(deps),
   } satisfies Resolvers["VideoTagDetachEvent"]);

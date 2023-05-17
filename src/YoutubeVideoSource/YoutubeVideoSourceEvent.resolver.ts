@@ -7,11 +7,11 @@ import { YoutubeVideoSourceDTO } from "./dto.js";
 
 export const resolveYoutubeVideoSourceEventCommonProps = ({
   prisma,
-  userRepository,
-}: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+  userService,
+}: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     id: ({ id }): string => buildGqlId("YoutubeVideoSourceEvent", id),
-    user: async ({ userId }) => userRepository.getById(userId),
+    user: async ({ userId }) => userService.getById(userId),
     source: ({ sourceId: videoSourceId }) =>
       prisma.youtubeVideoSource
         .findUniqueOrThrow({ where: { id: videoSourceId } })
@@ -31,5 +31,5 @@ export const resolveYoutubeVideoSourceEvent = () =>
     },
   } satisfies Resolvers["YoutubeVideoSourceEvent"]);
 
-export const resolveYoutubeVideoSourceCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userRepository">) =>
+export const resolveYoutubeVideoSourceCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({ ...resolveYoutubeVideoSourceEventCommonProps(deps) } satisfies Resolvers["YoutubeVideoSourceCreateEvent"]);

@@ -1,0 +1,59 @@
+type User implements Node {
+  id: ID!
+  name: String!
+  displayName: String!
+  icon: String!
+
+  mylist(id: ID!): Mylist
+
+  isEditor: Boolean! @deprecated(reason: "Use hasRole instead.")
+  isAdministrator: Boolean! @deprecated(reason: "Use hasRole instead.")
+
+  nicovideoRegistrationRequests(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    orderBy: UserNicovideoRegistrationRequestsOrderBy! = { createdAt: DESC }
+  ): NicovideoRegistrationRequestConnection!
+
+  mylists(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    range: [MylistShareRange!]! = [PUBLIC]
+
+    orderBy: UserMylistsOrderBy! = { createdAt: DESC }
+  ): MylistConnection!
+
+  likes: Mylist
+
+  hasRole(role: UserRole!): Boolean
+}
+
+enum UserRole {
+  EDITOR
+  ADMIN
+}
+
+input UserNicovideoRegistrationRequestsOrderBy {
+  createdAt: SortOrder
+}
+
+input UserMylistsOrderBy {
+  createdAt: SortOrder
+}
+
+type Query {
+  getUser(id: ID!): User!
+  findUser(input: FindUserInput!): User
+}
+
+input FindUserInput {
+  name: String
+}

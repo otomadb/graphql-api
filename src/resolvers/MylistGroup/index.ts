@@ -6,13 +6,13 @@ import { resolverMylistGroupVideo } from "./videos/resolver.js";
 
 export const resolveMylistGroup = ({
   prisma,
-  userRepository,
+  userService,
   logger,
-}: Pick<ResolverDeps, "prisma" | "userRepository" | "logger">) =>
+}: Pick<ResolverDeps, "prisma" | "userService" | "logger">) =>
   ({
     id: ({ id }) => buildGqlId("MylistGroup", id),
 
-    holder: async ({ holderId }) => userRepository.getById(holderId),
+    holder: async ({ holderId }) => userService.getById(holderId),
 
     mylists: resolveMylists({ prisma, logger }),
     videos: resolverMylistGroupVideo({ prisma }),

@@ -68,7 +68,7 @@ generates:
         TagRegisterEvent: ./TagEvent/model.js#TagEventModel
         TagSearchItemByName: ./TagSearchItemByName/model.js#TagSearchItemByNameModel
         TypeCategoryTag: ./TypeCategoryTag/model.js#TypeCategoryTagModel
-        User: ./User/model.js#UserModel
+        User: ../User/dto.js#UserDTO
         Video: ./Video/model.js#VideoModel
         VideoAddNicovideoSourceEvent: ./VideoEvent/model.js#VideoEventModel
         VideoConnection: ./VideoConnection/model.js#VideoConnectionModel
@@ -92,12 +92,12 @@ generates:
         VideoTitleEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
         VideoTitleSetPrimaryEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
         VideoTitleUnsetPrimaryEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
-        YoutubeRegistrationRequest: ./YoutubeRegistrationRequest/model.js#YoutubeRegistrationRequestModel
-        YoutubeRegistrationRequestAccepting: ./YoutubeRegistrationRequestAccepting/model.js#YoutubeRegistrationRequestAcceptingModel
-        YoutubeRegistrationRequestAcceptingNotification: ./Notification/model.js#NotificationModel
-        YoutubeRegistrationRequestConnection: ./YoutubeRegistrationRequestConnection/model.js#YoutubeRegistrationRequestConnectionModel
-        YoutubeRegistrationRequestRejecting: ./YoutubeRegistrationRequestRejecting/model.js#YoutubeRegistrationRequestRejectingModel
-        YoutubeRegistrationRequestRejectingNotification: ./Notification/model.js#NotificationModel
+        YoutubeRegistrationRequest: ../YoutubeRegistrationRequest/dto.js#YoutubeRegistrationRequestDTO
+        YoutubeRegistrationRequestAccepting: ../YoutubeRegistrationRequest/dto.js#YoutubeRegistrationRequestAcceptingDTO
+        YoutubeRegistrationRequestAcceptingNotification: ../YoutubeRegistrationRequest/dto.js#YoutubeRegistrationRequestAcceptingNotificationDTO
+        YoutubeRegistrationRequestConnection: ../YoutubeRegistrationRequest/dto.js#YoutubeRegistrationRequestConnectionDTO
+        YoutubeRegistrationRequestRejecting: ../YoutubeRegistrationRequest/dto.js#YoutubeRegistrationRequestRejectingDTO
+        YoutubeRegistrationRequestRejectingNotification: ../YoutubeRegistrationRequest/dto.js#YoutubeRegistrationRequestRejectingNotificationDTO
         YoutubeVideoSource: ../YoutubeVideoSource/dto.js#YoutubeVideoSourceDTO
         YoutubeVideoSourceCreateEvent: ../YoutubeVideoSource/dto.js#YoutubeVideoSourceEventDTO
         YoutubeVideoSourceEvent: ../YoutubeVideoSource/dto.js#YoutubeVideoSourceEventDTO

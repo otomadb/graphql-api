@@ -7,12 +7,12 @@ import { ResolverDeps } from "../../types.js";
 export const resolverFindMylist = ({
   prisma,
   logger,
-  userRepository,
-}: Pick<ResolverDeps, "prisma" | "logger" | "userRepository">) =>
+  userService,
+}: Pick<ResolverDeps, "prisma" | "logger" | "userService">) =>
   (async (_parent, { input }, { currentUser }, info) => {
     const { pair } = input;
 
-    const holder = await userRepository.findByName(pair.holderName);
+    const holder = await userService.findByName(pair.holderName);
     if (!holder) {
       logger.info({ path: info.path, holderName: pair.holderName }, "Holder not found");
       return null;

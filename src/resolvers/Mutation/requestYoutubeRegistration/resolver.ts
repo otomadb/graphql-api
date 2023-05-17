@@ -1,11 +1,11 @@
 import { GraphQLError } from "graphql";
 
 import { isErr } from "../../../utils/Result.js";
+import { YoutubeRegistrationRequestDTO } from "../../../YoutubeRegistrationRequest/dto.js";
 import { YoutubeVideoSourceDTO } from "../../../YoutubeVideoSource/dto.js";
 import { MutationResolvers, ResolversTypes } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../types.js";
-import { YoutubeRegistrationRequestModel } from "../../YoutubeRegistrationRequest/model.js";
 import { requestRegistration } from "./request.js";
 
 export const resolverRequestYoutubeRegistration = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
@@ -57,6 +57,6 @@ export const resolverRequestYoutubeRegistration = ({ prisma, logger }: Pick<Reso
     const request = result.data;
     return {
       __typename: "RequestYoutubeRegistrationSucceededPayload",
-      request: YoutubeRegistrationRequestModel.fromPrisma(request),
+      request: YoutubeRegistrationRequestDTO.fromPrisma(request),
     } satisfies ResolversTypes["RequestYoutubeRegistrationReturnUnion"];
   }) satisfies MutationResolvers["requestYoutubeRegistration"];
