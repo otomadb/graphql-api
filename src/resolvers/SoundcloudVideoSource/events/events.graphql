@@ -1,0 +1,11 @@
+type SoundcloudVideoSource {
+  events(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    orderBy: SoundcloudVideoSourceEventsOrderBy!
+  ): SoundcloudVideoSourceEventConnection!
+}

@@ -1,0 +1,17 @@
+interface SoundcloudVideoSourceEvent implements Node & Event {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  source: SoundcloudVideoSource!
+}
+
+type SoundcloudVideoSourceCreateEvent implements Node & Event & SoundcloudVideoSourceEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  source: SoundcloudVideoSource!
+}

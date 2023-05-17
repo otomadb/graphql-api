@@ -4,6 +4,7 @@ import { Resolvers } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
 import { SemitagModel } from "../Semitag/model.js";
+import { SoundcloudVideoSourceModel } from "../SoundcloudVideoSource/model.js";
 import { ResolverDeps } from "../types.js";
 import { VideoEventModel } from "../VideoEvent/model.js";
 import { VideoThumbnailModel } from "../VideoThumbnail/model.js";
@@ -55,6 +56,11 @@ export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pris
       prisma.youtubeVideoSource
         .findMany({ where: { videoId } })
         .then((ss) => ss.map((s) => YoutubeVideoSourceModel.fromPrisma(s))),
+
+    soundcloudSources: async ({ id: videoId }) =>
+      prisma.soundcloudVideoSource
+        .findMany({ where: { videoId } })
+        .then((ss) => ss.map((s) => SoundcloudVideoSourceModel.fromPrisma(s))),
 
     semitags: ({ id: videoId }, { checked }) =>
       prisma.semitag

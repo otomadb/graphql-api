@@ -1,0 +1,12 @@
+type SoundcloudVideoSource implements Node & VideoSource {
+  id: ID!
+  sourceId: String!
+  video: Video!
+
+  url: String!
+  embedUrl: String!
+}
+
+input SoundcloudVideoSourceEventsOrderBy {
+  createdAt: SortOrder
+}

@@ -37,6 +37,9 @@ import {
 import { resolverSemitagRejecting } from "./SemitagRejecting/resolver.js";
 import { resolverSemitagResolving } from "./SemitagResolving/resolver.js";
 import { resolverSemitagSuggestTagsItem } from "./SemitagSuggestTagsItem/resolver.js";
+import { resolveSoundcloudVideoSource } from "./SoundcloudVideoSource/resolver.js";
+import { resolveSoundcloudVideoSourceEvent } from "./SoundcloudVideoSourceEvent/resolver.js";
+import { resolverSoundcloudVideoSourceEventConnection } from "./SoundcloudVideoSourceEventConnection/resolver.js";
 import { resolveTag } from "./Tag/index.js";
 import { resolveTagEvent, resolveTagRegisterEvent } from "./TagEvent/index.js";
 import { resolveTagName } from "./TagName/index.js";
@@ -125,6 +128,9 @@ export const makeResolvers = (deps: ResolverDeps) =>
     SemitagResolveEvent: resolveSemitagEventResolveEvent(deps),
     SemitagResolving: resolverSemitagResolving(deps),
     SemitagSuggestTagsItem: resolverSemitagSuggestTagsItem(deps),
+    SoundcloudVideoSource: resolveSoundcloudVideoSource(deps),
+    SoundcloudVideoSourceEvent: resolveSoundcloudVideoSourceEvent(),
+    SoundcloudVideoSourceEventConnection: resolverSoundcloudVideoSourceEventConnection(),
     Tag: resolveTag(deps),
     TagEvent: resolveTagEvent(),
     TagName: resolveTagName(deps),

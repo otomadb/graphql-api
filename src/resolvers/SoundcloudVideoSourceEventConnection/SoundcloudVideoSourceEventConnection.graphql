@@ -1,0 +1,11 @@
+type SoundcloudVideoSourceEventConnection {
+  nodes: [SoundcloudVideoSourceEvent!]!
+  edges: [SoundcloudVideoSourceEventEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type SoundcloudVideoSourceEventEdge {
+  cursor: String!
+  node: SoundcloudVideoSourceEvent!
+}

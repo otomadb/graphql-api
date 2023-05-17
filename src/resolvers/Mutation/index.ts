@@ -18,6 +18,7 @@ import { resolverRegisterCategoryTagTyping } from "./registerCategoryTagTyping/r
 import { resolverRegisterTag } from "./registerTag/resolver.js";
 import { resolverRegisterTagParentRelation } from "./registerTagParentRelation/resolver.js";
 import { resolverRegisterVideoFromNicovideo } from "./registerVideoFromNicovideo/resolver.js";
+import { resolverRegisterVideoFromSoundcloud } from "./registerVideoFromSoundcloud/resolver.js";
 import { resolverRegisterVideoFromYoutube } from "./registerVideoFromYoutube/resolver.js";
 import { resolverRejectRequestNicovideoRegistration } from "./rejectNicovideoRegistrationRequest/resolver.js";
 import { resolverRejectSemitag } from "./rejectSemitag/resolver.js";
@@ -47,6 +48,7 @@ export const resolveMutation = (deps: ResolverDeps) =>
     registerTag: resolverRegisterTag(deps),
     registerTagParentRelation: resolverRegisterTagParentRelation(deps),
     registerVideoFromNicovideo: resolverRegisterVideoFromNicovideo(deps),
+    registerVideoFromSoundcloud: resolverRegisterVideoFromSoundcloud(deps),
     registerVideoFromYoutube: resolverRegisterVideoFromYoutube(deps),
     rejectNicovideoRegistrationRequest: resolverRejectRequestNicovideoRegistration(deps),
     rejectSemitag: resolverRejectSemitag(deps),
