@@ -35,7 +35,9 @@ export type NodeType =
   | "YoutubeVideoSourceEvent"
   | "YoutubeRegistrationRequestTagging"
   | "YoutubeRegistrationRequestSemitagging"
-  | "YoutubeRegistrationRequest";
+  | "YoutubeRegistrationRequest"
+  | "SoundcloudVideoSource"
+  | "SoundcloudVideoSourceEvent";
 
 export const buildGqlId = (type: NodeType, dbId: string): string =>
   Buffer.from(`${type}:${dbId}`).toString("base64url");

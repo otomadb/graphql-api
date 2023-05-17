@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { createSchema, createYoga } from "graphql-yoga";
 import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
-import { DeepMockProxy, mock, mockDeep, mockReset } from "vitest-mock-extended";
+import { DeepMockProxy, mockDeep, mockReset } from "vitest-mock-extended";
 
 import { graphql } from "../../../gql/gql.js";
 import typeDefs from "../../../schema.graphql";
@@ -48,9 +48,8 @@ const Mutation = graphql(`
 describe("Mutation.changeMylistShareRange e2e", () => {
   let prisma: ResolverDeps["prisma"];
   let neo4j: ResolverDeps["neo4j"];
-  let logger: ResolverDeps["logger"];
-  let meilisearch: DeepMockProxy<ResolverDeps["meilisearch"]>;
-  let userRepository: DeepMockProxy<ResolverDeps["userRepository"]>;
+
+  let otherMocks: DeepMockProxy<Omit<ResolverDeps, "prisma" | "neo4j">>;
 
   let executor: ReturnType<typeof makeExecutor>;
 
@@ -63,14 +62,11 @@ describe("Mutation.changeMylistShareRange e2e", () => {
       neo4jAuth.basic(process.env.NEO4J_USERNAME, process.env.NEO4J_PASSWORD)
     );
 
-    logger = mockDeep<ResolverDeps["logger"]>();
-    logger = mock<ResolverDeps["logger"]>();
-    meilisearch = mockDeep<ResolverDeps["meilisearch"]>();
-    userRepository = mockDeep<ResolverDeps["userRepository"]>();
+    otherMocks = mockDeep();
 
     const schema = createSchema({
       typeDefs,
-      resolvers: makeResolvers({ prisma, neo4j, logger, meilisearch, userRepository }),
+      resolvers: makeResolvers({ prisma, neo4j, ...otherMocks }),
     });
     const yoga = createYoga<ServerContext, UserContext>({ schema });
     executor = makeExecutor(yoga);
@@ -79,13 +75,13 @@ describe("Mutation.changeMylistShareRange e2e", () => {
   beforeEach(async () => {
     await cleanPrisma(prisma);
     // TODO: neo4jのreset処理
-
-    mockReset(logger);
+    mockReset(otherMocks);
   });
 
   afterAll(async () => {
     await prisma.$disconnect();
     await neo4j.close();
+    mockReset(otherMocks);
   });
 
   test("MutationInvalidMylistIdError", async () => {

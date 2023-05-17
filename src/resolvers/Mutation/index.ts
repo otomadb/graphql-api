@@ -1,5 +1,7 @@
 /* eslint sort-keys: 2 */
 
+import { resolverRegisterMadFromSoundcloud } from "../../SoundcloudVideoSource/registerMadFromSoundcloud.resolver.js";
+import { resolverRegisterVideoFromYoutube } from "../../YoutubeVideoSource/registerVideoFromYoutube.resolver.js";
 import { type Resolvers } from "../graphql.js";
 import { ResolverDeps } from "../types.js";
 import { addMylistToMylistGroup } from "./addMylistToMylistGroup/addMylistToMylistGroup.js";
@@ -18,7 +20,6 @@ import { resolverRegisterCategoryTagTyping } from "./registerCategoryTagTyping/r
 import { resolverRegisterTag } from "./registerTag/resolver.js";
 import { resolverRegisterTagParentRelation } from "./registerTagParentRelation/resolver.js";
 import { resolverRegisterVideoFromNicovideo } from "./registerVideoFromNicovideo/resolver.js";
-import { resolverRegisterVideoFromYoutube } from "./registerVideoFromYoutube/resolver.js";
 import { resolverRejectRequestNicovideoRegistration } from "./rejectNicovideoRegistrationRequest/resolver.js";
 import { resolverRejectSemitag } from "./rejectSemitag/resolver.js";
 import { resolverRemoveTagFromVideo } from "./removeTagFromVideo/resolver.js";
@@ -44,6 +45,7 @@ export const resolveMutation = (deps: ResolverDeps) =>
     likeVideo: resolverLikeVideo(deps),
     registerCategoryTag: registerCategoryTag(deps),
     registerCategoryTagTyping: resolverRegisterCategoryTagTyping(deps),
+    registerMadFromSoundcloud: resolverRegisterMadFromSoundcloud(deps),
     registerTag: resolverRegisterTag(deps),
     registerTagParentRelation: resolverRegisterTagParentRelation(deps),
     registerVideoFromNicovideo: resolverRegisterVideoFromNicovideo(deps),

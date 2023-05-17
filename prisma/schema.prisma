@@ -367,6 +367,7 @@ model User {
   YoutubeRegistrationRequest           YoutubeRegistrationRequest[]
   YoutubeRegistrationRequestChecking   YoutubeRegistrationRequestChecking[]
   YoutubeRegistrationRequestEvent      YoutubeRegistrationRequestEvent[]
+  SoundcloudVideoSourceEvent           SoundcloudVideoSourceEvent[]
 }
 
 model Video {
@@ -382,8 +383,9 @@ model Video {
   tags     VideoTag[]
   semitags Semitag[]
 
-  nicovideoSources NicovideoVideoSource[]
-  youtubeSources   YoutubeVideoSource[]
+  nicovideoSources  NicovideoVideoSource[]
+  youtubeSources    YoutubeVideoSource[]
+  soundcloudSources SoundcloudVideoSource[]
 
   mylists MylistRegistration[]
 
@@ -844,6 +846,42 @@ enum YoutubeRegistrationRequestEventType {
 
   ACCEPT
   REJECT
+}
+
+model SoundcloudVideoSource {
+  id String @id @default(cuid())
+
+  sourceId String @unique @db.Citext
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  events SoundcloudVideoSourceEvent[]
+
+  @@unique([sourceId, videoId])
+}
+
+model SoundcloudVideoSourceEvent {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  source   SoundcloudVideoSource @relation(fields: [sourceId], references: [id])
+  sourceId String
+
+  type    SoundcloudVideoSourceEventType
+  payload Json
+}
+
+enum SoundcloudVideoSourceEventType {
+  CREATE
 }
 
 model Notification {

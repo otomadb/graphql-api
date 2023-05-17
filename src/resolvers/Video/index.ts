@@ -1,5 +1,7 @@
 import { GraphQLError } from "graphql";
 
+import { SoundcloudVideoSourceDTO } from "../../SoundcloudVideoSource/dto.js";
+import { YoutubeVideoSourceDTO } from "../../YoutubeVideoSource/dto.js";
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
@@ -8,7 +10,6 @@ import { ResolverDeps } from "../types.js";
 import { VideoEventModel } from "../VideoEvent/model.js";
 import { VideoThumbnailModel } from "../VideoThumbnail/model.js";
 import { VideoTitleModel } from "../VideoTitle/model.js";
-import { YoutubeVideoSourceModel } from "../YoutubeVideoSource/model.js";
 import { resolveVideoIsLiked } from "./isLiked/resolver.js";
 import { resolveVideoLike } from "./like/resolver.js";
 import { resolveSimilarVideos as resolverVideoSimilarVideos } from "./similarVideos/resolver.js";
@@ -54,7 +55,12 @@ export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pris
     youtubeSources: async ({ id: videoId }) =>
       prisma.youtubeVideoSource
         .findMany({ where: { videoId } })
-        .then((ss) => ss.map((s) => YoutubeVideoSourceModel.fromPrisma(s))),
+        .then((ss) => ss.map((s) => YoutubeVideoSourceDTO.fromPrisma(s))),
+
+    soundcloudSources: async ({ id: videoId }) =>
+      prisma.soundcloudVideoSource
+        .findMany({ where: { videoId } })
+        .then((ss) => ss.map((s) => SoundcloudVideoSourceDTO.fromPrisma(s))),
 
     semitags: ({ id: videoId }, { checked }) =>
       prisma.semitag
