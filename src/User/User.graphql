@@ -48,3 +48,12 @@ input UserNicovideoRegistrationRequestsOrderBy {
 input UserMylistsOrderBy {
   createdAt: SortOrder
 }
+
+type Query {
+  getUser(id: ID!): User!
+  findUser(input: FindUserInput!): User
+}
+
+input FindUserInput {
+  name: String
+}
