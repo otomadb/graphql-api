@@ -11,7 +11,7 @@ export const resolverYoutubeRegistrationRequestRejecting = ({
     request: ({ requestId }) =>
       prisma.youtubeRegistrationRequest
         .findUniqueOrThrow({ where: { id: requestId } })
-        .then((u) => new YoutubeRegistrationRequestModel(u))
+        .then((u) => YoutubeRegistrationRequestModel.fromPrisma(u))
         .catch(() => {
           throw new GraphQLNotExistsInDBError("YoutubeRegistrationRequest", requestId);
         }),
