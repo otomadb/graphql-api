@@ -4,6 +4,18 @@ import { resolveSoundcloudVideoSource } from "../SoundcloudVideoSource/Soundclou
 import { resolveSoundcloudVideoSourceEvent } from "../SoundcloudVideoSource/SoundcloudVideoSourceEvent.resolver.js";
 import { resolverSoundcloudVideoSourceEventConnection } from "../SoundcloudVideoSource/SoundcloudVideoSourceEventConnection.resolver.js";
 import { resolveUser } from "../User/User.resolver.js";
+import { resolverYoutubeRegistrationRequest } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequest.resolver.js";
+import { resolverYoutubeRegistrationRequestAccepting } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestAccepting.resolver.js";
+import { resolverYoutubeRegistrationRequestAcceptingNotification } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestAcceptingNotification.resolver.js";
+import { resolverYoutubeRegistrationRequestConnection } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestConnection.resolver.js";
+import { resolverYoutubeRegistrationRequestRejecting } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestRejecting.resolver.js";
+import { resolverYoutubeRegistrationRequestRejectingNotification } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestRejectingNotification.resolver.js";
+import { resolveYoutubeVideoSource } from "../YoutubeVideoSource/YoutubeVideoSource.resolver.js";
+import {
+  resolveYoutubeVideoSourceCreateEvent,
+  resolveYoutubeVideoSourceEvent,
+} from "../YoutubeVideoSource/YoutubeVideoSourceEvent.resolver.js";
+import { resolverYoutubeVideoSourceEventConnection } from "../YoutubeVideoSource/YoutubeVideoSourceEventConnection.resolver.js";
 import { type Resolvers } from "./graphql.js";
 import { resolveMutation } from "./Mutation/index.js";
 import { resolveMylist } from "./Mylist/index.js";
