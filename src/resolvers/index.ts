@@ -1,8 +1,8 @@
 /* eslint sort-keys: 2 */
 
-import { resolveSoundcloudVideoSource } from "../Soundcloud/SoundcloudVideoSource.resolver.js";
-import { resolveSoundcloudVideoSourceEvent } from "../Soundcloud/SoundcloudVideoSourceEvent.resolver.js";
-import { resolverSoundcloudVideoSourceEventConnection } from "../Soundcloud/SoundcloudVideoSourceEventConnection.resolver.js";
+import { resolveSoundcloudVideoSource } from "../SoundcloudVideoSource/SoundcloudVideoSource.resolver.js";
+import { resolveSoundcloudVideoSourceEvent } from "../SoundcloudVideoSource/SoundcloudVideoSourceEvent.resolver.js";
+import { resolverSoundcloudVideoSourceEventConnection } from "../SoundcloudVideoSource/SoundcloudVideoSourceEventConnection.resolver.js";
 import { type Resolvers } from "./graphql.js";
 import { resolveMutation } from "./Mutation/index.js";
 import { resolveMylist } from "./Mylist/index.js";

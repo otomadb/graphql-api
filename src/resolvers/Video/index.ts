@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
 
-import { SoundcloudVideoSourceDTO } from "../../Soundcloud/dto.js";
+import { SoundcloudVideoSourceDTO } from "../../SoundcloudVideoSource/dto.js";
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
 import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";

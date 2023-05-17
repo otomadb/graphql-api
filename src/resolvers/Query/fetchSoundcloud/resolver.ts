@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
 
-import { SoundcloudService } from "../../../Soundcloud/service.js";
+import { SoundcloudService } from "../../../SoundcloudVideoSource/service.js";
 import { isErr } from "../../../utils/Result.js";
 import { QueryResolvers } from "../../graphql.js";
 import { ResolverDeps } from "../../types.js";

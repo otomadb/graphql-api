@@ -1,6 +1,6 @@
 /* eslint sort-keys: 2 */
 
-import { resolverRegisterMadFromSoundcloud } from "../../Soundcloud/registerMadFromSoundcloud.resolver.js";
+import { resolverRegisterMadFromSoundcloud } from "../../SoundcloudVideoSource/registerMadFromSoundcloud.resolver.js";
 import { type Resolvers } from "../graphql.js";
 import { ResolverDeps } from "../types.js";
 import { addMylistToMylistGroup } from "./addMylistToMylistGroup/addMylistToMylistGroup.js";

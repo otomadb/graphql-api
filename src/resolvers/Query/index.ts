@@ -1,6 +1,6 @@
 /* eslint sort-keys: [2, "asc", {caseSensitive: false}] */
 
-import { getSoundcloudVideoSource } from "../../Soundcloud/getSoundcloudVideoSource.resolver.js";
+import { getSoundcloudVideoSource } from "../../SoundcloudVideoSource/getSoundcloudVideoSource.resolver.js";
 import { type Resolvers } from "../graphql.js";
 import { ResolverDeps } from "../types.js";
 import { fetchNicovideo } from "./fetchNicovideo/fetchNicovideo.js";

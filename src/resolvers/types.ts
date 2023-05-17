@@ -6,7 +6,7 @@ import { MeiliSearch } from "meilisearch";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 import { Logger } from "pino";
 
-import { SoundcloudService } from "../Soundcloud/service.js";
+import { SoundcloudService } from "../SoundcloudVideoSource/service.js";
 import { UserModel } from "./User/model.js";
 
 export type Auth0User = User<AppMetadata, UserMetadata>;
