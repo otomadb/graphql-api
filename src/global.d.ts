@@ -24,5 +24,7 @@ declare namespace NodeJS {
 
     /* Meilisearch */
     readonly MEILISEARCH_URL: string;
+
+    readonly SOUNDCLOUD_CLIENT_ID: string;
   }
 }
