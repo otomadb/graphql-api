@@ -80,7 +80,7 @@ describe("Register mad in soundcloud by Prisma", () => {
         thumbnails: true,
         tags: true,
         semitags: true,
-        youtubeSources: true,
+        soundcloudSources: true,
       },
     });
 
@@ -313,9 +313,9 @@ describe("Register mad in soundcloud by Prisma", () => {
       ])
     );
 
-    const youtubeVideoSources = await prisma.youtubeVideoSource.findMany({ where: { videoId } });
-    expect(youtubeVideoSources).toHaveLength(1);
-    expect(youtubeVideoSources).toStrictEqual(
+    const soundcloudVideoSources = await prisma.soundcloudVideoSource.findMany({ where: { videoId } });
+    expect(soundcloudVideoSources).toHaveLength(1);
+    expect(soundcloudVideoSources).toStrictEqual(
       expect.arrayContaining([
         {
           id: expect.any(String),
@@ -326,16 +326,16 @@ describe("Register mad in soundcloud by Prisma", () => {
         } satisfies SoundcloudVideoSource,
       ])
     );
-    const youtubeVideoSourceEvents = await prisma.youtubeVideoSourceEvent.findMany({});
-    expect(youtubeVideoSourceEvents).toHaveLength(1);
-    expect(youtubeVideoSourceEvents).toStrictEqual(
+    const soundcloudVideoSourceEvents = await prisma.soundcloudVideoSourceEvent.findMany({});
+    expect(soundcloudVideoSourceEvents).toHaveLength(1);
+    expect(soundcloudVideoSourceEvents).toStrictEqual(
       expect.arrayContaining([
         expect.objectContaining({
           id: expect.any(String),
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
           userId: "u1",
-          sourceId: youtubeVideoSources[0].id,
+          sourceId: soundcloudVideoSources[0].id,
           type: SoundcloudVideoSourceEventType.CREATE,
           payload: {},
         } satisfies SoundcloudVideoSourceEvent),
