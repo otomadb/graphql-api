@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { err, ok, Result } from "../utils/Result.js";
+import { err, isErr, ok, Result } from "../utils/Result.js";
 
 const payloadFromUrl = z.object({
   artwork_url: z.string(),
@@ -9,11 +9,29 @@ const payloadFromUrl = z.object({
   uri: z.string(),
 });
 
-export const makeSoundcloudService = ({ env: { clientId } }: { env: { clientId: string } }) => ({
-  enlargeArtwork(artworkUrl: string) {
+const payloadFromId = z
+  .array(
+    z.object({
+      artwork_url: z.string(),
+      id: z.number(),
+      title: z.string(),
+      permalink_url: z.string(),
+    })
+  )
+  .min(1);
+
+export class SoundcloudService {
+  private constructor(private clientId: string) {}
+
+  public static make({ env: { clientId } }: { env: { clientId: string } }) {
+    return new SoundcloudService(clientId);
+  }
+
+  public static enlargeArtwork(artworkUrl: string) {
     return artworkUrl.replace("large", "t500x500");
-  },
-  async fetchFromUrl(url: string): Promise<
+  }
+
+  public async fetchFromUrl(url: string): Promise<
     Result<
       {
         type: "PARSED_ERROR";
@@ -24,7 +42,7 @@ export const makeSoundcloudService = ({ env: { clientId } }: { env: { clientId: 
   > {
     const apiUrl = new URL("/resolve", "https://api-v2.soundcloud.com");
     apiUrl.searchParams.set("url", url);
-    apiUrl.searchParams.set("client_id", clientId);
+    apiUrl.searchParams.set("client_id", this.clientId);
 
     const parsed = await fetch(apiUrl.toString())
       .then((res) => res.json())
@@ -33,25 +51,60 @@ export const makeSoundcloudService = ({ env: { clientId } }: { env: { clientId: 
     if (!parsed.success) return err({ type: "PARSED_ERROR", error: parsed.error });
 
     return ok(parsed.data);
-  },
-  /*
-  async fetchFromId(id: string): Promise<
+  }
+
+  public async fetchFromId(id: string): Promise<
     Result<
-      unknown,
       {
-        title: string;
-        artworkUrl: string;
-        sourceId: string;
-        sourceUrl: string;
-      }
+        type: "PARSED_ERROR";
+        error: unknown; // todo
+      },
+      z.infer<typeof payloadFromId>[number]
     >
   > {
-    return ok({
-      title: "",
-      artworkUrl: "",
-      sourceId: "",
-      sourceUrl: "",
-    });
-  },
-  */
-});
+    const apiUrl = new URL("/tracks", "https://api-v2.soundcloud.com");
+    apiUrl.searchParams.set("ids", id);
+    apiUrl.searchParams.set("client_id", this.clientId);
+
+    const parsed = await fetch(apiUrl.toString())
+      .then((res) => res.json())
+      .then((json) => payloadFromId.safeParse(json));
+
+    if (!parsed.success) return err({ type: "PARSED_ERROR", error: parsed.error });
+
+    return ok(parsed.data[0]);
+  }
+
+  public async fetchUrl(id: string): Promise<
+    Result<
+      {
+        type: "PARSED_ERROR";
+        error: unknown; // todo
+      },
+      string
+    >
+  > {
+    const payload = await this.fetchFromId(id);
+    if (isErr(payload)) return payload;
+    return ok(payload.data.permalink_url);
+  }
+
+  public async fetchEmbedUrl(id: string): Promise<
+    Result<
+      {
+        type: "PARSED_ERROR";
+        error: unknown; // todo
+      },
+      string
+    >
+  > {
+    const a = await this.fetchUrl(id);
+    if (isErr(a)) return a;
+
+    const embedUrl = new URL("https://w.soundcloud.com/player");
+    embedUrl.searchParams.set("url", a.data);
+    embedUrl.searchParams.set("show_artwork", "true");
+
+    return ok(embedUrl.toString());
+  }
+}
