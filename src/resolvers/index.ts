@@ -3,6 +3,12 @@
 import { resolveSoundcloudVideoSource } from "../SoundcloudVideoSource/SoundcloudVideoSource.resolver.js";
 import { resolveSoundcloudVideoSourceEvent } from "../SoundcloudVideoSource/SoundcloudVideoSourceEvent.resolver.js";
 import { resolverSoundcloudVideoSourceEventConnection } from "../SoundcloudVideoSource/SoundcloudVideoSourceEventConnection.resolver.js";
+import { resolveYoutubeVideoSource } from "../YoutubeVideoSource/YoutubeVideoSource.resolver.js";
+import {
+  resolveYoutubeVideoSourceCreateEvent,
+  resolveYoutubeVideoSourceEvent,
+} from "../YoutubeVideoSource/YoutubeVideoSourceEvent.resolver.js";
+import { resolverYoutubeVideoSourceEventConnection } from "../YoutubeVideoSource/YoutubeVideoSourceEventConnection.resolver.js";
 import { type Resolvers } from "./graphql.js";
 import { resolveMutation } from "./Mutation/index.js";
 import { resolveMylist } from "./Mylist/index.js";
@@ -87,12 +93,6 @@ import { resolverYoutubeRegistrationRequestAcceptingNotification } from "./Youtu
 import { resolverYoutubeRegistrationRequestConnection } from "./YoutubeRegistrationRequestConnection/resolver.js";
 import { resolverYoutubeRegistrationRequestRejecting } from "./YoutubeRegistrationRequestRejecting/resolver.js";
 import { resolverYoutubeRegistrationRequestRejectingNotification } from "./YoutubeRegistrationRequestRejectingNotification/resolver.js";
-import { resolveYoutubeVideoSource } from "./YoutubeVideoSource/resolver.js";
-import {
-  resolveYoutubeVideoSourceCreateEvent,
-  resolveYoutubeVideoSourceEvent,
-} from "./YoutubeVideoSourceEvent/resolver.js";
-import { resolverYoutubeVideoSourceEventConnection } from "./YoutubeVideoSourceEventConnection/resolver.js";
 
 export const makeResolvers = (deps: ResolverDeps) =>
   ({

@@ -2,12 +2,14 @@ import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection
 import { GraphQLError } from "graphql";
 import z from "zod";
 
-import { isErr } from "../../../utils/Result.js";
-import { cursorOptions } from "../../connection.js";
-import { YoutubeVideoSourceResolvers } from "../../graphql.js";
-import { parseOrderBy } from "../../parseSortOrder.js";
-import { ResolverDeps } from "../../types.js";
-import { YoutubeVideoSourceEventConnectionModel } from "../../YoutubeVideoSourceEventConnection/model.js";
+import { cursorOptions } from "../resolvers/connection.js";
+import { Resolvers, YoutubeVideoSourceResolvers } from "../resolvers/graphql.js";
+import { buildGqlId, GraphQLNotExistsInDBError } from "../resolvers/id.js";
+import { parseOrderBy } from "../resolvers/parseSortOrder.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { VideoModel } from "../resolvers/Video/model.js";
+import { isErr } from "../utils/Result.js";
+import { YoutubeVideoSourceEventConnectionDTO } from "./dto.js";
 
 export const resolveYoutubeVideoSourceEvents = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async ({ id }, { orderBy: unparsedOrderBy, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
@@ -44,5 +46,21 @@ export const resolveYoutubeVideoSourceEvents = ({ prisma, logger }: Pick<Resolve
       () => prisma.youtubeVideoSourceEvent.count(),
       connectionArgs.data,
       { resolveInfo: info, ...cursorOptions }
-    ).then((c) => YoutubeVideoSourceEventConnectionModel.fromPrisma(c));
+    ).then((c) => YoutubeVideoSourceEventConnectionDTO.fromPrisma(c));
   }) satisfies YoutubeVideoSourceResolvers["events"];
+
+export const resolveYoutubeVideoSource = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+  ({
+    id: ({ id }) => buildGqlId("YoutubeVideoSource", id),
+    url: ({ sourceId }) => `https://www.youtube.com/watch?v=${sourceId}`,
+    embedUrl: ({ sourceId }) => `https://www.youtube.com/embed/${sourceId}`,
+    video: async ({ videoId }) =>
+      prisma.video
+        .findUniqueOrThrow({ where: { id: videoId } })
+        .then((v) => new VideoModel(v))
+        .catch(() => {
+          throw new GraphQLNotExistsInDBError("Video", videoId);
+        }),
+
+    events: resolveYoutubeVideoSourceEvents({ prisma, logger }),
+  } satisfies Resolvers["YoutubeVideoSource"]);

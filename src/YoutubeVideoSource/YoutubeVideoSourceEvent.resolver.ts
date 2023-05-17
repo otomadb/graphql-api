@@ -1,9 +1,9 @@
 import { YoutubeVideoSourceEventType } from "@prisma/client";
 
-import { Resolvers } from "../graphql.js";
-import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
-import { ResolverDeps } from "../types.js";
-import { YoutubeVideoSourceModel } from "../YoutubeVideoSource/model.js";
+import { Resolvers } from "../resolvers/graphql.js";
+import { buildGqlId, GraphQLNotExistsInDBError } from "../resolvers/id.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { YoutubeVideoSourceDTO } from "./dto.js";
 
 export const resolveYoutubeVideoSourceEventCommonProps = ({
   prisma,
@@ -15,7 +15,7 @@ export const resolveYoutubeVideoSourceEventCommonProps = ({
     source: ({ sourceId: videoSourceId }) =>
       prisma.youtubeVideoSource
         .findUniqueOrThrow({ where: { id: videoSourceId } })
-        .then((v) => YoutubeVideoSourceModel.fromPrisma(v))
+        .then((v) => YoutubeVideoSourceDTO.fromPrisma(v))
         .catch(() => {
           throw new GraphQLNotExistsInDBError("YoutubeVideoSource", videoSourceId);
         }),
