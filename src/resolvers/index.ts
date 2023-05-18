@@ -1,5 +1,11 @@
 /* eslint sort-keys: 2 */
 
+import { resolverNicovideoRegistrationRequestAccepting } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestAccepting.resolver.js";
+import { resolverNicovideoRegistrationRequestAcceptingNotification } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestAcceptingNotification.resolver.js";
+import { resolverNicovideoRegistrationRequestConnection } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestConnection.resolver.js";
+import { resolverNicovideoRegistrationRequestRejecting } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestRejecting.resolver.js";
+import { resolverNicovideoRegistrationRequestRejectingNotification } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestRejectingNotification.resolver.js";
+import { resolverNicovideoRegistrationRequest } from "../NicovideoRegistrationRequest/resolver.js";
 import { resolveSoundcloudVideoSource } from "../SoundcloudVideoSource/SoundcloudVideoSource.resolver.js";
 import { resolveSoundcloudVideoSourceEvent } from "../SoundcloudVideoSource/SoundcloudVideoSourceEvent.resolver.js";
 import { resolverSoundcloudVideoSourceEventConnection } from "../SoundcloudVideoSource/SoundcloudVideoSourceEventConnection.resolver.js";
@@ -28,12 +34,6 @@ import { resolverMylistRegistrationConnection } from "./MylistRegistrationConnec
 import { resolveMylistTagInclusion } from "./MylistTagInclusion/index.js";
 import { resolveMylistVideoRecommendation } from "./MylistVideoRecommendation/index.js";
 import { resolveNicovideoOriginalSourceTag } from "./NicovideoOriginalSourceTag/index.js";
-import { resolverNicovideoRegistrationRequest } from "./NicovideoRegistrationRequest/resolver.js";
-import { resolverNicovideoRegistrationRequestAccepting } from "./NicovideoRegistrationRequestAccepting/resolver.js";
-import { resolverNicovideoRegistrationRequestAcceptingNotification } from "./NicovideoRegistrationRequestAcceptingNotification/resolver.js";
-import { resolverNicovideoRegistrationRequestConnection } from "./NicovideoRegistrationRequestConnection/resolver.js";
-import { resolverNicovideoRegistrationRequestRejecting } from "./NicovideoRegistrationRequestRejecting/resolver.js";
-import { resolverNicovideoRegistrationRequestRejectingNotification } from "./NicovideoRegistrationRequestRejectingNotification/resolver.js";
 import { resolveNicovideoVideoSource } from "./NicovideoVideoSource/index.js";
 import {
   resolveNicovideoVideoSourceCreateEvent,

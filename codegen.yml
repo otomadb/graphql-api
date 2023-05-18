@@ -28,11 +28,11 @@ generates:
         MylistTagInclusion: ./MylistTagInclusion/model.js#MylistTagInclusionModel
         MylistVideoRecommendation: ./MylistVideoRecommendation/model.js#MylistVideoRecommendationModel
         NicovideoOriginalSourceTag: ./NicovideoOriginalSourceTag/model.js#NicovideoOriginalSourceTagModel
-        NicovideoRegistrationRequest: ./NicovideoRegistrationRequest/model.js#NicovideoRegistrationRequestModel
-        NicovideoRegistrationRequestAccepting: ./NicovideoRegistrationRequestAccepting/model.js#NicovideoRegistrationRequestAcceptingModel
+        NicovideoRegistrationRequest: ../NicovideoRegistrationRequest/dto.js#NicovideoRegistrationRequestDTO
+        NicovideoRegistrationRequestAccepting: ../NicovideoRegistrationRequest/dto.js#NicovideoRegistrationRequestAcceptingDTO
         NicovideoRegistrationRequestAcceptingNotification: ./Notification/model.js#NotificationModel
-        NicovideoRegistrationRequestConnection: ./NicovideoRegistrationRequestConnection/model.js#NicovideoRegistrationRequestConnectionModel
-        NicovideoRegistrationRequestRejecting: ./NicovideoRegistrationRequestRejecting/model.js#NicovideoRegistrationRequestRejectingModel
+        NicovideoRegistrationRequestConnection: ../NicovideoRegistrationRequest/dto.js#NicovideoRegistrationRequestConnectionDTO
+        NicovideoRegistrationRequestRejecting: ../NicovideoRegistrationRequest/dto.js#NicovideoRegistrationRequestRejectingDTO
         NicovideoRegistrationRequestRejectingNotification: ./Notification/model.js#NotificationModel
         NicovideoVideoSource: ./NicovideoVideoSource/model.js#NicovideoVideoSourceModel
         NicovideoVideoSourceCreateEvent: ./NicovideoVideoSourceEvent/model.js#NicovideoVideoSourceEventModel

@@ -1,0 +1,219 @@
+type NicovideoRegistrationRequest {
+  id: ID!
+  title: String!
+
+  requestedBy: User!
+
+  sourceId: String!
+
+  title: String!
+  thumbnailUrl: String!
+
+  taggings: [NicovideoRegistrationRequestTagging!]!
+  semitaggings: [NicovideoRegistrationRequestSemitagging!]!
+
+  checked: Boolean!
+  checking: NicovideoRegistrationRequestChecking
+
+  originalUrl: String!
+  embedUrl: String!
+}
+
+type NicovideoRegistrationRequestTagging {
+  id: ID!
+  tag: Tag!
+  note: String
+}
+
+type NicovideoRegistrationRequestSemitagging {
+  id: ID!
+  name: String!
+  note: String
+}
+
+type NicovideoRegistrationRequestEdge {
+  cursor: String!
+  node: NicovideoRegistrationRequest!
+}
+
+type NicovideoRegistrationRequestConnection {
+  nodes: [NicovideoRegistrationRequest!]!
+  edges: [NicovideoRegistrationRequestEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type NicovideoRegistrationRequestAccepting {
+  request: NicovideoRegistrationRequest!
+
+  note: String
+  video: Video!
+
+  acceptedBy: User!
+}
+
+type NicovideoRegistrationRequestRejecting {
+  request: NicovideoRegistrationRequest!
+
+  note: String
+
+  rejectedBy: User!
+}
+
+type NicovideoRegistrationRequestAcceptingNotification implements Node & Notification {
+  id: ID!
+  createdAt: DateTime!
+  notifyTo: User!
+  watched: Boolean!
+
+  accepting: NicovideoRegistrationRequestAccepting!
+}
+
+type NicovideoRegistrationRequestRejectingNotification implements Node & Notification {
+  id: ID!
+  createdAt: DateTime!
+  notifyTo: User!
+  watched: Boolean!
+
+  rejecting: NicovideoRegistrationRequestRejecting!
+}
+
+union NicovideoRegistrationRequestChecking =
+    NicovideoRegistrationRequestAccepting
+  | NicovideoRegistrationRequestRejecting
+
+type Query {
+  getNicovideoRegistrationRequest(id: ID!): NicovideoRegistrationRequest!
+  findNicovideoRegistrationRequest(input: FindNicovideoRegistrationRequestInput): NicovideoRegistrationRequest
+}
+
+input FindNicovideoRegistrationRequestInput {
+  id: ID
+  sourceId: String
+}
+
+type Query {
+  findNicovideoRegistrationRequests(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    checked: Boolean
+
+    orderBy: FindNicovideoRegistrationRequestsOrderBy! = { createdAt: DESC }
+  ): NicovideoRegistrationRequestConnection!
+}
+
+input FindNicovideoRegistrationRequestsOrderBy {
+  createdAt: SortOrder
+}
+
+type Query {
+  findUncheckedNicovideoRegistrationRequests(
+    input: FindUncheckedNicovideoRegistrationRequestsInput!
+  ): NicovideoRegistrationRequestConnection!
+}
+
+input FindUncheckedNicovideoRegistrationRequestsInput {
+  first: Int
+  after: String
+
+  last: Int
+  before: String
+
+  orderBy: FindUncheckedNicovideoRegistrationRequestsOrderBy! = { createdAt: DESC }
+}
+
+input FindUncheckedNicovideoRegistrationRequestsOrderBy {
+  createdAt: SortOrder
+}
+
+type Query {
+  findUncheckedNicovideoRegistrationRequestsByOffset(
+    input: findUncheckedNicovideoRegistrationRequestsByOffsetInput!
+  ): FindUncheckedNicovideoRegistrationRequestsByOffsetPayload!
+}
+
+input findUncheckedNicovideoRegistrationRequestsByOffsetInput {
+  take: Int! = 20
+  skip: Int! = 0
+
+  orderBy: findUncheckedNicovideoRegistrationRequestsByOffsetOrderBy! = { createdAt: DESC }
+}
+
+input findUncheckedNicovideoRegistrationRequestsByOffsetOrderBy {
+  createdAt: SortOrder
+}
+
+type FindUncheckedNicovideoRegistrationRequestsByOffsetPayload {
+  nodes: [NicovideoRegistrationRequest!]!
+  totalCount: Int!
+}
+
+type Mutation {
+  requestNicovideoRegistration(input: RequestNicovideoRegistrationInput!): RequestNicovideoRegistrationReturnUnion!
+    @auth(scopes: ["create:registration_request"])
+}
+
+input RequestNicovideoRegistrationInput {
+  sourceId: String!
+
+  title: String!
+  thumbnailUrl: String!
+
+  taggings: [RequestNicovideoRegistrationInputTagging!]!
+  semitaggings: [RequestNicovideoRegistrationInputSemitagging!]!
+}
+
+input RequestNicovideoRegistrationInputTagging {
+  tagId: ID!
+  note: String
+}
+
+input RequestNicovideoRegistrationInputSemitagging {
+  name: String!
+  note: String
+}
+
+union RequestNicovideoRegistrationReturnUnion =
+    MutationInvalidTagIdError
+  | MutationTagNotFoundError
+  | RequestNicovideoRegistrationVideoAlreadyRegisteredError
+  | RequestNicovideoRegistrationSucceededPayload
+
+"動画が既に登録されている場合のエラー"
+type RequestNicovideoRegistrationVideoAlreadyRegisteredError {
+  source: NicovideoVideoSource!
+}
+
+type RequestNicovideoRegistrationSucceededPayload {
+  request: NicovideoRegistrationRequest!
+}
+
+type Mutation {
+  rejectNicovideoRegistrationRequest(
+    input: RejectNicovideoRegistrationRequestInput!
+  ): RejectNicovideoRegistrationRequestReturnUnion! @auth(scopes: ["check:registration_request"])
+}
+
+input RejectNicovideoRegistrationRequestInput {
+  requestId: ID!
+  note: String!
+}
+
+union RejectNicovideoRegistrationRequestReturnUnion =
+    MutationNicovideoRegistrationRequestNotFoundError
+  | MutationInvalidNicovideoRegistrationRequestIdError
+  | RejectNicovideoRegistrationRequestRequestAlreadyCheckedError
+  | RejectNicovideoRegistrationRequestSucceededPayload
+
+"リクエストが既に処理されている場合のエラー"
+type RejectNicovideoRegistrationRequestRequestAlreadyCheckedError {
+  request: NicovideoRegistrationRequest!
+}
+
+type RejectNicovideoRegistrationRequestSucceededPayload {
+  rejecting: NicovideoRegistrationRequestRejecting!
+}

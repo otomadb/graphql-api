@@ -1,5 +1,7 @@
 /* eslint sort-keys: 2 */
 
+import { resolverRejectRequestNicovideoRegistration } from "../../NicovideoRegistrationRequest/rejectNicovideoRegistrationRequest.resolver.js";
+import { resolverRequestNicovideoRegistration } from "../../NicovideoRegistrationRequest/requestNicovideoRegistration.resolver.js";
 import { resolverRegisterMadFromSoundcloud } from "../../SoundcloudVideoSource/registerMadFromSoundcloud.resolver.js";
 import { resolverRegisterVideoFromYoutube } from "../../YoutubeVideoSource/registerVideoFromYoutube.resolver.js";
 import { type Resolvers } from "../graphql.js";
@@ -20,11 +22,9 @@ import { resolverRegisterCategoryTagTyping } from "./registerCategoryTagTyping/r
 import { resolverRegisterTag } from "./registerTag/resolver.js";
 import { resolverRegisterTagParentRelation } from "./registerTagParentRelation/resolver.js";
 import { resolverRegisterVideoFromNicovideo } from "./registerVideoFromNicovideo/resolver.js";
-import { resolverRejectRequestNicovideoRegistration } from "./rejectNicovideoRegistrationRequest/resolver.js";
 import { resolverRejectSemitag } from "./rejectSemitag/resolver.js";
 import { resolverRemoveTagFromVideo } from "./removeTagFromVideo/resolver.js";
 import { removeVideoFromMylist } from "./removeVideoFromMylist/removeVideoFromMylist.js";
-import { resolverRequestNicovideoRegistration as requestNicovideoRegistration } from "./requestNicovideoRegistration/resolver.js";
 import { resolverRequestYoutubeRegistration } from "./requestYoutubeRegistration/resolver.js";
 import { resolverResolveSemitag } from "./resolveSemitag/resolver.js";
 import { resolverUndoLikeVideo } from "./undoLikeVideo/resolver.js";
@@ -54,7 +54,7 @@ export const resolveMutation = (deps: ResolverDeps) =>
     rejectSemitag: resolverRejectSemitag(deps),
     removeTagFromVideo: resolverRemoveTagFromVideo(deps),
     removeVideoFromMylist: removeVideoFromMylist(deps),
-    requestNicovideoRegistration: requestNicovideoRegistration(deps),
+    requestNicovideoRegistration: resolverRequestNicovideoRegistration(deps),
     requestYoutubeRegistration: resolverRequestYoutubeRegistration(deps),
     resovleSemitag: resolverResolveSemitag(deps),
     undoLikeVideo: resolverUndoLikeVideo(deps),

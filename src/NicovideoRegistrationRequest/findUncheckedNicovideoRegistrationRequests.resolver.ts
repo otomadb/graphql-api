@@ -2,12 +2,12 @@ import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection
 import { GraphQLError } from "graphql";
 import z from "zod";
 
-import { isErr } from "../../../utils/Result.js";
-import { cursorOptions } from "../../connection.js";
-import { QueryResolvers } from "../../graphql.js";
-import { NicovideoRegistrationRequestConnectionModel } from "../../NicovideoRegistrationRequestConnection/model.js";
-import { parseOrderBy } from "../../parseSortOrder.js";
-import { ResolverDeps } from "../../types.js";
+import { cursorOptions } from "../resolvers/connection.js";
+import { QueryResolvers } from "../resolvers/graphql.js";
+import { parseOrderBy } from "../resolvers/parseSortOrder.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { isErr } from "../utils/Result.js";
+import { NicovideoRegistrationRequestConnectionDTO } from "./dto.js";
 
 export const resolverFindUncheckedNicovideoRegistrationRequests = ({
   prisma,
@@ -53,5 +53,5 @@ export const resolverFindUncheckedNicovideoRegistrationRequests = ({
         }),
       connectionArgs.data,
       { resolveInfo: info, ...cursorOptions }
-    ).then((c) => NicovideoRegistrationRequestConnectionModel.fromPrisma(c));
+    ).then((c) => NicovideoRegistrationRequestConnectionDTO.fromPrisma(c));
   }) satisfies QueryResolvers["findUncheckedNicovideoRegistrationRequests"];

@@ -3,12 +3,12 @@ import { Mylist, MylistShareRange } from "@prisma/client";
 import { GraphQLError } from "graphql";
 import z from "zod";
 
+import { NicovideoRegistrationRequestConnectionDTO } from "../NicovideoRegistrationRequest/dto.js";
 import { cursorOptions } from "../resolvers/connection.js";
 import { MylistShareRange as GqlMylistShareRange, Resolvers, UserResolvers, UserRole } from "../resolvers/graphql.js";
 import { buildGqlId, parseGqlID } from "../resolvers/id.js";
 import { MylistModel } from "../resolvers/Mylist/model.js";
 import { MylistConnectionModel } from "../resolvers/MylistConnection/model.js";
-import { NicovideoRegistrationRequestConnectionModel } from "../resolvers/NicovideoRegistrationRequestConnection/model.js";
 import { parseOrderBy } from "../resolvers/parseSortOrder.js";
 import { ResolverDeps } from "../resolvers/types.js";
 import { err, isErr, ok, Result } from "../utils/Result.js";
@@ -186,7 +186,7 @@ export const resolverUserNicovideoRegistrationRequests = ({
         }),
       connectionArgs.data,
       { resolveInfo: info, ...cursorOptions }
-    ).then((c) => NicovideoRegistrationRequestConnectionModel.fromPrisma(c));
+    ).then((c) => NicovideoRegistrationRequestConnectionDTO.fromPrisma(c));
   }) satisfies UserResolvers["nicovideoRegistrationRequests"];
 
 export const resolveUser = ({ prisma, logger, userService }: Pick<ResolverDeps, "prisma" | "logger" | "userService">) =>
