@@ -1,10 +1,10 @@
 import { GraphQLError } from "graphql";
 import z from "zod";
 
-import { Resolvers } from "../graphql.js";
-import { NicovideoRegistrationRequestRejectingModel } from "../NicovideoRegistrationRequestRejecting/model.js";
-import { resolverNotification } from "../Notification/resolver.js";
-import { ResolverDeps } from "../types.js";
+import { Resolvers } from "../resolvers/graphql.js";
+import { resolverNotification } from "../resolvers/Notification/resolver.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { NicovideoRegistrationRequestRejectingDTO } from "./dto.js";
 
 export const resolverNicovideoRegistrationRequestRejectingNotification = ({
   prisma,
@@ -24,7 +24,7 @@ export const resolverNicovideoRegistrationRequestRejectingNotification = ({
       }
       return prisma.nicovideoRegistrationRequestChecking
         .findUniqueOrThrow({ where: { id: p.data.id } })
-        .then((c) => NicovideoRegistrationRequestRejectingModel.fromPrisma(c))
+        .then((c) => NicovideoRegistrationRequestRejectingDTO.fromPrisma(c))
         .catch((e) => {
           logger.error({ error: e, path: info.path }, "Accepting not found");
           throw new GraphQLError("Something wrong happened");

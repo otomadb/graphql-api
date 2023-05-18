@@ -1,13 +1,13 @@
-import { Resolvers } from "../graphql.js";
-import { NicovideoRegistrationRequestModel } from "../NicovideoRegistrationRequest/model.js";
+import { Resolvers } from "../resolvers/graphql.js";
+import { NicovideoRegistrationRequestDTO } from "./dto.js";
 
 export const resolverNicovideoRegistrationRequestConnection = () =>
   ({
-    nodes: ({ nodes }) => nodes.map((n) => NicovideoRegistrationRequestModel.fromPrisma(n)),
+    nodes: ({ nodes }) => nodes.map((n) => NicovideoRegistrationRequestDTO.fromPrisma(n)),
     edges: ({ edges }) =>
       edges.map(({ cursor, node }) => ({
         cursor,
-        node: NicovideoRegistrationRequestModel.fromPrisma(node),
+        node: NicovideoRegistrationRequestDTO.fromPrisma(node),
       })),
     pageInfo: ({ pageInfo }) => pageInfo,
     totalCount: ({ totalCount }) => totalCount,

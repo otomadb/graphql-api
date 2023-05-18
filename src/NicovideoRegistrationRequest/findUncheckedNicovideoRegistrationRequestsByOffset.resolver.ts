@@ -1,10 +1,10 @@
 import { GraphQLError } from "graphql";
 
-import { isErr } from "../../../utils/Result.js";
-import { QueryResolvers } from "../../graphql.js";
-import { NicovideoRegistrationRequestModel } from "../../NicovideoRegistrationRequest/model.js";
-import { parseOrderBy } from "../../parseSortOrder.js";
-import { ResolverDeps } from "../../types.js";
+import { QueryResolvers } from "../resolvers/graphql.js";
+import { parseOrderBy } from "../resolvers/parseSortOrder.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { isErr } from "../utils/Result.js";
+import { NicovideoRegistrationRequestDTO } from "./dto.js";
 
 export const resolverFindUncheckedNicovideoRegistrationRequestsByOffset = ({
   prisma,
@@ -29,7 +29,7 @@ export const resolverFindUncheckedNicovideoRegistrationRequestsByOffset = ({
       }),
     ]);
     return {
-      nodes: a.map((ss) => NicovideoRegistrationRequestModel.fromPrisma(ss)),
+      nodes: a.map((ss) => NicovideoRegistrationRequestDTO.fromPrisma(ss)),
       totalCount: b,
     };
   }) satisfies QueryResolvers["findUncheckedNicovideoRegistrationRequestsByOffset"];

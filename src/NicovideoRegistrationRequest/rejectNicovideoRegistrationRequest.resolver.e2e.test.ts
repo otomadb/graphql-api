@@ -5,13 +5,13 @@ import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { DeepMockProxy, mockDeep, mockReset } from "vitest-mock-extended";
 
-import { graphql } from "../../../gql/gql.js";
 import typeDefs from "../../../schema.graphql";
-import { cleanPrisma } from "../../../test/cleanPrisma.js";
-import { makeExecutor } from "../../../test/makeExecutor.js";
-import { buildGqlId } from "../../id.js";
-import { makeResolvers } from "../../index.js";
-import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
+import { graphql } from "../gql/gql.js";
+import { buildGqlId } from "../resolvers/id.js";
+import { makeResolvers } from "../resolvers/index.js";
+import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../resolvers/types.js";
+import { cleanPrisma } from "../test/cleanPrisma.js";
+import { makeExecutor } from "../test/makeExecutor.js";
 
 const Mutation = graphql(`
   mutation E2E_RejectNicovideoRegistrationRequest($input: RejectNicovideoRegistrationRequestInput!) {

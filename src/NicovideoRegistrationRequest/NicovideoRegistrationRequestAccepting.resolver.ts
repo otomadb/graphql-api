@@ -1,10 +1,10 @@
 import { GraphQLError } from "graphql";
 
-import { Resolvers } from "../graphql.js";
-import { GraphQLNotExistsInDBError } from "../id.js";
-import { NicovideoRegistrationRequestModel } from "../NicovideoRegistrationRequest/model.js";
-import { ResolverDeps } from "../types.js";
-import { VideoModel } from "../Video/model.js";
+import { Resolvers } from "../resolvers/graphql.js";
+import { GraphQLNotExistsInDBError } from "../resolvers/id.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { VideoModel } from "../resolvers/Video/model.js";
+import { NicovideoRegistrationRequestDTO } from "./dto.js";
 
 export const resolverNicovideoRegistrationRequestAccepting = ({
   prisma,
@@ -15,7 +15,7 @@ export const resolverNicovideoRegistrationRequestAccepting = ({
     request: ({ requestId }) =>
       prisma.nicovideoRegistrationRequest
         .findUniqueOrThrow({ where: { id: requestId } })
-        .then((u) => new NicovideoRegistrationRequestModel(u))
+        .then((u) => new NicovideoRegistrationRequestDTO(u))
         .catch(() => {
           throw new GraphQLNotExistsInDBError("NicovideoRegistrationRequest", requestId);
         }),

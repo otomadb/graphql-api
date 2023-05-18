@@ -1,5 +1,9 @@
 /* eslint sort-keys: [2, "asc", {caseSensitive: false}] */
 
+import { resolverFindNicovideoRegistrationRequest } from "../../NicovideoRegistrationRequest/findNicovideoRegistrationRequest.resolver.js";
+import { resolverFindUncheckedNicovideoRegistrationRequests } from "../../NicovideoRegistrationRequest/findUncheckedNicovideoRegistrationRequests.resolver.js";
+import { resolverFindUncheckedNicovideoRegistrationRequestsByOffset } from "../../NicovideoRegistrationRequest/findUncheckedNicovideoRegistrationRequestsByOffset.resolver.js";
+import { getNicovideoRegistrationRequest } from "../../NicovideoRegistrationRequest/getNicovideoRegistrationRequest.js";
 import { getSoundcloudVideoSource } from "../../SoundcloudVideoSource/getSoundcloudVideoSource.resolver.js";
 import { resolverFindUser } from "../../User/findUser.resolver.js";
 import { resolverGetUser } from "../../User/getUser.resolver.js";
@@ -14,21 +18,17 @@ import { fetchNicovideo } from "./fetchNicovideo/fetchNicovideo.js";
 import { resolverFetchSoundcloud } from "./fetchSoundcloud/resolver.js";
 import { resolverFetchYoutube } from "./fetchYoutube/resolver.js";
 import { resolverFindMylist } from "./findMylist/findMylist.js";
-import { resolverFindNicovideoRegistrationRequest } from "./findNicovideoRegistrationRequest/resolver.js";
-import { findNicovideoRegistrationRequests } from "./findNicovideoRegistrationRequests/findNicovideoRegistrationRequests.js";
+import { findNicovideoRegistrationRequests } from "../../NicovideoRegistrationRequest/findNicovideoRegistrationRequests.resolver.js";
 import { findNicovideoVideoSource } from "./findNicovideoVideoSource/findNicovideoVideoSource.js";
 import { findSemitags } from "./findSemitags/findSemitags.js";
 import { findTag } from "./findTag/findTag.js";
 import { findTags } from "./findTags/findTags.js";
-import { resolverFindUncheckedNicovideoRegistrationRequests } from "./findUncheckedNicovideoRegistrationRequests/resolver.js";
-import { resolverFindUncheckedNicovideoRegistrationRequestsByOffset } from "./findUncheckedNicovideoRegistrationRequestsByOffset/resolver.js";
 import { findVideo } from "./findVideo/findVideos.js";
 import { findVideos } from "./findVideos/findVideos.js";
 import { resolverGetAllCategoryTag } from "./getAllCategoryTag/resolver.js";
 import { resolverGetAllTypeCategoryTag } from "./getAllTypeCategoryTag/resolver.js";
 import { getMylist } from "./getMylist/resolver.js";
 import { getMylistGroup } from "./getMylistGroup/resolver.js";
-import { getNicovideoRegistrationRequest } from "./getNicovideoRegistrationRequest/getNicovideoRegistrationRequest.js";
 import { getNicovideoVideoSource } from "./getNicovideoVideoSource/resolver.js";
 import { getNotification } from "./getNotification/resolver.js";
 import { resolverGetSemitag } from "./getSemitag/resolver.js";

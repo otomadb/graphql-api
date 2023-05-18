@@ -1,10 +1,10 @@
 import { GraphQLError } from "graphql";
 import z from "zod";
 
-import { QueryResolvers } from "../../graphql.js";
-import { parseGqlID } from "../../id.js";
-import { NicovideoRegistrationRequestModel } from "../../NicovideoRegistrationRequest/model.js";
-import { ResolverDeps } from "../../types.js";
+import { QueryResolvers } from "../resolvers/graphql.js";
+import { parseGqlID } from "../resolvers/id.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { NicovideoRegistrationRequestDTO } from "./dto.js";
 
 export const resolverFindNicovideoRegistrationRequest = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async (_, { input: unparsedInput }, { currentUser: ctxUser }, info) => {
@@ -23,7 +23,7 @@ export const resolverFindNicovideoRegistrationRequest = ({ prisma, logger }: Pic
         logger.info({ path: info.path, id: input.id, userId: ctxUser?.id }, "Not found");
         return null;
       }
-      return new NicovideoRegistrationRequestModel(req);
+      return new NicovideoRegistrationRequestDTO(req);
     } else {
       const req = await prisma.nicovideoRegistrationRequest.findUnique({
         where: { sourceId: input.sourceId },
@@ -32,6 +32,6 @@ export const resolverFindNicovideoRegistrationRequest = ({ prisma, logger }: Pic
         logger.info({ path: info.path, sourceId: input.sourceId, userId: ctxUser?.id }, "Not found");
         return null;
       }
-      return new NicovideoRegistrationRequestModel(req);
+      return new NicovideoRegistrationRequestDTO(req);
     }
   }) satisfies QueryResolvers["findNicovideoRegistrationRequest"];
