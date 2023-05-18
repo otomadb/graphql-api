@@ -1,6 +1,7 @@
 /* eslint sort-keys: [2, "asc", {caseSensitive: false}] */
 
 import { resolverFindNicovideoRegistrationRequest } from "../../NicovideoRegistrationRequest/findNicovideoRegistrationRequest.resolver.js";
+import { findNicovideoRegistrationRequests } from "../../NicovideoRegistrationRequest/findNicovideoRegistrationRequests.resolver.js";
 import { resolverFindUncheckedNicovideoRegistrationRequests } from "../../NicovideoRegistrationRequest/findUncheckedNicovideoRegistrationRequests.resolver.js";
 import { resolverFindUncheckedNicovideoRegistrationRequestsByOffset } from "../../NicovideoRegistrationRequest/findUncheckedNicovideoRegistrationRequestsByOffset.resolver.js";
 import { getNicovideoRegistrationRequest } from "../../NicovideoRegistrationRequest/getNicovideoRegistrationRequest.js";
@@ -18,7 +19,6 @@ import { fetchNicovideo } from "./fetchNicovideo/fetchNicovideo.js";
 import { resolverFetchSoundcloud } from "./fetchSoundcloud/resolver.js";
 import { resolverFetchYoutube } from "./fetchYoutube/resolver.js";
 import { resolverFindMylist } from "./findMylist/findMylist.js";
-import { findNicovideoRegistrationRequests } from "../../NicovideoRegistrationRequest/findNicovideoRegistrationRequests.resolver.js";
 import { findNicovideoVideoSource } from "./findNicovideoVideoSource/findNicovideoVideoSource.js";
 import { findSemitags } from "./findSemitags/findSemitags.js";
 import { findTag } from "./findTag/findTag.js";
