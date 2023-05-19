@@ -1,10 +1,10 @@
-import { Resolvers } from "../graphql.js";
-import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
-import { NicovideoVideoSourceEventModel } from "../NicovideoVideoSourceEvent/model.js";
-import { ResolverDeps } from "../types.js";
-import { VideoModel } from "../Video/model.js";
+import { Resolvers } from "../resolvers/graphql.js";
+import { buildGqlId, GraphQLNotExistsInDBError } from "../resolvers/id.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { VideoModel } from "../resolvers/Video/model.js";
+import { NicovideoVideoSourceEventDTO } from "./dto.js";
 
-export const resolveNicovideoVideoSource = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
+export const resolverNicovideoVideoSource = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
     id: ({ id }) => buildGqlId("NicovideoVideoSource", id),
     url: ({ sourceId }) => `https://www.nicovideo.jp/watch/${sourceId}`,
@@ -25,7 +25,7 @@ export const resolveNicovideoVideoSource = ({ prisma }: Pick<ResolverDeps, "pris
           skip: input.skip,
           orderBy: { id: "desc" },
         })
-        .then((es) => es.map((e) => new NicovideoVideoSourceEventModel(e)));
+        .then((es) => es.map((e) => new NicovideoVideoSourceEventDTO(e)));
       return { nodes };
     },
   } satisfies Resolvers["NicovideoVideoSource"]);

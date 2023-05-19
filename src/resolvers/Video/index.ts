@@ -1,10 +1,10 @@
 import { GraphQLError } from "graphql";
 
+import { NicovideoVideoSourceDTO } from "../../NicovideoVideoSource/dto.js";
 import { SoundcloudVideoSourceDTO } from "../../SoundcloudVideoSource/dto.js";
 import { YoutubeVideoSourceDTO } from "../../YoutubeVideoSource/dto.js";
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
-import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
 import { SemitagModel } from "../Semitag/model.js";
 import { ResolverDeps } from "../types.js";
 import { VideoEventModel } from "../VideoEvent/model.js";
@@ -50,7 +50,7 @@ export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pris
     nicovideoSources: async ({ id: videoId }) =>
       prisma.nicovideoVideoSource
         .findMany({ where: { videoId } })
-        .then((ss) => ss.map((s) => new NicovideoVideoSourceModel(s))),
+        .then((ss) => ss.map((s) => new NicovideoVideoSourceDTO(s))),
 
     youtubeSources: async ({ id: videoId }) =>
       prisma.youtubeVideoSource

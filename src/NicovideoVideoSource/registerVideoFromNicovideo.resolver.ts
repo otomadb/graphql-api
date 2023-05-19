@@ -12,8 +12,56 @@ import {
 } from "@prisma/client";
 import { ulid } from "ulid";
 
-import { err, isErr, ok, Result } from "../../../utils/Result.js";
-import { ResolverDeps } from "../../types.js";
+import { MutationResolvers, ResolversTypes } from "../resolvers/graphql.js";
+import { parseGqlID3, parseGqlIDs3 } from "../resolvers/id.js";
+import { updateWholeVideoTags } from "../resolvers/Mutation/resolveSemitag/neo4j.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { VideoModel } from "../resolvers/Video/model.js";
+import { checkDuplicate } from "../utils/checkDuplicate.js";
+import { isValidNicovideoSourceId } from "../utils/isValidNicovideoSourceId.js";
+import { err, isErr, ok, Result } from "../utils/Result.js";
+
+export const registerVideoInNeo4j = async (
+  { prisma, neo4j }: Pick<ResolverDeps, "prisma" | "logger" | "neo4j">,
+  videoId: string
+): Promise<Result<unknown, true>> => {
+  const session = neo4j.session();
+  try {
+    const tx = session.beginTransaction();
+
+    const videotags = await prisma.videoTag.findMany({ where: { videoId } });
+    for (const { id } of videotags) {
+      await updateWholeVideoTags({ prisma, tx }, id);
+    }
+
+    /* TODO: SemitagをNeo4j内でどう扱うかは未定
+    const semitags = await prisma.semitag.findMany({ where: { videoId } });
+    for (const { videoId, id, name } of semitags) {
+      tx.run(
+        `
+        MERGE (v:Video {id: $video_id})
+        MERGE (s:Semitag {id: $semitag_id})
+        SET s.name = $semitag_name
+        MERGE r=(v)-[:SEMITAGGED_BY]->(s)
+        RETURN r
+        `,
+        {
+          video_id: videoId,
+          semitag_id: id,
+          semitag_name: name,
+        }
+      );
+    }
+    */
+
+    await tx.commit();
+    return ok(true);
+  } catch (e) {
+    return err(e);
+  } finally {
+    await session.close();
+  }
+};
 
 export const getRequestCheck = async (
   prisma: ResolverDeps["prisma"],
@@ -217,3 +265,104 @@ export const register = async (
 
   return ok(video);
 };
+
+export const resolverRegisterVideoFromNicovideo = ({
+  prisma,
+  logger,
+  neo4j,
+}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+  (async (_parent, { input }, { currentUser: user }, info) => {
+    // TagのIDの妥当性及び重複チェック
+    const tagIds = parseGqlIDs3("Tag", input.tagIds);
+    if (isErr(tagIds)) {
+      switch (tagIds.error.type) {
+        case "INVALID_ID":
+          return {
+            __typename: "MutationInvalidTagIdError",
+            tagId: tagIds.error.type,
+          } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
+        case "DUPLICATED":
+          return {
+            __typename: "RegisterVideoFromNicovideoTagIdsDuplicatedError",
+            tagId: tagIds.error.duplicatedId,
+          } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
+      }
+    }
+
+    // Semitagのnameの重複チェック
+    const toolongSemitag = input.semitagNames.find((v) => 36 < v.length);
+    if (toolongSemitag)
+      return {
+        __typename: "RegisterVideoFromNicovideoSemitagTooLongError",
+        name: toolongSemitag,
+      } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
+
+    // Semitagのnameの重複チェック
+    const semitagNames = checkDuplicate(input.semitagNames);
+    if (isErr(semitagNames)) {
+      return {
+        __typename: "RegisterVideoFromNicovideoSemitagNamesDuplicatedError",
+        name: semitagNames.error,
+      } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
+    }
+
+    // リクエストIDのチェック
+    const nicovideoRequestId = input.requestId ? parseGqlID3("NicovideoRegistrationRequest", input.requestId) : null;
+    if (nicovideoRequestId && isErr(nicovideoRequestId)) {
+      return {
+        __typename: "MutationInvalidNicovideoRegistrationRequestIdError",
+        requestId: nicovideoRequestId.error.invalidId,
+      } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
+    }
+
+    // ニコニコ動画の動画IDチェック
+    for (const id of input.sourceIds) {
+      if (!isValidNicovideoSourceId(id))
+        return {
+          __typename: "RegisterVideoFromNicovideoInvalidNicovideoSourceIdError",
+          sourceID: id,
+        } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
+    }
+
+    const result = await register(prisma, {
+      authUserId: user.id,
+      primaryTitle: input.primaryTitle,
+      extraTitles: input.extraTitles,
+      primaryThumbnail: input.primaryThumbnailUrl,
+      tagIds: tagIds.data,
+      semitagNames: semitagNames.data,
+      sourceIds: input.sourceIds,
+      requestId: nicovideoRequestId?.data ?? null,
+    });
+
+    if (isErr(result)) {
+      switch (result.error.type) {
+        case "NO_TAG":
+          return {
+            __typename: "MutationTagNotFoundError",
+            tagId: result.error.tagId,
+          } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
+        case "REQUEST_NOT_FOUND":
+          return {
+            __typename: "MutationNicovideoRegistrationRequestNotFoundError",
+            requestId: result.error.requestId,
+          } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
+        case "REQUEST_ALREADY_CHECKED":
+          return {
+            __typename: "MutationNicovideoRegistrationRequestAlreadyCheckedError",
+            requestId: result.error.requestId,
+          } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
+        case "INTERNAL_SERVER_ERROR":
+          logger.error({ error: result.error.error, path: info.path }, "Something error happens");
+          throw new Error("Internal server error");
+      }
+    }
+
+    const video = result.data;
+    await registerVideoInNeo4j({ prisma, logger, neo4j }, video.id);
+
+    return {
+      __typename: "RegisterVideoFromNicovideoSucceededPayload",
+      video: new VideoModel(video),
+    } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
+  }) satisfies MutationResolvers["registerVideoFromNicovideo"];

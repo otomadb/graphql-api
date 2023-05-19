@@ -3,12 +3,12 @@ import { createSchema, createYoga } from "graphql-yoga";
 import { beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { DeepMockProxy, mockDeep, mockReset } from "vitest-mock-extended";
 
-import { graphql } from "../../../gql/gql.js";
-import typeDefs from "../../../schema.graphql";
-import { makeExecutor } from "../../../test/makeExecutor.js";
-import { buildGqlId } from "../../id.js";
-import { makeResolvers } from "../../index.js";
-import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../../types.js";
+import { graphql } from "../gql/gql.js";
+import { buildGqlId } from "../resolvers/id.js";
+import { makeResolvers } from "../resolvers/index.js";
+import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../resolvers/types.js";
+import typeDefs from "../schema.graphql";
+import { makeExecutor } from "../test/makeExecutor.js";
 
 const Mutation = graphql(`
   mutation E2E_RegisterVideoFromNicovideo($input: RegisterVideoFromNicovideoInput!) {

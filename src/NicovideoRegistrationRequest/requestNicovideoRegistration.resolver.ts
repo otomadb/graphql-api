@@ -2,9 +2,9 @@ import { NicovideoRegistrationRequest, NicovideoVideoSource } from "@prisma/clie
 import { GraphQLError } from "graphql";
 import { ulid } from "ulid";
 
+import { NicovideoVideoSourceDTO } from "../NicovideoVideoSource/dto.js";
 import { MutationResolvers, ResolversTypes } from "../resolvers/graphql.js";
 import { parseGqlID2 } from "../resolvers/id.js";
-import { NicovideoVideoSourceModel } from "../resolvers/NicovideoVideoSource/model.js";
 import { ResolverDeps } from "../resolvers/types.js";
 import { err, isErr, ok, Result } from "../utils/Result.js";
 import { NicovideoRegistrationRequestDTO } from "./dto.js";
@@ -119,7 +119,7 @@ export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<Re
         case "VIDEO_ALREADY_REGISTERED":
           return {
             __typename: "RequestNicovideoRegistrationVideoAlreadyRegisteredError",
-            source: new NicovideoVideoSourceModel(result.error.source),
+            source: new NicovideoVideoSourceDTO(result.error.source),
           } satisfies ResolversTypes["RequestNicovideoRegistrationReturnUnion"];
         case "INTERNAL_SERVER_ERROR":
           logger.error({ error: result.error.error, path: info.path }, "Something error happens");

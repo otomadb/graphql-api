@@ -34,9 +34,9 @@ generates:
         NicovideoRegistrationRequestConnection: ../NicovideoRegistrationRequest/dto.js#NicovideoRegistrationRequestConnectionDTO
         NicovideoRegistrationRequestRejecting: ../NicovideoRegistrationRequest/dto.js#NicovideoRegistrationRequestRejectingDTO
         NicovideoRegistrationRequestRejectingNotification: ./Notification/model.js#NotificationModel
-        NicovideoVideoSource: ./NicovideoVideoSource/model.js#NicovideoVideoSourceModel
-        NicovideoVideoSourceCreateEvent: ./NicovideoVideoSourceEvent/model.js#NicovideoVideoSourceEventModel
-        NicovideoVideoSourceEvent: ./NicovideoVideoSourceEvent/model.js#NicovideoVideoSourceEventModel
+        NicovideoVideoSource: ../NicovideoVideoSource/dto.js#NicovideoVideoSourceDTO
+        NicovideoVideoSourceCreateEvent: ../NicovideoVideoSource/dto.js#NicovideoVideoSourceEventDTO
+        NicovideoVideoSourceEvent: ../NicovideoVideoSource/dto.js#NicovideoVideoSourceEventDTO
         Notification: ./Notification/model.js#NotificationModel
         NotificationConnection: ./NotificationConnection/model.js#NotificationConnectionModel
         Semitag: ./Semitag/model.js#SemitagModel
