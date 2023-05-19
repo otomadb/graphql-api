@@ -3,11 +3,11 @@ import { createSchema, createYoga } from "graphql-yoga";
 import { beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { DeepMockProxy, mockDeep, mockReset } from "vitest-mock-extended";
 
-import typeDefs from "../../../schema.graphql";
 import { graphql } from "../gql/gql.js";
 import { buildGqlId } from "../resolvers/id.js";
 import { makeResolvers } from "../resolvers/index.js";
 import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../resolvers/types.js";
+import typeDefs from "../schema.graphql";
 import { makeExecutor } from "../test/makeExecutor.js";
 
 const Mutation = graphql(`
