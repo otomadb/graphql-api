@@ -1,9 +1,9 @@
 import { NicovideoVideoSourceEventType } from "@prisma/client";
 
-import { Resolvers } from "../graphql.js";
-import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
-import { NicovideoVideoSourceModel } from "../NicovideoVideoSource/model.js";
-import { ResolverDeps } from "../types.js";
+import { Resolvers } from "../resolvers/graphql.js";
+import { buildGqlId, GraphQLNotExistsInDBError } from "../resolvers/id.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { NicovideoVideoSourceDTO } from "./dto.js";
 
 export const resolveNicovideoVideoSourceEventCommonProps = ({
   prisma,
@@ -15,7 +15,7 @@ export const resolveNicovideoVideoSourceEventCommonProps = ({
     source: ({ sourceId: videoSourceId }) =>
       prisma.nicovideoVideoSource
         .findUniqueOrThrow({ where: { id: videoSourceId } })
-        .then((v) => new NicovideoVideoSourceModel(v))
+        .then((v) => new NicovideoVideoSourceDTO(v))
         .catch(() => {
           throw new GraphQLNotExistsInDBError("NicovideoVideoSource", videoSourceId);
         }),

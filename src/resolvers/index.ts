@@ -6,6 +6,11 @@ import { resolverNicovideoRegistrationRequestConnection } from "../NicovideoRegi
 import { resolverNicovideoRegistrationRequestRejecting } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestRejecting.resolver.js";
 import { resolverNicovideoRegistrationRequestRejectingNotification } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestRejectingNotification.resolver.js";
 import { resolverNicovideoRegistrationRequest } from "../NicovideoRegistrationRequest/resolver.js";
+import { resolverNicovideoVideoSource } from "../NicovideoVideoSource/NicovideoVideoSource.resolver.js";
+import {
+  resolveNicovideoVideoSourceCreateEvent,
+  resolveNicovideoVideoSourceEvent,
+} from "../NicovideoVideoSource/NicovideoVideoSourceEvent.resolver.js";
 import { resolveSoundcloudVideoSource } from "../SoundcloudVideoSource/SoundcloudVideoSource.resolver.js";
 import { resolveSoundcloudVideoSourceEvent } from "../SoundcloudVideoSource/SoundcloudVideoSourceEvent.resolver.js";
 import { resolverSoundcloudVideoSourceEventConnection } from "../SoundcloudVideoSource/SoundcloudVideoSourceEventConnection.resolver.js";
@@ -34,11 +39,6 @@ import { resolverMylistRegistrationConnection } from "./MylistRegistrationConnec
 import { resolveMylistTagInclusion } from "./MylistTagInclusion/index.js";
 import { resolveMylistVideoRecommendation } from "./MylistVideoRecommendation/index.js";
 import { resolveNicovideoOriginalSourceTag } from "./NicovideoOriginalSourceTag/index.js";
-import { resolveNicovideoVideoSource } from "./NicovideoVideoSource/index.js";
-import {
-  resolveNicovideoVideoSourceCreateEvent,
-  resolveNicovideoVideoSourceEvent,
-} from "./NicovideoVideoSourceEvent/index.js";
 import { resolverNotification } from "./Notification/resolver.js";
 import { resolverNotificationConnection } from "./NotificationConnection/resolver.js";
 import { resolveQuery } from "./Query/index.js";
@@ -113,7 +113,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     NicovideoRegistrationRequestConnection: resolverNicovideoRegistrationRequestConnection(),
     NicovideoRegistrationRequestRejecting: resolverNicovideoRegistrationRequestRejecting(deps),
     NicovideoRegistrationRequestRejectingNotification: resolverNicovideoRegistrationRequestRejectingNotification(deps),
-    NicovideoVideoSource: resolveNicovideoVideoSource(deps),
+    NicovideoVideoSource: resolverNicovideoVideoSource(deps),
     NicovideoVideoSourceCreateEvent: resolveNicovideoVideoSourceCreateEvent(deps),
     NicovideoVideoSourceEvent: resolveNicovideoVideoSourceEvent(),
     Notification: resolverNotification(deps),

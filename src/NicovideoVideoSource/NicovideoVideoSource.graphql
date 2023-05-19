@@ -1,3 +1,50 @@
+type NicovideoVideoSource implements Node & VideoSource {
+  id: ID!
+  sourceId: String!
+  video: Video!
+
+  url: String!
+  embedUrl: String!
+
+  events(input: NicovideoVideoSourceEventsInput!): NicovideoVideoSourceEventConnection!
+}
+
+input NicovideoVideoSourceEventsInput {
+  skip: Int! = 0
+  limit: Int! = 10
+}
+
+interface NicovideoVideoSourceEvent implements Node & Event {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  source: NicovideoVideoSource!
+}
+
+type NicovideoVideoSourceEventConnection {
+  nodes: [NicovideoVideoSourceEvent!]!
+}
+
+type NicovideoVideoSourceCreateEvent implements Node & Event & NicovideoVideoSourceEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  source: NicovideoVideoSource!
+}
+
+type Query {
+  getNicovideoVideoSource(id: ID!): NicovideoVideoSource!
+  findNicovideoVideoSource(input: FindNicovideoVideoSourceInput!): NicovideoVideoSource
+}
+
+input FindNicovideoVideoSourceInput {
+  sourceId: String
+}
+
 type Mutation {
   registerVideoFromNicovideo(input: RegisterVideoFromNicovideoInput!): RegisterVideoFromNicovideoPayload!
     @auth(scopes: ["create:video"])

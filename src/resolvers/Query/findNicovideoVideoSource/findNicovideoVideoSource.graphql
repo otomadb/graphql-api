@@ -1,7 +1,0 @@
-type Query {
-  findNicovideoVideoSource(input: FindNicovideoVideoSourceInput!): NicovideoVideoSource
-}
-
-input FindNicovideoVideoSourceInput {
-  sourceId: String
-}

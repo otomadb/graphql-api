@@ -2,6 +2,7 @@
 
 import { resolverRejectRequestNicovideoRegistration } from "../../NicovideoRegistrationRequest/rejectNicovideoRegistrationRequest.resolver.js";
 import { resolverRequestNicovideoRegistration } from "../../NicovideoRegistrationRequest/requestNicovideoRegistration.resolver.js";
+import { resolverRegisterVideoFromNicovideo } from "../../NicovideoVideoSource/registerVideoFromNicovideo.resolver.js";
 import { resolverRegisterMadFromSoundcloud } from "../../SoundcloudVideoSource/registerMadFromSoundcloud.resolver.js";
 import { resolverRegisterVideoFromYoutube } from "../../YoutubeVideoSource/registerVideoFromYoutube.resolver.js";
 import { type Resolvers } from "../graphql.js";
@@ -21,7 +22,6 @@ import { registerCategoryTag } from "./registerCategoryTag/resolver.js";
 import { resolverRegisterCategoryTagTyping } from "./registerCategoryTagTyping/resolver.js";
 import { resolverRegisterTag } from "./registerTag/resolver.js";
 import { resolverRegisterTagParentRelation } from "./registerTagParentRelation/resolver.js";
-import { resolverRegisterVideoFromNicovideo } from "./registerVideoFromNicovideo/resolver.js";
 import { resolverRejectSemitag } from "./rejectSemitag/resolver.js";
 import { resolverRemoveTagFromVideo } from "./removeTagFromVideo/resolver.js";
 import { removeVideoFromMylist } from "./removeVideoFromMylist/removeVideoFromMylist.js";
