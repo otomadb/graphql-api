@@ -2,7 +2,7 @@ import { QueryResolvers } from "../resolvers/graphql.js";
 import { ResolverDeps } from "../resolvers/types.js";
 import { VideoSearchItemByTitleDTO } from "./dto.js";
 
-export const searchVideos = ({ meilisearch }: Pick<ResolverDeps, "meilisearch">) =>
+export const resolverSearchVideos = ({ meilisearch }: Pick<ResolverDeps, "meilisearch">) =>
   (async (_, { input }) => {
     const index = await meilisearch.getIndex<{
       id: string;

@@ -9,7 +9,7 @@ import { ResolverDeps } from "../resolvers/types.js";
 import { isErr } from "../utils/Result.js";
 import { VideoConnectionDTO } from "./dto.js";
 
-export const findVideos = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolverFindVideos = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   ((_parent, { orderBy: unparsedOrderBy, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([
