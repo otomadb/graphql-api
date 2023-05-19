@@ -16,10 +16,10 @@ import { MutationResolvers, ResolversTypes } from "../resolvers/graphql.js";
 import { parseGqlID3, parseGqlIDs3 } from "../resolvers/id.js";
 import { updateWholeVideoTags } from "../resolvers/Mutation/resolveSemitag/neo4j.js";
 import { ResolverDeps } from "../resolvers/types.js";
-import { VideoModel } from "../resolvers/Video/model.js";
 import { checkDuplicate } from "../utils/checkDuplicate.js";
 import { isValidNicovideoSourceId } from "../utils/isValidNicovideoSourceId.js";
 import { err, isErr, ok, Result } from "../utils/Result.js";
+import { VideoDTO } from "../Video/dto.js";
 
 export const registerVideoInNeo4j = async (
   { prisma, neo4j }: Pick<ResolverDeps, "prisma" | "logger" | "neo4j">,
@@ -363,6 +363,6 @@ export const resolverRegisterVideoFromNicovideo = ({
 
     return {
       __typename: "RegisterVideoFromNicovideoSucceededPayload",
-      video: new VideoModel(video),
+      video: new VideoDTO(video),
     } satisfies ResolversTypes["RegisterVideoFromNicovideoPayload"];
   }) satisfies MutationResolvers["registerVideoFromNicovideo"];

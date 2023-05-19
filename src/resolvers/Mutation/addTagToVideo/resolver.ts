@@ -1,9 +1,9 @@
 import { isErr } from "../../../utils/Result.js";
+import { VideoDTO } from "../../../Video/dto.js";
 import { AddTagToVideoFailedMessage, MutationResolvers } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { TagModel } from "../../Tag/model.js";
 import { ResolverDeps } from "../../types.js";
-import { VideoModel } from "../../Video/model.js";
 import { addTagToVideoInNeo4j } from "./neo4j.js";
 import { add } from "./prisma.js";
 
@@ -48,7 +48,7 @@ export const resolverAddTagToVideo = ({ neo4j, prisma, logger }: Pick<ResolverDe
     return {
       __typename: "AddTagToVideoSucceededPayload",
 
-      video: new VideoModel(tagging.video),
+      video: new VideoDTO(tagging.video),
       tag: new TagModel(tagging.tag),
     };
   }) satisfies MutationResolvers["addTagToVideo"];

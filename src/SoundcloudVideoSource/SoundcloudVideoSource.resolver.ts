@@ -7,8 +7,8 @@ import { Resolvers, SoundcloudVideoSourceResolvers } from "../resolvers/graphql.
 import { buildGqlId, GraphQLNotExistsInDBError } from "../resolvers/id.js";
 import { parseOrderBy } from "../resolvers/parseSortOrder.js";
 import { ResolverDeps } from "../resolvers/types.js";
-import { VideoModel } from "../resolvers/Video/model.js";
 import { isErr } from "../utils/Result.js";
+import { VideoDTO } from "../Video/dto.js";
 import { SoundcloudVideoSourceEventConnectionDTO } from "./dto.js";
 
 export const resolveSoundcloudVideoSourceEvents = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
@@ -75,7 +75,7 @@ export const resolveSoundcloudVideoSource = ({
     video: async ({ videoId }) =>
       prisma.video
         .findUniqueOrThrow({ where: { id: videoId } })
-        .then((v) => new VideoModel(v))
+        .then((v) => new VideoDTO(v))
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Video", videoId);
         }),

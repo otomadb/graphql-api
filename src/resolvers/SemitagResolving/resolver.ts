@@ -1,8 +1,8 @@
+import { VideoTagDTO } from "../../Video/dto.js";
 import { Resolvers } from "../graphql.js";
 import { GraphQLNotExistsInDBError } from "../id.js";
 import { SemitagModel } from "../Semitag/model.js";
 import { ResolverDeps } from "../types.js";
-import { VideoTagModel } from "../VideoTag/model.js";
 import { SemitagResolvingModel } from "./model.js";
 
 export const resolverSemitagResolving = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
@@ -19,7 +19,7 @@ export const resolverSemitagResolving = ({ prisma }: Pick<ResolverDeps, "prisma"
     resolveTo: ({ videoTagId }) =>
       prisma.videoTag
         .findUniqueOrThrow({ where: { id: videoTagId } })
-        .then((s) => new VideoTagModel(s))
+        .then((s) => new VideoTagDTO(s))
         .catch(() => {
           throw new GraphQLNotExistsInDBError("VideoTag", videoTagId);
         }),

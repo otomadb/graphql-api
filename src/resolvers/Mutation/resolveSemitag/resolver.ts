@@ -1,10 +1,10 @@
 import { isErr } from "../../../utils/Result.js";
+import { VideoTagDTO } from "../../../Video/dto.js";
 import { MutationResolvers, ResolversTypes, ResolveSemitagOtherErrorsFallbackMessage } from "../../graphql.js";
 import { parseGqlID3 } from "../../id.js";
 import { SemitagModel } from "../../Semitag/model.js";
 import { SemitagResolvingModel } from "../../SemitagResolving/model.js";
 import { ResolverDeps } from "../../types.js";
-import { VideoTagModel } from "../../VideoTag/model.js";
 import { resolve as resolveSemitagInNeo4j } from "./neo4j.js";
 import { resolve } from "./prisma.js";
 
@@ -54,7 +54,7 @@ export const resolverResolveSemitag = ({ prisma, logger, neo4j }: Pick<ResolverD
         case "VIDEO_ALREADY_TAGGED":
           return {
             __typename: "ResolveSemitagVideoAlreadyTaggedPayload",
-            tagging: VideoTagModel.fromPrisma(result.error.tagging),
+            tagging: VideoTagDTO.fromPrisma(result.error.tagging),
           } satisfies ResolversTypes["ResolveSemitagReturnUnion"];
       }
     }

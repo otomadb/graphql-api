@@ -2,15 +2,15 @@ import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection
 import { GraphQLError } from "graphql";
 import z from "zod";
 
-import { isErr } from "../../../utils/Result.js";
-import { VideoTagConnectionDTO } from "../../../Video/dto.js";
-import { cursorOptions } from "../../connection.js";
-import { TagResolvers } from "../../graphql.js";
-import { parseOrderBy } from "../../parseSortOrder.js";
-import { ResolverDeps } from "../../types.js";
+import { cursorOptions } from "../resolvers/connection.js";
+import { QueryResolvers } from "../resolvers/graphql.js";
+import { parseOrderBy } from "../resolvers/parseSortOrder.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { isErr } from "../utils/Result.js";
+import { VideoConnectionDTO } from "./dto.js";
 
-export const resolveTaggedVideos = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async ({ id: tagId }, { orderBy: unparsedOrderBy, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
+export const findVideos = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+  ((_parent, { orderBy: unparsedOrderBy, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([
         z.object({
@@ -36,13 +36,12 @@ export const resolveTaggedVideos = ({ prisma, logger }: Pick<ResolverDeps, "pris
 
     return findManyCursorConnection(
       (args) =>
-        prisma.videoTag.findMany({
+        prisma.video.findMany({
           ...args,
-          where: { tagId },
           orderBy: orderBy.data,
         }),
-      () => prisma.videoTag.count({ where: { tagId } }),
+      () => prisma.video.count(),
       connectionArgs.data,
       { resolveInfo: info, ...cursorOptions }
-    ).then((c) => VideoTagConnectionDTO.fromPrisma(c));
-  }) satisfies TagResolvers["taggedVideos"];
+    ).then((c) => VideoConnectionDTO.fromPrisma(c));
+  }) satisfies QueryResolvers["findVideos"];

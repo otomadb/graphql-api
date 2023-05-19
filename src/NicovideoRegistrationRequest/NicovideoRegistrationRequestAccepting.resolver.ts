@@ -3,7 +3,7 @@ import { GraphQLError } from "graphql";
 import { Resolvers } from "../resolvers/graphql.js";
 import { GraphQLNotExistsInDBError } from "../resolvers/id.js";
 import { ResolverDeps } from "../resolvers/types.js";
-import { VideoModel } from "../resolvers/Video/model.js";
+import { VideoDTO } from "../Video/dto.js";
 import { NicovideoRegistrationRequestDTO } from "./dto.js";
 
 export const resolverNicovideoRegistrationRequestAccepting = ({
@@ -23,7 +23,7 @@ export const resolverNicovideoRegistrationRequestAccepting = ({
     video: async ({ videoId }, _args, _ctx, info) =>
       prisma.video
         .findUniqueOrThrow({ where: { id: videoId } })
-        .then((v) => new VideoModel(v))
+        .then((v) => new VideoDTO(v))
         .catch((e) => {
           logger.error({ error: e, path: info.path }, "Video not found");
           throw new GraphQLError("Something wrong happened");

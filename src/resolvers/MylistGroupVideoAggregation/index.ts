@@ -1,14 +1,14 @@
+import { VideoDTO } from "../../Video/dto.js";
 import { Resolvers } from "../graphql.js";
 import { GraphQLNotExistsInDBError } from "../id.js";
 import { ResolverDeps } from "../types.js";
-import { VideoModel } from "../Video/model.js";
 
 export const resolveMylistGroupVideoAggregation = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
     video: ({ videoId }) =>
       prisma.video
         .findUniqueOrThrow({ where: { id: videoId } })
-        .then((v) => new VideoModel(v))
+        .then((v) => new VideoDTO(v))
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Video", videoId);
         }),

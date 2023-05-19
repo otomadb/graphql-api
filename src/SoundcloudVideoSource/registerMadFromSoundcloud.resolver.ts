@@ -14,9 +14,9 @@ import { MutationResolvers, ResolversTypes } from "../resolvers/graphql.js";
 import { parseGqlIDs3 } from "../resolvers/id.js";
 import { updateWholeVideoTags } from "../resolvers/Mutation/resolveSemitag/neo4j.js";
 import { ResolverDeps } from "../resolvers/types.js";
-import { VideoModel } from "../resolvers/Video/model.js";
 import { checkDuplicate } from "../utils/checkDuplicate.js";
 import { err, isErr, ok, Result } from "../utils/Result.js";
+import { VideoDTO } from "../Video/dto.js";
 
 export const registerVideoInNeo4j = async (
   { prisma, neo4j }: Pick<ResolverDeps, "prisma" | "logger" | "neo4j">,
@@ -268,6 +268,6 @@ export const resolverRegisterMadFromSoundcloud = ({
 
     return {
       __typename: "RegisterMadFromSoundcloudSucceededPayload",
-      mad: new VideoModel(video),
+      mad: new VideoDTO(video),
     } satisfies ResolversTypes["RegisterMadFromSoundcloudPayload"];
   }) satisfies MutationResolvers["registerMadFromSoundcloud"];

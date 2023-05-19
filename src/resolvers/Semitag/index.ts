@@ -1,10 +1,10 @@
+import { VideoDTO } from "../../Video/dto.js";
 import { Resolvers } from "../graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../id.js";
 import { SemitagEventModel } from "../SemitagEvent/model.js";
 import { SemitagRejectingModel } from "../SemitagRejecting/model.js";
 import { SemitagResolvingModel } from "../SemitagResolving/model.js";
 import { ResolverDeps } from "../types.js";
-import { VideoModel } from "../Video/model.js";
 import { resolverSemitagSuggestTags } from "./suggestTags/resolver.js";
 
 export const resolveSemitag = ({ prisma, meilisearch }: Pick<ResolverDeps, "prisma" | "meilisearch">) =>
@@ -13,7 +13,7 @@ export const resolveSemitag = ({ prisma, meilisearch }: Pick<ResolverDeps, "pris
     video: ({ videoId }) =>
       prisma.video
         .findFirstOrThrow({ where: { id: videoId } })
-        .then((v) => new VideoModel(v))
+        .then((v) => new VideoDTO(v))
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Video", videoId);
         }),
