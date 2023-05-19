@@ -1,12 +1,12 @@
 import { GraphQLError } from "graphql";
 
 import { isErr } from "../../../utils/Result.js";
+import { VideoDTO } from "../../../Video/dto.js";
 import { MutationResolvers, ResolversTypes } from "../../graphql.js";
 import { buildGqlId, parseGqlID3 } from "../../id.js";
 import { MylistModel } from "../../Mylist/model.js";
 import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
 import { ResolverDeps } from "../../types.js";
-import { VideoModel } from "../../Video/model.js";
 import { undoLikeVideoInNeo4j } from "./neo4j.js";
 import { undo } from "./prisma.js";
 
@@ -34,13 +34,13 @@ export const resolverUndoLikeVideo = ({ prisma, neo4j, logger }: Pick<ResolverDe
         case "NOT_LIKED":
           return {
             __typename: "UndoLikeVideoNotLikedError",
-            video: new VideoModel(result.error.video),
+            video: new VideoDTO(result.error.video),
             likes: new MylistModel(result.error.mylist),
           } satisfies ResolversTypes["UndoLikeVideoReturnUnion"];
         case "ALREADY_REMOVED":
           return {
             __typename: "UndoLikeVideoNotLikedError",
-            video: new VideoModel(result.error.video),
+            video: new VideoDTO(result.error.video),
             likes: new MylistModel(result.error.mylist),
           } satisfies ResolversTypes["UndoLikeVideoReturnUnion"];
       }

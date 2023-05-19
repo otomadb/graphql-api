@@ -69,29 +69,29 @@ generates:
         TagSearchItemByName: ./TagSearchItemByName/model.js#TagSearchItemByNameModel
         TypeCategoryTag: ./TypeCategoryTag/model.js#TypeCategoryTagModel
         User: ../User/dto.js#UserDTO
-        Video: ./Video/model.js#VideoModel
-        VideoAddNicovideoSourceEvent: ./VideoEvent/model.js#VideoEventModel
-        VideoConnection: ./VideoConnection/model.js#VideoConnectionModel
-        VideoEvent: ./VideoEvent/model.js#VideoEventModel
-        VideoRegisterEvent: ./VideoEvent/model.js#VideoEventModel
-        VideoSearchItemByTitle: ./VideoSearchItemByTitle/model.js#VideoSearchItemByTitleModel
-        VideoSimilarity: ./VideoSimilarity/model.js#VideoSimilarityModel
-        VideoTag: ./VideoTag/model.js#VideoTagModel
-        VideoTagAttachEvent: ./VideoTagEvent/model.js#VideoTagEventModel
-        VideoTagConnection: ./VideoTagConnection/model.js#VideoTagConnectionModel
-        VideoTagDetachEvent: ./VideoTagEvent/model.js#VideoTagEventModel
-        VideoTagEvent: ./VideoTagEvent/model.js#VideoTagEventModel
-        VideoTagReattachEvent: ./VideoTagEvent/model.js#VideoTagEventModel
-        VideoThumbnail: ./VideoThumbnail/model.js#VideoThumbnailModel
-        VideoThumbnailCreateEvent: ./VideoThumbnailEvent/model.js#VideoThumbnailEventModel
-        VideoThumbnailEvent: ./VideoThumbnailEvent/model.js#VideoThumbnailEventModel
-        VideoThumbnailSetPrimaryEvent: ./VideoThumbnailEvent/model.js#VideoThumbnailEventModel
-        VideoThumbnailUnsetPrimaryEvent: ./VideoThumbnailEvent/model.js#VideoThumbnailEventModel
-        VideoTitle: ./VideoTitle/model.js#VideoTitleModel
-        VideoTitleCreateEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
-        VideoTitleEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
-        VideoTitleSetPrimaryEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
-        VideoTitleUnsetPrimaryEvent: ./VideoTitleEvent/model.js#VideoTitleEventModel
+        Video: ../Video/dto.js#VideoDTO
+        VideoAddNicovideoSourceEvent: ../Video/dto.js#VideoEventDTO
+        VideoConnection: ../Video/dto.js#VideoConnectionDTO
+        VideoEvent: ../Video/dto.js#VideoEventDTO
+        VideoRegisterEvent: ../Video/dto.js#VideoEventDTO
+        VideoSearchItemByTitle: ../Video/dto.js#VideoSearchItemByTitleDTO
+        VideoSimilarity: ../Video/dto.js#VideoSimilarityDTO
+        VideoTag: ../Video/dto.js#VideoTagDTO
+        VideoTagAttachEvent: ../Video/dto.js#VideoTagEventDTO
+        VideoTagConnection: ../Video/dto.js#VideoTagConnectionDTO
+        VideoTagDetachEvent: ../Video/dto.js#VideoTagEventDTO
+        VideoTagEvent: ../Video/dto.js#VideoTagEventDTO
+        VideoTagReattachEvent: ../Video/dto.js#VideoTagEventDTO
+        VideoThumbnail: ../Video/dto.js#VideoThumbnailDTO
+        VideoThumbnailCreateEvent: ../Video/dto.js#VideoThumbnailEventDTO
+        VideoThumbnailEvent: ../Video/dto.js#VideoThumbnailEventDTO
+        VideoThumbnailSetPrimaryEvent: ../Video/dto.js#VideoThumbnailEventDTO
+        VideoThumbnailUnsetPrimaryEvent: ../Video/dto.js#VideoThumbnailEventDTO
+        VideoTitle: ../Video/dto.js#VideoTitleDTO
+        VideoTitleCreateEvent: ../Video/dto.js#VideoTitleEventDTO
+        VideoTitleEvent: ../Video/dto.js#VideoTitleEventDTO
+        VideoTitleSetPrimaryEvent: ../Video/dto.js#VideoTitleEventDTO
+        VideoTitleUnsetPrimaryEvent: ../Video/dto.js#VideoTitleEventDTO
         YoutubeRegistrationRequest: ../YoutubeRegistrationRequest/dto.js#YoutubeRegistrationRequestDTO
         YoutubeRegistrationRequestAccepting: ../YoutubeRegistrationRequest/dto.js#YoutubeRegistrationRequestAcceptingDTO
         YoutubeRegistrationRequestAcceptingNotification: ../YoutubeRegistrationRequest/dto.js#YoutubeRegistrationRequestAcceptingNotificationDTO

@@ -1,4 +1,0 @@
-type VideoSearchItemByTitle {
-  video: Video!
-  title: VideoTitle!
-}

@@ -1,9 +1,9 @@
 import { isErr } from "../../../utils/Result.js";
+import { VideoDTO } from "../../../Video/dto.js";
 import { MutationResolvers, RemoveTagFromVideoFailedMessage } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { TagModel } from "../../Tag/model.js";
 import { ResolverDeps } from "../../types.js";
-import { VideoModel } from "../../Video/model.js";
 import { removeInNeo4j } from "./neo4j.js";
 import { remove } from "./prisma.js";
 
@@ -67,6 +67,6 @@ export const resolverRemoveTagFromVideo = ({
     return {
       __typename: "RemoveTagFromVideoSucceededPayload",
       tag: new TagModel(tagging.tag),
-      video: new VideoModel(tagging.video),
+      video: new VideoDTO(tagging.video),
     };
   }) satisfies MutationResolvers["removeTagFromVideo"];

@@ -15,6 +15,32 @@ import { resolveSoundcloudVideoSource } from "../SoundcloudVideoSource/Soundclou
 import { resolveSoundcloudVideoSourceEvent } from "../SoundcloudVideoSource/SoundcloudVideoSourceEvent.resolver.js";
 import { resolverSoundcloudVideoSourceEventConnection } from "../SoundcloudVideoSource/SoundcloudVideoSourceEventConnection.resolver.js";
 import { resolveUser } from "../User/User.resolver.js";
+import { resolveVideo } from "../Video/Video.resolver.js";
+import { resolverVideoConnection } from "../Video/VideoConnection.resolver.js";
+import { resolveVideoEvent, resolveVideoRegisterEvent } from "../Video/VideoEvent.resolver.js";
+import { resolverVideoSearchItemByTitle } from "../Video/VideoSearchItemByTitle.resolver.js";
+import { resolveVideoSimilarity } from "../Video/VideoSimilarity.resolver.js";
+import { resolveVideoTag } from "../Video/VideoTag.resolver.js";
+import {
+  resolveVideoTagAttachEvent,
+  resolveVideoTagDetachEvent,
+  resolveVideoTagEvent,
+  resolveVideoTagReattachEvent,
+} from "../Video/VideoTagEvent.resolver.js";
+import { resolveVideoThumbnail } from "../Video/VideoThumbnail.resolver.js";
+import {
+  resolveVideoThumbnailCreateEvent,
+  resolveVideoThumbnailEvent,
+  resolveVideoThumbnailSetPrimaryEvent,
+  resolveVideoThumbnailUnsetPrimaryEvent,
+} from "../Video/VideoThumbnailEvent.resolver.js";
+import { resolveVideoTitle } from "../Video/VideoTitle.resolver.js";
+import {
+  resolveVideoTitleCreateEvent,
+  resolveVideoTitleEvent,
+  resolveVideoTitleSetPrimaryEvent,
+  resolveVideoTitleUnsetPrimaryEvent,
+} from "../Video/VideoTitleEvent.resolver.js";
 import { resolverYoutubeRegistrationRequest } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequest.resolver.js";
 import { resolverYoutubeRegistrationRequestAccepting } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestAccepting.resolver.js";
 import { resolverYoutubeRegistrationRequestAcceptingNotification } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestAcceptingNotification.resolver.js";
@@ -67,32 +93,6 @@ import { resolverTagParentConnection } from "./TagParentConnection/resolver.js";
 import { resolverTagSearchItemByName } from "./TagSearchItemByName/resolver.js";
 import { resolverTypeCategoryTag } from "./TypeCategoryTag/resolver.js";
 import { ResolverDeps } from "./types.js";
-import { resolveVideo } from "./Video/index.js";
-import { resolverVideoConnection } from "./VideoConnection/resolver.js";
-import { resolveVideoEvent, resolveVideoRegisterEvent } from "./VideoEvent/index.js";
-import { resolverVideoSearchItemByTitle } from "./VideoSearchItemByTitle/resolver.js";
-import { resolveVideoSimilarity } from "./VideoSimilarity/index.js";
-import { resolveVideoTag } from "./VideoTag/index.js";
-import {
-  resolveVideoTagAttachEvent,
-  resolveVideoTagDetachEvent,
-  resolveVideoTagEvent,
-  resolveVideoTagReattachEvent,
-} from "./VideoTagEvent/index.js";
-import { resolveVideoThumbnail } from "./VideoThumbnail/index.js";
-import {
-  resolveVideoThumbnailCreateEvent,
-  resolveVideoThumbnailEvent,
-  resolveVideoThumbnailSetPrimaryEvent,
-  resolveVideoThumbnailUnsetPrimaryEvent,
-} from "./VideoThumbnailEvent/index.js";
-import { resolveVideoTitle } from "./VideoTitle/index.js";
-import {
-  resolveVideoTitleCreateEvent,
-  resolveVideoTitleEvent,
-  resolveVideoTitleSetPrimaryEvent,
-  resolveVideoTitleUnsetPrimaryEvent,
-} from "./VideoTitleEvent/index.js";
 
 export const makeResolvers = (deps: ResolverDeps) =>
   ({

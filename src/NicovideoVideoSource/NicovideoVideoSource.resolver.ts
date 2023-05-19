@@ -1,7 +1,7 @@
 import { Resolvers } from "../resolvers/graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../resolvers/id.js";
 import { ResolverDeps } from "../resolvers/types.js";
-import { VideoModel } from "../resolvers/Video/model.js";
+import { VideoDTO } from "../Video/dto.js";
 import { NicovideoVideoSourceEventDTO } from "./dto.js";
 
 export const resolverNicovideoVideoSource = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
@@ -12,7 +12,7 @@ export const resolverNicovideoVideoSource = ({ prisma }: Pick<ResolverDeps, "pri
     video: async ({ videoId }) =>
       prisma.video
         .findUniqueOrThrow({ where: { id: videoId } })
-        .then((v) => new VideoModel(v))
+        .then((v) => new VideoDTO(v))
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Video", videoId);
         }),

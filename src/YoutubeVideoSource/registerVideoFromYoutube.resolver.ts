@@ -13,10 +13,10 @@ import { MutationResolvers, RegisterVideoFromYoutubeFailedMessage, ResolversType
 import { parseGqlIDs3 } from "../resolvers/id.js";
 import { updateWholeVideoTags } from "../resolvers/Mutation/resolveSemitag/neo4j.js";
 import { ResolverDeps } from "../resolvers/types.js";
-import { VideoModel } from "../resolvers/Video/model.js";
 import { checkDuplicate } from "../utils/checkDuplicate.js";
 import { isValidYoutubeSourceId } from "../utils/isValidYoutubeSourceId.js";
 import { err, isErr, ok, Result } from "../utils/Result.js";
+import { VideoDTO } from "../Video/dto.js";
 
 export const registerVideoInNeo4j = async (
   { prisma, neo4j }: Pick<ResolverDeps, "prisma" | "logger" | "neo4j">,
@@ -268,6 +268,6 @@ export const resolverRegisterVideoFromYoutube = ({
 
     return {
       __typename: "RegisterVideoFromYoutubeSucceededPayload",
-      video: new VideoModel(video),
+      video: new VideoDTO(video),
     } satisfies ResolversTypes["RegisterVideoFromYoutubePayload"];
   }) satisfies MutationResolvers["registerVideoFromYoutube"];

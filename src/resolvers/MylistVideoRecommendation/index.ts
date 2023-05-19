@@ -1,8 +1,8 @@
+import { VideoDTO } from "../../Video/dto.js";
 import { Resolvers } from "../graphql.js";
 import { GraphQLNotExistsInDBError } from "../id.js";
 import { MylistModel } from "../Mylist/model.js";
 import { ResolverDeps } from "../types.js";
-import { VideoModel } from "../Video/model.js";
 
 export const resolveMylistVideoRecommendation = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
   ({
@@ -16,7 +16,7 @@ export const resolveMylistVideoRecommendation = ({ prisma }: Pick<ResolverDeps, 
     to: ({ toVideoId }) =>
       prisma.video
         .findUniqueOrThrow({ where: { id: toVideoId } })
-        .then((v) => new VideoModel(v))
+        .then((v) => new VideoDTO(v))
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Video", toVideoId);
         }),

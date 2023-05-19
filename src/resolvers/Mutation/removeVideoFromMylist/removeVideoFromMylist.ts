@@ -2,11 +2,11 @@ import { Mylist, MylistRegistration, Video } from "@prisma/client";
 
 import { err, ok, Result } from "../../../utils/Result.js";
 import { isErr } from "../../../utils/Result.js";
+import { VideoDTO } from "../../../Video/dto.js";
 import { MutationResolvers, RemoveVideoFromMylistFailedMessage } from "../../graphql.js";
 import { parseGqlID2 } from "../../id.js";
 import { MylistModel } from "../../Mylist/model.js";
 import { ResolverDeps } from "../../types.js";
-import { VideoModel } from "../../Video/model.js";
 import { removeMylistRegistrationInNeo4j } from "./neo4j.js";
 
 export const remove = async (
@@ -98,7 +98,7 @@ export const removeVideoFromMylist = ({ prisma, neo4j, logger }: Pick<ResolverDe
 
     return {
       __typename: "RemoveVideoFromMylistSucceededPayload",
-      video: new VideoModel(registration.video),
+      video: new VideoDTO(registration.video),
       mylist: new MylistModel(registration.mylist),
     };
   }) satisfies MutationResolvers["removeVideoFromMylist"];

@@ -1,3 +1,0 @@
-type Video {
-  isLiked: Boolean! @auth
-}

@@ -1,0 +1,323 @@
+type Video implements Node {
+  id: ID!
+  serial: Int!
+
+  title: String!
+  titles: [VideoTitle!]!
+  thumbnailUrl: String!
+  thumbnails: [VideoThumbnail!]!
+
+  hasTag(id: ID!): Boolean!
+  events(input: VideoEventsInput!): VideoEventsConnection!
+  registeredAt: DateTime!
+
+  isLiked: Boolean! @auth
+  like: MylistRegistration @auth
+
+  nicovideoSources: [NicovideoVideoSource!]!
+  youtubeSources: [YoutubeVideoSource!]!
+  soundcloudSources: [SoundcloudVideoSource!]!
+
+  semitags(checked: Boolean): [Semitag!]!
+  taggings(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    orderBy: VideoTaggingsOrderBy! = { createdAt: DESC }
+  ): VideoTagConnection!
+  similarVideos(input: VideoSimilarVideosInput!): VideoSimilarVideosPayload!
+}
+
+type VideoConnection {
+  nodes: [Video!]!
+  edges: [VideoEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type VideoEdge {
+  cursor: String!
+  node: Video!
+}
+
+interface VideoEvent implements Node & Event {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  video: Video!
+}
+
+type VideoEventsConnection {
+  nodes: [VideoEvent!]!
+}
+
+"Videoを追加した際に発生．（初回のみ）"
+type VideoRegisterEvent implements Node & Event & VideoEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  video: Video!
+}
+
+type VideoThumbnail {
+  imageUrl: String!
+  primary: Boolean!
+}
+
+input VideoEventsInput {
+  skip: Int! = 0
+  limit: Int! = 10
+}
+
+input VideoTaggingsOrderBy {
+  createdAt: SortOrder
+}
+
+input VideoSimilarVideosInput {
+  limit: Int! = 10
+}
+
+type VideoSimilarVideosPayload {
+  items: [VideoSimilarity!]!
+}
+
+type VideoSimilarity {
+  score: Float!
+
+  origin: Video!
+  to: Video!
+}
+
+type VideoTag {
+  id: ID!
+
+  video: Video!
+  tag: Tag!
+
+  events(input: VideoTagEventsInput!): VideoTagEventsConnection!
+}
+
+input VideoTagEventsInput {
+  skip: Int! = 0
+  limit: Int! = 10
+}
+type VideoTagConnection {
+  nodes: [VideoTag!]!
+  edges: [VideoTagEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type VideoTagEdge {
+  cursor: String!
+  node: VideoTag!
+}
+interface VideoTagEvent implements Node & Event {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  videoTag: VideoTag!
+}
+
+type VideoTagAttachEvent implements Node & Event & VideoTagEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  videoTag: VideoTag!
+}
+
+type VideoTagReattachEvent implements Node & Event & VideoTagEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  videoTag: VideoTag!
+}
+
+type VideoTagDetachEvent implements Node & Event & VideoTagEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  videoTag: VideoTag!
+}
+
+type VideoTagEventsConnection {
+  nodes: [VideoTagEvent!]!
+}
+type VideoThumbnail {
+  id: ID!
+
+  imageUrl: String!
+  primary: Boolean!
+
+  video: Video!
+
+  events(input: VideoThumbnailEventsInput!): VideoThumbnailEventsConnection!
+}
+
+input VideoThumbnailEventsInput {
+  skip: Int! = 0
+  limit: Int! = 10
+}
+interface VideoThumbnailEvent implements Node & Event {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  videoThumbnail: VideoThumbnail!
+}
+
+type VideoThumbnailCreateEvent implements Node & Event & VideoThumbnailEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  videoThumbnail: VideoThumbnail!
+}
+
+type VideoThumbnailSetPrimaryEvent implements Node & Event & VideoThumbnailEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  videoThumbnail: VideoThumbnail!
+}
+
+type VideoThumbnailUnsetPrimaryEvent implements Node & Event & VideoThumbnailEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  videoThumbnail: VideoThumbnail!
+}
+
+type VideoThumbnailEventsConnection {
+  nodes: [VideoThumbnailEvent!]!
+}
+
+type VideoTitle {
+  id: ID!
+
+  title: String!
+  primary: Boolean!
+
+  video: Video!
+
+  events(input: VideoTitleEventsInput!): VideoTitleEventsConnection!
+}
+
+input VideoTitleEventsInput {
+  skip: Int! = 0
+  limit: Int! = 10
+}
+
+interface VideoTitleEvent implements Node & Event {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  videoTitle: VideoTitle!
+}
+
+type VideoEventsConnection {
+  nodes: [VideoEvent!]!
+}
+
+type VideoTitleCreateEvent implements Node & Event & VideoTitleEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  videoTitle: VideoTitle!
+}
+
+type VideoTitleSetPrimaryEvent implements Node & Event & VideoTitleEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  videoTitle: VideoTitle!
+}
+
+type VideoTitleUnsetPrimaryEvent implements Node & Event & VideoTitleEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  videoTitle: VideoTitle!
+}
+
+type VideoTitleEventsConnection {
+  nodes: [VideoTitleEvent!]!
+}
+
+type Query {
+  getVideo(id: ID!): Video!
+}
+
+type Query {
+  findVideo(input: FindVideoInput!): Video
+}
+
+input FindVideoInput {
+  id: ID
+  serial: Int
+}
+
+type Query {
+  findVideos(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    orderBy: FindVideosOrderBy! = { createdAt: DESC }
+  ): VideoConnection!
+}
+
+input FindVideosOrderBy {
+  createdAt: SortOrder
+}
+
+type Query {
+  searchVideos(input: SearchVideoInput!): SearchVideosPayload!
+}
+
+input SearchVideoInput {
+  query: String!
+  limit: Int! = 10
+  skip: Int! = 0
+}
+
+type SearchVideosPayload {
+  # count: Int!
+  items: [VideoSearchItemByTitle!]!
+}
+
+type VideoSearchItemByTitle {
+  video: Video!
+  title: VideoTitle!
+}
