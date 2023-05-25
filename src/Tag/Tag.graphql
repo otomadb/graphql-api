@@ -1,0 +1,324 @@
+type Tag implements Node {
+  id: ID!
+  serial: Int!
+
+  name: String!
+  names(primary: Boolean): [TagName!]!
+
+  explicitParent: Tag
+
+  type: TagType!
+  meaningless: Boolean! @deprecated
+  isCategoryTag: Boolean! @deprecated
+
+  """
+  動画に対してタグを付けることができるか
+  """
+  canTagTo(
+    """
+    動画のID
+    """
+    videoId: ID!
+  ): Boolean!
+
+  events(input: TagEventsInput!): TagEventsConnection!
+
+  children(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    orderBy: TagChildrenOrderBy! = { createdAt: DESC }
+  ): TagParentConnection!
+
+  parents(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    orderBy: TagParentsOrderBy! = { createdAt: DESC }
+
+    categoryTag: Boolean
+  ): TagParentConnection!
+
+  taggedVideos(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    orderBy: TagTaggedVideosOrderBy! = { createdAt: DESC }
+  ): VideoTagConnection!
+}
+
+enum TagType {
+  "曲"
+  MUSIC
+  "作品名"
+  COPYRIGHT
+  "キャラクター"
+  CHARACTER
+  "特徴的なセリフなど"
+  PHRASE
+  "シリーズ"
+  SERIES
+  "戦法"
+  TACTICS
+  "動画そのものに対しての性質，作風など"
+  STYLE
+  "動画の内容に依らない情報，分類など"
+  CLASS
+  "合作などのイベント"
+  EVENT
+  "2つ以上のタイプが算出された場合"
+  SUBTLE
+  "タイプを算出できなかった場合"
+  UNKNOWN
+
+  "カテゴリー"
+  CATEGORY
+}
+
+input TagEventsInput {
+  skip: Int! = 0
+  limit: Int! = 10
+}
+
+input TagChildrenOrderBy {
+  createdAt: SortOrder
+}
+
+input TagParentsOrderBy {
+  createdAt: SortOrder
+}
+
+input TagTaggedVideosOrderBy {
+  createdAt: SortOrder
+}
+
+type TagConnection {
+  nodes: [Tag!]!
+}
+
+interface TagEvent implements Node & Event {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  tag: Tag!
+}
+
+type TagEventsConnection {
+  nodes: [TagEvent!]!
+}
+
+"Tagを追加した際に発生．（初回のみ）"
+type TagRegisterEvent implements Node & Event & TagEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  tag: Tag!
+}
+
+"""
+タグにタイプを与えることが出来るカテゴリータグ
+"""
+type TypeCategoryTag {
+  type: TypeCategoryTagType!
+  tag: Tag!
+}
+
+enum TypeCategoryTagType {
+  "曲"
+  MUSIC
+  "作品名"
+  COPYRIGHT
+  "キャラクター"
+  CHARACTER
+  "特徴的なセリフなど"
+  PHRASE
+  "シリーズ"
+  SERIES
+  "戦法"
+  TACTICS
+  "動画そのものに対しての性質，作風など"
+  STYLE
+  "動画の内容に依らない情報，分類など"
+  CLASS
+  "合作などのイベント"
+  EVENT
+}
+
+type TagName {
+  id: ID!
+  name: String!
+  primary: Boolean!
+
+  events(input: TagNameEventsInput!): TagNameEventConnection!
+}
+
+input TagNameEventsInput {
+  skip: Int! = 0
+  limit: Int
+}
+
+interface TagNameEvent implements Node & Event {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  tagName: TagName!
+}
+
+type TagNameEventConnection {
+  nodes: [TagNameEvent!]!
+}
+
+type TagNameCreateEvent implements Node & Event & TagNameEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  tagName: TagName!
+}
+
+type TagNameSetPrimaryEvent implements Node & Event & TagNameEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  tagName: TagName!
+}
+
+type TagNameUnsetPrimaryEvent implements Node & Event & TagNameEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  tagName: TagName!
+}
+
+type TagParent {
+  id: ID!
+
+  parent: Tag!
+  child: Tag!
+
+  explicit: Boolean!
+
+  events(input: TagParentEventsInput!): TagParentEventConnection!
+}
+
+input TagParentEventsInput {
+  skip: Int! = 0
+  limit: Int
+}
+
+type TagParentConnection {
+  nodes: [TagParent!]!
+  edges: [TagParentEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type TagParentEdge {
+  cursor: String!
+  node: TagParent!
+}
+
+"TagParentのIDとして不正なIDを入力した場合のMutation用エラー"
+type MutationInvalidTagParentIdError {
+  relationId: String!
+}
+
+"TagParentが見つからない場合のMutation用エラー"
+type MutationTagParentNotFoundError {
+  relationId: String!
+}
+
+interface TagParentEvent implements Node & Event {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  tagParent: TagParent!
+}
+
+type TagParentEventConnection {
+  nodes: [TagParentEvent!]!
+}
+
+type TagParentCreateEvent implements Node & Event & TagParentEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  tagParent: TagParent!
+}
+
+type TagParentSetPrimaryEvent implements Node & Event & TagParentEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  tagParent: TagParent!
+}
+
+type TagParentUnsetPrimaryEvent implements Node & Event & TagParentEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  tagParent: TagParent!
+}
+
+type Query {
+  getTag(id: ID!): Tag!
+  getAllCategoryTag: [Tag!]!
+  "全てのTypeCategoryTagを取得する"
+  getAllTypeCategoryTag: [TypeCategoryTag!]!
+}
+
+type Query {
+  findTag(input: FindTagInput!): Tag
+}
+
+input FindTagInput {
+  id: ID
+  serial: Int
+}
+
+type Query {
+  findTags(input: FindTagsInput!): TagConnection!
+}
+
+input FindTagsInput {
+  limit: Int! = 10
+  skip: Int! = 0
+  order: FindTagsInputOrder! = { updatedAt: DESC }
+
+  "正確に一致"
+  name: String
+  parents: [ID!]
+}
+
+input FindTagsInputOrder {
+  updatedAt: SortOrder
+  createdAt: SortOrder
+}

@@ -8,6 +8,12 @@ import { resolverGetNicovideoRegistrationRequest } from "../../NicovideoRegistra
 import { resolverFindNicovideoVideoSource } from "../../NicovideoVideoSource/findNicovideoVideoSource.resolver.js";
 import { getNicovideoVideoSource } from "../../NicovideoVideoSource/getNicovideoVideoSource.resolver.js";
 import { getSoundcloudVideoSource } from "../../SoundcloudVideoSource/getSoundcloudVideoSource.resolver.js";
+import { resolverFindTag } from "../../Tag/findTag.resolver.js";
+import { resolverFindTags } from "../../Tag/findTags.resolver.js";
+import { resolverGetAllCategoryTag } from "../../Tag/getAllCategoryTag.resolver.js";
+import { resolverGetAllTypeCategoryTag } from "../../Tag/getAllTypeCategoryTag.resolver.js";
+import { resolverGetTag } from "../../Tag/getTag.resolver.js";
+import { resolverSearchTags } from "../../Tag/searchTags.resolver.js";
 import { resolverFindUser } from "../../User/findUser.resolver.js";
 import { resolverGetUser } from "../../User/getUser.resolver.js";
 import { resolverFindVideo } from "../../Video/findVideo.resolver.js";
@@ -26,17 +32,11 @@ import { resolverFetchSoundcloud } from "./fetchSoundcloud/resolver.js";
 import { resolverFetchYoutube } from "./fetchYoutube/resolver.js";
 import { resolverFindMylist } from "./findMylist/findMylist.js";
 import { findSemitags } from "./findSemitags/findSemitags.js";
-import { findTag } from "./findTag/findTag.js";
-import { findTags } from "./findTags/findTags.js";
-import { resolverGetAllCategoryTag } from "./getAllCategoryTag/resolver.js";
-import { resolverGetAllTypeCategoryTag } from "./getAllTypeCategoryTag/resolver.js";
 import { getMylist } from "./getMylist/resolver.js";
 import { getMylistGroup } from "./getMylistGroup/resolver.js";
 import { getNotification } from "./getNotification/resolver.js";
 import { resolverGetSemitag } from "./getSemitag/resolver.js";
-import { getTag } from "./getTag/resolver.js";
 import { resolverNotifications } from "./notifications/resolver.js";
-import { searchTags } from "./searchTags/resolver.js";
 import { resolverWhoami } from "./whoami/resolver.js";
 
 export const resolveQuery = (deps: ResolverDeps) =>
@@ -49,8 +49,8 @@ export const resolveQuery = (deps: ResolverDeps) =>
     findNicovideoRegistrationRequests: findNicovideoRegistrationRequests(deps),
     findNicovideoVideoSource: resolverFindNicovideoVideoSource(deps),
     findSemitags: findSemitags(deps),
-    findTag: findTag(deps),
-    findTags: findTags(deps),
+    findTag: resolverFindTag(deps),
+    findTags: resolverFindTags(deps),
     findUncheckedNicovideoRegistrationRequests: resolverFindUncheckedNicovideoRegistrationRequests(deps),
     findUncheckedNicovideoRegistrationRequestsByOffset:
       resolverFindUncheckedNicovideoRegistrationRequestsByOffset(deps),
@@ -69,13 +69,13 @@ export const resolveQuery = (deps: ResolverDeps) =>
     getNotification: getNotification(deps),
     getSemitag: resolverGetSemitag(deps),
     getSoundcloudVideoSource: getSoundcloudVideoSource(deps),
-    getTag: getTag(deps),
+    getTag: resolverGetTag(deps),
     getUser: resolverGetUser(deps),
     getVideo: resolverGetVideo(deps),
     getYoutubeRegistrationRequest: resolverGetYoutubeRegistrationRequest(deps),
     getYoutubeVideoSource: getYoutubeVideoSource(deps),
     notifications: resolverNotifications(deps),
-    searchTags: searchTags(deps),
+    searchTags: resolverSearchTags(deps),
     searchVideos: resolverSearchVideos(deps),
     whoami: resolverWhoami(deps),
   } satisfies Resolvers["Query"]);

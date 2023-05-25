@@ -1,9 +1,9 @@
-import { TagDTO, TagNameDTO } from "../../Tag/dto.js";
-import { Resolvers } from "../graphql.js";
-import { GraphQLNotExistsInDBError } from "../id.js";
-import { ResolverDeps } from "../types.js";
+import { Resolvers } from "../resolvers/graphql.js";
+import { GraphQLNotExistsInDBError } from "../resolvers/id.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { TagDTO, TagNameDTO } from "./dto.js";
 
-export const resolverSemitagSuggestTagsItem = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolverTagSearchItemByName = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   ({
     tag: ({ tagId }, _args, { currentUser: ctxUser }, info) =>
       prisma.tag
@@ -21,13 +21,4 @@ export const resolverSemitagSuggestTagsItem = ({ prisma, logger }: Pick<Resolver
           logger.error({ path: info.path, userId: ctxUser?.id }, "Not found");
           throw new GraphQLNotExistsInDBError("TagName", nameId);
         }),
-    canResolveTo: ({ semitagId, tagId }) =>
-      prisma.videoTag
-        .findFirst({
-          where: {
-            video: { semitags: { some: { id: semitagId } } },
-            tagId,
-          },
-        })
-        .then((v) => !v),
-  } satisfies Resolvers["SemitagSuggestTagsItem"]);
+  } satisfies Resolvers["TagSearchItemByName"]);

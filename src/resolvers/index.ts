@@ -14,6 +14,19 @@ import {
 import { resolveSoundcloudVideoSource } from "../SoundcloudVideoSource/SoundcloudVideoSource.resolver.js";
 import { resolveSoundcloudVideoSourceEvent } from "../SoundcloudVideoSource/SoundcloudVideoSourceEvent.resolver.js";
 import { resolverSoundcloudVideoSourceEventConnection } from "../SoundcloudVideoSource/SoundcloudVideoSourceEventConnection.resolver.js";
+import { resolveTag } from "../Tag/Tag.resolver.js";
+import { resolveTagEvent, resolveTagRegisterEvent } from "../Tag/TagEvent.resolver.js";
+import { resolveTagName } from "../Tag/TagName.resolver.js";
+import {
+  resolveTagNameCreateEvent,
+  resolveTagNameEvent,
+  resolveTagNameSetPrimaryEvent,
+  resolveTagNameUnsetPrimaryEvent,
+} from "../Tag/TagNameEvent.resolver.js";
+import { resolveTagParent } from "../Tag/TagParent.resolver.js";
+import { resolverTagParentConnection } from "../Tag/TagParentConnection.resolver.js";
+import { resolverTagSearchItemByName } from "../Tag/TagSearchItemByName.resolver.js";
+import { resolverTypeCategoryTag } from "../Tag/TypeCategoryTag.resolver.js";
 import { resolveUser } from "../User/User.resolver.js";
 import { resolveVideo } from "../Video/Video.resolver.js";
 import { resolverVideoConnection } from "../Video/VideoConnection.resolver.js";
@@ -79,19 +92,6 @@ import {
 import { resolverSemitagRejecting } from "./SemitagRejecting/resolver.js";
 import { resolverSemitagResolving } from "./SemitagResolving/resolver.js";
 import { resolverSemitagSuggestTagsItem } from "./SemitagSuggestTagsItem/resolver.js";
-import { resolveTag } from "./Tag/index.js";
-import { resolveTagEvent, resolveTagRegisterEvent } from "./TagEvent/index.js";
-import { resolveTagName } from "./TagName/index.js";
-import {
-  resolveTagNameCreateEvent,
-  resolveTagNameEvent,
-  resolveTagNameSetPrimaryEvent,
-  resolveTagNameUnsetPrimaryEvent,
-} from "./TagNameEvent/index.js";
-import { resolveTagParent } from "./TagParent/index.js";
-import { resolverTagParentConnection } from "./TagParentConnection/resolver.js";
-import { resolverTagSearchItemByName } from "./TagSearchItemByName/resolver.js";
-import { resolverTypeCategoryTag } from "./TypeCategoryTag/resolver.js";
 import { ResolverDeps } from "./types.js";
 
 export const makeResolvers = (deps: ResolverDeps) =>
