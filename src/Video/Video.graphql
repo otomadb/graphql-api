@@ -278,7 +278,7 @@ type Query {
 }
 
 type Query {
-  findVideo(input: FindVideoInput!): Video
+  findVideo(input: FindVideoInput!): Video @deprecated(reason: "Use `Query.findMadBySerial` instead")
 }
 
 input FindVideoInput {
