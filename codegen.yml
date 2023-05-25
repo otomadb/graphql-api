@@ -52,22 +52,22 @@ generates:
         SoundcloudVideoSourceCreateEvent: ../SoundcloudVideoSource/dto.js#SoundcloudVideoSourceEventDTO
         SoundcloudVideoSourceEvent: ../SoundcloudVideoSource/dto.js#SoundcloudVideoSourceEventDTO
         SoundcloudVideoSourceEventConnection: ../SoundcloudVideoSource/dto.js#SoundcloudVideoSourceEventConnectionDTO
-        Tag: ./Tag/model.js#TagModel
-        TagEvent: ./TagEvent/model.js#TagEventModel
-        TagName: ./TagName/model.js#TagNameModel
-        TagNameCreateEvent: ./TagNameEvent/model.js#TagNameEventModel
-        TagNameEvent: ./TagNameEvent/model.js#TagNameEventModel
-        TagNameSetPrimaryEvent: ./TagNameEvent/model.js#TagNameEventModel
-        TagNameUnsetPrimaryEvent: ./TagNameEvent/model.js#TagNameEventModel
-        TagParent: ./TagParent/model.js#TagParentModel
-        TagParentConnection: ./TagParentConnection/model.js#TagParentConnectionModel
-        TagParentCreateEvent: ./TagParentEvent/model.js#TagParentEventModel
-        TagParentEvent: ./TagParentEvent/model.js#TagParentEventModel
-        TagParentSetPrimaryEvent: ./TagParentEvent/model.js#TagParentEventModel
-        TagParentUnsetPrimaryEvent: ./TagParentEvent/model.js#TagParentEventModel
-        TagRegisterEvent: ./TagEvent/model.js#TagEventModel
-        TagSearchItemByName: ./TagSearchItemByName/model.js#TagSearchItemByNameModel
-        TypeCategoryTag: ./TypeCategoryTag/model.js#TypeCategoryTagModel
+        Tag: ../Tag/dto.js#TagDTO
+        TagEvent: ../Tag/dto.js#TagEventDTO
+        TagName: ../Tag/dto.js#TagNameDTO
+        TagNameCreateEvent: ../Tag/dto.js#TagNameEventDTO
+        TagNameEvent: ../Tag/dto.js#TagNameEventDTO
+        TagNameSetPrimaryEvent: ../Tag/dto.js#TagNameEventDTO
+        TagNameUnsetPrimaryEvent: ../Tag/dto.js#TagNameEventDTO
+        TagParent: ../Tag/dto.js#TagParentDTO
+        TagParentConnection: ../Tag/dto.js#TagParentConnectionDTO
+        TagParentCreateEvent: ../Tag/dto.js#TagParentEventDTO
+        TagParentEvent: ../Tag/dto.js#TagParentEventDTO
+        TagParentSetPrimaryEvent: ../Tag/dto.js#TagParentEventDTO
+        TagParentUnsetPrimaryEvent: ../Tag/dto.js#TagParentEventDTO
+        TagRegisterEvent: ../Tag/dto.js#TagEventDTO
+        TagSearchItemByName: ../Tag/dto.js#TagSearchItemByNameDTO
+        TypeCategoryTag: ../Tag/dto.js#TypeCategoryTagDTO
         User: ../User/dto.js#UserDTO
         Video: ../Video/dto.js#VideoDTO
         VideoAddNicovideoSourceEvent: ../Video/dto.js#VideoEventDTO

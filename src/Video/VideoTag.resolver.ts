@@ -1,7 +1,7 @@
 import { Resolvers } from "../resolvers/graphql.js";
 import { buildGqlId, GraphQLNotExistsInDBError } from "../resolvers/id.js";
-import { TagModel } from "../resolvers/Tag/model.js";
 import { ResolverDeps } from "../resolvers/types.js";
+import { TagDTO } from "../Tag/dto.js";
 import { VideoTagEventDTO } from "./dto.js";
 import { VideoDTO } from "./dto.js";
 
@@ -18,7 +18,7 @@ export const resolveVideoTag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
     tag: ({ tagId }) =>
       prisma.tag
         .findUniqueOrThrow({ where: { id: tagId } })
-        .then((v) => new TagModel(v))
+        .then((v) => new TagDTO(v))
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Tag", tagId);
         }),

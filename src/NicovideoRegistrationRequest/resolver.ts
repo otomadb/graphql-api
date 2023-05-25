@@ -1,7 +1,7 @@
 import { Resolvers } from "../resolvers/graphql.js";
 import { buildGqlId } from "../resolvers/id.js";
-import { TagModel } from "../resolvers/Tag/model.js";
 import { ResolverDeps } from "../resolvers/types.js";
+import { TagDTO } from "../Tag/dto.js";
 
 export const resolverNicovideoRegistrationRequest = ({
   prisma,
@@ -19,7 +19,7 @@ export const resolverNicovideoRegistrationRequest = ({
         .then((r) =>
           r.map(({ id, tag, note }) => ({
             id: buildGqlId("NicovideoRegistrationRequestTagging", id),
-            tag: new TagModel(tag),
+            tag: new TagDTO(tag),
             note,
           }))
         );
