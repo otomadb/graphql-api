@@ -5,7 +5,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest"
 import { DeepMockProxy, mockDeep, mockReset } from "vitest-mock-extended";
 
 import { graphql } from "../../../gql/gql.js";
-import typeDefs from "../schema.graphql";
+import typeDefs from "../../../schema.graphql";
 import { cleanPrisma } from "../../../test/cleanPrisma.js";
 import { makeExecutor } from "../../../test/makeExecutor.js";
 import {
