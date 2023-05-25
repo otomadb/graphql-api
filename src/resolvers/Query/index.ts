@@ -16,6 +16,7 @@ import { resolverGetTag } from "../../Tag/getTag.resolver.js";
 import { resolverSearchTags } from "../../Tag/searchTags.resolver.js";
 import { resolverFindUser } from "../../User/findUser.resolver.js";
 import { resolverGetUser } from "../../User/getUser.resolver.js";
+import { resolverFindMadBySerial } from "../../Video/findMadBySerial.resolver.js";
 import { resolverFindVideo } from "../../Video/findVideo.resolver.js";
 import { resolverFindVideos } from "../../Video/findVideos.resolver.js";
 import { resolverGetVideo } from "../../Video/getVideo.resolver.js";
@@ -44,6 +45,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
     fetchNicovideo: fetchNicovideo(),
     fetchSoundcloud: resolverFetchSoundcloud(deps),
     fetchYoutube: resolverFetchYoutube(),
+    findMadBySerial: resolverFindMadBySerial(deps),
     findMylist: resolverFindMylist(deps),
     findNicovideoRegistrationRequest: resolverFindNicovideoRegistrationRequest(deps),
     findNicovideoRegistrationRequests: findNicovideoRegistrationRequests(deps),
