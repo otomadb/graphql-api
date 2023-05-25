@@ -9,6 +9,7 @@ import { resolverFindNicovideoVideoSource } from "../../NicovideoVideoSource/fin
 import { getNicovideoVideoSource } from "../../NicovideoVideoSource/getNicovideoVideoSource.resolver.js";
 import { getSoundcloudVideoSource } from "../../SoundcloudVideoSource/getSoundcloudVideoSource.resolver.js";
 import { resolverFindTag } from "../../Tag/findTag.resolver.js";
+import { resolverFindTagBySerial } from "../../Tag/findTagBySerial.resolver.js";
 import { resolverFindTags } from "../../Tag/findTags.resolver.js";
 import { resolverGetAllCategoryTag } from "../../Tag/getAllCategoryTag.resolver.js";
 import { resolverGetAllTypeCategoryTag } from "../../Tag/getAllTypeCategoryTag.resolver.js";
@@ -50,6 +51,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
     findNicovideoVideoSource: resolverFindNicovideoVideoSource(deps),
     findSemitags: findSemitags(deps),
     findTag: resolverFindTag(deps),
+    findTagBySerial: resolverFindTagBySerial(deps),
     findTags: resolverFindTags(deps),
     findUncheckedNicovideoRegistrationRequests: resolverFindUncheckedNicovideoRegistrationRequests(deps),
     findUncheckedNicovideoRegistrationRequestsByOffset:

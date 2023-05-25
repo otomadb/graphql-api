@@ -296,7 +296,7 @@ type Query {
 }
 
 type Query {
-  findTag(input: FindTagInput!): Tag
+  findTag(input: FindTagInput!): Tag @deprecated("Use `Query.findTagBySerial` instead.")
 }
 
 input FindTagInput {
