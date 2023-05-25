@@ -9,6 +9,7 @@ import { resolverExplicitizeTagParent } from "../../Tag/explicitizeTagParent.res
 import { resolverImplicitizeTagParent } from "../../Tag/implicitizeTagParent.resolver.js";
 import { registerCategoryTag } from "../../Tag/registerCategoryTag.resolver.js";
 import { resolverRegisterCategoryTagTyping } from "../../Tag/registerCategoryTagTyping.resolver.js";
+import { resolverRegisterTag } from "../../Tag/registerTag.resolver.js";
 import { resolverRegisterTagParentRelation } from "../../Tag/registerTagParentRelation.resolver.js";
 import { resolverRemoveTagFromVideo } from "../../Tag/removeTagFromVideo.resolver.js";
 import { resolverRegisterVideoFromYoutube } from "../../YoutubeVideoSource/registerVideoFromYoutube.resolver.js";
@@ -22,7 +23,6 @@ import { resolverChangeUserDisplayName } from "./changeUserDisplayName/resolver.
 import { createMylist } from "./createMylist/createMylist.js";
 import { createMylistGroup } from "./createMylistGroup/createMylistGroup.js";
 import { resolverLikeVideo } from "./likeVideo/resolver.js";
-import { resolverRegisterTag } from "../../Tag/registerTag.resolver.js";
 import { resolverRejectSemitag } from "./rejectSemitag/resolver.js";
 import { removeVideoFromMylist } from "./removeVideoFromMylist/removeVideoFromMylist.js";
 import { resolverRequestYoutubeRegistration } from "./requestYoutubeRegistration/resolver.js";

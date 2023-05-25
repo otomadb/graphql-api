@@ -4,11 +4,11 @@ import { auth as neo4jAuth, driver as createNeo4jDriver } from "neo4j-driver";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { DeepMockProxy, mockDeep, mockReset } from "vitest-mock-extended";
 
-import typeDefs from "../../../schema.graphql";
 import { graphql } from "../gql/gql.js";
 import { buildGqlId } from "../resolvers/id.js";
 import { makeResolvers } from "../resolvers/index.js";
 import { CurrentUser, ResolverDeps, ServerContext, UserContext } from "../resolvers/types.js";
+import typeDefs from "../schema.graphql";
 import { cleanPrisma } from "../test/cleanPrisma.js";
 import { makeExecutor } from "../test/makeExecutor.js";
 
