@@ -3,9 +3,5 @@
   "extends": ["config:best-practices", ":automergePatch"],
   "lockFileMaintenance": {
     "enabled": true
-  },
-  "rangeStrategy": "bump",
-  "constraints": {
-    "pnpm": "8.6.0"
   }
 }
