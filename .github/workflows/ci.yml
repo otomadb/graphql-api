@@ -12,8 +12,8 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
+      - uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3
         with:
           node-version: 20
           cache: npm
@@ -35,8 +35,8 @@ jobs:
     name: Type Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
+      - uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3
         with:
           node-version: 20
           cache: npm
@@ -58,7 +58,7 @@ jobs:
       NEO4J_PASSWORD: password
     services:
       postgres:
-        image: postgres:15
+        image: postgres:15@sha256:86817d5b3096e71d26bb5328e5f5d9d184c02bc3e511b252ed6cffaae9e3f745
         ports:
           - 5432:5432
         env:
@@ -66,14 +66,14 @@ jobs:
           POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ env.POSTGRES_DATABASE }}
       neo4j:
-        image: neo4j:5.6
+        image: neo4j:5.6@sha256:b817478d92e2bc20dba98742f40927c8988ec0a090be38cc096ba6222bd16041
         ports:
           - 7687:7687
         env:
           NEO4J_AUTH: ${{ env.NEO4J_USERNAME }}/${{ env.NEO4J_PASSWORD }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
+      - uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3
         with:
           node-version: 20
           cache: npm
