@@ -1,5 +1,5 @@
 # Builder
-FROM node:20-slim AS builder
+FROM node:20-slim@sha256:86e9e023e957ba57c2a5d13d0ca978b5019e03eb78cf08a4af8f80abbab23249 AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json .npmrc ./
@@ -16,7 +16,7 @@ COPY ./tsconfig.json rollup.config.js ./
 RUN npm run rollup:build
 
 # Runner
-FROM node:20-slim AS runner
+FROM node:20-slim@sha256:86e9e023e957ba57c2a5d13d0ca978b5019e03eb78cf08a4af8f80abbab23249 AS runner
 WORKDIR /app
 
 ## install tini

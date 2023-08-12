@@ -3,7 +3,7 @@ version: "3.9"
 
 services:
   postgres:
-    image: postgres:15
+    image: postgres:15@sha256:86817d5b3096e71d26bb5328e5f5d9d184c02bc3e511b252ed6cffaae9e3f745
     healthcheck:
       test: pg_isready
       interval: 10s
@@ -22,13 +22,13 @@ services:
         target: /var/lib/postgresql/data
 
   adminer:
-    image: adminer
+    image: adminer@sha256:489db7c19438c1d8951ca57987c5df15c2eb00eb1ad7149f8a8bb7965ed6e388
     ports:
       - target: 8080
         published: 8081
 
   neo4j:
-    image: neo4j:5.6
+    image: neo4j:5.6@sha256:b817478d92e2bc20dba98742f40927c8988ec0a090be38cc096ba6222bd16041
     ports:
       # http
       - target: 7474
@@ -47,7 +47,7 @@ services:
       NEO4J_AUTH: neo4j/password
 
   meilisearch:
-    image: getmeili/meilisearch:v1.0
+    image: getmeili/meilisearch:v1.0@sha256:dd8162da4cebbdec1ab6176754cff941b04427e7f8df532896a920ec3d292d8a
     ports:
       - target: 7700
         published: 7700
@@ -57,7 +57,7 @@ services:
         target: /meili_data
 
   redis:
-    image: redis:7.0
+    image: redis:7.0@sha256:b0bdc1a83caf43f9eb74afca0fcfd6f09bea38bb87f6add4a858f06ef4617538
     ports:
       - target: 6379
         published: 6379
