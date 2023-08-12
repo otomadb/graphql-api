@@ -63,7 +63,7 @@
     "@rollup/plugin-typescript": "11.0.0",
     "@types/auth0": "3.3.3",
     "@types/cookie": "0.5.1",
-    "@types/node": "18.11.18",
+    "@types/node": "18.11.19",
     "@typescript-eslint/eslint-plugin": "5.49.0",
     "@typescript-eslint/parser": "5.49.0",
     "eslint": "8.42.0",
