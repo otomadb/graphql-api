@@ -2,6 +2,11 @@
 FROM node:20-slim@sha256:86e9e023e957ba57c2a5d13d0ca978b5019e03eb78cf08a4af8f80abbab23249 AS builder
 WORKDIR /app
 
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends openssl=3.0.9-1 \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
 COPY package.json package-lock.json .npmrc ./
 RUN npm ci
 
