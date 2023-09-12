@@ -16,6 +16,7 @@ export const resolverFindUncheckedNicovideoRegistrationRequests = ({
   (async (_, { input: { orderBy: unparsedOrderBy, ...unparsedConnectionArgs } }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
       .union([
+        z.object({}), // 全ての取得を許容する
         z.object({
           first: z.number(),
           after: z.string().optional().nullable(),
