@@ -59,7 +59,7 @@
     "@rollup/plugin-graphql": "2.0.3",
     "@rollup/plugin-terser": "0.4.3",
     "@rollup/plugin-typescript": "11.0.0",
-    "@types/auth0": "3.3.3",
+    "@types/auth0": "3.3.4",
     "@types/node": "18.11.19",
     "@typescript-eslint/eslint-plugin": "5.49.0",
     "@typescript-eslint/parser": "5.49.0",
