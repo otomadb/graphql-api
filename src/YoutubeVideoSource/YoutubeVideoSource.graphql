@@ -52,8 +52,12 @@ type YoutubeVideoSourceCreateEvent implements Node & Event & YoutubeVideoSourceE
 }
 
 type Query {
-  findYoutubeVideoSource(sourceId: String): YoutubeVideoSource
+  findYoutubeVideoSource(input: FindYoutubeVideoSourceInput!): YoutubeVideoSource
   getYoutubeVideoSource(id: ID!): YoutubeVideoSource!
+}
+
+input FindYoutubeVideoSourceInput {
+  sourceId: String
 }
 
 type Mutation {
