@@ -4,7 +4,7 @@ import { isValidYoutubeSourceId } from "../../../utils/isValidYoutubeSourceId.js
 import { QueryResolvers } from "../../graphql.js";
 
 export const resolverFetchYoutube = () =>
-  (async (_parent, { sourceId }) => {
+  (async (_parent, { input: { sourceId } }) => {
     if (!isValidYoutubeSourceId(sourceId)) {
       throw new GraphQLError("Invalid sourceId");
     }
