@@ -24,7 +24,7 @@ export const resolverFetchSoundcloud = ({
         artworkUrl: SoundcloudService.enlargeArtwork(value.artwork_url),
         sourceId: value.id.toString(),
         title: value.title,
-        uri: value.uri,
+        uri: value.permalink_url,
       },
     };
   }) satisfies QueryResolvers["fetchSoundcloud"];

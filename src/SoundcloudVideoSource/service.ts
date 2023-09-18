@@ -6,7 +6,7 @@ const payloadFromUrl = z.object({
   artwork_url: z.string(),
   id: z.number(),
   title: z.string(),
-  uri: z.string(),
+  permalink_url: z.string(),
 });
 
 const payloadFromId = z
