@@ -20,4 +20,8 @@ export class UserDTO {
   get icon() {
     return this.entity.icon;
   }
+
+  public toString() {
+    return JSON.stringify(this.entity);
+  }
 }

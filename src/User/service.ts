@@ -51,23 +51,14 @@ export class UserService {
       throw new Error("Invalid Auth0 user payload");
     }
 
-    await this.redis.setex(
-      `auth0:${parsed.data.user_id}`,
-      60 * 3,
-      JSON.stringify({
-        id: parsed.data.user_id,
-        name: parsed.data.username,
-        displayName: parsed.data.nickname,
-        icon: parsed.data.picture,
-      })
-    );
-
     const user = UserDTO.make({
       id: parsed.data.user_id,
       name: parsed.data.username,
       displayName: parsed.data.nickname,
       icon: parsed.data.picture,
     });
+
+    await this.redis.setex(`auth0:${user.id}`, 60 * 3, user.toString());
 
     await this.prisma.$transaction([
       this.prisma.user.upsert({
@@ -94,13 +85,12 @@ export class UserService {
         .safeParse(JSON.parse(cached));
 
       if (parsedCached.success) return UserDTO.make(parsedCached.data);
-
-      await this.redis.del(`auth0:${userId}`);
     }
 
     try {
       const auth0user = await this.auth0Management.getUser({ id: userId });
       const user = await this.fromAuth0User(auth0user);
+      await this.redis.setex(`auth0:${user.id}`, 60 * 3, user.toString());
       return user;
     } catch (error) {
       this.logger.error({ error, userId }, "Failed to fetch user from Auth0");
