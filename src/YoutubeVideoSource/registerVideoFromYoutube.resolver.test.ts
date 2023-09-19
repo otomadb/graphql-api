@@ -64,6 +64,7 @@ describe("Register video by Prisma", () => {
       tagIds: ["t1", "t2"],
       semitagNames: ["Semitag 1", "Semitag 2"],
       sourceIds: ["Q16KpquGsIc"],
+      requestId: null,
     })) as ReturnOk<typeof register>;
     expect(isOk(actual)).toBe(true);
     expect(actual.data).toStrictEqual(

@@ -67,3 +67,19 @@ type MutationNicovideoRegistrationRequestNotFoundError {
 type MutationNicovideoRegistrationRequestAlreadyCheckedError {
   requestId: String!
 }
+
+"YoutubeRegistrationRequestのIDとして無効なIDを入力した場合のエラー"
+type MutationInvalidYoutubeRegistrationRequestIdError {
+  "無効なID"
+  requestId: String!
+}
+
+"YoutubeRegistrationRequestが見つからない場合のエラー"
+type MutationYoutubeRegistrationRequestNotFoundError {
+  requestId: String!
+}
+
+"既にチェック済みのYoutubeRegistrationRequestをチェックしようとした場合のエラー"
+type MutationYoutubeRegistrationRequestAlreadyCheckedError {
+  requestId: String!
+}
