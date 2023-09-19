@@ -1,10 +1,13 @@
 import {
+  Notification,
+  Prisma,
   SemitagEventType,
   Video,
   VideoEventType,
   VideoTagEventType,
   VideoThumbnailEventType,
   VideoTitleEventType,
+  YoutubeRegistrationRequest,
   YoutubeVideoSourceEventType,
 } from "@prisma/client";
 import { ulid } from "ulid";
@@ -17,6 +20,57 @@ import { checkDuplicate } from "../utils/checkDuplicate.js";
 import { isValidYoutubeSourceId } from "../utils/isValidYoutubeSourceId.js";
 import { err, isErr, ok, Result } from "../utils/Result.js";
 import { VideoDTO } from "../Video/dto.js";
+
+export const getRequestCheck = async (
+  prisma: ResolverDeps["prisma"],
+  { requestId, videoId, userId }: { requestId: string | null; userId: string; videoId: string }
+): Promise<
+  Result<
+    | { type: "REQUEST_NOT_FOUND"; requestId: string }
+    | { type: "REQUEST_ALREADY_CHECKED"; requestId: string }
+    | { type: "INTERNAL_SERVER_ERROR"; error: unknown },
+    (
+      | Prisma.Prisma__YoutubeRegistrationRequestClient<YoutubeRegistrationRequest, never>
+      | Prisma.Prisma__NotificationClient<Notification, never>
+    )[]
+  >
+> => {
+  if (!requestId) return ok([]);
+
+  try {
+    const request = await prisma.youtubeRegistrationRequest.findUnique({ where: { id: requestId } });
+    if (!request) return err({ type: "REQUEST_NOT_FOUND", requestId });
+    if (request.isChecked) return err({ type: "REQUEST_ALREADY_CHECKED", requestId });
+
+    const checkingId = ulid();
+    const tx = [
+      prisma.youtubeRegistrationRequest.update({
+        where: { id: requestId },
+        data: {
+          isChecked: true,
+          checking: {
+            create: {
+              id: checkingId,
+              video: { connect: { id: videoId } },
+              checkedBy: { connect: { id: userId } },
+            },
+          },
+          events: { create: { userId, type: "ACCEPT" } },
+        },
+      }),
+      prisma.notification.create({
+        data: {
+          notifyToId: request.requestedById,
+          type: "ACCEPTING_YOUTUBE_REGISTRATION_REQUEST",
+          payload: { id: checkingId },
+        },
+      }),
+    ];
+    return ok(tx);
+  } catch (e) {
+    return err({ type: "INTERNAL_SERVER_ERROR", error: e });
+  }
+};
 
 export const registerVideoInNeo4j = async (
   { prisma, neo4j }: Pick<ResolverDeps, "prisma" | "logger" | "neo4j">,
@@ -70,6 +124,7 @@ export const register = async (
     tagIds,
     semitagNames,
     sourceIds,
+    requestId,
   }: {
     authUserId: string;
     primaryTitle: string;
@@ -78,8 +133,17 @@ export const register = async (
     tagIds: string[];
     semitagNames: string[];
     sourceIds: string[];
+    requestId: string | null;
   }
-): Promise<Result<{ type: "NO_TAG"; tagId: string } | { type: "INTERNAL_SERVER_ERROR"; error: unknown }, Video>> => {
+): Promise<
+  Result<
+    | { type: "NO_TAG"; tagId: string }
+    | { type: "REQUEST_NOT_FOUND"; requestId: string }
+    | { type: "REQUEST_ALREADY_CHECKED"; requestId: string }
+    | { type: "INTERNAL_SERVER_ERROR"; error: unknown },
+    Video
+  >
+> => {
   const videoId = ulid();
   const dataTitles = [
     { id: ulid(), title: primaryTitle, isPrimary: true },
@@ -109,6 +173,9 @@ export const register = async (
     id: ulid(),
     sourceId,
   }));
+
+  const checkRequest = await getRequestCheck(prisma, { requestId, videoId, userId: authUserId });
+  if (isErr(checkRequest)) return checkRequest;
 
   const [video] = await prisma.$transaction([
     prisma.video.create({
@@ -246,6 +313,7 @@ export const resolverRegisterVideoFromYoutube = ({
       tagIds: tagIds.data,
       semitagNames: semitagNames.data,
       sourceIds: input.sourceIds,
+      requestId: input.requestId || null,
     });
 
     if (isErr(result)) {
@@ -254,6 +322,16 @@ export const resolverRegisterVideoFromYoutube = ({
           return {
             __typename: "MutationTagNotFoundError",
             tagId: result.error.tagId,
+          } satisfies ResolversTypes["RegisterVideoFromYoutubePayload"];
+        case "REQUEST_NOT_FOUND":
+          return {
+            __typename: "MutationYoutubeRegistrationRequestNotFoundError",
+            requestId: result.error.requestId,
+          } satisfies ResolversTypes["RegisterVideoFromYoutubePayload"];
+        case "REQUEST_ALREADY_CHECKED":
+          return {
+            __typename: "MutationYoutubeRegistrationRequestAlreadyCheckedError",
+            requestId: result.error.requestId,
           } satisfies ResolversTypes["RegisterVideoFromYoutubePayload"];
         case "INTERNAL_SERVER_ERROR":
           return {

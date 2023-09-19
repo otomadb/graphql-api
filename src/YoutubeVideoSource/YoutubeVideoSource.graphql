@@ -75,13 +75,19 @@ input RegisterVideoFromYoutubeInput {
   semitagNames: [String!]! = []
 
   sourceIds: [String!]!
+
+  "解決するYoutubeRegistrationRequestのID"
+  requestId: ID
 }
 
 union RegisterVideoFromYoutubePayload =
     MutationInvalidTagIdError
   | MutationTagNotFoundError
   | RegisterVideoFromYoutubeTagIdsDuplicatedError
-  | RegisterVideoFromYoutubeSemitagNamesDuplicatedError # | MutationYoutubeRegistrationRequestNotFoundError | MutationInvalidYoutubeRegistrationRequestIdError | MutationYoutubeRegistrationRequestAlreadyCheckedError
+  | RegisterVideoFromYoutubeSemitagNamesDuplicatedError
+  | MutationYoutubeRegistrationRequestNotFoundError
+  | MutationInvalidYoutubeRegistrationRequestIdError
+  | MutationYoutubeRegistrationRequestAlreadyCheckedError
   | RegisterVideoFromYoutubeInvalidYoutubeSourceIdError
   | RegisterVideoFromYoutubeOtherErrorsFallback
   | RegisterVideoFromYoutubeSucceededPayload
