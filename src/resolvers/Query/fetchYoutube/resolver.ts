@@ -9,15 +9,18 @@ export const resolverFetchYoutube = () =>
       throw new GraphQLError("Invalid sourceId");
     }
 
-    const url = new URL(`vi/${sourceId}/hqdefault.jpg`, "https://i.ytimg.com/");
-
-    const ok = await fetch(url.toString()).then((res) => res.ok);
+    const thumbnailUrl = new URL(`vi/${sourceId}/hqdefault.jpg`, "https://i.ytimg.com/");
+    const ok = await fetch(thumbnailUrl.toString()).then((res) => res.ok);
     if (!ok) return { source: null };
+
+    const url = new URL("/watch", "https://www.youtube.com/");
+    url.searchParams.set("v", sourceId);
 
     return {
       source: {
+        url: url.toString(),
         sourceId,
-        thumbnailUrl: url.toString(),
+        thumbnailUrl: thumbnailUrl.toString(),
       },
     };
   }) satisfies QueryResolvers["fetchYoutube"];
