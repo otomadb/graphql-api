@@ -42,13 +42,13 @@ export const resolverFindUncheckedYoutubeRegistrationRequests = ({
 
     return findManyCursorConnection(
       (args) =>
-        prisma.nicovideoRegistrationRequest.findMany({
+        prisma.youtubeRegistrationRequest.findMany({
           where: { isChecked: false },
           orderBy: orderBy.data,
           ...args,
         }),
       () =>
-        prisma.nicovideoRegistrationRequest.count({
+        prisma.youtubeRegistrationRequest.count({
           where: { isChecked: false },
         }),
       connectionArgs.data,
