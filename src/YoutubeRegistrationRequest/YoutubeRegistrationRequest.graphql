@@ -40,7 +40,7 @@ type YoutubeRegistrationRequestAccepting {
 
   acceptedBy: User!
 }
-type YoutubeRegistrationRequest {
+type YoutubeRegistrationRequest implements Node & RegistrationRequest {
   id: ID!
   title: String!
 
@@ -61,13 +61,13 @@ type YoutubeRegistrationRequest {
   embedUrl: String!
 }
 
-type YoutubeRegistrationRequestTagging {
+type YoutubeRegistrationRequestTagging implements Node & RegistrationRequestTagging {
   id: ID!
   tag: Tag!
   note: String
 }
 
-type YoutubeRegistrationRequestSemitagging {
+type YoutubeRegistrationRequestSemitagging implements Node & RegistrationRequestSemitagging {
   id: ID!
   name: String!
   note: String

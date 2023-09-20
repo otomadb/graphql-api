@@ -19,3 +19,30 @@ interface VideoSource {
   url: String!
   video: Video!
 }
+
+interface RegistrationRequest implements Node {
+  id: ID!
+  title: String!
+
+  originalUrl: String!
+  thumbnailUrl: String!
+
+  requestedBy: User!
+
+  taggings: [RegistrationRequestTagging!]!
+  semitaggings: [RegistrationRequestSemitagging!]!
+
+  checked: Boolean!
+}
+
+interface RegistrationRequestTagging implements Node {
+  id: ID!
+  tag: Tag!
+  note: String
+}
+
+interface RegistrationRequestSemitagging implements Node {
+  id: ID!
+  name: String!
+  note: String
+}

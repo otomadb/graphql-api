@@ -1,4 +1,4 @@
-type NicovideoRegistrationRequest {
+type NicovideoRegistrationRequest implements Node & RegistrationRequest {
   id: ID!
   title: String!
 
@@ -19,13 +19,13 @@ type NicovideoRegistrationRequest {
   embedUrl: String!
 }
 
-type NicovideoRegistrationRequestTagging {
+type NicovideoRegistrationRequestTagging implements Node & RegistrationRequestTagging {
   id: ID!
   tag: Tag!
   note: String
 }
 
-type NicovideoRegistrationRequestSemitagging {
+type NicovideoRegistrationRequestSemitagging implements Node & RegistrationRequestSemitagging {
   id: ID!
   name: String!
   note: String
