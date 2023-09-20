@@ -24,6 +24,8 @@ interface RegistrationRequest implements Node {
   id: ID!
   title: String!
 
+  sourceId: String!
+
   originalUrl: String!
   thumbnailUrl: String!
 
