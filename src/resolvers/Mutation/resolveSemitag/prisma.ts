@@ -6,7 +6,7 @@ import { ResolverDeps } from "../../types.js";
 
 export const resolve = async (
   prisma: ResolverDeps["prisma"],
-  { userId, semitagId, tagId }: { userId: string; semitagId: string; tagId: string }
+  { userId, semitagId, tagId }: { userId: string; semitagId: string; tagId: string },
 ): Promise<
   Result<
     | { type: "INTERNAL_SERVER_ERROR"; error: unknown }

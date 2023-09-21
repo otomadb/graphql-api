@@ -7,4 +7,4 @@ export const resolverVideoTagConnection = () =>
     edges: ({ edges }) => edges.map((e) => ({ cursor: e.cursor, node: new VideoTagDTO(e.node) })),
     pageInfo: ({ pageInfo }) => pageInfo,
     totalCount: ({ totalCount }) => totalCount,
-  } satisfies Resolvers["VideoTagConnection"]);
+  }) satisfies Resolvers["VideoTagConnection"];

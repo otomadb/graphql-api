@@ -17,4 +17,4 @@ export const resolveTagName = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
         .then((es) => es.map((e) => new TagNameEventDTO(e)));
       return { nodes };
     },
-  } satisfies Resolvers["TagName"]);
+  }) satisfies Resolvers["TagName"];

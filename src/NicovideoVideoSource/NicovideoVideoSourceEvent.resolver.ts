@@ -19,7 +19,7 @@ export const resolveNicovideoVideoSourceEventCommonProps = ({
         .catch(() => {
           throw new GraphQLNotExistsInDBError("NicovideoVideoSource", videoSourceId);
         }),
-  } satisfies Omit<Exclude<Resolvers["NicovideoVideoSourceEvent"], undefined>, "__resolveType">);
+  }) satisfies Omit<Exclude<Resolvers["NicovideoVideoSourceEvent"], undefined>, "__resolveType">;
 
 export const resolveNicovideoVideoSourceEvent = () =>
   ({
@@ -29,9 +29,9 @@ export const resolveNicovideoVideoSourceEvent = () =>
           return "NicovideoVideoSourceCreateEvent";
       }
     },
-  } satisfies Resolvers["NicovideoVideoSourceEvent"]);
+  }) satisfies Resolvers["NicovideoVideoSourceEvent"];
 
 export const resolveNicovideoVideoSourceCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveNicovideoVideoSourceEventCommonProps(deps),
-  } satisfies Resolvers["NicovideoVideoSourceCreateEvent"]);
+  }) satisfies Resolvers["NicovideoVideoSourceCreateEvent"];

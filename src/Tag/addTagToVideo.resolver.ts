@@ -11,7 +11,7 @@ import { TagDTO } from "./dto.js";
 
 export const addTagToVideoInNeo4j = async (
   { prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">,
-  videotagId: string
+  videotagId: string,
 ) => {
   const session = neo4j.session();
   try {
@@ -28,7 +28,7 @@ export const addTagToVideoInNeo4j = async (
 
 export const add = async (
   prisma: ResolverDeps["prisma"],
-  { authUserId: userId, videoId, tagId }: { authUserId: string; videoId: string; tagId: string }
+  { authUserId: userId, videoId, tagId }: { authUserId: string; videoId: string; tagId: string },
 ): Promise<Result<"EXISTS_TAGGING", VideoTag & { video: Video; tag: Tag }>> => {
   const exists = await prisma.videoTag.findUnique({ where: { videoId_tagId: { tagId, videoId } } });
   if (exists && !exists.isRemoved) return err("EXISTS_TAGGING");

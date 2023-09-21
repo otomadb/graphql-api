@@ -11,4 +11,4 @@ export const resolverMylistRegistrationConnection = () =>
       })),
     pageInfo: ({ pageInfo }) => pageInfo,
     totalCount: ({ totalCount }) => totalCount,
-  } satisfies Resolvers["MylistRegistrationConnection"]);
+  }) satisfies Resolvers["MylistRegistrationConnection"];

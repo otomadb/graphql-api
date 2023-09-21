@@ -77,7 +77,7 @@ describe("Add tag in Prisma", () => {
         videoId: "v1",
         tagId: "t1",
         isRemoved: false,
-      }) satisfies OkData<typeof actual>
+      }) satisfies OkData<typeof actual>,
     );
     const videoTagId = actual.data.id;
 
@@ -94,7 +94,7 @@ describe("Add tag in Prisma", () => {
           type: VideoTagEventType.ATTACH,
           payload: {},
         } satisfies VideoTagEvent,
-      ])
+      ]),
     );
   });
 
@@ -128,7 +128,7 @@ describe("Add tag in Prisma", () => {
         videoId: "v1",
         tagId: "t1",
         isRemoved: false,
-      }) satisfies OkData<typeof actual>
+      }) satisfies OkData<typeof actual>,
     );
 
     const videoTagId = actual.data.id;
@@ -146,7 +146,7 @@ describe("Add tag in Prisma", () => {
           type: VideoTagEventType.REATTACH,
           payload: {},
         } satisfies VideoTagEvent,
-      ])
+      ]),
     );
   });
 });

@@ -21,7 +21,7 @@ export const resolverYoutubeRegistrationRequest = ({
             id: buildGqlId("YoutubeRegistrationRequestTagging", id),
             tag: new TagDTO(tag),
             note,
-          }))
+          })),
         );
     },
     semitaggings: ({ dbId: requestId }) => {
@@ -30,8 +30,8 @@ export const resolverYoutubeRegistrationRequest = ({
           id: buildGqlId("YoutubeRegistrationRequestSemitagging", id),
           name,
           note,
-        }))
+        })),
       );
     },
     requestedBy: async ({ requestedById }) => userService.getById(requestedById),
-  } satisfies Resolvers["YoutubeRegistrationRequest"]);
+  }) satisfies Resolvers["YoutubeRegistrationRequest"];

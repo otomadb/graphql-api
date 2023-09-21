@@ -42,6 +42,6 @@ export const resolverFindVideos = ({ prisma, logger }: Pick<ResolverDeps, "prism
         }),
       () => prisma.video.count(),
       connectionArgs.data,
-      { resolveInfo: info, ...cursorOptions }
+      { resolveInfo: info, ...cursorOptions },
     ).then((c) => VideoConnectionDTO.fromPrisma(c));
   }) satisfies QueryResolvers["findVideos"];

@@ -12,7 +12,7 @@ export abstract class AbstractConnectionModel<T> {
       edges: Edge<T>[];
       pageInfo: PageInfo;
       totalCount: number;
-    }
+    },
   ) {}
 
   get nodes(): T[] {

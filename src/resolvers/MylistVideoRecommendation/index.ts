@@ -20,4 +20,4 @@ export const resolveMylistVideoRecommendation = ({ prisma }: Pick<ResolverDeps, 
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Video", toVideoId);
         }),
-  } satisfies Resolvers["MylistVideoRecommendation"]);
+  }) satisfies Resolvers["MylistVideoRecommendation"];

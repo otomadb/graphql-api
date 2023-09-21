@@ -1,11 +1,11 @@
-export const ok = <TData>(data: TData) => ({ status: "ok", data } as const);
+export const ok = <TData>(data: TData) => ({ status: "ok", data }) as const;
 export type Ok<TResult> = TResult extends ReturnType<typeof ok<infer TData>> ? ReturnType<typeof ok<TData>> : never;
 export type OkData<TResult> = Ok<TResult>["data"];
 export const isOk = <TError, TData>(res: Result<TError, TData>): res is Ok<Result<TError, TData>> =>
   res.status === "ok";
 export type ReturnOk<TFn extends (...args: never) => unknown> = Ok<Awaited<ReturnType<TFn>>>;
 
-export const err = <TError>(error: TError) => ({ status: "error", error } as const);
+export const err = <TError>(error: TError) => ({ status: "error", error }) as const;
 export type Err<TResult> = TResult extends ReturnType<typeof err<infer TError>>
   ? ReturnType<typeof err<TError>>
   : never;

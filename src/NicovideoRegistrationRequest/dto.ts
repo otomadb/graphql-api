@@ -50,7 +50,7 @@ export class NicovideoRegistrationRequestAcceptingDTO {
       requestId: string;
       checkedById: string;
       videoId: string;
-    }
+    },
   ) {}
 
   public static fromPrisma({ id, checkedById, requestId, note, videoId }: NicovideoRegistrationRequestChecking) {
@@ -93,7 +93,7 @@ export class NicovideoRegistrationRequestRejectingDTO {
       note: string | null;
       requestId: string;
       checkedById: string;
-    }
+    },
   ) {}
 
   public static fromPrisma({ id, checkedById, requestId, note }: NicovideoRegistrationRequestChecking) {

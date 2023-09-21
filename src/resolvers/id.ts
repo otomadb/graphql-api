@@ -74,7 +74,7 @@ export function parseGqlID3(type: NodeType, gqlId: string): Result<{ type: "INVA
 
 export function parseGqlIDs3(
   type: NodeType,
-  gqlIds: string[]
+  gqlIds: string[],
 ): Result<{ type: "INVALID_ID"; invalidId: string } | { type: "DUPLICATED"; duplicatedId: string }, string[]> {
   const ids: string[] = [];
   for (const gqlId of gqlIds) {
@@ -91,7 +91,7 @@ export function parseGqlIDs3(
  */
 export function parseGqlIDs3SkipDupl(
   type: NodeType,
-  gqlIds: string[]
+  gqlIds: string[],
 ): Result<{ type: "INVALID_ID"; invalidId: string }, string[]> {
   const ids: string[] = [];
   for (const gqlId of gqlIds) {
@@ -104,7 +104,7 @@ export function parseGqlIDs3SkipDupl(
 
 export function parseGqlIDs2(
   type: NodeType,
-  gqlIds: string[]
+  gqlIds: string[],
 ): Result<{ type: "INVALID_ID"; wrongGqlIds: string[] }, string[]> {
   const ids: string[] = [],
     wrongGqlIds: string[] = [];

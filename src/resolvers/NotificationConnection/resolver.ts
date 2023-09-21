@@ -7,4 +7,4 @@ export const resolverNotificationConnection = () =>
     edges: ({ edges }) => edges.map((e) => ({ cursor: e.cursor, node: NotificationModel.fromPrisma(e.node) })),
     pageInfo: ({ pageInfo }) => pageInfo,
     totalCount: ({ totalCount }) => totalCount,
-  } satisfies Resolvers["NotificationConnection"]);
+  }) satisfies Resolvers["NotificationConnection"];

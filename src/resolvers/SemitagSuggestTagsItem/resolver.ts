@@ -30,4 +30,4 @@ export const resolverSemitagSuggestTagsItem = ({ prisma, logger }: Pick<Resolver
           },
         })
         .then((v) => !v),
-  } satisfies Resolvers["SemitagSuggestTagsItem"]);
+  }) satisfies Resolvers["SemitagSuggestTagsItem"];

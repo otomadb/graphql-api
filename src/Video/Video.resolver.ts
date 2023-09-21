@@ -33,7 +33,7 @@ export const resolveVideoIsLiked = ({ prisma, logger }: Pick<ResolverDeps, "pris
 
 export const findLike = async (
   prisma: ResolverDeps["prisma"],
-  { videoId, holderId }: { videoId: string; holderId: string }
+  { videoId, holderId }: { videoId: string; holderId: string },
 ): Promise<Result<{ type: "UNKNOWN_ERROR"; error: unknown }, MylistRegistration | null>> => {
   try {
     const likelist = await prisma.mylist.upsert({
@@ -93,7 +93,7 @@ export const resolveSimilarVideos = ({ neo4j, logger }: Pick<ResolverDeps, "logg
         ORDER BY score DESC
         LIMIT $limit
         `,
-        { video_id: videoId, limit: Integer.fromNumber(input.limit) }
+        { video_id: videoId, limit: Integer.fromNumber(input.limit) },
       );
       const items = result.records.map(
         (rec) =>
@@ -101,7 +101,7 @@ export const resolveSimilarVideos = ({ neo4j, logger }: Pick<ResolverDeps, "logg
             score: rec.get("score"),
             originId: rec.get("v_from"),
             toId: rec.get("v_to"),
-          })
+          }),
       );
       return { items };
     } catch (error) {
@@ -156,7 +156,7 @@ export const resolveTaggings = ({ prisma, logger }: Pick<ResolverDeps, "prisma" 
           },
         }),
       connectionArgs.data,
-      { resolveInfo: info, ...cursorOptions }
+      { resolveInfo: info, ...cursorOptions },
     ).then((c) => VideoTagConnectionDTO.fromPrisma(c));
   }) satisfies VideoResolvers["taggings"];
 
@@ -226,4 +226,4 @@ export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pris
 
     isLiked: resolveVideoIsLiked({ prisma, logger }),
     like: resolveVideoLike({ prisma, logger }),
-  } satisfies Resolvers["Video"]);
+  }) satisfies Resolvers["Video"];

@@ -11,7 +11,7 @@ export const update = async (
   }: {
     authUserId: string;
     notificationIds: string[];
-  }
+  },
 ): Promise<
   Result<
     | { type: "WRONG_NOTIFYTO"; notificationId: string; actualNotifyToId: string }

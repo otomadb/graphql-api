@@ -16,7 +16,7 @@ export const resolveTagNameEventCommonProps = ({ prisma, userService }: Pick<Res
         .catch(() => {
           throw new GraphQLNotExistsInDBError("TagName", tagNameId);
         }),
-  } satisfies Omit<Exclude<Resolvers["TagNameEvent"], undefined>, "__resolveType">);
+  }) satisfies Omit<Exclude<Resolvers["TagNameEvent"], undefined>, "__resolveType">;
 
 export const resolveTagNameEvent = () =>
   ({
@@ -30,19 +30,19 @@ export const resolveTagNameEvent = () =>
           return "TagNameUnsetPrimaryEvent";
       }
     },
-  } satisfies Resolvers["TagNameEvent"]);
+  }) satisfies Resolvers["TagNameEvent"];
 
 export const resolveTagNameCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveTagNameEventCommonProps(deps),
-  } satisfies Resolvers["TagNameCreateEvent"]);
+  }) satisfies Resolvers["TagNameCreateEvent"];
 
 export const resolveTagNameSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveTagNameEventCommonProps(deps),
-  } satisfies Resolvers["TagNameSetPrimaryEvent"]);
+  }) satisfies Resolvers["TagNameSetPrimaryEvent"];
 
 export const resolveTagNameUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveTagNameEventCommonProps(deps),
-  } satisfies Resolvers["TagNameUnsetPrimaryEvent"]);
+  }) satisfies Resolvers["TagNameUnsetPrimaryEvent"];

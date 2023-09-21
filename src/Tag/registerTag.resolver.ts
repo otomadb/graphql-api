@@ -17,7 +17,7 @@ import { TagDTO } from "./dto.js";
 
 export const addTagToMeiliSearch = async (
   { prisma, meilisearch }: Pick<ResolverDeps, "prisma" | "meilisearch">,
-  tagId: string
+  tagId: string,
 ): Promise<Result<{ type: "INTERNAL_ERROR"; error: unknown }, void>> => {
   try {
     const index = await meilisearch.getIndex<{ id: string; name: string; tag_id: string }>("tags");
@@ -31,7 +31,7 @@ export const addTagToMeiliSearch = async (
 
 export const registerTagInNeo4j = async (
   { prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">,
-  tagId: string
+  tagId: string,
 ): Promise<Result<unknown, true>> => {
   const session = neo4j.session();
   try {
@@ -53,7 +53,7 @@ export const registerTagInNeo4j = async (
           parent_id: parentId,
           child_id: childId,
           explicit: isExplicit,
-        }
+        },
       );
     }
 
@@ -106,7 +106,7 @@ export const register = async (
     implicitParentIds: string[];
 
     semitagIds: string[];
-  }
+  },
 ): Promise<
   Result<
     | { type: "TAG_NOT_FOUND"; id: string }
@@ -148,7 +148,7 @@ export const register = async (
             },
           },
         },
-      })
+      }),
     );
 
     const explicitParent = explicitParentId ? await prisma.tag.findUnique({ where: { id: explicitParentId } }) : null;
@@ -174,7 +174,7 @@ export const register = async (
 
     const implicitParents = await prisma.tag.findMany({ where: { id: { in: implicitParentIds } } });
     const missingImplicitParentid = implicitParentIds.find(
-      (id) => !implicitParents.find((implicitParent) => implicitParent.id === id)
+      (id) => !implicitParents.find((implicitParent) => implicitParent.id === id),
     );
     if (missingImplicitParentid) return err({ type: "TAG_NOT_FOUND", id: missingImplicitParentid });
     const $implicitParents = implicitParents.map(({ id: parentId }) =>
@@ -190,7 +190,7 @@ export const register = async (
             },
           },
         },
-      })
+      }),
     );
 
     const semitags = await prisma.semitag.findMany({ where: { id: { in: semitagIds } } });
@@ -218,7 +218,7 @@ export const register = async (
             },
           },
         },
-      })
+      }),
     );
 
     const [tag] = await prisma.$transaction([

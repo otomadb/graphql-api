@@ -25,7 +25,7 @@ export const requestRegistration = async (
     userId: string;
     taggings: { tagId: string; note: string | null }[];
     semitaggings: { name: string; note: string | null }[];
-  }
+  },
 ): Promise<
   Result<
     | { message: "TAG_NOT_FOUND"; tagId: string }
@@ -86,7 +86,7 @@ export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<Re
     _,
     { input: { title, thumbnailUrl, sourceId, taggings: gqlTaggings, semitaggings } },
     { currentUser: user },
-    info
+    info,
   ) => {
     const taggings: { tagId: string; note: string | null }[] = [];
     for (const { tagId, note } of gqlTaggings) {

@@ -16,7 +16,7 @@ export const resolveVideoEventCommonProps = ({ prisma, userService }: Pick<Resol
         .catch(() => {
           throw new GraphQLNotExistsInDBError("VideoTitle", videoTitleId);
         }),
-  } satisfies Omit<Exclude<Resolvers["VideoTitleEvent"], undefined>, "__resolveType">);
+  }) satisfies Omit<Exclude<Resolvers["VideoTitleEvent"], undefined>, "__resolveType">;
 
 export const resolveVideoTitleEvent = () =>
   ({
@@ -30,19 +30,19 @@ export const resolveVideoTitleEvent = () =>
           return "VideoTitleUnsetPrimaryEvent";
       }
     },
-  } satisfies Resolvers["VideoTitleEvent"]);
+  }) satisfies Resolvers["VideoTitleEvent"];
 
 export const resolveVideoTitleCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveVideoEventCommonProps(deps),
-  } satisfies Resolvers["VideoTitleCreateEvent"]);
+  }) satisfies Resolvers["VideoTitleCreateEvent"];
 
 export const resolveVideoTitleSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveVideoEventCommonProps(deps),
-  } satisfies Resolvers["VideoTitleSetPrimaryEvent"]);
+  }) satisfies Resolvers["VideoTitleSetPrimaryEvent"];
 
 export const resolveVideoTitleUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveVideoEventCommonProps(deps),
-  } satisfies Resolvers["VideoTitleUnsetPrimaryEvent"]);
+  }) satisfies Resolvers["VideoTitleUnsetPrimaryEvent"];

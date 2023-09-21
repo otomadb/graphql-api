@@ -39,4 +39,4 @@ export const resolveSemitag = ({ prisma, meilisearch }: Pick<ResolverDeps, "pris
       return SemitagResolvingModel.make({ videoTagId, note, semitagId });
     },
     suggestTags: resolverSemitagSuggestTags({ meilisearch }),
-  } satisfies Resolvers["Semitag"]);
+  }) satisfies Resolvers["Semitag"];

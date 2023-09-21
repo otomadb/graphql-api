@@ -34,4 +34,4 @@ export const resolveVideoTag = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
         .then((es) => es.map((e) => new VideoTagEventDTO(e)));
       return { nodes };
     },
-  } satisfies Resolvers["VideoTag"]);
+  }) satisfies Resolvers["VideoTag"];

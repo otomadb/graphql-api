@@ -6,7 +6,7 @@ import { ResolverDeps } from "../../types.js";
 
 export const add = async (
   prisma: ResolverDeps["prisma"],
-  { userId, mylistId, videoId, note }: { userId: string; mylistId: string; videoId: string; note: string | null }
+  { userId, mylistId, videoId, note }: { userId: string; mylistId: string; videoId: string; note: string | null },
 ): Promise<
   Result<
     | { message: "MYLIST_NOT_FOUND"; mylistId: string }

@@ -34,7 +34,7 @@ export const makeExecutor =
             variables,
           }),
         },
-        context
-      )
+        context,
+      ),
     ).then((response) => response.json());
 */

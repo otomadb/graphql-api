@@ -45,7 +45,7 @@ export const resolveIncludeTags = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
             count: _count.tagId,
             mylistId,
             tagId,
-          })
+          }),
       ),
     };
   }) satisfies MylistResolvers["includeTags"];

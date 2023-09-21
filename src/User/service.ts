@@ -15,7 +15,7 @@ export class UserService {
     private readonly env: {
       editorRoleId: string;
       adminRoleId: string;
-    }
+    },
   ) {}
 
   public static make({
@@ -59,7 +59,7 @@ export class UserService {
         name: parsed.data.username,
         displayName: parsed.data.nickname,
         icon: parsed.data.picture,
-      })
+      }),
     );
 
     const user = UserDTO.make({

@@ -14,7 +14,7 @@ export const resolverMylistRegistrations = ({ prisma, logger }: Pick<ResolverDep
     { id: mylistId },
     { orderBy: unparsedOrderBy, ...unparsedConnectionArgs },
     { currentUser: ctxUser },
-    info
+    info,
   ) => {
     const connectionArgs = z
       .union([
@@ -51,6 +51,6 @@ export const resolverMylistRegistrations = ({ prisma, logger }: Pick<ResolverDep
           where: { mylistId },
         }),
       connectionArgs.data,
-      { resolveInfo: info, ...cursorOptions }
+      { resolveInfo: info, ...cursorOptions },
     ).then((c) => MylistRegistrationConnectionModel.fromPrisma(c));
   }) satisfies MylistResolvers["registrations"];

@@ -25,4 +25,4 @@ export const resolveVideoThumbnail = ({ prisma }: Pick<ResolverDeps, "prisma">) 
         .then((es) => es.map((e) => new VideoThumbnailEventDTO(e)));
       return { nodes };
     },
-  } satisfies Resolvers["VideoThumbnail"]);
+  }) satisfies Resolvers["VideoThumbnail"];

@@ -17,7 +17,7 @@ export const register = async (
     userId: string;
     tagId: string;
     type: CategoryTagType;
-  }
+  },
 ): Promise<
   Result<
     | { type: "UNKNOWN"; error: unknown }

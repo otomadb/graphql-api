@@ -20,4 +20,4 @@ export const resolveMylistTagInclusion = ({ prisma }: Pick<ResolverDeps, "prisma
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Tag", tagId);
         }),
-  } satisfies Resolvers["MylistTagInclusion"]);
+  }) satisfies Resolvers["MylistTagInclusion"];

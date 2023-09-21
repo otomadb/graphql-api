@@ -42,7 +42,7 @@ const auth0Management = new ManagementClient(
         clientId: process.env.AUTH0_CLIENT_ID,
         clientSecret: process.env.AUTH0_CLIENT_SECRET,
         scope: ["read:users", "update:users", "read:roles"].join(" "),
-      }
+      },
 );
 
 const logger = pino({
@@ -70,7 +70,7 @@ const prismaClient = new PrismaClient();
 
 const neo4jDriver = neo4j.driver(
   process.env.NEO4J_URL,
-  neo4j.auth.basic(process.env.NEO4J_USERNAME, process.env.NEO4J_PASSWORD)
+  neo4j.auth.basic(process.env.NEO4J_USERNAME, process.env.NEO4J_PASSWORD),
 );
 
 const meilisearchClient = new MeiliSearch({
@@ -123,7 +123,7 @@ const yoga = createYoga<ServerContext, UserContext>({
               if (error) return resolve({ error });
               if (decoded) resolve({ decoded });
               reject();
-            })
+            }),
           );
           if ("error" in result) {
             logger.error({ error: result.error }, "Token verification error");
@@ -215,7 +215,7 @@ const yoga = createYoga<ServerContext, UserContext>({
                 user: data.args.contextValue.user,
                 errors: data.result.errors,
               },
-              "GraphQL Executed"
+              "GraphQL Executed",
             );
             break;
         }

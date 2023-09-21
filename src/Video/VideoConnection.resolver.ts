@@ -7,4 +7,4 @@ export const resolverVideoConnection = () =>
     edges: ({ edges }) => edges.map((e) => ({ cursor: e.cursor, node: new VideoDTO(e.node) })),
     pageInfo: ({ pageInfo }) => pageInfo,
     totalCount: ({ totalCount }) => totalCount,
-  } satisfies Resolvers["VideoConnection"]);
+  }) satisfies Resolvers["VideoConnection"];

@@ -21,4 +21,4 @@ export const resolverTagSearchItemByName = ({ prisma, logger }: Pick<ResolverDep
           logger.error({ path: info.path, userId: ctxUser?.id }, "Not found");
           throw new GraphQLNotExistsInDBError("TagName", nameId);
         }),
-  } satisfies Resolvers["TagSearchItemByName"]);
+  }) satisfies Resolvers["TagSearchItemByName"];

@@ -45,7 +45,7 @@ export const resolveSoundcloudVideoSourceEvents = ({ prisma, logger }: Pick<Reso
         }),
       () => prisma.soundcloudVideoSourceEvent.count(),
       connectionArgs.data,
-      { resolveInfo: info, ...cursorOptions }
+      { resolveInfo: info, ...cursorOptions },
     ).then((c) => SoundcloudVideoSourceEventConnectionDTO.fromPrisma(c));
   }) satisfies SoundcloudVideoSourceResolvers["events"];
 
@@ -80,4 +80,4 @@ export const resolveSoundcloudVideoSource = ({
           throw new GraphQLNotExistsInDBError("Video", videoId);
         }),
     events: resolveSoundcloudVideoSourceEvents({ prisma, logger }),
-  } satisfies Resolvers["SoundcloudVideoSource"]);
+  }) satisfies Resolvers["SoundcloudVideoSource"];

@@ -24,4 +24,4 @@ export const resolverNotification = ({
     notifyTo: ({ notifyToId: forId }) => userService.getById(forId),
     createdAt: ({ createdAt }) => createdAt,
     watched: ({ isWatched }) => isWatched,
-  } satisfies Resolvers["Notification"]);
+  }) satisfies Resolvers["Notification"];

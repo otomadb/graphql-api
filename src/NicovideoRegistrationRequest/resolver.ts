@@ -21,7 +21,7 @@ export const resolverNicovideoRegistrationRequest = ({
             id: buildGqlId("NicovideoRegistrationRequestTagging", id),
             tag: new TagDTO(tag),
             note,
-          }))
+          })),
         );
     },
     semitaggings: ({ dbId: requestId }) => {
@@ -30,8 +30,8 @@ export const resolverNicovideoRegistrationRequest = ({
           id: buildGqlId("NicovideoRegistrationRequestSemitagging", id),
           name,
           note,
-        }))
+        })),
       );
     },
     requestedBy: async ({ requestedById }) => userService.getById(requestedById),
-  } satisfies Resolvers["NicovideoRegistrationRequest"]);
+  }) satisfies Resolvers["NicovideoRegistrationRequest"];

@@ -19,4 +19,4 @@ export const resolveVideoSimilarity = ({ prisma }: Pick<ResolverDeps, "prisma">)
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Video", toId);
         }),
-  } satisfies Resolvers["VideoSimilarity"]);
+  }) satisfies Resolvers["VideoSimilarity"];
