@@ -387,6 +387,7 @@ model Video {
   nicovideoSources  NicovideoVideoSource[]
   youtubeSources    YoutubeVideoSource[]
   soundcloudSources SoundcloudVideoSource[]
+  bilibiliSources   BilibiliMADSource[]
 
   mylists MylistRegistration[]
 
@@ -905,4 +906,18 @@ enum NotificationType {
   REJECTING_NICOVIDEO_REGISTRATION_REQUEST
   ACCEPTING_YOUTUBE_REGISTRATION_REQUEST
   REJECTING_YOUTUBE_REGISTRATION_REQUEST
+}
+
+model BilibiliMADSource {
+  id String @id @default(cuid())
+
+  sourceId String @unique @db.Citext
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  @@unique([sourceId, videoId])
 }
