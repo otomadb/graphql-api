@@ -3,7 +3,7 @@ export class SemitagRejectingModel {
     private readonly entity: {
       semitagId: string;
       note: string | null;
-    }
+    },
   ) {}
 
   public static make(entity: { semitagId: string; note: string | null }) {

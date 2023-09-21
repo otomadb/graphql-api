@@ -36,7 +36,7 @@ export const resolverFindMylist = ({
           mylistHolderId: mylist.holderId,
           currentUserId: currentUser?.id,
         },
-        "Mylist is private"
+        "Mylist is private",
       );
       return null;
     }

@@ -6,7 +6,7 @@ import { ResolverDeps } from "../../types.js";
 // VideoTagのVideoのタグ全てについて更新を掛けている
 export const updateWholeVideoTags = async (
   { prisma, tx }: Pick<ResolverDeps, "prisma"> & { tx: TransactionPromise },
-  videotagId: string
+  videotagId: string,
 ) =>
   prisma.videoTag
     .findUniqueOrThrow({ where: { id: videotagId }, select: { video: { include: { tags: true } } } })
@@ -19,14 +19,14 @@ export const updateWholeVideoTags = async (
           MERGE (t)-[r:TAGGED_TO]->(v)
           RETURN r
           `,
-          { tag_id: tagId, video_id: videoId }
-        )
-      )
+          { tag_id: tagId, video_id: videoId },
+        ),
+      ),
     );
 
 export const resolve = async (
   { prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">,
-  videotagId: string
+  videotagId: string,
 ): Promise<Result<unknown, true>> => {
   const session = neo4j.session();
   try {

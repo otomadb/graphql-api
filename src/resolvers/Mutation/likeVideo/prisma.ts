@@ -6,7 +6,7 @@ import { ResolverDeps } from "../../types.js";
 
 export const like = async (
   prisma: ResolverDeps["prisma"],
-  { videoId, userId }: { videoId: string; userId: string }
+  { videoId, userId }: { videoId: string; userId: string },
 ): Promise<
   Result<
     | { type: "VIDEO_NOT_FOUND"; videoId: string }

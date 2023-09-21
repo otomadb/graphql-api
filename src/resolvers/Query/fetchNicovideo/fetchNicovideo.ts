@@ -11,7 +11,7 @@ const apiResponse = z.object({
       items: z.array(
         z.object({
           name: z.string(),
-        })
+        }),
       ),
     }),
     video: z.object({

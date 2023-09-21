@@ -29,7 +29,7 @@ export const resolverFindUncheckedYoutubeRegistrationRequests = ({
     if (!connectionArgs.success) {
       logger.error(
         { path: info.path, args: unparsedConnectionArgs, error: connectionArgs.error, userId: ctxUser?.id },
-        "Wrong args"
+        "Wrong args",
       );
       throw new GraphQLError("Wrong args");
     }
@@ -52,6 +52,6 @@ export const resolverFindUncheckedYoutubeRegistrationRequests = ({
           where: { isChecked: false },
         }),
       connectionArgs.data,
-      { resolveInfo: info, ...cursorOptions }
+      { resolveInfo: info, ...cursorOptions },
     ).then((c) => YoutubeRegistrationRequestConnectionDTO.fromPrisma(c));
   }) satisfies QueryResolvers["findUncheckedYoutubeRegistrationRequests"];

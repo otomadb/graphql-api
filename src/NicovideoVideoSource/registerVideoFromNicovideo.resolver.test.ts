@@ -156,7 +156,7 @@ describe("Register video by Prisma", () => {
     expect(actual.data).toStrictEqual(
       expect.objectContaining({
         id: expect.any(String),
-      }) satisfies OkData<typeof actual>
+      }) satisfies OkData<typeof actual>,
     );
 
     const videoId = actual.data.id;
@@ -184,7 +184,7 @@ describe("Register video by Prisma", () => {
           type: VideoEventType.REGISTER,
           payload: {},
         } satisfies VideoEvent),
-      ])
+      ]),
     );
 
     const videoPrimaryTitle = (await prisma.videoTitle.findFirst({
@@ -219,7 +219,7 @@ describe("Register video by Prisma", () => {
           title: "Video 1.2",
           videoId,
         } satisfies VideoTitle,
-      ])
+      ]),
     );
 
     const videoTitleEvents = await prisma.videoTitleEvent.findMany({});
@@ -262,7 +262,7 @@ describe("Register video by Prisma", () => {
           type: VideoTitleEventType.SET_PRIMARY,
           payload: {},
         } satisfies VideoTitleEvent,
-      ])
+      ]),
     );
 
     const videoThumbnails = await prisma.videoThumbnail.findMany({ where: { videoId } });
@@ -277,7 +277,7 @@ describe("Register video by Prisma", () => {
           imageUrl: "https://example.com/1.jpg",
           videoId,
         } satisfies VideoThumbnail,
-      ])
+      ]),
     );
 
     const videoThumbnailEvents = await prisma.videoThumbnailEvent.findMany({});
@@ -302,7 +302,7 @@ describe("Register video by Prisma", () => {
           type: VideoThumbnailEventType.SET_PRIMARY,
           payload: {},
         } satisfies VideoThumbnailEvent,
-      ])
+      ]),
     );
 
     const videoTags = await prisma.videoTag.findMany({ where: { videoId } });
@@ -325,7 +325,7 @@ describe("Register video by Prisma", () => {
           videoId,
           isRemoved: false,
         } satisfies VideoTag,
-      ])
+      ]),
     );
 
     const videoTagEvents = await prisma.videoTagEvent.findMany({});
@@ -350,7 +350,7 @@ describe("Register video by Prisma", () => {
           type: VideoTagEventType.ATTACH,
           payload: {},
         } satisfies VideoTagEvent,
-      ])
+      ]),
     );
 
     const videoSemitags = await prisma.semitag.findMany({ where: { videoId } });
@@ -373,7 +373,7 @@ describe("Register video by Prisma", () => {
           name: "Semitag 2",
           isChecked: false,
         } satisfies Semitag,
-      ])
+      ]),
     );
     const semitagEvents = await prisma.semitagEvent.findMany({});
     expect(semitagEvents).toHaveLength(2);
@@ -397,7 +397,7 @@ describe("Register video by Prisma", () => {
           type: SemitagEventType.ATTACH,
           payload: {},
         } satisfies SemitagEvent),
-      ])
+      ]),
     );
 
     const nicovideoVideoSources = await prisma.nicovideoVideoSource.findMany({ where: { videoId } });
@@ -411,7 +411,7 @@ describe("Register video by Prisma", () => {
           videoId,
           sourceId: "sm1",
         } satisfies NicovideoVideoSource,
-      ])
+      ]),
     );
     const nicovideoVideoSourceEvents = await prisma.nicovideoVideoSourceEvent.findMany({});
     expect(nicovideoVideoSourceEvents).toHaveLength(1);
@@ -426,7 +426,7 @@ describe("Register video by Prisma", () => {
           type: NicovideoVideoSourceEventType.CREATE,
           payload: {},
         } satisfies NicovideoVideoSourceEvent),
-      ])
+      ]),
     );
   });
 

@@ -17,7 +17,7 @@ export const resolverChildren = ({ prisma, logger }: Pick<ResolverDeps, "prisma"
     { id: tagId, isCategoryTag },
     { orderBy: unparsedOrderBy, ...unparsedConnectionArgs },
     { currentUser: ctxUser },
-    info
+    info,
   ) => {
     const connectionArgs = z
       .union(
@@ -30,7 +30,7 @@ export const resolverChildren = ({ prisma, logger }: Pick<ResolverDeps, "prisma"
               z.object({ first: z.number(), after: z.string().optional() }),
               z.object({ last: z.number(), before: z.string().optional() }),
               z.object({}), // カテゴリータグでない場合は全取得を許容
-            ]
+            ],
       )
       .safeParse(unparsedConnectionArgs);
     if (!connectionArgs.success) {
@@ -56,7 +56,7 @@ export const resolverChildren = ({ prisma, logger }: Pick<ResolverDeps, "prisma"
           where: { parentId: tagId },
         }),
       connectionArgs.data,
-      { resolveInfo: info, ...cursorOptions }
+      { resolveInfo: info, ...cursorOptions },
     ).then((c) => TagParentConnectionDTO.fromPrisma(c));
   }) satisfies TagResolvers["children"];
 
@@ -65,7 +65,7 @@ export const resolverParents = ({ prisma, logger }: Pick<ResolverDeps, "prisma" 
     { id: tagId },
     { orderBy: unparsedOrderBy, categoryTag, ...unparsedConnectionArgs },
     { currentUser: ctxUser },
-    info
+    info,
   ) => {
     const connectionArgs = z
       .union([
@@ -109,7 +109,7 @@ export const resolverParents = ({ prisma, logger }: Pick<ResolverDeps, "prisma" 
           },
         }),
       connectionArgs.data,
-      { resolveInfo: info, ...cursorOptions }
+      { resolveInfo: info, ...cursorOptions },
     ).then((c) => TagParentConnectionDTO.fromPrisma(c));
   }) satisfies TagResolvers["parents"];
 
@@ -147,7 +147,7 @@ export const resolveTaggedVideos = ({ prisma, logger }: Pick<ResolverDeps, "pris
         }),
       () => prisma.videoTag.count({ where: { tagId } }),
       connectionArgs.data,
-      { resolveInfo: info, ...cursorOptions }
+      { resolveInfo: info, ...cursorOptions },
     ).then((c) => VideoTagConnectionDTO.fromPrisma(c));
   }) satisfies TagResolvers["taggedVideos"];
 
@@ -161,7 +161,7 @@ export const resolveTagType = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
         select: { parent: { select: { categoryType: { select: { type: true } } } } },
       })
       .then((t) =>
-        t.map(({ parent: { categoryType } }) => categoryType?.type).filter((t): t is CategoryTagType => !!t)
+        t.map(({ parent: { categoryType } }) => categoryType?.type).filter((t): t is CategoryTagType => !!t),
       );
 
     if (1 < typings.length) return GqlTagType.Subtle;
@@ -234,4 +234,4 @@ export const resolveTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "lo
         .then((es) => es.map((e) => new TagEventDTO(e)));
       return { nodes };
     },
-  } satisfies Resolvers["Tag"]);
+  }) satisfies Resolvers["Tag"];

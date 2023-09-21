@@ -4,7 +4,7 @@ export class MylistTagInclusionModel {
       count: number;
       tagId: string;
       mylistId: string;
-    }
+    },
   ) {}
 
   get count() {

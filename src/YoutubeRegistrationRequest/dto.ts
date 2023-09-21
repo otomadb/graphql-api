@@ -43,7 +43,7 @@ export class YoutubeRegistrationRequestAcceptingDTO {
       requestId: string;
       checkedById: string;
       videoId: string;
-    }
+    },
   ) {}
 
   public static fromPrisma({ id, checkedById, requestId, note, videoId }: YoutubeRegistrationRequestChecking) {
@@ -86,7 +86,7 @@ export class YoutubeRegistrationRequestRejectingDTO {
       note: string | null;
       requestId: string;
       checkedById: string;
-    }
+    },
   ) {}
 
   public static fromPrisma({ id, checkedById, requestId, note }: YoutubeRegistrationRequestChecking) {

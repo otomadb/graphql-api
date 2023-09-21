@@ -16,7 +16,7 @@ export const resolveTagEventCommonProps = ({ prisma, userService }: Pick<Resolve
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Tag", tagId);
         }),
-  } satisfies Omit<Exclude<Resolvers["TagEvent"], undefined>, "__resolveType">);
+  }) satisfies Omit<Exclude<Resolvers["TagEvent"], undefined>, "__resolveType">;
 
 export const resolveTagEvent = () =>
   ({
@@ -26,9 +26,9 @@ export const resolveTagEvent = () =>
           return "TagRegisterEvent";
       }
     },
-  } satisfies Resolvers["TagEvent"]);
+  }) satisfies Resolvers["TagEvent"];
 
 export const resolveTagRegisterEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveTagEventCommonProps(deps),
-  } satisfies Resolvers["TagRegisterEvent"]);
+  }) satisfies Resolvers["TagRegisterEvent"];

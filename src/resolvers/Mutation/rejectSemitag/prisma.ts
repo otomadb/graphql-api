@@ -6,7 +6,7 @@ import { ResolverDeps } from "../../types.js";
 
 export const reject = async (
   prisma: ResolverDeps["prisma"],
-  { userId, semitagId }: { userId: string; semitagId: string }
+  { userId, semitagId }: { userId: string; semitagId: string },
 ): Promise<
   Result<
     | { type: "INTERNAL_SERVER_ERROR"; error: unknown }

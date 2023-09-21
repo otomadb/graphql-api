@@ -3,7 +3,7 @@ import { ResolverDeps } from "../../types.js";
 
 export const removeMylistRegistrationInNeo4j = async (
   { prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">,
-  registerationId: string
+  registerationId: string,
 ): Promise<Result<unknown, true>> => {
   const session = neo4j.session();
   try {
@@ -17,7 +17,7 @@ export const removeMylistRegistrationInNeo4j = async (
         MATCH (m)-[r:REGISTERED_TO]->(v)
         DELETE r
         `,
-      { mylist_id: registration.mylistId, video_id: registration.videoId }
+      { mylist_id: registration.mylistId, video_id: registration.videoId },
     );
     await tx.commit();
     return ok(true);

@@ -8,7 +8,7 @@ import { TagParentDTO } from "./dto.js";
 
 export const implicitize = async (
   prisma: ResolverDeps["prisma"],
-  { userId, relationId }: { userId: string; relationId: string }
+  { userId, relationId }: { userId: string; relationId: string },
 ): Promise<
   Result<
     | { type: "UNKNOWN"; error: unknown }

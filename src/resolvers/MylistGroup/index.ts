@@ -16,4 +16,4 @@ export const resolveMylistGroup = ({
 
     mylists: resolveMylists({ prisma, logger }),
     videos: resolverMylistGroupVideo({ prisma }),
-  } satisfies Resolvers["MylistGroup"]);
+  }) satisfies Resolvers["MylistGroup"];

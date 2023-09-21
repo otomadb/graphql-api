@@ -175,4 +175,4 @@ export const makeResolvers = (deps: ResolverDeps) =>
     YoutubeVideoSourceCreateEvent: resolveYoutubeVideoSourceCreateEvent(deps),
     YoutubeVideoSourceEvent: resolveYoutubeVideoSourceEvent(),
     YoutubeVideoSourceEventConnection: resolverYoutubeVideoSourceEventConnection(),
-  } satisfies Resolvers);
+  }) satisfies Resolvers;

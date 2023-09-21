@@ -82,4 +82,4 @@ export const resolveQuery = (deps: ResolverDeps) =>
     searchTags: resolverSearchTags(deps),
     searchVideos: resolverSearchVideos(deps),
     whoami: resolverWhoami(deps),
-  } satisfies Resolvers["Query"]);
+  }) satisfies Resolvers["Query"];

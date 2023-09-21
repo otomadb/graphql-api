@@ -4,7 +4,7 @@ export class SemitagSuggestTagsItemModel {
       nameId: string;
       tagId: string;
       semitagId: string;
-    }
+    },
   ) {}
 
   static make(entity: { nameId: string; tagId: string; semitagId: string }) {

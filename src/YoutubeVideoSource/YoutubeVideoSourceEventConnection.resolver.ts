@@ -7,4 +7,4 @@ export const resolverYoutubeVideoSourceEventConnection = () =>
     edges: ({ edges }) => edges.map((e) => ({ cursor: e.cursor, node: YoutubeVideoSourceEventDTO.fromPrisma(e.node) })),
     pageInfo: ({ pageInfo }) => pageInfo,
     totalCount: ({ totalCount }) => totalCount,
-  } satisfies Resolvers["YoutubeVideoSourceEventConnection"]);
+  }) satisfies Resolvers["YoutubeVideoSourceEventConnection"];

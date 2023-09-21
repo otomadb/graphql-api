@@ -23,7 +23,7 @@ import { VideoDTO } from "../Video/dto.js";
 
 export const registerVideoInNeo4j = async (
   { prisma, neo4j }: Pick<ResolverDeps, "prisma" | "logger" | "neo4j">,
-  videoId: string
+  videoId: string,
 ): Promise<Result<unknown, true>> => {
   const session = neo4j.session();
   try {
@@ -65,7 +65,7 @@ export const registerVideoInNeo4j = async (
 
 export const getRequestCheck = async (
   prisma: ResolverDeps["prisma"],
-  { requestId, videoId, userId }: { requestId: string | null; userId: string; videoId: string }
+  { requestId, videoId, userId }: { requestId: string | null; userId: string; videoId: string },
 ): Promise<
   Result<
     | { type: "REQUEST_NOT_FOUND"; requestId: string }
@@ -134,7 +134,7 @@ export const register = async (
     semitagNames: string[];
     sourceIds: string[];
     requestId: string | null;
-  }
+  },
 ): Promise<
   Result<
     | { type: "NO_TAG"; tagId: string }

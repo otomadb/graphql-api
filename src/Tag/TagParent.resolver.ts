@@ -33,4 +33,4 @@ export const resolveTagParent = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
         .then((es) => es.map((e) => new TagParentEventDTO(e)));
       return { nodes };
     },
-  } satisfies Resolvers["TagParent"]);
+  }) satisfies Resolvers["TagParent"];

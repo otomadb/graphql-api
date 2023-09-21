@@ -111,7 +111,7 @@ describe("Register video by Prisma", () => {
       expect.objectContaining({
         id: "r1",
         isExplicit: false,
-      }) satisfies OkData<typeof actual>
+      }) satisfies OkData<typeof actual>,
     );
   });
 });

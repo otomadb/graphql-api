@@ -5,7 +5,7 @@ import { ResolverDeps } from "../../types.js";
 
 export const create = async (
   prisma: ResolverDeps["prisma"],
-  { userId, title, range, slug }: { userId: string; title: string; range: MylistShareRange; slug: string }
+  { userId, title, range, slug }: { userId: string; title: string; range: MylistShareRange; slug: string },
 ): Promise<Result<{ message: "INTERNAL_SERVER_ERROR"; error: unknown }, Mylist>> => {
   try {
     const mylist = await prisma.mylist.create({

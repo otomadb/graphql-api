@@ -21,4 +21,4 @@ export const resolveMylistRegistration = ({ prisma }: Pick<ResolverDeps, "prisma
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Video", videoId);
         }),
-  } satisfies Resolvers["MylistRegistration"]);
+  }) satisfies Resolvers["MylistRegistration"];

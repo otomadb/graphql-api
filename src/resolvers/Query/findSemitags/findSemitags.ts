@@ -45,6 +45,6 @@ export const findSemitags = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "
         }),
       () => prisma.semitag.count(),
       connectionArgs.data,
-      { resolveInfo: info, ...cursorOptions }
+      { resolveInfo: info, ...cursorOptions },
     ).then((c) => SemitagConnectionModel.fromPrisma(c));
   }) satisfies QueryResolvers["findSemitags"];

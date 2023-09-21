@@ -13,7 +13,7 @@ export const resolverRequestYoutubeRegistration = ({ prisma, logger }: Pick<Reso
     _,
     { input: { title, thumbnailUrl, sourceId, taggings: gqlTaggings, semitaggings } },
     { currentUser: user },
-    info
+    info,
   ) => {
     const taggings: { tagId: string; note: string | null }[] = [];
     for (const { tagId, note } of gqlTaggings) {

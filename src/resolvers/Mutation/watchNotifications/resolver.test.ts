@@ -25,7 +25,7 @@ describe("Mutation.watchNotifications", () => {
           mockDeep<Parameters<typeof resolver>[0]>(),
           { input: { notificationIds: [buildGqlId("Notification", "1"), "n2", buildGqlId("Notification", "3")] } },
           mockDeep<Parameters<typeof resolver>[2]>(),
-          mockDeep<Parameters<typeof resolver>[3]>()
+          mockDeep<Parameters<typeof resolver>[3]>(),
         );
       }).rejects.toThrowError();
     });

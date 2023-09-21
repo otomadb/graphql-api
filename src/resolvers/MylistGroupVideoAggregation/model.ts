@@ -3,7 +3,7 @@ export class MylistGroupVideoAggregationModel {
     private readonly entity: {
       count: number;
       videoId: string;
-    }
+    },
   ) {}
 
   get videoId() {

@@ -31,4 +31,4 @@ export const resolveMylistGroupVideoAggregation = ({ prisma }: Pick<ResolverDeps
         .then((ls) => ls.map((l) => new MylistModel(l))),
     count: ({ mylistIds }) => mylistIds.length,
     */
-  } satisfies Resolvers["MylistGroupVideoAggregation"]);
+  }) satisfies Resolvers["MylistGroupVideoAggregation"];

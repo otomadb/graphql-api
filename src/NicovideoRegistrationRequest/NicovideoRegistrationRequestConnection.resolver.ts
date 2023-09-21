@@ -11,4 +11,4 @@ export const resolverNicovideoRegistrationRequestConnection = () =>
       })),
     pageInfo: ({ pageInfo }) => pageInfo,
     totalCount: ({ totalCount }) => totalCount,
-  } satisfies Resolvers["NicovideoRegistrationRequestConnection"]);
+  }) satisfies Resolvers["NicovideoRegistrationRequestConnection"];
