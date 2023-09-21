@@ -1,6 +1,11 @@
 import { Resolvers } from "../resolvers/graphql.js";
 import { ResolverDeps } from "../resolvers/types.js";
 
-export type MkResolver<DI extends keyof ResolverDeps, D extends keyof Resolvers<unknown>> = (
-  inject: Pick<ResolverDeps, DI>,
-) => Resolvers[D];
+export type MkResolverWithInclude<
+  D extends keyof Resolvers<unknown>,
+  DI extends keyof ResolverDeps | undefined = undefined,
+> = (inject: Pick<ResolverDeps, Exclude<DI, undefined>>) => Required<Exclude<Resolvers[D], undefined>>;
+
+export type MkResolver<D extends keyof Resolvers<unknown>, DI extends keyof ResolverDeps | undefined = undefined> = (
+  inject: Pick<ResolverDeps, Exclude<DI, undefined>>,
+) => Omit<ReturnType<MkResolverWithInclude<D, DI>>, "__isTypeOf">;
