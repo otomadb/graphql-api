@@ -10,6 +10,9 @@ import {
   VideoTitleEvent,
 } from "@prisma/client";
 
+import { GraphQLNotExistsInDBError } from "../resolvers/id.js";
+import { ResolverDeps } from "../resolvers/types.js";
+
 export class VideoDTO {
   constructor(private readonly video: Video) {}
 
@@ -19,6 +22,15 @@ export class VideoDTO {
 
   get serial() {
     return this.video.serial;
+  }
+
+  public static getPrismaClientById(prisma: ResolverDeps["prisma"], videoId: string) {
+    return prisma.video
+      .findUniqueOrThrow({ where: { id: videoId } })
+      .then((v) => new VideoDTO(v))
+      .catch(() => {
+        throw new GraphQLNotExistsInDBError("Video", videoId);
+      });
   }
 }
 

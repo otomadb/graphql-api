@@ -18,6 +18,7 @@ generates:
         DateTime: Date
       contextType: ./types.js#Context
       mappers:
+        BilibiliMADSource: ../BilibiliMADSource/BilibiliMADSource.dto.js#BilibiliMADSourceDTO
         Mylist: ./Mylist/model.js#MylistModel
         MylistConnection: ./MylistConnection/model.js#MylistConnectionModel
         MylistGroup: ./MylistGroup/model.js#MylistGroupModel

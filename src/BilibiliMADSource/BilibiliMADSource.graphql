@@ -1,0 +1,9 @@
+type BilibiliMADSource implements Node & VideoSource {
+  id: ID!
+  sourceId: String!
+
+  url: String!
+  embedUrl: String!
+
+  video: Video!
+}
