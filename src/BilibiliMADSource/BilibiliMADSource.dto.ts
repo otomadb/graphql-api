@@ -1,5 +1,8 @@
 import { BilibiliMADSource } from "@prisma/client";
 
+import { GraphQLNotExistsInDBError } from "../resolvers/id.js";
+import { ResolverDeps } from "../resolvers/types.js";
+
 export class BilibiliMADSourceDTO {
   private constructor(private readonly source: { id: string; sourceId: string; videoId: string }) {}
 
@@ -9,6 +12,15 @@ export class BilibiliMADSourceDTO {
       sourceId: source.sourceId,
       videoId: source.videoId,
     });
+  }
+
+  public static getById(prisma: ResolverDeps["prisma"], sourceId: string) {
+    return prisma.bilibiliMADSource
+      .findUniqueOrThrow({ where: { id: sourceId } })
+      .then((v) => BilibiliMADSourceDTO.fromPrisma(v))
+      .catch(() => {
+        throw new GraphQLNotExistsInDBError("BilibiliMADSource", sourceId);
+      });
   }
 
   get id() {

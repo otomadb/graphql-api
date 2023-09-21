@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { GraphQLResolveInfo } from "graphql";
+import { pino } from "pino";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
 import { Context, ResolverDeps } from "../resolvers/types.js";
@@ -16,7 +17,7 @@ describe("resolverBilibiliMADSource", () => {
     prisma = new PrismaClient();
     await prisma.$connect();
 
-    resolver = resolverBilibiliMADSource({ prisma });
+    resolver = resolverBilibiliMADSource({ prisma, logger: pino() });
   });
 
   beforeEach(async () => {
