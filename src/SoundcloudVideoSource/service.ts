@@ -16,7 +16,7 @@ const payloadFromId = z
       id: z.number(),
       title: z.string(),
       permalink_url: z.string(),
-    })
+    }),
   )
   .min(1);
 

@@ -7,4 +7,4 @@ export const resolverMylistConnection = () =>
     edges: ({ edges }) => edges.map((e) => ({ cursor: e.cursor, node: new MylistModel(e.node) })),
     pageInfo: ({ pageInfo }) => pageInfo,
     totalCount: ({ totalCount }) => totalCount,
-  } satisfies Resolvers["MylistConnection"]);
+  }) satisfies Resolvers["MylistConnection"];

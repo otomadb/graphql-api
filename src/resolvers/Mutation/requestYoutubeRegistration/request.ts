@@ -20,7 +20,7 @@ export const requestRegistration = async (
     userId: string;
     taggings: { tagId: string; note: string | null }[];
     semitaggings: { name: string; note: string | null }[];
-  }
+  },
 ): Promise<
   Result<
     | { message: "TAG_NOT_FOUND"; tagId: string }

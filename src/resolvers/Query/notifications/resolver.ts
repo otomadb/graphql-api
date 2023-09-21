@@ -52,6 +52,6 @@ export const resolverNotifications = ({ prisma, logger }: Pick<ResolverDeps, "pr
           },
         }),
       connectionArgs.data,
-      { resolveInfo: info, ...cursorOptions }
+      { resolveInfo: info, ...cursorOptions },
     ).then((c) => NotificationConnectionModel.fromPrisma(c));
   }) satisfies QueryResolvers["notifications"];

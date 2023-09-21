@@ -35,7 +35,7 @@ export const resolveRecommendedVideos = ({ neo4j }: Pick<ResolverDeps, "neo4j">)
         ORDER BY r DESC, to_id
         LIMIT $limit
       `,
-        { mylist_id: mylistId, limit: Integer.fromNumber(input.limit) }
+        { mylist_id: mylistId, limit: Integer.fromNumber(input.limit) },
       );
       const items = result.records.map(
         (rec) =>
@@ -43,7 +43,7 @@ export const resolveRecommendedVideos = ({ neo4j }: Pick<ResolverDeps, "neo4j">)
             originMylistId: rec.get("origin_id"),
             toVideoId: rec.get("to_id"),
             score: rec.get("r"),
-          })
+          }),
       );
 
       return { items };

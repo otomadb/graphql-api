@@ -22,7 +22,7 @@ export const getMylist = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "log
           holderId: mylist.holderId,
           userId: ctxUser?.id,
         },
-        "Private mylist accessed by other user"
+        "Private mylist accessed by other user",
       );
       throw new GraphQLError("This mylist is not holded by you");
     }

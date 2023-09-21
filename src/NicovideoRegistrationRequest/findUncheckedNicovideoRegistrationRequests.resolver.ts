@@ -30,7 +30,7 @@ export const resolverFindUncheckedNicovideoRegistrationRequests = ({
     if (!connectionArgs.success) {
       logger.error(
         { path: info.path, args: unparsedConnectionArgs, error: connectionArgs.error, userId: ctxUser?.id },
-        "Wrong args"
+        "Wrong args",
       );
       throw new GraphQLError("Wrong args");
     }
@@ -53,6 +53,6 @@ export const resolverFindUncheckedNicovideoRegistrationRequests = ({
           where: { isChecked: false },
         }),
       connectionArgs.data,
-      { resolveInfo: info, ...cursorOptions }
+      { resolveInfo: info, ...cursorOptions },
     ).then((c) => NicovideoRegistrationRequestConnectionDTO.fromPrisma(c));
   }) satisfies QueryResolvers["findUncheckedNicovideoRegistrationRequests"];

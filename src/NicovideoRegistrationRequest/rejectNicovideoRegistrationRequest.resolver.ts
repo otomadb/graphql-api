@@ -18,7 +18,7 @@ export const reject = async (
     userId: string;
     requestId: string;
     note: string;
-  }
+  },
 ): Promise<
   Result<
     | { message: "REQUEST_NOT_FOUND"; requestId: string }

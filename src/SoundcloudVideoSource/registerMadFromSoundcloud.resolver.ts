@@ -20,7 +20,7 @@ import { VideoDTO } from "../Video/dto.js";
 
 export const registerVideoInNeo4j = async (
   { prisma, neo4j }: Pick<ResolverDeps, "prisma" | "logger" | "neo4j">,
-  videoId: string
+  videoId: string,
 ): Promise<Result<unknown, true>> => {
   const session = neo4j.session();
   try {
@@ -78,7 +78,7 @@ export const register = async (
     tagIds: string[];
     semitagNames: string[];
     sourceIds: string[];
-  }
+  },
 ): Promise<Result<{ type: "NO_TAG"; tagId: string } | { type: "INTERNAL_SERVER_ERROR"; error: unknown }, Video>> => {
   const videoId = ulid();
   const dataTitles = [

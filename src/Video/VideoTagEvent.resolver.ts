@@ -20,7 +20,7 @@ export const resolveVideoTagEventCommonProps = ({
         .catch(() => {
           throw new GraphQLNotExistsInDBError("VideoThumbnail", videoTagId);
         }),
-  } satisfies Omit<Exclude<Resolvers["VideoTagEvent"], undefined>, "__resolveType">);
+  }) satisfies Omit<Exclude<Resolvers["VideoTagEvent"], undefined>, "__resolveType">;
 
 export const resolveVideoTagEvent = () =>
   ({
@@ -36,19 +36,19 @@ export const resolveVideoTagEvent = () =>
           throw new GraphQLError(`Unknown VideoTagEventType: ${type}`);
       }
     },
-  } satisfies Resolvers["VideoTagEvent"]);
+  }) satisfies Resolvers["VideoTagEvent"];
 
 export const resolveVideoTagAttachEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveVideoTagEventCommonProps(deps),
-  } satisfies Resolvers["VideoTagAttachEvent"]);
+  }) satisfies Resolvers["VideoTagAttachEvent"];
 
 export const resolveVideoTagReattachEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveVideoTagEventCommonProps(deps),
-  } satisfies Resolvers["VideoTagReattachEvent"]);
+  }) satisfies Resolvers["VideoTagReattachEvent"];
 
 export const resolveVideoTagDetachEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveVideoTagEventCommonProps(deps),
-  } satisfies Resolvers["VideoTagDetachEvent"]);
+  }) satisfies Resolvers["VideoTagDetachEvent"];

@@ -19,7 +19,7 @@ export const resolveVideoThumbnailEventCommonProps = ({
         .catch(() => {
           throw new GraphQLNotExistsInDBError("VideoThumbnail", videoThumbnailId);
         }),
-  } satisfies Omit<Exclude<Resolvers["VideoThumbnailEvent"], undefined>, "__resolveType">);
+  }) satisfies Omit<Exclude<Resolvers["VideoThumbnailEvent"], undefined>, "__resolveType">;
 
 export const resolveVideoThumbnailEvent = () =>
   ({
@@ -33,19 +33,19 @@ export const resolveVideoThumbnailEvent = () =>
           return "VideoThumbnailUnsetPrimaryEvent";
       }
     },
-  } satisfies Resolvers["VideoThumbnailEvent"]);
+  }) satisfies Resolvers["VideoThumbnailEvent"];
 
 export const resolveVideoThumbnailCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveVideoThumbnailEventCommonProps(deps),
-  } satisfies Resolvers["VideoThumbnailCreateEvent"]);
+  }) satisfies Resolvers["VideoThumbnailCreateEvent"];
 
 export const resolveVideoThumbnailSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveVideoThumbnailEventCommonProps(deps),
-  } satisfies Resolvers["VideoThumbnailSetPrimaryEvent"]);
+  }) satisfies Resolvers["VideoThumbnailSetPrimaryEvent"];
 
 export const resolveVideoThumbnailUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveVideoThumbnailEventCommonProps(deps),
-  } satisfies Resolvers["VideoThumbnailUnsetPrimaryEvent"]);
+  }) satisfies Resolvers["VideoThumbnailUnsetPrimaryEvent"];

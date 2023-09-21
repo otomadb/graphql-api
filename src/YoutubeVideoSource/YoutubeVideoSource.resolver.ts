@@ -45,7 +45,7 @@ export const resolveYoutubeVideoSourceEvents = ({ prisma, logger }: Pick<Resolve
         }),
       () => prisma.youtubeVideoSourceEvent.count(),
       connectionArgs.data,
-      { resolveInfo: info, ...cursorOptions }
+      { resolveInfo: info, ...cursorOptions },
     ).then((c) => YoutubeVideoSourceEventConnectionDTO.fromPrisma(c));
   }) satisfies YoutubeVideoSourceResolvers["events"];
 
@@ -63,4 +63,4 @@ export const resolveYoutubeVideoSource = ({ prisma, logger }: Pick<ResolverDeps,
         }),
 
     events: resolveYoutubeVideoSourceEvents({ prisma, logger }),
-  } satisfies Resolvers["YoutubeVideoSource"]);
+  }) satisfies Resolvers["YoutubeVideoSource"];

@@ -27,4 +27,4 @@ export const resolverTypeCategoryTag = ({ prisma }: Pick<ResolverDeps, "prisma">
           return TypeCategoryTagType.Tactics;
       }
     },
-  } satisfies Resolvers["TypeCategoryTag"]);
+  }) satisfies Resolvers["TypeCategoryTag"];

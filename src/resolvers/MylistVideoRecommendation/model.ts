@@ -4,7 +4,7 @@ export class MylistVideoRecommendationModel {
       score: number;
       originMylistId: string;
       toVideoId: string;
-    }
+    },
   ) {}
 
   get score() {

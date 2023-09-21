@@ -12,7 +12,7 @@ export const resolveSemitagEventCommonProps = ({ userService }: Pick<ResolverDep
   ({
     id: ({ id }): string => buildGqlId("SemitagEvent", id),
     user: async ({ userId }) => userService.getById(userId),
-  } satisfies Omit<Exclude<Resolvers["SemitagEvent"], undefined>, "__resolveType">);
+  }) satisfies Omit<Exclude<Resolvers["SemitagEvent"], undefined>, "__resolveType">;
 
 export const resolveSemitagEvent = () =>
   ({
@@ -26,7 +26,7 @@ export const resolveSemitagEvent = () =>
           return "SemitagRejectEvent";
       }
     },
-  } satisfies Resolvers["SemitagEvent"]);
+  }) satisfies Resolvers["SemitagEvent"];
 
 export const resolveSemitagEventAttachEvent = ({
   prisma,
@@ -42,7 +42,7 @@ export const resolveSemitagEventAttachEvent = ({
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Semitag", semitagId);
         }),
-  } satisfies Resolvers["SemitagAttachEvent"]);
+  }) satisfies Resolvers["SemitagAttachEvent"];
 
 export const resolveSemitagEventResolveEvent = ({
   prisma,
@@ -56,7 +56,7 @@ export const resolveSemitagEventResolveEvent = ({
       if (!checking.videoTagId) {
         logger.error(
           { path: info.path, parent: { semitagId } },
-          "SemitagChecking videoTagId must not be null but null"
+          "SemitagChecking videoTagId must not be null but null",
         );
         throw new GraphQLError("Data inconsistency");
       }
@@ -64,7 +64,7 @@ export const resolveSemitagEventResolveEvent = ({
       const { videoTagId, note } = checking;
       return SemitagResolvingModel.make({ semitagId, videoTagId, note });
     },
-  } satisfies Resolvers["SemitagResolveEvent"]);
+  }) satisfies Resolvers["SemitagResolveEvent"];
 
 export const resolveSemitagEventRejectEvent = ({
   prisma,
@@ -83,4 +83,4 @@ export const resolveSemitagEventRejectEvent = ({
       const { note } = checking;
       return SemitagRejectingModel.make({ semitagId, note });
     },
-  } satisfies Resolvers["SemitagRejectEvent"]);
+  }) satisfies Resolvers["SemitagRejectEvent"];

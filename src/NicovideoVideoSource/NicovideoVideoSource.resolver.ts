@@ -28,4 +28,4 @@ export const resolverNicovideoVideoSource = ({ prisma }: Pick<ResolverDeps, "pri
         .then((es) => es.map((e) => new NicovideoVideoSourceEventDTO(e)));
       return { nodes };
     },
-  } satisfies Resolvers["NicovideoVideoSource"]);
+  }) satisfies Resolvers["NicovideoVideoSource"];

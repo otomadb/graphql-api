@@ -20,7 +20,7 @@ export const resolverSemitagSuggestTags = ({ meilisearch }: Pick<ResolverDeps, "
           semitagId: dbId,
           nameId: id,
           tagId: tag_id,
-        })
+        }),
       ),
     };
   }) satisfies SemitagResolvers["suggestTags"];

@@ -23,4 +23,4 @@ export const resolverSemitagResolving = ({ prisma }: Pick<ResolverDeps, "prisma"
         .catch(() => {
           throw new GraphQLNotExistsInDBError("VideoTag", videoTagId);
         }),
-  } satisfies Resolvers["SemitagResolving"]);
+  }) satisfies Resolvers["SemitagResolving"];

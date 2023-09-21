@@ -156,7 +156,7 @@ describe("Remove tag in Prisma", () => {
         videoId: "v1",
         tagId: "t1",
         isRemoved: true,
-      }) satisfies OkData<typeof actual>
+      }) satisfies OkData<typeof actual>,
     );
 
     const videoTagId = actual.data.id;
@@ -174,7 +174,7 @@ describe("Remove tag in Prisma", () => {
           type: VideoTagEventType.DETACH,
           payload: {},
         } satisfies VideoTagEvent,
-      ])
+      ]),
     );
   });
 });

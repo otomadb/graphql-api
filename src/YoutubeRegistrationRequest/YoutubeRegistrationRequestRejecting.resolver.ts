@@ -16,4 +16,4 @@ export const resolverYoutubeRegistrationRequestRejecting = ({
           throw new GraphQLNotExistsInDBError("YoutubeRegistrationRequest", requestId);
         }),
     rejectedBy: async ({ checkedById }) => userService.getById(checkedById),
-  } satisfies Resolvers["YoutubeRegistrationRequestRejecting"]);
+  }) satisfies Resolvers["YoutubeRegistrationRequestRejecting"];

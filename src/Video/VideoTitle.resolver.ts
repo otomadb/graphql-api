@@ -25,4 +25,4 @@ export const resolveVideoTitle = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
         .then((es) => es.map((e) => new VideoTitleEventDTO(e)));
       return { nodes };
     },
-  } satisfies Resolvers["VideoTitle"]);
+  }) satisfies Resolvers["VideoTitle"];

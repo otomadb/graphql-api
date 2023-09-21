@@ -61,7 +61,7 @@ export class VideoConnectionDTO {
       edges: Edge<Video>[];
       pageInfo: PageInfo;
       totalCount: number;
-    }
+    },
   ) {}
 
   static fromPrisma(conn: Connection<Video, Edge<Video>>) {
@@ -91,7 +91,7 @@ export class VideoSimilarityDTO {
       score: number;
       originId: string;
       toId: string;
-    }
+    },
   ) {}
 
   get score() {
@@ -134,7 +134,7 @@ export class VideoTagConnectionDTO {
       edges: Edge<VideoTag>[];
       pageInfo: PageInfo;
       totalCount: number;
-    }
+    },
   ) {}
 
   static fromPrisma(conn: Connection<VideoTag, Edge<VideoTag>>) {

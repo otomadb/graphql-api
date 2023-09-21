@@ -59,7 +59,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
 
     neo4j = createNeo4jDriver(
       process.env.NEO4J_URL,
-      neo4jAuth.basic(process.env.NEO4J_USERNAME, process.env.NEO4J_PASSWORD)
+      neo4jAuth.basic(process.env.NEO4J_USERNAME, process.env.NEO4J_PASSWORD),
     );
 
     otherMocks = mockDeep();

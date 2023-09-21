@@ -10,7 +10,7 @@ import { TagDTO } from "./dto.js";
 
 export const removeInNeo4j = async (
   { prisma, neo4j }: Pick<ResolverDeps, "prisma" | "neo4j">,
-  videotagId: string
+  videotagId: string,
 ): Promise<Result<unknown, true>> => {
   const session = neo4j.session();
   try {
@@ -27,7 +27,7 @@ export const removeInNeo4j = async (
 
 export const remove = async (
   prisma: ResolverDeps["prisma"],
-  { authUserId, videoId, tagId }: { authUserId: string; videoId: string; tagId: string }
+  { authUserId, videoId, tagId }: { authUserId: string; videoId: string; tagId: string },
 ): Promise<Result<"NO_VIDEO" | "NO_TAG" | "NO_TAGGING" | "REMOVED_TAGGING", VideoTag & { video: Video; tag: Tag }>> => {
   if ((await prisma.video.findUnique({ where: { id: videoId } })) === null) return err("NO_VIDEO");
   if ((await prisma.tag.findUnique({ where: { id: tagId } })) === null) return err("NO_TAG");

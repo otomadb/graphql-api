@@ -21,4 +21,4 @@ export const resolveMylistGroupMylistInclusion = ({ prisma }: Pick<ResolverDeps,
         .catch(() => {
           throw new GraphQLNotExistsInDBError("MylistGroup", groupId);
         }),
-  } satisfies Resolvers["MylistGroupMylistInclusion"]);
+  }) satisfies Resolvers["MylistGroupMylistInclusion"];

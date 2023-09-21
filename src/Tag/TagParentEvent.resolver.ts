@@ -19,7 +19,7 @@ export const resolveTagParentEventCommonProps = ({
         .catch(() => {
           throw new GraphQLNotExistsInDBError("TagParent", tagParentId);
         }),
-  } satisfies Omit<Exclude<Resolvers["TagParentEvent"], undefined>, "__resolveType">);
+  }) satisfies Omit<Exclude<Resolvers["TagParentEvent"], undefined>, "__resolveType">;
 
 export const resolveTagParentEvent = () =>
   ({
@@ -33,19 +33,19 @@ export const resolveTagParentEvent = () =>
           return "TagParentUnsetPrimaryEvent";
       }
     },
-  } satisfies Resolvers["TagParentEvent"]);
+  }) satisfies Resolvers["TagParentEvent"];
 
 export const resolveTagParentCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveTagParentEventCommonProps(deps),
-  } satisfies Resolvers["TagParentCreateEvent"]);
+  }) satisfies Resolvers["TagParentCreateEvent"];
 
 export const resolveTagParentSetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveTagParentEventCommonProps(deps),
-  } satisfies Resolvers["TagParentSetPrimaryEvent"]);
+  }) satisfies Resolvers["TagParentSetPrimaryEvent"];
 
 export const resolveTagParentUnsetPrimaryEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
   ({
     ...resolveTagParentEventCommonProps(deps),
-  } satisfies Resolvers["TagParentUnsetPrimaryEvent"]);
+  }) satisfies Resolvers["TagParentUnsetPrimaryEvent"];

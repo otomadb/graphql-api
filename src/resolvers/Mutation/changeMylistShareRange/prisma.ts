@@ -5,7 +5,7 @@ import { ResolverDeps } from "../../types.js";
 
 export const update = async (
   prisma: ResolverDeps["prisma"],
-  { userId, mylistId, range }: { userId: string; mylistId: string; range: MylistShareRange }
+  { userId, mylistId, range }: { userId: string; mylistId: string; range: MylistShareRange },
 ): Promise<
   Result<
     | { message: "MYLIST_NOT_FOUND"; mylistId: string }

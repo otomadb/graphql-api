@@ -18,7 +18,7 @@ export const resolverNicovideoRegistrationRequestRejectingNotification = ({
       if (!p.success) {
         logger.error(
           { error: p.error, path: info.path, notificationId: dbId, payload },
-          "NotificationpPayload is not valid"
+          "NotificationpPayload is not valid",
         );
         throw new GraphQLError("Something wrong happened");
       }
@@ -30,4 +30,4 @@ export const resolverNicovideoRegistrationRequestRejectingNotification = ({
           throw new GraphQLError("Something wrong happened");
         });
     },
-  } satisfies Resolvers["NicovideoRegistrationRequestRejectingNotification"]);
+  }) satisfies Resolvers["NicovideoRegistrationRequestRejectingNotification"];

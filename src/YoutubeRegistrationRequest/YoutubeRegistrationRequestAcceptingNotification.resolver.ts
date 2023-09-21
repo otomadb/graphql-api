@@ -18,7 +18,7 @@ export const resolverYoutubeRegistrationRequestAcceptingNotification = ({
       if (!p.success) {
         logger.error(
           { error: p.error, path: info.path, notificationId: dbId, payload },
-          "NotificationpPayload is not valid"
+          "NotificationpPayload is not valid",
         );
         throw new GraphQLError("Something wrong happened");
       }
@@ -30,4 +30,4 @@ export const resolverYoutubeRegistrationRequestAcceptingNotification = ({
           throw new GraphQLError("Something wrong happened");
         });
     },
-  } satisfies Resolvers["YoutubeRegistrationRequestAcceptingNotification"]);
+  }) satisfies Resolvers["YoutubeRegistrationRequestAcceptingNotification"];

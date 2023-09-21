@@ -19,7 +19,7 @@ export const resolveYoutubeVideoSourceEventCommonProps = ({
         .catch(() => {
           throw new GraphQLNotExistsInDBError("YoutubeVideoSource", videoSourceId);
         }),
-  } satisfies Omit<Exclude<Resolvers["YoutubeVideoSourceEvent"], undefined>, "__resolveType">);
+  }) satisfies Omit<Exclude<Resolvers["YoutubeVideoSourceEvent"], undefined>, "__resolveType">;
 
 export const resolveYoutubeVideoSourceEvent = () =>
   ({
@@ -29,7 +29,7 @@ export const resolveYoutubeVideoSourceEvent = () =>
           return "YoutubeVideoSourceCreateEvent";
       }
     },
-  } satisfies Resolvers["YoutubeVideoSourceEvent"]);
+  }) satisfies Resolvers["YoutubeVideoSourceEvent"];
 
 export const resolveYoutubeVideoSourceCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
-  ({ ...resolveYoutubeVideoSourceEventCommonProps(deps) } satisfies Resolvers["YoutubeVideoSourceCreateEvent"]);
+  ({ ...resolveYoutubeVideoSourceEventCommonProps(deps) }) satisfies Resolvers["YoutubeVideoSourceCreateEvent"];

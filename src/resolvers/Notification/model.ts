@@ -9,7 +9,7 @@ export class NotificationModel {
       createdAt: Date;
       type: Notification["type"];
       payload: Notification["payload"];
-    }
+    },
   ) {}
 
   public static fromPrisma({ id, type, payload, notifyToId, isWatched, createdAt }: Notification) {

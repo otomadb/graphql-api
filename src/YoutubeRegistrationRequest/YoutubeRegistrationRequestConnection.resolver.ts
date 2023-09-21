@@ -11,4 +11,4 @@ export const resolverYoutubeRegistrationRequestConnection = () =>
       })),
     pageInfo: ({ pageInfo }) => pageInfo,
     totalCount: ({ totalCount }) => totalCount,
-  } satisfies Resolvers["YoutubeRegistrationRequestConnection"]);
+  }) satisfies Resolvers["YoutubeRegistrationRequestConnection"];

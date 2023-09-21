@@ -28,4 +28,4 @@ export const resolverYoutubeRegistrationRequestAccepting = ({
           logger.error({ error: e, path: info.path }, "Video not found");
           throw new GraphQLError("Something wrong happened");
         }),
-  } satisfies Resolvers["YoutubeRegistrationRequestAccepting"]);
+  }) satisfies Resolvers["YoutubeRegistrationRequestAccepting"];

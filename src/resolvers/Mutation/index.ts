@@ -59,4 +59,4 @@ export const resolveMutation = (deps: ResolverDeps) =>
     resovleSemitag: resolverResolveSemitag(deps),
     undoLikeVideo: resolverUndoLikeVideo(deps),
     watchNotifications: resolverWatchNotifications(deps),
-  } satisfies Resolvers["Mutation"]);
+  }) satisfies Resolvers["Mutation"];

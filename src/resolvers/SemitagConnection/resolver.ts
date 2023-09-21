@@ -7,4 +7,4 @@ export const resolverSemitagConnection = () =>
     edges: ({ edges }) => edges.map((e) => ({ cursor: e.cursor, node: SemitagModel.fromPrisma(e.node) })),
     pageInfo: ({ pageInfo }) => pageInfo,
     totalCount: ({ totalCount }) => totalCount,
-  } satisfies Resolvers["SemitagConnection"]);
+  }) satisfies Resolvers["SemitagConnection"];

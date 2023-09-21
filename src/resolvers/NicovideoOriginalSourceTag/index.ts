@@ -19,4 +19,4 @@ export const resolveNicovideoOriginalSourceTag = ({ meilisearch }: Pick<Resolver
         items: hits.map(({ id, tag_id }) => TagSearchItemByNameDTO.make({ nameId: id, tagId: tag_id })),
       };
     },
-  } satisfies Resolvers["NicovideoOriginalSourceTag"]);
+  }) satisfies Resolvers["NicovideoOriginalSourceTag"];

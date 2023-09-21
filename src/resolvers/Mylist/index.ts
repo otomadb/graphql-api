@@ -38,4 +38,4 @@ export const resolveMylist = ({
 
     recommendedVideos: resolveRecommendedVideos({ neo4j }),
     includeTags: resolveIncludeTags({ prisma }),
-  } satisfies Resolvers["Mylist"]);
+  }) satisfies Resolvers["Mylist"];

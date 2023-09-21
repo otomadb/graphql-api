@@ -8,4 +8,4 @@ export const resolverSoundcloudVideoSourceEventConnection = () =>
       edges.map((e) => ({ cursor: e.cursor, node: SoundcloudVideoSourceEventDTO.fromPrisma(e.node) })),
     pageInfo: ({ pageInfo }) => pageInfo,
     totalCount: ({ totalCount }) => totalCount,
-  } satisfies Resolvers["SoundcloudVideoSourceEventConnection"]);
+  }) satisfies Resolvers["SoundcloudVideoSourceEventConnection"];

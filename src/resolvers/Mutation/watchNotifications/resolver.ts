@@ -20,7 +20,7 @@ export const resolverWatchNotifications = ({ prisma, logger }: Pick<ResolverDeps
               input: unparsedNotificationIds,
               currentUserId: currentUser.id,
             },
-            "given Notification ID is invalid"
+            "given Notification ID is invalid",
           );
           throw new GraphQLError("Invalid ID");
       }
@@ -44,7 +44,7 @@ export const resolverWatchNotifications = ({ prisma, logger }: Pick<ResolverDeps
               actualNotifyToId: result.error.actualNotifyToId,
               currentUserId: currentUser.id,
             },
-            "User try to watch notification whom notify to is different"
+            "User try to watch notification whom notify to is different",
           );
           throw new GraphQLError("Authentication error");
       }

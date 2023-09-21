@@ -11,7 +11,7 @@ import { removeMylistRegistrationInNeo4j } from "./neo4j.js";
 
 export const remove = async (
   prisma: ResolverDeps["prisma"],
-  { videoId, mylistId, userId }: { userId: string; videoId: string; mylistId: string }
+  { videoId, mylistId, userId }: { userId: string; videoId: string; mylistId: string },
 ): Promise<
   Result<
     "VIDEO_NOT_FOUND" | "MYLIST_NOT_FOUND" | "NOT_MYLIST_HOLDER" | "NOT_REGISTERED" | "ALREADY_UNREGISTERED",

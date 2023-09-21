@@ -21,4 +21,4 @@ export const resolverVideoSearchItemByTitle = ({ prisma, logger }: Pick<Resolver
           logger.error({ path: info.path, userId: ctxUser?.id, error: e }, "Not found");
           throw new GraphQLNotExistsInDBError("VideoTitle", titleId);
         }),
-  } satisfies Resolvers["VideoSearchItemByTitle"]);
+  }) satisfies Resolvers["VideoSearchItemByTitle"];

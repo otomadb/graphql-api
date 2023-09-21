@@ -15,7 +15,7 @@ export const register = async (
   }: {
     userId: string;
     primaryName: string;
-  }
+  },
 ): Promise<Result<{ type: "UNKNOWN"; error: unknown }, Tag>> => {
   try {
     const tagId = ulid();

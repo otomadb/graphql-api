@@ -16,4 +16,4 @@ export const resolverNicovideoRegistrationRequestRejecting = ({
           throw new GraphQLNotExistsInDBError("NicovideoRegistrationRequest", requestId);
         }),
     rejectedBy: async ({ checkedById }) => userService.getById(checkedById),
-  } satisfies Resolvers["NicovideoRegistrationRequestRejecting"]);
+  }) satisfies Resolvers["NicovideoRegistrationRequestRejecting"];

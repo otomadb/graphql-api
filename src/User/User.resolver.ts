@@ -25,7 +25,7 @@ export const resolverUserHasRole = ({ userService }: Pick<ResolverDeps, "userSer
 
 export const get = async (
   prisma: ResolverDeps["prisma"],
-  { holderId, currentUserId }: { holderId: string; currentUserId: string | null }
+  { holderId, currentUserId }: { holderId: string; currentUserId: string | null },
 ): Promise<
   Result<
     | { type: "INTERNAL_SERVER_ERROR"; error: unknown; holderId: string; currentUserId: string | null }
@@ -75,7 +75,7 @@ export const resolverUserLikes = ({ prisma, logger }: Pick<ResolverDeps, "prisma
               holderId: result.error.holderId,
               currentUserId: result.error.currentUserId,
             },
-            "Internal server error"
+            "Internal server error",
           );
           throw new GraphQLError("Internal server error");
         case "PRIVATE_MYLIST_NOT_AUTH":
@@ -84,7 +84,7 @@ export const resolverUserLikes = ({ prisma, logger }: Pick<ResolverDeps, "prisma
         case "PRIVATE_MYLIST_WRONG_HOLDER":
           logger.warn(
             { path: info.path, mylistId: result.error.mylistId, currentUserId: result.error.currentUserId },
-            "Wrong holder"
+            "Wrong holder",
           );
           return null;
       }
@@ -97,7 +97,7 @@ export const resolverUserMylists = ({ prisma, logger }: Pick<ResolverDeps, "pris
     { id: userId },
     { orderBy: unparsedOrderBy, range, ...unparsedConnectionArgs },
     { currentUser: ctxUser },
-    info
+    info,
   ) => {
     const connectionArgs = z
       .union([
@@ -141,7 +141,7 @@ export const resolverUserMylists = ({ prisma, logger }: Pick<ResolverDeps, "pris
           where: { holderId: userId, shareRange: { in: shareRange } },
         }),
       connectionArgs.data,
-      { resolveInfo: info, ...cursorOptions }
+      { resolveInfo: info, ...cursorOptions },
     ).then((c) => MylistConnectionModel.fromPrisma(c));
   }) satisfies UserResolvers["mylists"];
 
@@ -185,7 +185,7 @@ export const resolverUserNicovideoRegistrationRequests = ({
           where: { requestedById: userId },
         }),
       connectionArgs.data,
-      { resolveInfo: info, ...cursorOptions }
+      { resolveInfo: info, ...cursorOptions },
     ).then((c) => NicovideoRegistrationRequestConnectionDTO.fromPrisma(c));
   }) satisfies UserResolvers["nicovideoRegistrationRequests"];
 
@@ -210,4 +210,4 @@ export const resolveUser = ({ prisma, logger, userService }: Pick<ResolverDeps, 
     isAdministrator: () => false,
 
     hasRole: resolverUserHasRole({ userService }),
-  } satisfies Resolvers["User"]);
+  }) satisfies Resolvers["User"];

@@ -19,7 +19,7 @@ export const register = async (
     parentId: string;
     childId: string;
     isExplicit: boolean;
-  }
+  },
 ): Promise<
   Result<
     | { type: "PARENT_TAG_NOT_FOUND"; tagId: string }

@@ -14,4 +14,4 @@ export const resolverSemitagRejecting = ({ prisma }: Pick<ResolverDeps, "prisma"
         .catch(() => {
           throw new GraphQLNotExistsInDBError("Semitag", semitagId);
         }),
-  } satisfies Resolvers["SemitagRejecting"]);
+  }) satisfies Resolvers["SemitagRejecting"];

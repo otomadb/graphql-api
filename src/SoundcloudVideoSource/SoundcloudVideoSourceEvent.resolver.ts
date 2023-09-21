@@ -19,7 +19,7 @@ export const resolveSoundcloudVideoSourceEventCommonProps = ({
         .catch(() => {
           throw new GraphQLNotExistsInDBError("SoundcloudVideoSource", videoSourceId);
         }),
-  } satisfies Omit<Exclude<Resolvers["SoundcloudVideoSourceEvent"], undefined>, "__resolveType">);
+  }) satisfies Omit<Exclude<Resolvers["SoundcloudVideoSourceEvent"], undefined>, "__resolveType">;
 
 export const resolveSoundcloudVideoSourceEvent = () =>
   ({
@@ -29,7 +29,7 @@ export const resolveSoundcloudVideoSourceEvent = () =>
           return "SoundcloudVideoSourceCreateEvent";
       }
     },
-  } satisfies Resolvers["SoundcloudVideoSourceEvent"]);
+  }) satisfies Resolvers["SoundcloudVideoSourceEvent"];
 
 export const resolveSoundcloudVideoSourceCreateEvent = (deps: Pick<ResolverDeps, "prisma" | "userService">) =>
-  ({ ...resolveSoundcloudVideoSourceEventCommonProps(deps) } satisfies Resolvers["SoundcloudVideoSourceCreateEvent"]);
+  ({ ...resolveSoundcloudVideoSourceEventCommonProps(deps) }) satisfies Resolvers["SoundcloudVideoSourceCreateEvent"];
