@@ -29,7 +29,7 @@
   "dependencies": {
     "@devoxa/prisma-relay-cursor-connection": "^2.2.2",
     "@envelop/generic-auth": "^5.0.6",
-    "@envelop/prometheus": "^7.0.4",
+    "@envelop/prometheus": "^8.0.0",
     "@prisma/client": "4.15.0",
     "auth0": "^3.3.0",
     "graphql": "^16.6.0",
