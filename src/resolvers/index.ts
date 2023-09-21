@@ -1,5 +1,6 @@
 /* eslint sort-keys: 2 */
 
+import { resolverBilibiliMADSource } from "../BilibiliMADSource/BilibiliMADSource.resolver.js";
 import { resolverNicovideoRegistrationRequestAccepting } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestAccepting.resolver.js";
 import { resolverNicovideoRegistrationRequestAcceptingNotification } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestAcceptingNotification.resolver.js";
 import { resolverNicovideoRegistrationRequestConnection } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestConnection.resolver.js";
@@ -96,6 +97,7 @@ import { ResolverDeps } from "./types.js";
 
 export const makeResolvers = (deps: ResolverDeps) =>
   ({
+    BilibiliMADSource: resolverBilibiliMADSource(deps),
     Mutation: resolveMutation(deps),
     Mylist: resolveMylist(deps),
     MylistConnection: resolverMylistConnection(),
