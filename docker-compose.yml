@@ -57,7 +57,7 @@ services:
         target: /meili_data
 
   redis:
-    image: redis:7.0@sha256:d6bca24725c02119d3f31e263bec71912e2a4c50764665aaab1190c5c14e142d
+    image: redis:7.0@sha256:5a01634e718d7df1055a5edb10310fa371913d0484914d0645f038b7ba001b62
     ports:
       - target: 6379
         published: 6379
