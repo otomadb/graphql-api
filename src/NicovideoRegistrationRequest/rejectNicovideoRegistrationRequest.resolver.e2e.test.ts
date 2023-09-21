@@ -103,7 +103,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
     ]);
 
     const requestResult = await executor({
-      operation: Mutation,
+      document: Mutation,
       variables: {
         input: {
           requestId: buildGqlId("NicovideoRegistrationRequest", "r1"),
@@ -147,7 +147,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
     ]);
 
     const requestResult = await executor({
-      operation: Mutation,
+      document: Mutation,
       variables: {
         input: {
           requestId: buildGqlId("NicovideoRegistrationRequest", "r1"),
@@ -203,7 +203,7 @@ describe("Mutation.rejectNicovideoRegistrationRequest e2e", () => {
     ]);
 
     const requestResult = await executor({
-      operation: Mutation,
+      document: Mutation,
       variables: {
         input: {
           requestId: buildGqlId("NicovideoRegistrationRequest", "r1"),

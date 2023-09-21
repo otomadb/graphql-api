@@ -104,7 +104,7 @@ describe("Mutation.requestNicovideoRegistration e2e", () => {
     ]);
 
     const requestResult = await executor({
-      operation: Mutation,
+      document: Mutation,
       variables: {
         input: {
           sourceId: "sm9",
