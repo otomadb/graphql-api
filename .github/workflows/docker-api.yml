@@ -48,7 +48,7 @@ jobs:
         # pull_requestではcontext.shaすなわちGITHUB_SHAの値には若干違う値が入るが支障はないので無視する．
         # ref: https://sue445.hatenablog.com/entry/2021/01/07/004835
 
-      - uses: docker/build-push-action@0a97817b6ade9f46837855d676c4cca3a2471fc9 # v4
+      - uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5
         with:
           cache-from: type=gha
           cache-to: type=gha,mode=max
