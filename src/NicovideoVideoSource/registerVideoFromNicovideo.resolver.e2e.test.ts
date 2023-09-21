@@ -61,7 +61,7 @@ describe("Mutation.registerVideoFromNicovideo e2e", () => {
       ],
     ])("不適当なinput: %#", async (input, expected) => {
       const requestResult = await executor({
-        operation: Mutation,
+        document: Mutation,
         variables: { input },
         context: {
           currentUser: {

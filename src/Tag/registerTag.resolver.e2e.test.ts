@@ -152,7 +152,7 @@ describe("Mutation.registerTag e2e", () => {
     ],
   ])("不適当なinput: %#", async (input, expected) => {
     const result = await executor({
-      operation: Mutation,
+      document: Mutation,
       variables: { input },
       context: {
         currentUser: {

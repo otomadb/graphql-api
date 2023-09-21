@@ -1,9 +1,14 @@
-import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
-import { ExecutionResult, print } from "graphql";
+import { buildHTTPExecutor } from "@graphql-tools/executor-http";
 import { YogaServerInstance } from "graphql-yoga";
 
 import { ServerContext, UserContext } from "../resolvers/types.js";
 
+export const makeExecutor = (yoga: YogaServerInstance<ServerContext, UserContext>) =>
+  buildHTTPExecutor({
+    fetch: yoga.fetch,
+  });
+
+/*
 export const makeExecutor =
   (yoga: YogaServerInstance<ServerContext, UserContext>) =>
   <TResult, TVariables>({
@@ -32,3 +37,4 @@ export const makeExecutor =
         context,
       ),
     ).then((response) => response.json());
+*/

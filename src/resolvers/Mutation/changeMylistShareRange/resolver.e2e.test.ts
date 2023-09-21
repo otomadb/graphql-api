@@ -102,7 +102,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
     ]);
 
     const requestResult = await executor({
-      operation: Mutation,
+      document: Mutation,
       variables: {
         input: {
           mylistId: "m1", // wrong
@@ -140,7 +140,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
     ]);
 
     const requestResult = await executor({
-      operation: Mutation,
+      document: Mutation,
       variables: {
         input: {
           mylistId: buildGqlId("Mylist", "m2"),
@@ -178,7 +178,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
     ]);
 
     const requestResult = await executor({
-      operation: Mutation,
+      document: Mutation,
       variables: {
         input: {
           mylistId: buildGqlId("Mylist", "m1"),
@@ -217,7 +217,7 @@ describe("Mutation.changeMylistShareRange e2e", () => {
     ]);
 
     const requestResult = await executor({
-      operation: Mutation,
+      document: Mutation,
       variables: {
         input: {
           mylistId: buildGqlId("Mylist", "m1"),
