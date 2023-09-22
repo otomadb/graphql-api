@@ -1,5 +1,6 @@
 /* eslint sort-keys: [2, "asc", {caseSensitive: false}] */
 
+import { resolverFetchBilibili } from "../../FetchExternal/fetchBilibili.resolver.js";
 import { resolverFindNicovideoRegistrationRequest } from "../../NicovideoRegistrationRequest/findNicovideoRegistrationRequest.resolver.js";
 import { findNicovideoRegistrationRequests } from "../../NicovideoRegistrationRequest/findNicovideoRegistrationRequests.resolver.js";
 import { resolverFindUncheckedNicovideoRegistrationRequests } from "../../NicovideoRegistrationRequest/findUncheckedNicovideoRegistrationRequests.resolver.js";
@@ -43,6 +44,7 @@ import { resolverWhoami } from "./whoami/resolver.js";
 
 export const resolveQuery = (deps: ResolverDeps) =>
   ({
+    fetchBilibili: resolverFetchBilibili(deps),
     fetchNicovideo: fetchNicovideo(),
     fetchSoundcloud: resolverFetchSoundcloud(deps),
     fetchYoutube: resolverFetchYoutube(),
