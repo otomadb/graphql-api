@@ -1,0 +1,36 @@
+type Query {
+  "Bilibiliから動画情報を取得する"
+  fetchBilibili(input: FetchBilibiliInput!): FetchBilibiliPayload!
+}
+
+input FetchBilibiliInput {
+  "Bilibili動画の動画ID．bvid(ex:`BV1xx411c7mu`)を入力すること．"
+  bvid: String!
+}
+
+type FetchBilibiliPayload {
+  source: BilibiliOriginalSource
+}
+
+type BilibiliOriginalSource {
+  sourceId: String!
+
+  title: String!
+  thumbnailUrl: String!
+
+  tags: [BilibiliOriginalSourceTag!]!
+}
+
+type BilibiliOriginalSourceTag {
+  name: String!
+  searchTags(input: BilibiliOriginalSourceTagSearchTagsInput!): BilibiliOriginalSourceTagSearchTagsPayload!
+}
+
+input BilibiliOriginalSourceTagSearchTagsInput {
+  limit: Int! = 3
+  skip: Int! = 0
+}
+
+type BilibiliOriginalSourceTagSearchTagsPayload {
+  items: [TagSearchItemByName!]!
+}
