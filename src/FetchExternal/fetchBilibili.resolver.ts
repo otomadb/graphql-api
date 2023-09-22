@@ -46,6 +46,7 @@ export const resolverFetchBilibili: MkQueryResolver<"fetchBilibili"> =
       source: {
         sourceId: View.bvid,
         title: View.title,
+        url: `https://www.bilibili.com/video/${View.bvid}`,
         thumbnailUrl: View.pic,
         tags: Tags.map((tag) => BilibiliOriginalSourceTagDTO.make(tag)),
       },

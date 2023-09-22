@@ -16,6 +16,7 @@ type BilibiliOriginalSource {
   sourceId: String!
 
   title: String!
+  url: String!
   thumbnailUrl: String!
 
   tags: [BilibiliOriginalSourceTag!]!
