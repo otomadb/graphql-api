@@ -6,6 +6,7 @@ import { MeiliSearch } from "meilisearch";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 import { Logger } from "pino";
 
+import { ImagesService } from "../Common/Images.services.js";
 import { SoundcloudService } from "../SoundcloudVideoSource/service.js";
 import { UserService } from "../User/service.js";
 
@@ -18,6 +19,7 @@ export type ResolverDeps = {
   logger: Logger;
   userService: UserService;
   soundcloudService: SoundcloudService;
+  ImagesService: ImagesService;
 };
 export type ServerContext = {
   req: IncomingMessage;

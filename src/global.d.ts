@@ -26,5 +26,7 @@ declare namespace NodeJS {
     readonly MEILISEARCH_URL: string;
 
     readonly SOUNDCLOUD_CLIENT_ID: string;
+
+    readonly IXGYOHN_BASE_URL: string;
   }
 }
