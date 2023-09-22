@@ -12,6 +12,6 @@ export const resolverBilibiliMADSourceCreateEvent: MkResolverWithInclude<
   id: ({ id }) => buildGqlId("BilibiliMADSourceEvent", id),
   createdAt: ({ createdAt }) => createdAt,
   user: async ({ userId }) => deps.userService.getById(userId),
-  source: ({ sourceId }) => BilibiliMADSourceDTO.getById(deps.prisma, sourceId),
+  source: ({ sourceId }) => BilibiliMADSourceDTO.getBySourceId(deps.prisma, sourceId),
   series: ({ id }) => id,
 });

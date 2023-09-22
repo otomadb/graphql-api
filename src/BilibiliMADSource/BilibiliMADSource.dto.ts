@@ -14,9 +14,9 @@ export class BilibiliMADSourceDTO {
     });
   }
 
-  public static getById(prisma: ResolverDeps["prisma"], sourceId: string) {
+  public static getBySourceId(prisma: ResolverDeps["prisma"], sourceId: string) {
     return prisma.bilibiliMADSource
-      .findUniqueOrThrow({ where: { id: sourceId } })
+      .findUniqueOrThrow({ where: { sourceId } })
       .then((v) => BilibiliMADSourceDTO.fromPrisma(v))
       .catch(() => {
         throw new GraphQLNotExistsInDBError("BilibiliMADSource", sourceId);
