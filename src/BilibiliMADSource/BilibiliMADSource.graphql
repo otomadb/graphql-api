@@ -6,4 +6,18 @@ type BilibiliMADSource implements Node & VideoSource {
   embedUrl: String!
 
   video: Video!
+
+  events(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    orderBy: BilibiliMADSourceEventsOrderBy!
+  ): BilibiliMADSourceEventConnection!
+}
+
+input BilibiliMADSourceEventsOrderBy {
+  createdAt: SortOrder
 }

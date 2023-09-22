@@ -1,0 +1,29 @@
+interface BilibiliMADSourceEvent implements Node & Event {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  source: BilibiliMADSource!
+}
+
+type BilibiliMADSourceCreateEvent implements Node & Event & BilibiliMADSourceEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  source: BilibiliMADSource!
+}
+
+type BilibiliMADSourceEventConnection {
+  nodes: [BilibiliMADSourceEvent!]!
+  edges: [BilibiliMADSourceEventEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type BilibiliMADSourceEventEdge {
+  cursor: String!
+  node: BilibiliMADSourceEvent!
+}

@@ -19,6 +19,9 @@ generates:
       contextType: ./types.js#Context
       mappers:
         BilibiliMADSource: ../BilibiliMADSource/BilibiliMADSource.dto.js#BilibiliMADSourceDTO
+        BilibiliMADSourceEvent: ../BilibiliMADSource/BilibiliMADSourceEvent.dto.js#BilibiliMADSourceEventDTO
+        BilibiliMADSourceCreateEvent: ../BilibiliMADSource/BilibiliMADSourceEvent.dto.js#BilibiliMADSourceEventDTO
+        BilibiliMADSourceEventConnection: ../BilibiliMADSource/BilibiliMADSourceEventConnection.dto.js#BilibiliMADSourceEventConnectionDTO
         Mylist: ./Mylist/model.js#MylistModel
         MylistConnection: ./MylistConnection/model.js#MylistConnectionModel
         MylistGroup: ./MylistGroup/model.js#MylistGroupModel
