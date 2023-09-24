@@ -12,4 +12,4 @@ export type MkResolver<D extends keyof Resolvers<unknown>, DI extends keyof Reso
 
 export type MkQueryResolver<D extends keyof QueryResolvers, DI extends keyof ResolverDeps | undefined = undefined> = (
   inject: Pick<ResolverDeps, Exclude<DI, undefined>>,
-) => QueryResolvers[D];
+) => Exclude<QueryResolvers[D], undefined>; // TODO: Excludeがなぜ必要なのかわからない

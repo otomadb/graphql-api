@@ -3,12 +3,12 @@ import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest"
 
 import { ResolverDeps } from "../resolvers/types.js";
 import { cleanPrisma } from "../test/cleanPrisma.js";
-import { BilibiliMADSourceService, mkBilibiliMADSourceService } from "./BilibiliMADSource.service.js";
+import { mkBilibiliMADSourceService } from "./BilibiliMADSource.service.js";
 
 describe("BilibiliMADSourceService", () => {
   let prisma: ResolverDeps["prisma"];
 
-  let service: BilibiliMADSourceService;
+  let service: ReturnType<typeof mkBilibiliMADSourceService>;
 
   beforeAll(async () => {
     prisma = new PrismaClient();
