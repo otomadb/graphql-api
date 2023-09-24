@@ -1,5 +1,6 @@
 /* eslint sort-keys: [2, "asc", {caseSensitive: false}] */
 
+import { resolverGetBilibiliMADSource } from "../../BilibiliMADSource/getBilibiliMADSource.resolver.js";
 import { resolverFetchBilibili } from "../../FetchExternal/fetchBilibili.resolver.js";
 import { resolverFindNicovideoRegistrationRequest } from "../../NicovideoRegistrationRequest/findNicovideoRegistrationRequest.resolver.js";
 import { findNicovideoRegistrationRequests } from "../../NicovideoRegistrationRequest/findNicovideoRegistrationRequests.resolver.js";
@@ -68,6 +69,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
     findYoutubeVideoSource: resolverFindYoutubeVideoSource(deps),
     getAllCategoryTag: resolverGetAllCategoryTag(deps),
     getAllTypeCategoryTag: resolverGetAllTypeCategoryTag(deps),
+    getBilibiliMADSource: resolverGetBilibiliMADSource(deps),
     getMylist: getMylist(deps),
     getMylistGroup: getMylistGroup(deps),
     getNicovideoRegistrationRequest: resolverGetNicovideoRegistrationRequest(deps),
