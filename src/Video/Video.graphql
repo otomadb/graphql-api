@@ -4,7 +4,7 @@ type Video implements Node {
 
   title: String!
   titles: [VideoTitle!]!
-  thumbnailUrl: String!
+  thumbnailUrl(size: VideoThumbnailScale! = LARGE): String!
   thumbnails: [VideoThumbnail!]!
 
   hasTag(id: ID!): Boolean!
@@ -41,6 +41,14 @@ type VideoConnection {
 type VideoEdge {
   cursor: String!
   node: Video!
+}
+
+enum VideoThumbnailScale {
+  "960 x 700"
+  LARGE
+
+  "720 x 400"
+  OGP
 }
 
 interface VideoEvent implements Node & Event {
