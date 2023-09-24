@@ -24,8 +24,8 @@ export const apiResponse = z.object({
 });
 export type ApiResponseTag = z.infer<typeof apiResponse>["data"]["Tags"][number];
 
-export const resolverFetchBilibili: MkQueryResolver<"fetchBilibili"> =
-  () =>
+export const resolverFetchBilibili: MkQueryResolver<"fetchBilibili", "ImagesService"> =
+  ({ ImagesService }) =>
   async (_parent, { input: { bvid } }) => {
     const url = new URL("https://api.bilibili.com/x/web-interface/view/detail");
     url.searchParams.set("bvid", bvid);
@@ -47,7 +47,7 @@ export const resolverFetchBilibili: MkQueryResolver<"fetchBilibili"> =
         sourceId: View.bvid,
         title: View.title,
         url: `https://www.bilibili.com/video/${View.bvid}`,
-        thumbnailUrl: View.pic,
+        thumbnailUrl: ImagesService.originalBilibili(View.bvid),
         tags: Tags.map((tag) => BilibiliOriginalSourceTagDTO.make(tag)),
       },
     };

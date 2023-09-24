@@ -15,6 +15,7 @@ import neo4j from "neo4j-driver";
 import { pino } from "pino";
 import z from "zod";
 
+import { ImagesService } from "./Common/Images.services.js";
 import { makeResolvers } from "./resolvers/index.js";
 import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
 import typeDefs from "./schema.graphql";
@@ -87,7 +88,6 @@ const yoga = createYoga<ServerContext, UserContext>({
       soundcloudService: SoundcloudService.make({
         env: { clientId: process.env.SOUNDCLOUD_CLIENT_ID },
       }),
-
       neo4j: neo4jDriver,
       prisma: prismaClient,
       meilisearch: meilisearchClient,
@@ -101,6 +101,9 @@ const yoga = createYoga<ServerContext, UserContext>({
           editorRoleId: process.env.AUTH0_EDITOR_ROLE_ID,
           adminRoleId: process.env.AUTH0_ADMIN_ROLE_ID,
         },
+      }),
+      ImagesService: ImagesService.make({
+        env: { baseUrl: process.env.IXGYOHN_BASE_URL },
       }),
     }),
   }),
