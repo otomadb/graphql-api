@@ -15,6 +15,7 @@ import neo4j from "neo4j-driver";
 import { pino } from "pino";
 import z from "zod";
 
+import { mkBilibiliMADSourceService } from "./BilibiliMADSource/BilibiliMADSource.service.js";
 import { ImagesService } from "./Common/Images.services.js";
 import { makeResolvers } from "./resolvers/index.js";
 import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
@@ -104,6 +105,9 @@ const yoga = createYoga<ServerContext, UserContext>({
       }),
       ImagesService: ImagesService.make({
         env: { baseUrl: process.env.IXGYOHN_BASE_URL },
+      }),
+      BilibiliMADSourceService: mkBilibiliMADSourceService({
+        prisma: prismaClient,
       }),
     }),
   }),

@@ -1,5 +1,5 @@
 import { describe, test } from "vitest";
 
-describe("resolverBilibiliMADSourceCreateEvent", () => {
+describe("resolverGetBilibiliMADSource", () => {
   test.todo("適当にモックを注入してテストする");
 });

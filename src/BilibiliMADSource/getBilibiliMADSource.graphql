@@ -1,0 +1,3 @@
+type Query {
+  getBilibiliMADSource(id: ID!): BilibiliMADSource!
+}
