@@ -21,3 +21,5 @@ export const mkBilibiliMADSourceService = ({ prisma }: { prisma: PrismaClient })
     },
   };
 };
+
+export type BilibiliMADSourceService = ReturnType<typeof mkBilibiliMADSourceService>;
