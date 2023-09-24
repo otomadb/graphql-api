@@ -14,6 +14,10 @@ export const mkBilibiliMADSourceService = ({ prisma }: { prisma: PrismaClient })
         .findUniqueOrThrow({ where: { sourceId } })
         .then((v) => BilibiliMADSourceDTO.fromPrisma(v));
     },
+    findBySourceId(sourceId: string) {
+      return prisma.bilibiliMADSource
+        .findFirst({ where: { sourceId } })
+        .then((v) => v && BilibiliMADSourceDTO.fromPrisma(v));
+    },
   };
 };
-export type BilibiliMADSourceService = ReturnType<typeof mkBilibiliMADSourceService>;

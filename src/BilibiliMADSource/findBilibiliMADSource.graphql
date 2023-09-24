@@ -1,0 +1,7 @@
+type Query {
+  findBilibiliMADSource(input: FindBilibiliMADSourceInput!): BilibiliMADSource
+}
+
+input FindBilibiliMADSourceInput {
+  sourceId: String
+}
