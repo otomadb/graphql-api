@@ -6,6 +6,7 @@ import { MeiliSearch } from "meilisearch";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 import { Logger } from "pino";
 
+import { BilibiliMADSourceService } from "../BilibiliMADSource/BilibiliMADSource.service.js";
 import { ImagesService } from "../Common/Images.services.js";
 import { SoundcloudService } from "../SoundcloudVideoSource/service.js";
 import { UserService } from "../User/service.js";
@@ -20,6 +21,7 @@ export type ResolverDeps = {
   userService: UserService;
   soundcloudService: SoundcloudService;
   ImagesService: ImagesService;
+  BilibiliMADSourceService: BilibiliMADSourceService;
 };
 export type ServerContext = {
   req: IncomingMessage;
