@@ -1,5 +1,6 @@
 /* eslint sort-keys: [2, "asc", {caseSensitive: false}] */
 
+import { mkFindBilibiliMADSourceResolver } from "../../BilibiliMADSource/findBilibiliMADSource.resolver.js";
 import { resolverGetBilibiliMADSource } from "../../BilibiliMADSource/getBilibiliMADSource.resolver.js";
 import { resolverFetchBilibili } from "../../FetchExternal/fetchBilibili.resolver.js";
 import { resolverFindNicovideoRegistrationRequest } from "../../NicovideoRegistrationRequest/findNicovideoRegistrationRequest.resolver.js";
@@ -49,6 +50,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
     fetchNicovideo: fetchNicovideo(),
     fetchSoundcloud: resolverFetchSoundcloud(deps),
     fetchYoutube: resolverFetchYoutube(),
+    findBilibiliMADSource: mkFindBilibiliMADSourceResolver(deps),
     findMadBySerial: resolverFindMadBySerial(deps),
     findMylist: resolverFindMylist(deps),
     findNicovideoRegistrationRequest: resolverFindNicovideoRegistrationRequest(deps),
