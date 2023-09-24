@@ -160,7 +160,12 @@ export const resolveTaggings = ({ prisma, logger }: Pick<ResolverDeps, "prisma" 
     ).then((c) => VideoTagConnectionDTO.fromPrisma(c));
   }) satisfies VideoResolvers["taggings"];
 
-export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+export const resolveVideo = ({
+  prisma,
+  neo4j,
+  logger,
+  ImagesService,
+}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "ImagesService">) =>
   ({
     id: ({ id }): string => buildGqlId("Video", id),
 
@@ -173,12 +178,7 @@ export const resolveVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "pris
     titles: async ({ id: videoId }) =>
       prisma.videoTitle.findMany({ where: { videoId } }).then((vs) => vs.map((t) => new VideoTitleDTO(t))),
 
-    thumbnailUrl: async ({ id: videoId }) => {
-      const thumbnail = await prisma.videoThumbnail.findFirst({ where: { videoId, isPrimary: true } });
-
-      if (!thumbnail) throw new GraphQLError(`primary thumbnail for video ${videoId} is not found`);
-      return thumbnail.imageUrl;
-    },
+    thumbnailUrl: async ({ serial }, { size }) => ImagesService.thumbnailPrimary(serial, size),
 
     thumbnails: async ({ id: videoId }) =>
       prisma.videoThumbnail.findMany({ where: { videoId } }).then((vs) => vs.map((t) => new VideoThumbnailDTO(t))),
