@@ -24,6 +24,10 @@ export class VideoDTO {
     return this.video.serial;
   }
 
+  public static fromPrisma(video: Video) {
+    return new VideoDTO(video);
+  }
+
   public static getPrismaClientById(prisma: ResolverDeps["prisma"], videoId: string) {
     return prisma.video
       .findUniqueOrThrow({ where: { id: videoId } })

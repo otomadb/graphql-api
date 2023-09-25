@@ -17,6 +17,8 @@ import z from "zod";
 
 import { mkBilibiliMADSourceService } from "./BilibiliMADSource/BilibiliMADSource.service.js";
 import { ImagesService } from "./Common/Images.services.js";
+import { mkLoggerService } from "./Common/Logger.service.js";
+import { mkNeo4jService } from "./Neo4j/Neo4j.service.js";
 import { makeResolvers } from "./resolvers/index.js";
 import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
 import typeDefs from "./schema.graphql";
@@ -81,6 +83,9 @@ const meilisearchClient = new MeiliSearch({
 
 const redisClient = new Redis(process.env.REDIS_URL);
 
+const LoggerService = mkLoggerService({ pinoLogger: logger });
+const Neo4jService = mkNeo4jService({ driver: neo4jDriver, LoggerService });
+
 const yoga = createYoga<ServerContext, UserContext>({
   graphiql: process.env.ENABLE_GRAPHIQL === "true",
   schema: createSchema({
@@ -108,6 +113,7 @@ const yoga = createYoga<ServerContext, UserContext>({
       }),
       BilibiliMADSourceService: mkBilibiliMADSourceService({
         prisma: prismaClient,
+        Neo4jService,
       }),
     }),
   }),
