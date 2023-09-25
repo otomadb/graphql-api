@@ -1,5 +1,6 @@
 /* eslint sort-keys: 2 */
 
+import { mkRegisterBilibiliMADResolver } from "../../BilibiliMADSource/registerBilibiliMAD.resolver.js";
 import { resolverRejectRequestNicovideoRegistration } from "../../NicovideoRegistrationRequest/rejectNicovideoRegistrationRequest.resolver.js";
 import { resolverRequestNicovideoRegistration } from "../../NicovideoRegistrationRequest/requestNicovideoRegistration.resolver.js";
 import { resolverRegisterVideoFromNicovideo } from "../../NicovideoVideoSource/registerVideoFromNicovideo.resolver.js";
@@ -43,6 +44,7 @@ export const resolveMutation = (deps: ResolverDeps) =>
     explicitizeTagParent: resolverExplicitizeTagParent(deps),
     implicitizeTagParent: resolverImplicitizeTagParent(deps),
     likeVideo: resolverLikeVideo(deps),
+    registerBilibiliMAD: mkRegisterBilibiliMADResolver(deps),
     registerCategoryTag: registerCategoryTag(deps),
     registerCategoryTagTyping: resolverRegisterCategoryTagTyping(deps),
     registerMadFromSoundcloud: resolverRegisterMadFromSoundcloud(deps),

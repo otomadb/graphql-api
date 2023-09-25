@@ -1,0 +1,22 @@
+type Mutation {
+  registerBilibiliMAD(input: RegisterBilibiliMADInput!): RegisterBilibiliMADResult! @auth(scopes: ["create:video"])
+}
+
+input RegisterBilibiliMADInput {
+  primaryTitle: String!
+  primaryThumbnailUrl: String!
+
+  tagIds: [ID!]!
+  semitagNames: [String!]! = []
+
+  sourceIds: [String!]!
+}
+
+union RegisterBilibiliMADResult =
+    MutationTagNotFoundError
+  | MutationInternalServerError
+  | RegisterBilibiliMADSucceededPayload
+
+type RegisterBilibiliMADSucceededPayload {
+  video: Video!
+}
