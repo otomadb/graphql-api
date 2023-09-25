@@ -1,4 +1,6 @@
-import { VideoThumbnailScale } from "../gql/graphql.js";
+import { FetchExternalSourceThumbnailScale, VideoThumbnailScale } from "../gql/graphql.js";
+
+import * as z from "zod";
 
 export class ImagesService {
   private constructor(private baseUrl: string) {}
@@ -19,9 +21,16 @@ export class ImagesService {
     return url.toString();
   }
 
-  public originalBilibili(vid: string) {
+  public originalBilibili(vid: string, size: FetchExternalSourceThumbnailScale) {
     const url = new URL(`original/bilibili/${vid}`, this.baseUrl);
-    url.searchParams.set("size", "960x720");
+    switch (size) {
+      case FetchExternalSourceThumbnailScale.Large:
+        url.searchParams.set("scale", "large");
+        break;
+      case FetchExternalSourceThumbnailScale.Ogp:
+        url.searchParams.set("scale", "ogp");
+        break;
+    }
     return url.toString();
   }
 
