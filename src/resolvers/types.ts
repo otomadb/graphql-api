@@ -7,7 +7,7 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { Logger } from "pino";
 
 import { BilibiliMADSourceService } from "../BilibiliMADSource/BilibiliMADSource.service.js";
-import { ImagesService } from "../Common/Images.services.js";
+import { ImagesService } from "../Common/Images.service.js";
 import { SoundcloudService } from "../SoundcloudVideoSource/service.js";
 import { UserService } from "../User/service.js";
 

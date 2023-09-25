@@ -16,7 +16,7 @@ import { pino } from "pino";
 import z from "zod";
 
 import { mkBilibiliMADSourceService } from "./BilibiliMADSource/BilibiliMADSource.service.js";
-import { ImagesService } from "./Common/Images.services.js";
+import { ImagesService } from "./Common/Images.service.js";
 import { mkLoggerService } from "./Common/Logger.service.js";
 import { mkNeo4jService } from "./Neo4j/Neo4j.service.js";
 import { makeResolvers } from "./resolvers/index.js";

@@ -18,6 +18,7 @@ generates:
         DateTime: Date
       contextType: ./types.js#Context
       mappers:
+        BilibiliOriginalSource: ../FetchExternal/BilibiliOriginalSource.dto.js#BilibiliOriginalSourceDTO
         BilibiliOriginalSourceTag: ../FetchExternal/BilibiliOriginalSourceTag.dto.js#BilibiliOriginalSourceTagDTO
         BilibiliMADSource: ../BilibiliMADSource/BilibiliMADSource.dto.js#BilibiliMADSourceDTO
         BilibiliMADSourceEvent: ../BilibiliMADSource/BilibiliMADSourceEvent.dto.js#BilibiliMADSourceEventDTO

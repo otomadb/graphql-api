@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { MkQueryResolver } from "../utils/MkResolver.js";
+import { BilibiliOriginalSourceDTO } from "./BilibiliOriginalSource.dto.js";
 import { BilibiliOriginalSourceTagDTO } from "./BilibiliOriginalSourceTag.dto.js";
 
 export const apiResponse = z.object({
@@ -24,8 +25,8 @@ export const apiResponse = z.object({
 });
 export type ApiResponseTag = z.infer<typeof apiResponse>["data"]["Tags"][number];
 
-export const resolverFetchBilibili: MkQueryResolver<"fetchBilibili", "ImagesService"> =
-  ({ ImagesService }) =>
+export const resolverFetchBilibili: MkQueryResolver<"fetchBilibili"> =
+  () =>
   async (_parent, { input: { bvid } }) => {
     const url = new URL("https://api.bilibili.com/x/web-interface/view/detail");
     url.searchParams.set("bvid", bvid);
@@ -43,12 +44,11 @@ export const resolverFetchBilibili: MkQueryResolver<"fetchBilibili", "ImagesServ
     } = parsed.data;
 
     return {
-      source: {
+      source: BilibiliOriginalSourceDTO.make({
         sourceId: View.bvid,
         title: View.title,
-        url: `https://www.bilibili.com/video/${View.bvid}`,
-        thumbnailUrl: ImagesService.originalBilibili(View.bvid),
         tags: Tags.map((tag) => BilibiliOriginalSourceTagDTO.make(tag)),
-      },
+        originalThumbnailUrl: View.pic,
+      }),
     };
   };

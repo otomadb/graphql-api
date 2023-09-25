@@ -17,7 +17,9 @@ type BilibiliOriginalSource {
 
   title: String!
   url: String!
-  thumbnailUrl: String!
+
+  thumbnailUrl(scale: FetchExternalSourceThumbnailScale! = LARGE): String!
+  originalThumbnailUrl: String!
 
   tags: [BilibiliOriginalSourceTag!]!
 }
@@ -34,4 +36,12 @@ input BilibiliOriginalSourceTagSearchTagsInput {
 
 type BilibiliOriginalSourceTagSearchTagsPayload {
   items: [TagSearchItemByName!]!
+}
+
+enum FetchExternalSourceThumbnailScale {
+  "960 x 700"
+  LARGE
+
+  "720 x 400"
+  OGP
 }

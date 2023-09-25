@@ -3,6 +3,7 @@
 import { resolverBilibiliMADSource } from "../BilibiliMADSource/BilibiliMADSource.resolver.js";
 import { resolverBilibiliMADSourceCreateEvent } from "../BilibiliMADSource/BilibiliMADSourceEvent.resolver.js";
 import { resolverBilibiliMADSourceEventConnection } from "../BilibiliMADSource/BilibiliMADSourceEventConnection.resolver.js";
+import { mkBilibiliOriginalSourceResolver } from "../FetchExternal/BilibiliOriginalSource.resolver.js";
 import { resolverBilibiliOriginalSourceTag } from "../FetchExternal/BilibiliOriginalSourceTag.resolver.js";
 import { resolverNicovideoRegistrationRequestAccepting } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestAccepting.resolver.js";
 import { resolverNicovideoRegistrationRequestAcceptingNotification } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestAcceptingNotification.resolver.js";
@@ -103,6 +104,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     BilibiliMADSource: resolverBilibiliMADSource(deps),
     BilibiliMADSourceCreateEvent: resolverBilibiliMADSourceCreateEvent(deps),
     BilibiliMADSourceEventConnection: resolverBilibiliMADSourceEventConnection(deps),
+    BilibiliOriginalSource: mkBilibiliOriginalSourceResolver(deps),
     BilibiliOriginalSourceTag: resolverBilibiliOriginalSourceTag(deps),
     Mutation: resolveMutation(deps),
     Mylist: resolveMylist(deps),
