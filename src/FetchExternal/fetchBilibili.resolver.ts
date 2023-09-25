@@ -9,10 +9,10 @@ export const apiResponse = z.object({
       bvid: z.string(),
       title: z.string(),
       pic: z.string().url(),
-      subtitle: z.object({
-        allow_submit: z.boolean(),
-        list: z.array(z.string()),
-      }),
+      // subtitle: z.object({
+      //   allow_submit: z.boolean(),
+      //   list: z.array(),
+      // }),
     }),
     Tags: z.array(
       z.object({
