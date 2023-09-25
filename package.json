@@ -38,7 +38,7 @@
     "ioredis": "^5.3.1",
     "jsonwebtoken": "^9.0.0",
     "jwks-rsa": "^3.0.1",
-    "meilisearch": "^0.34.0",
+    "meilisearch": "^0.35.0",
     "neo4j-driver": "^5.3.0",
     "pg": "^8.8.0",
     "pino": "^8.10.0",
