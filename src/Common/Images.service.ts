@@ -1,7 +1,5 @@
 import { FetchExternalSourceThumbnailScale, VideoThumbnailScale } from "../gql/graphql.js";
 
-import * as z from "zod";
-
 export class ImagesService {
   private constructor(private baseUrl: string) {}
 
