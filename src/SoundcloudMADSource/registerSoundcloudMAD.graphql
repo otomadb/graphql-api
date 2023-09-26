@@ -1,0 +1,23 @@
+type Mutation {
+  registerSoundcloudMAD(input: RegisterSoundcloudMADInput!): RegisterSoundcloudMADResult!
+    @auth(scopes: ["create:video"])
+}
+
+input RegisterSoundcloudMADInput {
+  primaryTitle: String!
+  primaryThumbnailUrl: String!
+
+  tagIds: [ID!]!
+  semitagNames: [String!]! = []
+
+  sourceIds: [String!]!
+}
+
+union RegisterSoundcloudMADResult =
+    MutationTagNotFoundError
+  | MutationInternalServerError
+  | RegisterSoundcloudMADSucceededPayload
+
+type RegisterSoundcloudMADSucceededPayload {
+  mad: Video!
+}

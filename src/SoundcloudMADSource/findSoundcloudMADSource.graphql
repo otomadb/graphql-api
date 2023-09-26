@@ -1,0 +1,8 @@
+type Query {
+  findSoundcloudMADSource(input: FindSoundcloudMADSourceInput!): SoundcloudMADSource
+}
+
+input FindSoundcloudMADSourceInput {
+  sourceId: String
+  url: String
+}

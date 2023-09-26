@@ -36,8 +36,8 @@ export type NodeType =
   | "YoutubeRegistrationRequestTagging"
   | "YoutubeRegistrationRequestSemitagging"
   | "YoutubeRegistrationRequest"
-  | "SoundcloudVideoSource"
-  | "SoundcloudVideoSourceEvent"
+  | "SoundcloudMADSource"
+  | "SoundcloudMADSourceEvent"
   | "BilibiliMADSource"
   | "BilibiliMADSourceEvent";
 

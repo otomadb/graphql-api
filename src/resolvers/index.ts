@@ -17,9 +17,9 @@ import {
   resolveNicovideoVideoSourceCreateEvent,
   resolveNicovideoVideoSourceEvent,
 } from "../NicovideoVideoSource/NicovideoVideoSourceEvent.resolver.js";
-import { resolveSoundcloudVideoSource } from "../SoundcloudVideoSource/SoundcloudVideoSource.resolver.js";
-import { resolveSoundcloudVideoSourceEvent } from "../SoundcloudVideoSource/SoundcloudVideoSourceEvent.resolver.js";
-import { resolverSoundcloudVideoSourceEventConnection } from "../SoundcloudVideoSource/SoundcloudVideoSourceEventConnection.resolver.js";
+import { mkSoundcloudMADSourceResolver } from "../SoundcloudMADSource/SoundcloudMADSource.resolver.js";
+import { resolveSoundcloudMADSourceCreateEvent } from "../SoundcloudMADSource/SoundcloudMADSourceEvent.resolver.js";
+import { resolverSoundcloudMADSourceEventConnection } from "../SoundcloudMADSource/SoundcloudMADSourceEventConnection.resolver.js";
 import { resolveTag } from "../Tag/Tag.resolver.js";
 import { resolveTagEvent, resolveTagRegisterEvent } from "../Tag/TagEvent.resolver.js";
 import { resolveTagName } from "../Tag/TagName.resolver.js";
@@ -139,10 +139,10 @@ export const makeResolvers = (deps: ResolverDeps) =>
     SemitagResolveEvent: resolveSemitagEventResolveEvent(deps),
     SemitagResolving: resolverSemitagResolving(deps),
     SemitagSuggestTagsItem: resolverSemitagSuggestTagsItem(deps),
+    SoundcloudMADSource: mkSoundcloudMADSourceResolver(deps),
+    SoundcloudMADSourceCreateEvent: resolveSoundcloudMADSourceCreateEvent(deps),
+    SoundcloudMADSourceEventConnection: resolverSoundcloudMADSourceEventConnection(deps),
     SoundcloudOriginalSource: mkSoundcloudOriginalSourceResolver(deps),
-    SoundcloudVideoSource: resolveSoundcloudVideoSource(deps),
-    SoundcloudVideoSourceEvent: resolveSoundcloudVideoSourceEvent(),
-    SoundcloudVideoSourceEventConnection: resolverSoundcloudVideoSourceEventConnection(),
     Tag: resolveTag(deps),
     TagEvent: resolveTagEvent(),
     TagName: resolveTagName(deps),

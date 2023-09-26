@@ -23,7 +23,7 @@ import { mkNeo4jService } from "./Neo4j/Neo4j.service.js";
 import { makeResolvers } from "./resolvers/index.js";
 import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
 import typeDefs from "./schema.graphql";
-import { SoundcloudService } from "./SoundcloudVideoSource/service.js";
+import { mkSoundcloudMADSourceService } from "./SoundcloudMADSource/SoundcloudMADSource.service.js";
 import { UserService } from "./User/service.js";
 
 const jwksClient = createJwksClient({
@@ -87,14 +87,13 @@ const redisClient = new Redis(process.env.REDIS_URL);
 const LoggerService = mkLoggerService({ pinoLogger: logger });
 const Neo4jService = mkNeo4jService({ driver: neo4jDriver, LoggerService });
 
+const SoundcloudService = mkSoundcloudService({ redis: redisClient, logger });
+
 const yoga = createYoga<ServerContext, UserContext>({
   graphiql: process.env.ENABLE_GRAPHIQL === "true",
   schema: createSchema({
     typeDefs,
     resolvers: makeResolvers({
-      soundcloudService: SoundcloudService.make({
-        env: { clientId: process.env.SOUNDCLOUD_CLIENT_ID },
-      }),
       neo4j: neo4jDriver,
       prisma: prismaClient,
       meilisearch: meilisearchClient,
@@ -116,10 +115,13 @@ const yoga = createYoga<ServerContext, UserContext>({
         prisma: prismaClient,
         Neo4jService,
       }),
-      SoundcloudService: mkSoundcloudService({
-        redis: redisClient,
-        logger,
+      SoundcloudMADSourceService: mkSoundcloudMADSourceService({
+        prisma: prismaClient,
+        Neo4jService,
+        SoundcloudService,
+        logger: logger.child({ service: "SoundcloudMADSourceService" }),
       }),
+      SoundcloudService,
     }),
   }),
   cors: (request) => {

@@ -55,10 +55,10 @@ generates:
         SemitagResolving: ./SemitagResolving/model.js#SemitagResolvingModel
         SemitagSuggestTagsItem: ./SemitagSuggestTagsItem/model.js#SemitagSuggestTagsItemModel
         SoundcloudOriginalSource: ../FetchExternal/SoundcloudOriginalSource.dto.js#SoundcloudOriginalSourceDTO
-        SoundcloudVideoSource: ../SoundcloudVideoSource/dto.js#SoundcloudVideoSourceDTO
-        SoundcloudVideoSourceCreateEvent: ../SoundcloudVideoSource/dto.js#SoundcloudVideoSourceEventDTO
-        SoundcloudVideoSourceEvent: ../SoundcloudVideoSource/dto.js#SoundcloudVideoSourceEventDTO
-        SoundcloudVideoSourceEventConnection: ../SoundcloudVideoSource/dto.js#SoundcloudVideoSourceEventConnectionDTO
+        SoundcloudMADSource: ../SoundcloudMADSource/SoundcloudMADSource.dto.js#SoundcloudMADSourceDTO
+        SoundcloudMADSourceCreateEvent: ../SoundcloudMADSource/SoundcloudMADSourceEvent.dto.js#SoundcloudMADSourceEventDTO
+        SoundcloudMADSourceEvent: ../SoundcloudMADSource/SoundcloudMADSourceEvent.dto.js#SoundcloudMADSourceEventDTO
+        SoundcloudMADSourceEventConnection: ../SoundcloudMADSource/SoundcloudMADSourceEventConnection.dto.js#SoundcloudMADSourceEventConnectionDTO
         Tag: ../Tag/dto.js#TagDTO
         TagEvent: ../Tag/dto.js#TagEventDTO
         TagName: ../Tag/dto.js#TagNameDTO

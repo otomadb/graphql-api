@@ -11,7 +11,8 @@ import { resolverFindUncheckedNicovideoRegistrationRequestsByOffset } from "../.
 import { resolverGetNicovideoRegistrationRequest } from "../../NicovideoRegistrationRequest/getNicovideoRegistrationRequest.js";
 import { resolverFindNicovideoVideoSource } from "../../NicovideoVideoSource/findNicovideoVideoSource.resolver.js";
 import { getNicovideoVideoSource } from "../../NicovideoVideoSource/getNicovideoVideoSource.resolver.js";
-import { getSoundcloudVideoSource } from "../../SoundcloudVideoSource/getSoundcloudVideoSource.resolver.js";
+import { mkFindSoundcloudMADSourceResolver } from "../../SoundcloudMADSource/findSoundcloudMADSource.resolver.js";
+import { getSoundcloudMADSource } from "../../SoundcloudMADSource/getSoundcloudMADSource.resolver.js";
 import { resolverFindTag } from "../../Tag/findTag.resolver.js";
 import { resolverFindTagBySerial } from "../../Tag/findTagBySerial.resolver.js";
 import { resolverFindTags } from "../../Tag/findTags.resolver.js";
@@ -57,6 +58,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
     findNicovideoRegistrationRequests: findNicovideoRegistrationRequests(deps),
     findNicovideoVideoSource: resolverFindNicovideoVideoSource(deps),
     findSemitags: findSemitags(deps),
+    findSoundcloudMADSource: mkFindSoundcloudMADSourceResolver(deps),
     findTag: resolverFindTag(deps),
     findTagBySerial: resolverFindTagBySerial(deps),
     findTags: resolverFindTags(deps),
@@ -78,7 +80,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
     getNicovideoVideoSource: getNicovideoVideoSource(deps),
     getNotification: getNotification(deps),
     getSemitag: resolverGetSemitag(deps),
-    getSoundcloudVideoSource: getSoundcloudVideoSource(deps),
+    getSoundcloudMADSource: getSoundcloudMADSource(deps),
     getTag: resolverGetTag(deps),
     getUser: resolverGetUser(deps),
     getVideo: resolverGetVideo(deps),

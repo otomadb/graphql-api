@@ -12,7 +12,7 @@ import { MylistRegistrationModel } from "../resolvers/MylistRegistration/model.j
 import { parseOrderBy } from "../resolvers/parseSortOrder.js";
 import { SemitagModel } from "../resolvers/Semitag/model.js";
 import { ResolverDeps } from "../resolvers/types.js";
-import { SoundcloudVideoSourceDTO } from "../SoundcloudVideoSource/dto.js";
+import { SoundcloudMADSourceDTO } from "../SoundcloudMADSource/SoundcloudMADSource.dto.js";
 import { err, isErr, ok, Result } from "../utils/Result.js";
 import { YoutubeVideoSourceDTO } from "../YoutubeVideoSource/dto.js";
 import { VideoEventDTO, VideoSimilarityDTO, VideoTagConnectionDTO, VideoThumbnailDTO, VideoTitleDTO } from "./dto.js";
@@ -205,7 +205,7 @@ export const resolveVideo = ({
     soundcloudSources: async ({ id: videoId }) =>
       prisma.soundcloudVideoSource
         .findMany({ where: { videoId } })
-        .then((ss) => ss.map((s) => SoundcloudVideoSourceDTO.fromPrisma(s))),
+        .then((ss) => ss.map((s) => SoundcloudMADSourceDTO.fromPrisma(s))),
 
     semitags: ({ id: videoId }, { checked }) =>
       prisma.semitag

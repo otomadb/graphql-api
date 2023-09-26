@@ -1,0 +1,33 @@
+input SoundcloudMADSourceEventsOrderBy {
+  createdAt: SortOrder
+}
+
+type SoundcloudMADSourceEventConnection {
+  nodes: [SoundcloudMADSourceEvent!]!
+  edges: [SoundcloudMADSourceEventEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type SoundcloudMADSourceEventEdge {
+  cursor: String!
+  node: SoundcloudMADSourceEvent!
+}
+
+interface SoundcloudMADSourceEvent implements Node & Event {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  source: SoundcloudMADSource!
+}
+
+type SoundcloudMADSourceCreateEvent implements Node & Event & SoundcloudMADSourceEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  source: SoundcloudMADSource!
+}
