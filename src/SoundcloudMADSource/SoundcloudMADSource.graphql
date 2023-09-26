@@ -1,0 +1,18 @@
+type SoundcloudMADSource implements Node & VideoSource {
+  id: ID!
+  sourceId: String!
+  video: Video!
+
+  url: String!
+  embedUrl: String!
+
+  events(
+    first: Int
+    after: String
+
+    last: Int
+    before: String
+
+    orderBy: SoundcloudMADSourceEventsOrderBy!
+  ): SoundcloudMADSourceEventConnection!
+}

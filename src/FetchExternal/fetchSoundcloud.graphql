@@ -1,0 +1,23 @@
+type Query {
+  "SoundCloudから動画情報を取得する"
+  fetchSoundcloud(input: FetchSoundcloudInput!): FetchSoundcloudPayload!
+}
+
+input FetchSoundcloudInput {
+  "SoundCloudのURL"
+  url: String!
+}
+
+type FetchSoundcloudPayload {
+  source: SoundcloudOriginalSource
+}
+
+type SoundcloudOriginalSource {
+  sourceId: String!
+
+  title: String!
+  url: String!
+
+  thumbnailUrl(scale: FetchExternalSourceThumbnailScale! = LARGE): String!
+  originalThumbnailUrl: String!
+}

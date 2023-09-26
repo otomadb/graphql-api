@@ -4,7 +4,7 @@ import { mkRegisterBilibiliMADResolver } from "../../BilibiliMADSource/registerB
 import { resolverRejectRequestNicovideoRegistration } from "../../NicovideoRegistrationRequest/rejectNicovideoRegistrationRequest.resolver.js";
 import { resolverRequestNicovideoRegistration } from "../../NicovideoRegistrationRequest/requestNicovideoRegistration.resolver.js";
 import { resolverRegisterVideoFromNicovideo } from "../../NicovideoVideoSource/registerVideoFromNicovideo.resolver.js";
-import { resolverRegisterMadFromSoundcloud } from "../../SoundcloudVideoSource/registerMadFromSoundcloud.resolver.js";
+import { mkRegisterSoundcloudMADResolver } from "../../SoundcloudMADSource/registerSoundcloudMAD.resolver.js";
 import { resolverAddTagToVideo } from "../../Tag/addTagToVideo.resolver.js";
 import { resolverExplicitizeTagParent } from "../../Tag/explicitizeTagParent.resolver.js";
 import { resolverImplicitizeTagParent } from "../../Tag/implicitizeTagParent.resolver.js";
@@ -47,7 +47,7 @@ export const resolveMutation = (deps: ResolverDeps) =>
     registerBilibiliMAD: mkRegisterBilibiliMADResolver(deps),
     registerCategoryTag: registerCategoryTag(deps),
     registerCategoryTagTyping: resolverRegisterCategoryTagTyping(deps),
-    registerMadFromSoundcloud: resolverRegisterMadFromSoundcloud(deps),
+    registerSoundcloudMAD: mkRegisterSoundcloudMADResolver(deps),
     registerTag: resolverRegisterTag(deps),
     registerTagParentRelation: resolverRegisterTagParentRelation(deps),
     registerVideoFromNicovideo: resolverRegisterVideoFromNicovideo(deps),

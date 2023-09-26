@@ -5,6 +5,7 @@ import { resolverBilibiliMADSourceCreateEvent } from "../BilibiliMADSource/Bilib
 import { resolverBilibiliMADSourceEventConnection } from "../BilibiliMADSource/BilibiliMADSourceEventConnection.resolver.js";
 import { mkBilibiliOriginalSourceResolver } from "../FetchExternal/BilibiliOriginalSource.resolver.js";
 import { resolverBilibiliOriginalSourceTag } from "../FetchExternal/BilibiliOriginalSourceTag.resolver.js";
+import { mkSoundcloudOriginalSourceResolver } from "../FetchExternal/SoundcloudOriginalSource.resolver.js";
 import { resolverNicovideoRegistrationRequestAccepting } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestAccepting.resolver.js";
 import { resolverNicovideoRegistrationRequestAcceptingNotification } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestAcceptingNotification.resolver.js";
 import { resolverNicovideoRegistrationRequestConnection } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestConnection.resolver.js";
@@ -16,9 +17,9 @@ import {
   resolveNicovideoVideoSourceCreateEvent,
   resolveNicovideoVideoSourceEvent,
 } from "../NicovideoVideoSource/NicovideoVideoSourceEvent.resolver.js";
-import { resolveSoundcloudVideoSource } from "../SoundcloudVideoSource/SoundcloudVideoSource.resolver.js";
-import { resolveSoundcloudVideoSourceEvent } from "../SoundcloudVideoSource/SoundcloudVideoSourceEvent.resolver.js";
-import { resolverSoundcloudVideoSourceEventConnection } from "../SoundcloudVideoSource/SoundcloudVideoSourceEventConnection.resolver.js";
+import { mkSoundcloudMADSourceResolver } from "../SoundcloudMADSource/SoundcloudMADSource.resolver.js";
+import { resolveSoundcloudMADSourceCreateEvent } from "../SoundcloudMADSource/SoundcloudMADSourceEvent.resolver.js";
+import { resolverSoundcloudMADSourceEventConnection } from "../SoundcloudMADSource/SoundcloudMADSourceEventConnection.resolver.js";
 import { resolveTag } from "../Tag/Tag.resolver.js";
 import { resolveTagEvent, resolveTagRegisterEvent } from "../Tag/TagEvent.resolver.js";
 import { resolveTagName } from "../Tag/TagName.resolver.js";
@@ -138,9 +139,10 @@ export const makeResolvers = (deps: ResolverDeps) =>
     SemitagResolveEvent: resolveSemitagEventResolveEvent(deps),
     SemitagResolving: resolverSemitagResolving(deps),
     SemitagSuggestTagsItem: resolverSemitagSuggestTagsItem(deps),
-    SoundcloudVideoSource: resolveSoundcloudVideoSource(deps),
-    SoundcloudVideoSourceEvent: resolveSoundcloudVideoSourceEvent(),
-    SoundcloudVideoSourceEventConnection: resolverSoundcloudVideoSourceEventConnection(),
+    SoundcloudMADSource: mkSoundcloudMADSourceResolver(deps),
+    SoundcloudMADSourceCreateEvent: resolveSoundcloudMADSourceCreateEvent(deps),
+    SoundcloudMADSourceEventConnection: resolverSoundcloudMADSourceEventConnection(deps),
+    SoundcloudOriginalSource: mkSoundcloudOriginalSourceResolver(deps),
     Tag: resolveTag(deps),
     TagEvent: resolveTagEvent(),
     TagName: resolveTagName(deps),

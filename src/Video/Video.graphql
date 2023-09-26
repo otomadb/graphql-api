@@ -16,7 +16,7 @@ type Video implements Node {
 
   nicovideoSources: [NicovideoVideoSource!]!
   youtubeSources: [YoutubeVideoSource!]!
-  soundcloudSources: [SoundcloudVideoSource!]!
+  soundcloudSources: [SoundcloudMADSource!]!
 
   semitags(checked: Boolean): [Semitag!]!
   taggings(

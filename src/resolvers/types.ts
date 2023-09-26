@@ -8,7 +8,8 @@ import { Logger } from "pino";
 
 import { BilibiliMADSourceService } from "../BilibiliMADSource/BilibiliMADSource.service.js";
 import { ImagesService } from "../Common/Images.service.js";
-import { SoundcloudService } from "../SoundcloudVideoSource/service.js";
+import { SoundcloudService as SoundcloudService2 } from "../Common/Soundcloud.service.js";
+import { SoundcloudMADSourceService } from "../SoundcloudMADSource/SoundcloudMADSource.service.js";
 import { UserService } from "../User/service.js";
 
 export type Auth0User = User<AppMetadata, UserMetadata>;
@@ -19,9 +20,10 @@ export type ResolverDeps = {
   meilisearch: MeiliSearch;
   logger: Logger;
   userService: UserService;
-  soundcloudService: SoundcloudService;
   ImagesService: ImagesService;
   BilibiliMADSourceService: BilibiliMADSourceService;
+  SoundcloudMADSourceService: SoundcloudMADSourceService;
+  SoundcloudService: SoundcloudService2;
 };
 export type ServerContext = {
   req: IncomingMessage;
