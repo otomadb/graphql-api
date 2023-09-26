@@ -5,6 +5,7 @@ import { resolverBilibiliMADSourceCreateEvent } from "../BilibiliMADSource/Bilib
 import { resolverBilibiliMADSourceEventConnection } from "../BilibiliMADSource/BilibiliMADSourceEventConnection.resolver.js";
 import { mkBilibiliOriginalSourceResolver } from "../FetchExternal/BilibiliOriginalSource.resolver.js";
 import { resolverBilibiliOriginalSourceTag } from "../FetchExternal/BilibiliOriginalSourceTag.resolver.js";
+import { mkSoundcloudOriginalSourceResolver } from "../FetchExternal/SoundcloudOriginalSource.resolver.js";
 import { resolverNicovideoRegistrationRequestAccepting } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestAccepting.resolver.js";
 import { resolverNicovideoRegistrationRequestAcceptingNotification } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestAcceptingNotification.resolver.js";
 import { resolverNicovideoRegistrationRequestConnection } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestConnection.resolver.js";
@@ -138,6 +139,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     SemitagResolveEvent: resolveSemitagEventResolveEvent(deps),
     SemitagResolving: resolverSemitagResolving(deps),
     SemitagSuggestTagsItem: resolverSemitagSuggestTagsItem(deps),
+    SoundcloudOriginalSource: mkSoundcloudOriginalSourceResolver(deps),
     SoundcloudVideoSource: resolveSoundcloudVideoSource(deps),
     SoundcloudVideoSourceEvent: resolveSoundcloudVideoSourceEvent(),
     SoundcloudVideoSourceEventConnection: resolverSoundcloudVideoSourceEventConnection(),

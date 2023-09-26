@@ -8,6 +8,7 @@ import { Logger } from "pino";
 
 import { BilibiliMADSourceService } from "../BilibiliMADSource/BilibiliMADSource.service.js";
 import { ImagesService } from "../Common/Images.service.js";
+import { SoundcloudService as SoundcloudService2 } from "../Common/Soundcloud.service.js";
 import { SoundcloudService } from "../SoundcloudVideoSource/service.js";
 import { UserService } from "../User/service.js";
 
@@ -22,6 +23,7 @@ export type ResolverDeps = {
   soundcloudService: SoundcloudService;
   ImagesService: ImagesService;
   BilibiliMADSourceService: BilibiliMADSourceService;
+  SoundcloudService: SoundcloudService2;
 };
 export type ServerContext = {
   req: IncomingMessage;

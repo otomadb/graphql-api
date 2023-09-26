@@ -3,6 +3,7 @@
 import { mkFindBilibiliMADSourceResolver } from "../../BilibiliMADSource/findBilibiliMADSource.resolver.js";
 import { resolverGetBilibiliMADSource } from "../../BilibiliMADSource/getBilibiliMADSource.resolver.js";
 import { resolverFetchBilibili } from "../../FetchExternal/fetchBilibili.resolver.js";
+import { mkFetchSoundcloudResolver } from "../../FetchExternal/fetchSoundcloud.resolver.js";
 import { resolverFindNicovideoRegistrationRequest } from "../../NicovideoRegistrationRequest/findNicovideoRegistrationRequest.resolver.js";
 import { findNicovideoRegistrationRequests } from "../../NicovideoRegistrationRequest/findNicovideoRegistrationRequests.resolver.js";
 import { resolverFindUncheckedNicovideoRegistrationRequests } from "../../NicovideoRegistrationRequest/findUncheckedNicovideoRegistrationRequests.resolver.js";
@@ -33,7 +34,6 @@ import { getYoutubeVideoSource } from "../../YoutubeVideoSource/getYoutubeVideoS
 import { type Resolvers } from "../graphql.js";
 import { ResolverDeps } from "../types.js";
 import { fetchNicovideo } from "./fetchNicovideo/fetchNicovideo.js";
-import { resolverFetchSoundcloud } from "./fetchSoundcloud/resolver.js";
 import { resolverFetchYoutube } from "./fetchYoutube/resolver.js";
 import { resolverFindMylist } from "./findMylist/findMylist.js";
 import { findSemitags } from "./findSemitags/findSemitags.js";
@@ -48,7 +48,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
   ({
     fetchBilibili: resolverFetchBilibili(deps),
     fetchNicovideo: fetchNicovideo(),
-    fetchSoundcloud: resolverFetchSoundcloud(deps),
+    fetchSoundcloud: mkFetchSoundcloudResolver(deps),
     fetchYoutube: resolverFetchYoutube(),
     findBilibiliMADSource: mkFindBilibiliMADSourceResolver(deps),
     findMadBySerial: resolverFindMadBySerial(deps),

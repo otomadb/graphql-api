@@ -32,6 +32,20 @@ export class ImagesService {
     return url.toString();
   }
 
+  public getOriginalSoundcloudUrl(soundcloudUrl: string, size: FetchExternalSourceThumbnailScale) {
+    const url = new URL(`original/soundcloud`, this.baseUrl);
+    url.searchParams.set("url", soundcloudUrl);
+    switch (size) {
+      case FetchExternalSourceThumbnailScale.Large:
+        url.searchParams.set("scale", "large");
+        break;
+      case FetchExternalSourceThumbnailScale.Ogp:
+        url.searchParams.set("scale", "ogp");
+        break;
+    }
+    return url.toString();
+  }
+
   public thumbnailPrimary(serial: number, size: VideoThumbnailScale) {
     const url = new URL(`/mads/${serial}/primary`, this.baseUrl);
     switch (size) {

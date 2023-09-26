@@ -54,6 +54,7 @@ generates:
         SemitagResolveEvent: ./SemitagEvent/model.js#SemitagEventModel
         SemitagResolving: ./SemitagResolving/model.js#SemitagResolvingModel
         SemitagSuggestTagsItem: ./SemitagSuggestTagsItem/model.js#SemitagSuggestTagsItemModel
+        SoundcloudOriginalSource: ../FetchExternal/SoundcloudOriginalSource.dto.js#SoundcloudOriginalSourceDTO
         SoundcloudVideoSource: ../SoundcloudVideoSource/dto.js#SoundcloudVideoSourceDTO
         SoundcloudVideoSourceCreateEvent: ../SoundcloudVideoSource/dto.js#SoundcloudVideoSourceEventDTO
         SoundcloudVideoSourceEvent: ../SoundcloudVideoSource/dto.js#SoundcloudVideoSourceEventDTO
