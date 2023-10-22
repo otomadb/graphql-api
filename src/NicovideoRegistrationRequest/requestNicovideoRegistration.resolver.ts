@@ -71,7 +71,7 @@ export const requestRegistration = async (
             })),
           },
         },
-        events: { create: { userId, type: "ACCEPT" } },
+        events: { create: { userId, type: "REQUEST" } },
       },
     });
 
