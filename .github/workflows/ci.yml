@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3
         with:
-          node-version: 20
+          node-version: 20.6.1
           cache: npm
       - run: npm ci
 
@@ -38,7 +38,7 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3
         with:
-          node-version: 20
+          node-version: 20.6.1
           cache: npm
       - run: npm ci
       - run: npm run codegen
@@ -79,7 +79,7 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3
         with:
-          node-version: 20
+          node-version: 20.6.1
           cache: npm
       - run: npm ci
       - run: npm run codegen

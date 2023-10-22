@@ -1,9 +1,9 @@
 # Builder
-FROM node:20-slim@sha256:8d26608b65edb3b0a0e1958a0a5a45209524c4df54bbe21a4ca53548bc97a3a5 AS builder
+FROM node:20.6.1-slim AS builder
 WORKDIR /app
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends openssl=3.0.9-1 \
+  && apt-get install -y --no-install-recommends openssl=3.0.11-1~deb12u1 \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -21,11 +21,11 @@ COPY ./tsconfig.json rollup.config.js ./
 RUN npm run rollup:build
 
 # Runner
-FROM node:20-slim@sha256:8d26608b65edb3b0a0e1958a0a5a45209524c4df54bbe21a4ca53548bc97a3a5 AS runner
+FROM node:20.6.1-slim AS runner
 WORKDIR /app
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends openssl=3.0.9-1 \
+  && apt-get install -y --no-install-recommends openssl=3.0.11-1~deb12u1 \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
