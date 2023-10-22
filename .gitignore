@@ -6,6 +6,7 @@ result
 .env
 .env.*.local
 !.env.*.local.example
+.envrc
 
 # VSCode
 .vscode/settings.json

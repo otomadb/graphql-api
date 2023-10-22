@@ -33,7 +33,7 @@
             actionlint
             alejandra
             hadolint
-            nodejs_20
+            # nodejs_20
             openssl
             pgcli
             postgresql_15
