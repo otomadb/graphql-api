@@ -129,7 +129,7 @@ const yoga = createYoga<ServerContext, UserContext>({
       TimelineEventService: mkTimelineEventService({
         prisma: prismaClient,
         redis: redisClient,
-        logger,
+        logger: logger.child({ service: "TimelineEventService" }),
       }),
       VideoService: mkVideoService({
         prisma: prismaClient,

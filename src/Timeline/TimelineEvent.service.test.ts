@@ -36,112 +36,9 @@ describe("TimelineEventService", () => {
   });
 
   describe("calcTimelineEvents()", () => {
-    beforeEach(async () => {
-      await prisma.$transaction([
-        prisma.video.createMany({ data: [{ id: "video1" }] }),
-        prisma.user.create({ data: { id: "user1" } }),
-        prisma.nicovideoRegistrationRequest.createMany({
-          data: [
-            {
-              id: "nicovideo_req1",
-              isChecked: true,
-              requestedById: "user1",
-              title: "nicovideo_req1",
-              sourceId: "nicovideo_req1",
-              thumbnailUrl: "thumbnail",
-            },
-            {
-              id: "nicovideo_req2",
-              isChecked: true,
-              requestedById: "user1",
-              title: "nicovideo_req2",
-              sourceId: "nicovideo_req2",
-              thumbnailUrl: "thumbnail",
-            },
-          ],
-        }),
-        prisma.youtubeRegistrationRequest.createMany({
-          data: [
-            {
-              id: "youtube_req1",
-              isChecked: true,
-              requestedById: "user1",
-              title: "youtube_req1",
-              sourceId: "youtube_req1",
-              thumbnailUrl: "thumbnail",
-            },
-            {
-              id: "youtube_req2",
-              isChecked: true,
-              requestedById: "user1",
-              title: "youtube_req2",
-              sourceId: "youtube_req2",
-              thumbnailUrl: "thumbnail",
-            },
-          ],
-        }),
-        prisma.videoEvent.createMany({
-          data: [
-            {
-              id: "1_1",
-              type: "REGISTER",
-              userId: "user1",
-              videoId: "video1",
-              createdAt: new Date("2021-01-01T00:00:00.000Z"),
-              payload: {},
-            },
-            {
-              id: "1_2",
-              type: "REGISTER",
-              userId: "user1",
-              videoId: "video1",
-              createdAt: new Date("2021-01-02T00:00:00.000Z"),
-              payload: {},
-            },
-          ],
-        }),
-        prisma.nicovideoRegistrationRequestEvent.createMany({
-          data: [
-            {
-              id: "2_1",
-              type: "REQUEST",
-              requestId: "nicovideo_req1",
-              userId: "user1",
-              createdAt: new Date("2021-01-01T01:00:00.000Z"),
-            },
-            {
-              id: "2_2",
-              type: "REQUEST",
-              requestId: "nicovideo_req2",
-              userId: "user1",
-              createdAt: new Date("2021-01-02T01:00:00.000Z"),
-            },
-          ],
-        }),
-        prisma.youtubeRegistrationRequestEvent.createMany({
-          data: [
-            {
-              id: "3_1",
-              type: "REQUEST",
-              requestId: "youtube_req1",
-              userId: "user1",
-              createdAt: new Date("2021-01-01T02:00:00.000Z"),
-            },
-            {
-              id: "3_2",
-              type: "REQUEST",
-              requestId: "youtube_req2",
-              userId: "user1",
-              createdAt: new Date("2021-01-02T02:00:00.000Z"),
-            },
-          ],
-        }),
-      ]);
-    });
-
     test("Redis側ですでに必要分がキャッシュ済み", async () => {
       await redis.set(
-        "timeline:user1",
+        `timeline:user1:${JSON.stringify({ REGISTER: true, REQUEST_NICOVIDEO: true, REQUEST_YOUTUBE: true })}`,
         JSON.stringify([
           {
             type: "REGISTER",
@@ -166,7 +63,11 @@ describe("TimelineEventService", () => {
         ] satisfies Cache[]),
       );
 
-      const actual = await service.calcTimelineEvents("user1", { take: 2, skip: 1 });
+      const actual = await service.calcTimelineEvents("user1", {
+        take: 2,
+        skip: 1,
+        filter: { REGISTER: true, REQUEST_NICOVIDEO: true, REQUEST_YOUTUBE: true },
+      });
       expect(actual.length).toBe(2);
 
       const actual0 = actual[0] as MadRegisteredTimelineEventDTO;
@@ -179,22 +80,131 @@ describe("TimelineEventService", () => {
     });
 
     test("Redis側のキャッシュが空", async () => {
-      const actual = await service.calcTimelineEvents("user1", { take: 3, skip: 3 });
+      await prisma.$transaction([
+        prisma.video.createMany({ data: [...new Array(10)].map((_, i) => ({ id: `video${i}` })) }),
+        prisma.user.create({ data: { id: "user1" } }),
+        prisma.nicovideoRegistrationRequest.createMany({
+          data: [...new Array(10)].map((_, i) => ({
+            id: `nicovideo_req${i}`,
+            isChecked: true,
+            requestedById: "user1",
+            title: `nicovideo_req${i}`,
+            sourceId: `nicovideo_req${i}`,
+            thumbnailUrl: "thumbnail",
+          })),
+        }),
+        prisma.youtubeRegistrationRequest.createMany({
+          data: [...new Array(10)].map((_, i) => ({
+            id: `youtube_req${i}`,
+            isChecked: true,
+            requestedById: "user1",
+            title: `youtube_req${i}`,
+            sourceId: `youtube_req${i}`,
+            thumbnailUrl: "thumbnail",
+          })),
+        }),
+        prisma.videoEvent.createMany({
+          data: [
+            {
+              id: "1_1",
+              type: "REGISTER",
+              userId: "user1",
+              videoId: "video1",
+              createdAt: new Date("2021-01-30T00:00:00.000Z"),
+              payload: {},
+            },
+            {
+              id: "1_2",
+              type: "REGISTER",
+              userId: "user1",
+              videoId: "video2",
+              createdAt: new Date("2021-01-29T00:00:00.000Z"),
+              payload: {},
+            },
+            {
+              id: "1_3",
+              type: "REGISTER",
+              userId: "user1",
+              videoId: "video3",
+              createdAt: new Date("2021-01-28T00:00:00.000Z"),
+              payload: {},
+            },
+          ],
+        }),
+        prisma.nicovideoRegistrationRequestEvent.createMany({
+          data: [
+            {
+              id: "2_1",
+              type: "REQUEST",
+              requestId: "nicovideo_req1",
+              userId: "user1",
+              createdAt: new Date("2021-01-30T01:00:00.000Z"),
+            },
+            {
+              id: "2_2",
+              type: "REQUEST",
+              requestId: "nicovideo_req2",
+              userId: "user1",
+              createdAt: new Date("2021-01-29T01:00:00.000Z"),
+            },
+            {
+              id: "2_3",
+              type: "REQUEST",
+              requestId: "nicovideo_req3",
+              userId: "user1",
+              createdAt: new Date("2021-01-28T01:00:00.000Z"),
+            },
+          ],
+        }),
+        prisma.youtubeRegistrationRequestEvent.createMany({
+          data: [
+            {
+              id: "3_1",
+              type: "REQUEST",
+              requestId: "youtube_req1",
+              userId: "user1",
+              createdAt: new Date("2021-01-30T02:00:00.000Z"),
+            },
+            {
+              id: "3_2",
+              type: "REQUEST",
+              requestId: "youtube_req2",
+              userId: "user1",
+              createdAt: new Date("2021-01-29T02:00:00.000Z"),
+            },
+            {
+              id: "3_3",
+              type: "REQUEST",
+              requestId: "youtube_req3",
+              userId: "user1",
+              createdAt: new Date("2021-01-28T02:00:00.000Z"),
+            },
+          ],
+        }),
+      ]);
+
+      const actual = await service.calcTimelineEvents("user1", {
+        take: 3,
+        skip: 3,
+        filter: { REGISTER: true, REQUEST_NICOVIDEO: true, REQUEST_YOUTUBE: true },
+      });
       expect(actual.length).toBe(3);
 
       const acutal0 = actual[0] as YoutubeMadRequestedTimelineEventDTO;
-      expect(acutal0.createdAt).toStrictEqual(new Date("2021-01-01T02:00:00.000Z"));
-      expect(acutal0.requestId).toBe("youtube_req1");
+      expect(acutal0.createdAt).toStrictEqual(new Date("2021-01-29T02:00:00.000Z"));
+      expect(acutal0.requestId).toBe("youtube_req2");
 
       const acutal1 = actual[1] as NicovideoMadRequestedTimelineEventDTO;
-      expect(acutal1.createdAt).toStrictEqual(new Date("2021-01-01T01:00:00.000Z"));
-      expect(acutal1.requestId).toBe("nicovideo_req1");
+      expect(acutal1.createdAt).toStrictEqual(new Date("2021-01-29T01:00:00.000Z"));
+      expect(acutal1.requestId).toBe("nicovideo_req2");
 
       const acutal2 = actual[2] as MadRegisteredTimelineEventDTO;
-      expect(acutal2.createdAt).toStrictEqual(new Date("2021-01-01T00:00:00.000Z"));
-      expect(acutal2.videoId).toBe("video1");
+      expect(acutal2.createdAt).toStrictEqual(new Date("2021-01-29T00:00:00.000Z"));
+      expect(acutal2.videoId).toBe("video2");
 
-      const actualCached = await redis.get("timeline:user1").then((v) => JSON.parse(v ?? "[]"));
+      const actualCached = await redis
+        .get(`timeline:user1:${JSON.stringify({ REGISTER: true, REQUEST_NICOVIDEO: true, REQUEST_YOUTUBE: true })}`)
+        .then((v) => JSON.parse(v ?? "[]"));
       expect(Array.isArray(actualCached)).toBe(true);
       expect(actualCached.length).toBe(6);
     });

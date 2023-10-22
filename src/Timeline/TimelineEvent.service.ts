@@ -26,11 +26,12 @@ export const mkTimelineEventService = ({
   return {
     async calcTimelineEvents(
       userId: string,
-      { take, skip }: { take: number; skip: number },
+      { take, skip, filter }: { take: number; skip: number; filter: Record<Cache["type"], boolean> },
     ): Promise<
       (MadRegisteredTimelineEventDTO | NicovideoMadRequestedTimelineEventDTO | YoutubeMadRequestedTimelineEventDTO)[]
     > {
-      const cached = await redis.get(`timeline:${userId}`).then((v) => JSON.parse(v ?? "[]"));
+      const redisKey = `timeline:${userId}:${JSON.stringify(filter)}`;
+      const cached = await redis.get(redisKey).then((v) => JSON.parse(v ?? "[]"));
       const parsedCached = z
         .array(
           z.union([
@@ -55,7 +56,7 @@ export const mkTimelineEventService = ({
 
       if (parsedCached.success) {
         const lack = skip + take - cached.length;
-        if (lack < 0)
+        if (lack <= 0)
           return parsedCached.data.slice(skip, skip + take).map(({ createdAt, ...v }) => {
             switch (v.type) {
               case "REGISTER":
@@ -73,18 +74,17 @@ export const mkTimelineEventService = ({
       const [v, nr, yr] = await prisma.$transaction([
         prisma.videoEvent.findMany({
           where: { type: "REGISTER" },
-          orderBy: { createdAt: "asc" },
+          orderBy: { createdAt: "desc" },
           take: take + skip,
         }),
         prisma.nicovideoRegistrationRequestEvent.findMany({
           where: { type: "REQUEST" },
-          orderBy: { createdAt: "asc" },
+          orderBy: { createdAt: "desc" },
           take: take + skip,
         }),
         prisma.youtubeRegistrationRequestEvent.findMany({
           where: { type: "REQUEST" },
-          include: { request: { select: { id: true } } },
-          orderBy: { createdAt: "asc" },
+          orderBy: { createdAt: "desc" },
           take: take + skip,
         }),
       ]);
@@ -113,10 +113,12 @@ export const mkTimelineEventService = ({
               createdAt,
             }) satisfies RequestYoutubeCache,
         ),
-      ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      ]
+        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+        .slice(0, skip + take);
 
-      await redis.setex(`timeline:${userId}`, 60 * 15, JSON.stringify(merged));
-      return merged.slice(skip, skip + take).map(({ createdAt, ...v }) => {
+      await redis.setex(redisKey, 60 * 15, JSON.stringify(merged));
+      return merged.slice(skip).map(({ createdAt, ...v }) => {
         switch (v.type) {
           case "REGISTER":
             return new MadRegisteredTimelineEventDTO(createdAt, v);

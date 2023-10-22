@@ -2,18 +2,27 @@ interface TimelineEvent {
   createdAt: DateTime!
 }
 
+"""
+音MADが登録されたことを表すタイムラインイベント
+"""
 type MadRegisteredTimelineEvent implements TimelineEvent {
   createdAt: DateTime!
 
   video: Video!
 }
 
+"""
+ニコニコ動画の音MADがリクエストされたことを表すタイムラインイベント
+"""
 type NicovideoMadRequestedTimelineEvent implements TimelineEvent {
   createdAt: DateTime!
 
   request: NicovideoRegistrationRequest!
 }
 
+"""
+Youtubeの音MADがリクエストされたことを表すタイムラインイベント
+"""
 type YoutubeMadRequestedTimelineEvent implements TimelineEvent {
   createdAt: DateTime!
 
