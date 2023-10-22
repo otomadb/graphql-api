@@ -22,7 +22,7 @@ import { err, isErr, ok, Result } from "../utils/Result.js";
 import { VideoDTO } from "../Video/dto.js";
 
 export const registerVideoInNeo4j = async (
-  { prisma, neo4j }: Pick<ResolverDeps, "prisma" | "logger" | "neo4j">,
+  { prisma, neo4j, TimelineEventService }: Pick<ResolverDeps, "prisma" | "logger" | "neo4j">,
   videoId: string,
 ): Promise<Result<unknown, true>> => {
   const session = neo4j.session();
