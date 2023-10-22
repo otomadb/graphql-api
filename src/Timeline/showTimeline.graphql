@@ -1,0 +1,8 @@
+type Query {
+  showTimeline(input: ShowTimelineInput!): [TimelineEvent!]!
+}
+
+input ShowTimelineInput {
+  take: Int!
+  skip: Int!
+}

@@ -1,0 +1,21 @@
+interface TimelineEvent {
+  createdAt: DateTime!
+}
+
+type MadRegisteredTimelineEvent implements TimelineEvent {
+  createdAt: DateTime!
+
+  video: Video!
+}
+
+type NicovideoMadRequestedTimelineEvent implements TimelineEvent {
+  createdAt: DateTime!
+
+  request: NicovideoRegistrationRequest!
+}
+
+type YoutubeMadRequestedTimelineEvent implements TimelineEvent {
+  createdAt: DateTime!
+
+  request: YoutubeRegistrationRequest!
+}

@@ -8,7 +8,11 @@ import { parseGqlID2 } from "../../id.js";
 import { ResolverDeps } from "../../types.js";
 import { requestRegistration } from "./request.js";
 
-export const resolverRequestYoutubeRegistration = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolverRequestYoutubeRegistration = ({
+  prisma,
+  logger,
+  TimelineEventService,
+}: Pick<ResolverDeps, "prisma" | "logger" | "TimelineEventService">) =>
   (async (
     _,
     { input: { title, thumbnailUrl, sourceId, taggings: gqlTaggings, semitaggings } },
@@ -53,6 +57,8 @@ export const resolverRequestYoutubeRegistration = ({ prisma, logger }: Pick<Reso
           throw new GraphQLError("Internal server error");
       }
     }
+
+    await TimelineEventService.clearAll();
 
     const request = result.data;
     return {

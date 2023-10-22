@@ -22,7 +22,7 @@ import { err, isErr, ok, Result } from "../utils/Result.js";
 import { VideoDTO } from "../Video/dto.js";
 
 export const registerVideoInNeo4j = async (
-  { prisma, neo4j }: Pick<ResolverDeps, "prisma" | "logger" | "neo4j">,
+  { prisma, neo4j, TimelineEventService }: Pick<ResolverDeps, "prisma" | "logger" | "neo4j">,
   videoId: string,
 ): Promise<Result<unknown, true>> => {
   const session = neo4j.session();
@@ -270,7 +270,8 @@ export const resolverRegisterVideoFromNicovideo = ({
   prisma,
   logger,
   neo4j,
-}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+  TimelineEventService,
+}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "TimelineEventService">) =>
   (async (_parent, { input }, { currentUser: user }, info) => {
     // TagのIDの妥当性及び重複チェック
     const tagIds = parseGqlIDs3("Tag", input.tagIds);
@@ -360,6 +361,8 @@ export const resolverRegisterVideoFromNicovideo = ({
 
     const video = result.data;
     await registerVideoInNeo4j({ prisma, logger, neo4j }, video.id);
+
+    await TimelineEventService.clearAll();
 
     return {
       __typename: "RegisterVideoFromNicovideoSucceededPayload",

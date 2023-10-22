@@ -71,6 +71,10 @@ jobs:
           - 7687:7687
         env:
           NEO4J_AUTH: ${{ env.NEO4J_USERNAME }}/${{ env.NEO4J_PASSWORD }}
+      redis:
+        image: redis:7.0@sha256:d634d2c07d1f70672aa2e8c2443643b23b5755ecfc068685b0dcf0b76a9db72b
+        ports:
+          - 6379:6379
     steps:
       - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
       - uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3
@@ -86,3 +90,4 @@ jobs:
           NEO4J_URL: ${{ env.NEO4J_URL }}
           NEO4J_USERNAME: ${{ env.NEO4J_USERNAME }}
           NEO4J_PASSWORD: ${{ env.NEO4J_PASSWORD }}
+          REDIS_URL: "redis://localhost:6379"

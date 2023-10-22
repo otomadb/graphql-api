@@ -18,12 +18,13 @@ generates:
         DateTime: Date
       contextType: ./types.js#Context
       mappers:
+        BilibiliMADSource: ../BilibiliMADSource/BilibiliMADSource.dto.js#BilibiliMADSourceDTO
+        BilibiliMADSourceCreateEvent: ../BilibiliMADSource/BilibiliMADSourceEvent.dto.js#BilibiliMADSourceEventDTO
+        BilibiliMADSourceEvent: ../BilibiliMADSource/BilibiliMADSourceEvent.dto.js#BilibiliMADSourceEventDTO
+        BilibiliMADSourceEventConnection: ../BilibiliMADSource/BilibiliMADSourceEventConnection.dto.js#BilibiliMADSourceEventConnectionDTO
         BilibiliOriginalSource: ../FetchExternal/BilibiliOriginalSource.dto.js#BilibiliOriginalSourceDTO
         BilibiliOriginalSourceTag: ../FetchExternal/BilibiliOriginalSourceTag.dto.js#BilibiliOriginalSourceTagDTO
-        BilibiliMADSource: ../BilibiliMADSource/BilibiliMADSource.dto.js#BilibiliMADSourceDTO
-        BilibiliMADSourceEvent: ../BilibiliMADSource/BilibiliMADSourceEvent.dto.js#BilibiliMADSourceEventDTO
-        BilibiliMADSourceCreateEvent: ../BilibiliMADSource/BilibiliMADSourceEvent.dto.js#BilibiliMADSourceEventDTO
-        BilibiliMADSourceEventConnection: ../BilibiliMADSource/BilibiliMADSourceEventConnection.dto.js#BilibiliMADSourceEventConnectionDTO
+        MadRegisteredTimelineEvent: ../Timeline/TimelineEvent.dto.js#MadRegisteredTimelineEventDTO
         Mylist: ./Mylist/model.js#MylistModel
         MylistConnection: ./MylistConnection/model.js#MylistConnectionModel
         MylistGroup: ./MylistGroup/model.js#MylistGroupModel
@@ -33,6 +34,7 @@ generates:
         MylistRegistrationConnection: ./MylistRegistrationConnection/model.js#MylistRegistrationConnectionModel
         MylistTagInclusion: ./MylistTagInclusion/model.js#MylistTagInclusionModel
         MylistVideoRecommendation: ./MylistVideoRecommendation/model.js#MylistVideoRecommendationModel
+        NicovideoMadRequestedTimelineEvent: ../Timeline/TimelineEvent.dto.js#NicovideoMadRequestedTimelineEventDTO
         NicovideoOriginalSourceTag: ./NicovideoOriginalSourceTag/model.js#NicovideoOriginalSourceTagModel
         NicovideoRegistrationRequest: ../NicovideoRegistrationRequest/dto.js#NicovideoRegistrationRequestDTO
         NicovideoRegistrationRequestAccepting: ../NicovideoRegistrationRequest/dto.js#NicovideoRegistrationRequestAcceptingDTO
@@ -54,11 +56,11 @@ generates:
         SemitagResolveEvent: ./SemitagEvent/model.js#SemitagEventModel
         SemitagResolving: ./SemitagResolving/model.js#SemitagResolvingModel
         SemitagSuggestTagsItem: ./SemitagSuggestTagsItem/model.js#SemitagSuggestTagsItemModel
-        SoundcloudOriginalSource: ../FetchExternal/SoundcloudOriginalSource.dto.js#SoundcloudOriginalSourceDTO
         SoundcloudMADSource: ../SoundcloudMADSource/SoundcloudMADSource.dto.js#SoundcloudMADSourceDTO
         SoundcloudMADSourceCreateEvent: ../SoundcloudMADSource/SoundcloudMADSourceEvent.dto.js#SoundcloudMADSourceEventDTO
         SoundcloudMADSourceEvent: ../SoundcloudMADSource/SoundcloudMADSourceEvent.dto.js#SoundcloudMADSourceEventDTO
         SoundcloudMADSourceEventConnection: ../SoundcloudMADSource/SoundcloudMADSourceEventConnection.dto.js#SoundcloudMADSourceEventConnectionDTO
+        SoundcloudOriginalSource: ../FetchExternal/SoundcloudOriginalSource.dto.js#SoundcloudOriginalSourceDTO
         Tag: ../Tag/dto.js#TagDTO
         TagEvent: ../Tag/dto.js#TagEventDTO
         TagName: ../Tag/dto.js#TagNameDTO
@@ -99,6 +101,7 @@ generates:
         VideoTitleEvent: ../Video/dto.js#VideoTitleEventDTO
         VideoTitleSetPrimaryEvent: ../Video/dto.js#VideoTitleEventDTO
         VideoTitleUnsetPrimaryEvent: ../Video/dto.js#VideoTitleEventDTO
+        YoutubeMadRequestedTimelineEvent: ../Timeline/TimelineEvent.dto.js#YoutubeMadRequestedTimelineEventDTO
         YoutubeRegistrationRequest: ../YoutubeRegistrationRequest/dto.js#YoutubeRegistrationRequestDTO
         YoutubeRegistrationRequestAccepting: ../YoutubeRegistrationRequest/dto.js#YoutubeRegistrationRequestAcceptingDTO
         YoutubeRegistrationRequestAcceptingNotification: ../YoutubeRegistrationRequest/dto.js#YoutubeRegistrationRequestAcceptingNotificationDTO

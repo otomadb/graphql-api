@@ -20,11 +20,15 @@ import { ImagesService } from "./Common/Images.service.js";
 import { mkLoggerService } from "./Common/Logger.service.js";
 import { mkSoundcloudService } from "./Common/Soundcloud.service.js";
 import { mkNeo4jService } from "./Neo4j/Neo4j.service.js";
+import { mkNicovideoRegistrationRequestService } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequest.service.js";
 import { makeResolvers } from "./resolvers/index.js";
 import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
 import typeDefs from "./schema.graphql";
 import { mkSoundcloudMADSourceService } from "./SoundcloudMADSource/SoundcloudMADSource.service.js";
+import { mkTimelineEventService } from "./Timeline/TimelineEvent.service.js";
 import { UserService } from "./User/service.js";
+import { mkVideoService } from "./Video/Video.service.js";
+import { mkYoutubeRegistrationRequestService } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequest.service.js";
 
 const jwksClient = createJwksClient({
   jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`,
@@ -122,6 +126,20 @@ const yoga = createYoga<ServerContext, UserContext>({
         logger: logger.child({ service: "SoundcloudMADSourceService" }),
       }),
       SoundcloudService,
+      TimelineEventService: mkTimelineEventService({
+        prisma: prismaClient,
+        redis: redisClient,
+        logger,
+      }),
+      VideoService: mkVideoService({
+        prisma: prismaClient,
+      }),
+      NicovideoRegistrationRequestService: mkNicovideoRegistrationRequestService({
+        prisma: prismaClient,
+      }),
+      YoutubeRegistrationRequestService: mkYoutubeRegistrationRequestService({
+        prisma: prismaClient,
+      }),
     }),
   }),
   cors: (request) => {

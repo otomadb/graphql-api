@@ -33,6 +33,11 @@ import { resolveTagParent } from "../Tag/TagParent.resolver.js";
 import { resolverTagParentConnection } from "../Tag/TagParentConnection.resolver.js";
 import { resolverTagSearchItemByName } from "../Tag/TagSearchItemByName.resolver.js";
 import { resolverTypeCategoryTag } from "../Tag/TypeCategoryTag.resolver.js";
+import {
+  mkMadRegisteredTimelineEventResolver,
+  mkNicovideoMadRequestedTimelineEventResolver,
+  mkYoutubeMadRequestedTimelineEventResolver,
+} from "../Timeline/TimelineEvent.resolver.js";
 import { resolveUser } from "../User/User.resolver.js";
 import { resolveVideo } from "../Video/Video.resolver.js";
 import { resolverVideoConnection } from "../Video/VideoConnection.resolver.js";
@@ -107,6 +112,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     BilibiliMADSourceEventConnection: resolverBilibiliMADSourceEventConnection(deps),
     BilibiliOriginalSource: mkBilibiliOriginalSourceResolver(deps),
     BilibiliOriginalSourceTag: resolverBilibiliOriginalSourceTag(deps),
+    MadRegisteredTimelineEvent: mkMadRegisteredTimelineEventResolver(deps),
     Mutation: resolveMutation(deps),
     Mylist: resolveMylist(deps),
     MylistConnection: resolverMylistConnection(),
@@ -117,6 +123,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     MylistRegistrationConnection: resolverMylistRegistrationConnection(),
     MylistTagInclusion: resolveMylistTagInclusion(deps),
     MylistVideoRecommendation: resolveMylistVideoRecommendation(deps),
+    NicovideoMadRequestedTimelineEvent: mkNicovideoMadRequestedTimelineEventResolver(deps),
     NicovideoOriginalSourceTag: resolveNicovideoOriginalSourceTag(deps),
     NicovideoRegistrationRequest: resolverNicovideoRegistrationRequest(deps),
     NicovideoRegistrationRequestAccepting: resolverNicovideoRegistrationRequestAccepting(deps),
@@ -177,6 +184,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     VideoTitleEvent: resolveVideoTitleEvent(),
     VideoTitleSetPrimaryEvent: resolveVideoTitleSetPrimaryEvent(deps),
     VideoTitleUnsetPrimaryEvent: resolveVideoTitleUnsetPrimaryEvent(deps),
+    YoutubeMadRequestedTimelineEvent: mkYoutubeMadRequestedTimelineEventResolver(deps),
     YoutubeRegistrationRequest: resolverYoutubeRegistrationRequest(deps),
     YoutubeRegistrationRequestAccepting: resolverYoutubeRegistrationRequestAccepting(deps),
     YoutubeRegistrationRequestAcceptingNotification: resolverYoutubeRegistrationRequestAcceptingNotification(deps),

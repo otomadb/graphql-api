@@ -269,7 +269,8 @@ export const resolverRegisterVideoFromYoutube = ({
   prisma,
   logger,
   neo4j,
-}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+  TimelineEventService,
+}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "TimelineEventService">) =>
   (async (_parent, { input }, { currentUser: user }) => {
     // TagのIDの妥当性及び重複チェック
     const tagIds = parseGqlIDs3("Tag", input.tagIds);
@@ -343,6 +344,8 @@ export const resolverRegisterVideoFromYoutube = ({
 
     const video = result.data;
     await registerVideoInNeo4j({ prisma, logger, neo4j }, video.id);
+
+    await TimelineEventService.clearAll();
 
     return {
       __typename: "RegisterVideoFromYoutubeSucceededPayload",
