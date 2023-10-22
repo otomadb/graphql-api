@@ -81,7 +81,11 @@ export const requestRegistration = async (
   }
 };
 
-export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolverRequestNicovideoRegistration = ({
+  prisma,
+  logger,
+  TimelineEventService,
+}: Pick<ResolverDeps, "prisma" | "logger" | "TimelineEventService">) =>
   (async (
     _,
     { input: { title, thumbnailUrl, sourceId, taggings: gqlTaggings, semitaggings } },
@@ -126,6 +130,8 @@ export const resolverRequestNicovideoRegistration = ({ prisma, logger }: Pick<Re
           throw new GraphQLError("Internal server error");
       }
     }
+
+    await TimelineEventService.clearAll();
 
     const request = result.data;
     return {

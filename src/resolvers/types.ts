@@ -9,8 +9,12 @@ import { Logger } from "pino";
 import { BilibiliMADSourceService } from "../BilibiliMADSource/BilibiliMADSource.service.js";
 import { ImagesService } from "../Common/Images.service.js";
 import { SoundcloudService as SoundcloudService2 } from "../Common/Soundcloud.service.js";
+import { NicovideoRegistrationRequestService } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequest.service.js";
 import { SoundcloudMADSourceService } from "../SoundcloudMADSource/SoundcloudMADSource.service.js";
+import { TimelineEventService } from "../Timeline/TimelineEvent.service.js";
 import { UserService } from "../User/service.js";
+import { VideoService } from "../Video/Video.service.js";
+import { YoutubeRegistrationRequestService } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequest.service.js";
 
 export type Auth0User = User<AppMetadata, UserMetadata>;
 
@@ -24,6 +28,10 @@ export type ResolverDeps = {
   BilibiliMADSourceService: BilibiliMADSourceService;
   SoundcloudMADSourceService: SoundcloudMADSourceService;
   SoundcloudService: SoundcloudService2;
+  TimelineEventService: TimelineEventService;
+  VideoService: VideoService;
+  NicovideoRegistrationRequestService: NicovideoRegistrationRequestService;
+  YoutubeRegistrationRequestService: YoutubeRegistrationRequestService;
 };
 export type ServerContext = {
   req: IncomingMessage;

@@ -20,6 +20,7 @@ import { resolverGetAllCategoryTag } from "../../Tag/getAllCategoryTag.resolver.
 import { resolverGetAllTypeCategoryTag } from "../../Tag/getAllTypeCategoryTag.resolver.js";
 import { resolverGetTag } from "../../Tag/getTag.resolver.js";
 import { resolverSearchTags } from "../../Tag/searchTags.resolver.js";
+import { mkShowTimelineResolver } from "../../Timeline/showTimeline.resolver.js";
 import { resolverFindUser } from "../../User/findUser.resolver.js";
 import { resolverGetUser } from "../../User/getUser.resolver.js";
 import { resolverFindMadBySerial } from "../../Video/findMadBySerial.resolver.js";
@@ -89,5 +90,6 @@ export const resolveQuery = (deps: ResolverDeps) =>
     notifications: resolverNotifications(deps),
     searchTags: resolverSearchTags(deps),
     searchVideos: resolverSearchVideos(deps),
+    showTimeline: mkShowTimelineResolver(deps),
     whoami: resolverWhoami(deps),
   }) satisfies Resolvers["Query"];

@@ -1,0 +1,11 @@
+type Query {
+  """
+  ユーザーのタイムラインを取得する
+  """
+  showTimeline(input: ShowTimelineInput!): [TimelineEvent!]! @auth
+}
+
+input ShowTimelineInput {
+  take: Int!
+  skip: Int!
+}
