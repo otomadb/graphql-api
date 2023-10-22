@@ -1,7 +1,7 @@
 import { GraphQLResolveInfo } from "graphql";
 import { beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 
-import { RegisterBilibiliMadSucceededPayload } from "../gql/graphql.js";
+import { RegisterBilibiliMadSucceededPayload } from "../resolvers/graphql.js";
 import { buildGqlId } from "../resolvers/id.js";
 import { Context } from "../resolvers/types.js";
 import { err, ok } from "../utils/Result.js";

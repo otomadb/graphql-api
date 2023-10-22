@@ -113,7 +113,3 @@ generates:
     plugins:
       - typescript
       - typescript-resolvers
-  ./src/gql/:
-    documents:
-      - src/**/*.e2e.test.ts
-    preset: client-preset

@@ -1,4 +1,4 @@
-import { FetchExternalSourceThumbnailScale, VideoThumbnailScale } from "../gql/graphql.js";
+import { FetchExternalSourceThumbnailScale, VideoThumbnailScale } from "../resolvers/graphql.js";
 
 export class ImagesService {
   private constructor(private baseUrl: string) {}
