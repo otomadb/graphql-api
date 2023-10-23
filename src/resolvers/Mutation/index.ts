@@ -13,6 +13,7 @@ import { resolverRegisterCategoryTagTyping } from "../../Tag/registerCategoryTag
 import { resolverRegisterTag } from "../../Tag/registerTag.resolver.js";
 import { resolverRegisterTagParentRelation } from "../../Tag/registerTagParentRelation.resolver.js";
 import { resolverRemoveTagFromVideo } from "../../Tag/removeTagFromVideo.resolver.js";
+import { mkRequestYoutubeRegistrationResolver } from "../../YoutubeRegistrationRequest/requestYoutubeRegistration.resolver.js";
 import { resolverRegisterVideoFromYoutube } from "../../YoutubeVideoSource/registerVideoFromYoutube.resolver.js";
 import { type Resolvers } from "../graphql.js";
 import { ResolverDeps } from "../types.js";
@@ -26,7 +27,6 @@ import { createMylistGroup } from "./createMylistGroup/createMylistGroup.js";
 import { resolverLikeVideo } from "./likeVideo/resolver.js";
 import { resolverRejectSemitag } from "./rejectSemitag/resolver.js";
 import { removeVideoFromMylist } from "./removeVideoFromMylist/removeVideoFromMylist.js";
-import { resolverRequestYoutubeRegistration } from "./requestYoutubeRegistration/resolver.js";
 import { resolverResolveSemitag } from "./resolveSemitag/resolver.js";
 import { resolverUndoLikeVideo } from "./undoLikeVideo/resolver.js";
 import { resolverWatchNotifications } from "./watchNotifications/resolver.js";
@@ -57,7 +57,7 @@ export const resolveMutation = (deps: ResolverDeps) =>
     removeTagFromVideo: resolverRemoveTagFromVideo(deps),
     removeVideoFromMylist: removeVideoFromMylist(deps),
     requestNicovideoRegistration: resolverRequestNicovideoRegistration(deps),
-    requestYoutubeRegistration: resolverRequestYoutubeRegistration(deps),
+    requestYoutubeRegistration: mkRequestYoutubeRegistrationResolver(deps),
     resovleSemitag: resolverResolveSemitag(deps),
     undoLikeVideo: resolverUndoLikeVideo(deps),
     watchNotifications: resolverWatchNotifications(deps),
