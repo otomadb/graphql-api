@@ -5,6 +5,7 @@ import { resolverBilibiliMADSourceCreateEvent } from "../BilibiliMADSource/Bilib
 import { resolverBilibiliMADSourceEventConnection } from "../BilibiliMADSource/BilibiliMADSourceEventConnection.resolver.js";
 import { mkBilibiliOriginalSourceResolver } from "../FetchExternal/BilibiliOriginalSource.resolver.js";
 import { resolverBilibiliOriginalSourceTag } from "../FetchExternal/BilibiliOriginalSourceTag.resolver.js";
+import { resolveNicovideoOriginalSourceTag } from "../FetchExternal/NicovideoOriginalSourceTag.resolver.js";
 import { mkSoundcloudOriginalSourceResolver } from "../FetchExternal/SoundcloudOriginalSource.resolver.js";
 import { resolverNicovideoRegistrationRequestAccepting } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestAccepting.resolver.js";
 import { resolverNicovideoRegistrationRequestAcceptingNotification } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestAcceptingNotification.resolver.js";
@@ -88,7 +89,6 @@ import { resolveMylistRegistration } from "./MylistRegistration/index.js";
 import { resolverMylistRegistrationConnection } from "./MylistRegistrationConnection/resolver.js";
 import { resolveMylistTagInclusion } from "./MylistTagInclusion/index.js";
 import { resolveMylistVideoRecommendation } from "./MylistVideoRecommendation/index.js";
-import { resolveNicovideoOriginalSourceTag } from "./NicovideoOriginalSourceTag/index.js";
 import { resolverNotification } from "./Notification/resolver.js";
 import { resolverNotificationConnection } from "./NotificationConnection/resolver.js";
 import { resolveQuery } from "./Query/index.js";

@@ -1,6 +1,6 @@
-import { TagSearchItemByNameDTO } from "../../Tag/dto.js";
-import { Resolvers } from "../graphql.js";
-import { ResolverDeps } from "../types.js";
+import { Resolvers } from "../resolvers/graphql.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { TagSearchItemByNameDTO } from "../Tag/dto.js";
 
 export const resolveNicovideoOriginalSourceTag = ({ meilisearch }: Pick<ResolverDeps, "meilisearch">) =>
   ({
