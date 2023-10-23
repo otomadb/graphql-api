@@ -78,12 +78,12 @@ export const mkTimelineEventService = ({
           take: take + skip,
         }),
         prisma.nicovideoRegistrationRequestEvent.findMany({
-          where: { type: "REQUEST" },
+          where: { type: "REQUEST", request: { isChecked: false } },
           orderBy: { createdAt: "desc" },
           take: take + skip,
         }),
         prisma.youtubeRegistrationRequestEvent.findMany({
-          where: { type: "REQUEST" },
+          where: { type: "REQUEST", request: { isChecked: false } },
           orderBy: { createdAt: "desc" },
           take: take + skip,
         }),
