@@ -1,18 +1,17 @@
 import { GraphQLError } from "graphql";
 
-import { isErr } from "../../../utils/Result.js";
-import { YoutubeRegistrationRequestDTO } from "../../../YoutubeRegistrationRequest/dto.js";
-import { YoutubeVideoSourceDTO } from "../../../YoutubeVideoSource/dto.js";
-import { MutationResolvers, ResolversTypes } from "../../graphql.js";
-import { parseGqlID2 } from "../../id.js";
-import { ResolverDeps } from "../../types.js";
-import { requestRegistration } from "./request.js";
+import { MutationResolvers, ResolversTypes } from "../resolvers/graphql.js";
+import { parseGqlID2 } from "../resolvers/id.js";
+import { ResolverDeps } from "../resolvers/types.js";
+import { isErr } from "../utils/Result.js";
+import { YoutubeVideoSourceDTO } from "../YoutubeVideoSource/dto.js";
+import { YoutubeRegistrationRequestDTO } from "./dto.js";
 
-export const resolverRequestYoutubeRegistration = ({
-  prisma,
+export const mkRequestYoutubeRegistrationResolver = ({
   logger,
   TimelineEventService,
-}: Pick<ResolverDeps, "prisma" | "logger" | "TimelineEventService">) =>
+  YoutubeRegistrationRequestService,
+}: Pick<ResolverDeps, "logger" | "YoutubeRegistrationRequestService" | "TimelineEventService">) =>
   (async (
     _,
     { input: { title, thumbnailUrl, sourceId, taggings: gqlTaggings, semitaggings } },
@@ -31,7 +30,7 @@ export const resolverRequestYoutubeRegistration = ({
       taggings.push({ tagId: parsed.data, note: note ?? null });
     }
 
-    const result = await requestRegistration(prisma, {
+    const result = await YoutubeRegistrationRequestService.requestRegistration({
       userId: user.id,
       title,
       thumbnailUrl,
