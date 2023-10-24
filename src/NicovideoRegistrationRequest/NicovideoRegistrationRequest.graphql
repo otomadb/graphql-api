@@ -17,6 +17,22 @@ type NicovideoRegistrationRequest implements Node & RegistrationRequest {
 
   originalUrl: String!
   embedUrl: String!
+
+  events(input: NicovideoRegistrationRequestEventsInput!): NicovideoRegistrationRequestEventConnection!
+}
+
+input NicovideoRegistrationRequestEventsInput {
+  first: Int
+  after: String
+
+  last: Int
+  before: String
+
+  orderBy: NicovideoRegistrationRequestEventsInputOrderBy! = { createdAt: DESC }
+}
+
+input NicovideoRegistrationRequestEventsInputOrderBy {
+  createdAt: SortOrder
 }
 
 type NicovideoRegistrationRequestTagging implements Node & RegistrationRequestTagging {

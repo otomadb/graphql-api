@@ -39,7 +39,9 @@ export type NodeType =
   | "SoundcloudMADSource"
   | "SoundcloudMADSourceEvent"
   | "BilibiliMADSource"
-  | "BilibiliMADSourceEvent";
+  | "BilibiliMADSourceEvent"
+  | "NicovideoRegistrationRequestEvent"
+  | "YoutubeRegistrationRequestEvent";
 
 export const buildGqlId = (type: NodeType, dbId: string): string =>
   Buffer.from(`${type}:${dbId}`).toString("base64url");

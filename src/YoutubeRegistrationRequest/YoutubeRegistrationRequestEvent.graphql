@@ -1,0 +1,55 @@
+"""
+Youtubeの動画リクエスト関連のイベント
+"""
+interface YoutubeRegistrationRequestEvent implements Node & Event {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+  request: YoutubeRegistrationRequest!
+}
+
+type YoutubeRegistrationRequestEventEdge {
+  cursor: String!
+  node: YoutubeRegistrationRequestEvent!
+}
+
+type YoutubeRegistrationRequestEventConnection {
+  nodes: [YoutubeRegistrationRequestEvent!]!
+  edges: [YoutubeRegistrationRequestEventEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""
+Youtubeの動画をリクエスト時に発生するイベント
+"""
+type YoutubeRegistrationRequestRequestEvent implements Node & Event & YoutubeRegistrationRequestEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+  request: YoutubeRegistrationRequest!
+}
+
+"""
+Youtubeの動画をリクエストを承認した時に発生するイベント
+"""
+type YoutubeRegistrationRequestAcceptEvent implements Node & Event & YoutubeRegistrationRequestEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+  request: YoutubeRegistrationRequest!
+}
+
+"""
+Youtubeの動画をリクエストを拒否した時に発生するイベント
+"""
+type YoutubeRegistrationRequestRejectEvent implements Node & Event & YoutubeRegistrationRequestEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+  request: YoutubeRegistrationRequest!
+}

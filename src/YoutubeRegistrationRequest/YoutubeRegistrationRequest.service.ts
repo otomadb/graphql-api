@@ -7,7 +7,7 @@ import { YoutubeRegistrationRequestDTO } from "./dto.js";
 export const mkYoutubeRegistrationRequestService = ({ prisma }: { prisma: PrismaClient }) => {
   return {
     getByIdOrThrow(id: string) {
-      return prisma.nicovideoRegistrationRequest
+      return prisma.youtubeRegistrationRequest
         .findUniqueOrThrow({ where: { id } })
         .then((v) => YoutubeRegistrationRequestDTO.fromPrisma(v));
     },

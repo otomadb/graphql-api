@@ -59,6 +59,22 @@ type YoutubeRegistrationRequest implements Node & RegistrationRequest {
 
   originalUrl: String!
   embedUrl: String!
+
+  events(input: YoutubeRegistrationRequestEventsInput!): YoutubeRegistrationRequestEventConnection!
+}
+
+input YoutubeRegistrationRequestEventsInput {
+  first: Int
+  after: String
+
+  last: Int
+  before: String
+
+  orderBy: YoutubeRegistrationRequestEventsInputOrderBy! = { createdAt: DESC }
+}
+
+input YoutubeRegistrationRequestEventsInputOrderBy {
+  createdAt: SortOrder
 }
 
 type YoutubeRegistrationRequestTagging implements Node & RegistrationRequestTagging {

@@ -7,12 +7,19 @@ import { mkBilibiliOriginalSourceResolver } from "../FetchExternal/BilibiliOrigi
 import { resolverBilibiliOriginalSourceTag } from "../FetchExternal/BilibiliOriginalSourceTag.resolver.js";
 import { resolveNicovideoOriginalSourceTag } from "../FetchExternal/NicovideoOriginalSourceTag.resolver.js";
 import { mkSoundcloudOriginalSourceResolver } from "../FetchExternal/SoundcloudOriginalSource.resolver.js";
+import { resolverNicovideoRegistrationRequest } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequest.resolver.js";
 import { resolverNicovideoRegistrationRequestAccepting } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestAccepting.resolver.js";
 import { resolverNicovideoRegistrationRequestAcceptingNotification } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestAcceptingNotification.resolver.js";
 import { resolverNicovideoRegistrationRequestConnection } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestConnection.resolver.js";
+import {
+  mkNicovideoRegistrationRequestAcceptEventResolver,
+  mkNicovideoRegistrationRequestEventResolver,
+  mkNicovideoRegistrationRequestRejectEventResolver,
+  mkNicovideoRegistrationRequestRequestEventResolver,
+} from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.resolver.js";
+import { mkNicovideoRegistrationRequestEventConnectionResolver } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestEventConnection.resolver.js";
 import { resolverNicovideoRegistrationRequestRejecting } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestRejecting.resolver.js";
 import { resolverNicovideoRegistrationRequestRejectingNotification } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestRejectingNotification.resolver.js";
-import { resolverNicovideoRegistrationRequest } from "../NicovideoRegistrationRequest/resolver.js";
 import { resolverNicovideoVideoSource } from "../NicovideoVideoSource/NicovideoVideoSource.resolver.js";
 import {
   resolveNicovideoVideoSourceCreateEvent,
@@ -70,6 +77,13 @@ import { resolverYoutubeRegistrationRequest } from "../YoutubeRegistrationReques
 import { resolverYoutubeRegistrationRequestAccepting } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestAccepting.resolver.js";
 import { resolverYoutubeRegistrationRequestAcceptingNotification } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestAcceptingNotification.resolver.js";
 import { resolverYoutubeRegistrationRequestConnection } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestConnection.resolver.js";
+import {
+  mkYoutubeRegistrationRequestAcceptEventResolver,
+  mkYoutubeRegistrationRequestEventResolver,
+  mkYoutubeRegistrationRequestRejectEventResolver,
+  mkYoutubeRegistrationRequestRequestEventResolver,
+} from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.resolver.js";
+import { mkYoutubeRegistrationRequestEventConnectionResolver } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestEventConnection.resolver.js";
 import { resolverYoutubeRegistrationRequestRejecting } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestRejecting.resolver.js";
 import { resolverYoutubeRegistrationRequestRejectingNotification } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestRejectingNotification.resolver.js";
 import { resolveYoutubeVideoSource } from "../YoutubeVideoSource/YoutubeVideoSource.resolver.js";
@@ -126,11 +140,16 @@ export const makeResolvers = (deps: ResolverDeps) =>
     NicovideoMadRequestedTimelineEvent: mkNicovideoMadRequestedTimelineEventResolver(deps),
     NicovideoOriginalSourceTag: resolveNicovideoOriginalSourceTag(deps),
     NicovideoRegistrationRequest: resolverNicovideoRegistrationRequest(deps),
+    NicovideoRegistrationRequestAcceptEvent: mkNicovideoRegistrationRequestAcceptEventResolver(deps),
     NicovideoRegistrationRequestAccepting: resolverNicovideoRegistrationRequestAccepting(deps),
     NicovideoRegistrationRequestAcceptingNotification: resolverNicovideoRegistrationRequestAcceptingNotification(deps),
     NicovideoRegistrationRequestConnection: resolverNicovideoRegistrationRequestConnection(),
+    NicovideoRegistrationRequestEvent: mkNicovideoRegistrationRequestEventResolver(deps),
+    NicovideoRegistrationRequestEventConnection: mkNicovideoRegistrationRequestEventConnectionResolver(deps),
+    NicovideoRegistrationRequestRejectEvent: mkNicovideoRegistrationRequestRejectEventResolver(deps),
     NicovideoRegistrationRequestRejecting: resolverNicovideoRegistrationRequestRejecting(deps),
     NicovideoRegistrationRequestRejectingNotification: resolverNicovideoRegistrationRequestRejectingNotification(deps),
+    NicovideoRegistrationRequestRequestEvent: mkNicovideoRegistrationRequestRequestEventResolver(deps),
     NicovideoVideoSource: resolverNicovideoVideoSource(deps),
     NicovideoVideoSourceCreateEvent: resolveNicovideoVideoSourceCreateEvent(deps),
     NicovideoVideoSourceEvent: resolveNicovideoVideoSourceEvent(),
@@ -186,11 +205,16 @@ export const makeResolvers = (deps: ResolverDeps) =>
     VideoTitleUnsetPrimaryEvent: resolveVideoTitleUnsetPrimaryEvent(deps),
     YoutubeMadRequestedTimelineEvent: mkYoutubeMadRequestedTimelineEventResolver(deps),
     YoutubeRegistrationRequest: resolverYoutubeRegistrationRequest(deps),
+    YoutubeRegistrationRequestAcceptEvent: mkYoutubeRegistrationRequestAcceptEventResolver(deps),
     YoutubeRegistrationRequestAccepting: resolverYoutubeRegistrationRequestAccepting(deps),
     YoutubeRegistrationRequestAcceptingNotification: resolverYoutubeRegistrationRequestAcceptingNotification(deps),
     YoutubeRegistrationRequestConnection: resolverYoutubeRegistrationRequestConnection(),
+    YoutubeRegistrationRequestEvent: mkYoutubeRegistrationRequestEventResolver(deps),
+    YoutubeRegistrationRequestEventConnection: mkYoutubeRegistrationRequestEventConnectionResolver(deps),
+    YoutubeRegistrationRequestRejectEvent: mkYoutubeRegistrationRequestRejectEventResolver(deps),
     YoutubeRegistrationRequestRejecting: resolverYoutubeRegistrationRequestRejecting(deps),
     YoutubeRegistrationRequestRejectingNotification: resolverYoutubeRegistrationRequestRejectingNotification(deps),
+    YoutubeRegistrationRequestRequestEvent: mkYoutubeRegistrationRequestRequestEventResolver(deps),
     YoutubeVideoSource: resolveYoutubeVideoSource(deps),
     YoutubeVideoSourceCreateEvent: resolveYoutubeVideoSourceCreateEvent(deps),
     YoutubeVideoSourceEvent: resolveYoutubeVideoSourceEvent(),
