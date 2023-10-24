@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
 
-import { isValidYoutubeSourceId } from "../../../utils/isValidYoutubeSourceId.js";
-import { QueryResolvers } from "../../graphql.js";
+import { QueryResolvers } from "../resolvers/graphql.js";
+import { isValidYoutubeSourceId } from "../utils/isValidYoutubeSourceId.js";
 
 export const resolverFetchYoutube = () =>
   (async (_parent, { input: { sourceId } }) => {

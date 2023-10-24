@@ -44,21 +44,25 @@ describe("TimelineEventService", () => {
             type: "REGISTER",
             videoId: "video4",
             createdAt: new Date("2021-01-04T00:00:00.000Z"),
+            eventId: "4",
           },
           {
             type: "REGISTER",
             videoId: "video3",
             createdAt: new Date("2021-01-03T00:00:00.000Z"),
+            eventId: "3",
           },
           {
             type: "REGISTER",
             videoId: "video2",
             createdAt: new Date("2021-01-02T00:00:00.000Z"),
+            eventId: "2",
           },
           {
             type: "REGISTER",
             videoId: "video1",
             createdAt: new Date("2021-01-01T00:00:00.000Z"),
+            eventId: "1",
           },
         ] satisfies Cache[]),
       );
@@ -73,10 +77,12 @@ describe("TimelineEventService", () => {
       const actual0 = actual[0] as MadRegisteredTimelineEventDTO;
       expect(actual0.createdAt).toStrictEqual(new Date("2021-01-03T00:00:00.000Z"));
       expect(actual0.videoId).toBe("video3");
+      expect(actual0.eventId).toBe("3");
 
       const actual1 = actual[1] as MadRegisteredTimelineEventDTO;
       expect(actual1.createdAt).toStrictEqual(new Date("2021-01-02T00:00:00.000Z"));
       expect(actual1.videoId).toBe("video2");
+      expect(actual1.eventId).toBe("2");
     });
 
     test("Redis側のキャッシュが空", async () => {
@@ -193,14 +199,17 @@ describe("TimelineEventService", () => {
       const acutal0 = actual[0] as YoutubeMadRequestedTimelineEventDTO;
       expect(acutal0.createdAt).toStrictEqual(new Date("2021-01-29T02:00:00.000Z"));
       expect(acutal0.requestId).toBe("youtube_req2");
+      expect(acutal0.eventId).toBe("3_2");
 
       const acutal1 = actual[1] as NicovideoMadRequestedTimelineEventDTO;
       expect(acutal1.createdAt).toStrictEqual(new Date("2021-01-29T01:00:00.000Z"));
       expect(acutal1.requestId).toBe("nicovideo_req2");
+      expect(acutal1.eventId).toBe("2_2");
 
       const acutal2 = actual[2] as MadRegisteredTimelineEventDTO;
       expect(acutal2.createdAt).toStrictEqual(new Date("2021-01-29T00:00:00.000Z"));
       expect(acutal2.videoId).toBe("video2");
+      expect(acutal2.eventId).toBe("1_2");
 
       const actualCached = await redis
         .get(`timeline:user1:${JSON.stringify({ REGISTER: true, REQUEST_NICOVIDEO: true, REQUEST_YOUTUBE: true })}`)

@@ -3,7 +3,9 @@
 import { mkFindBilibiliMADSourceResolver } from "../../BilibiliMADSource/findBilibiliMADSource.resolver.js";
 import { resolverGetBilibiliMADSource } from "../../BilibiliMADSource/getBilibiliMADSource.resolver.js";
 import { resolverFetchBilibili } from "../../FetchExternal/fetchBilibili.resolver.js";
+import { fetchNicovideo } from "../../FetchExternal/fetchNicovideo.js";
 import { mkFetchSoundcloudResolver } from "../../FetchExternal/fetchSoundcloud.resolver.js";
+import { resolverFetchYoutube } from "../../FetchExternal/fetchYoutube.js";
 import { resolverFindNicovideoRegistrationRequest } from "../../NicovideoRegistrationRequest/findNicovideoRegistrationRequest.resolver.js";
 import { findNicovideoRegistrationRequests } from "../../NicovideoRegistrationRequest/findNicovideoRegistrationRequests.resolver.js";
 import { resolverFindUncheckedNicovideoRegistrationRequests } from "../../NicovideoRegistrationRequest/findUncheckedNicovideoRegistrationRequests.resolver.js";
@@ -35,8 +37,6 @@ import { resolverFindYoutubeVideoSource } from "../../YoutubeVideoSource/findYou
 import { getYoutubeVideoSource } from "../../YoutubeVideoSource/getYoutubeVideoSource.resolver.js";
 import { type Resolvers } from "../graphql.js";
 import { ResolverDeps } from "../types.js";
-import { fetchNicovideo } from "./fetchNicovideo/fetchNicovideo.js";
-import { resolverFetchYoutube } from "./fetchYoutube/resolver.js";
 import { resolverFindMylist } from "./findMylist/findMylist.js";
 import { findSemitags } from "./findSemitags/findSemitags.js";
 import { getMylist } from "./getMylist/resolver.js";

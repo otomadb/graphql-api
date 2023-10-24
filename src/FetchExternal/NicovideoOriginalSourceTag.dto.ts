@@ -1,4 +1,4 @@
-export class NicovideoOriginalSourceTagModel {
+export class NicovideoOriginalSourceTagDTO {
   constructor(private readonly source: { name: string }) {}
 
   get name() {

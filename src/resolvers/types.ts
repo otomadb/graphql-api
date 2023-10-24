@@ -10,11 +10,14 @@ import { BilibiliMADSourceService } from "../BilibiliMADSource/BilibiliMADSource
 import { ImagesService } from "../Common/Images.service.js";
 import { SoundcloudService as SoundcloudService2 } from "../Common/Soundcloud.service.js";
 import { NicovideoRegistrationRequestService } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequest.service.js";
+import { NicovideoRegistrationRequestEventService } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.service.js";
 import { SoundcloudMADSourceService } from "../SoundcloudMADSource/SoundcloudMADSource.service.js";
 import { TimelineEventService } from "../Timeline/TimelineEvent.service.js";
 import { UserService } from "../User/service.js";
 import { VideoService } from "../Video/Video.service.js";
+import { VideoEventService } from "../Video/VideoEvent.service.js";
 import { YoutubeRegistrationRequestService } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequest.service.js";
+import { YoutubeRegistrationRequestEventService } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.service.js";
 
 export type Auth0User = User<AppMetadata, UserMetadata>;
 
@@ -32,6 +35,9 @@ export type ResolverDeps = {
   VideoService: VideoService;
   NicovideoRegistrationRequestService: NicovideoRegistrationRequestService;
   YoutubeRegistrationRequestService: YoutubeRegistrationRequestService;
+  NicovideoRegistrationRequestEventService: NicovideoRegistrationRequestEventService;
+  YoutubeRegistrationRequestEventService: YoutubeRegistrationRequestEventService;
+  VideoEventService: VideoEventService;
 };
 export type ServerContext = {
   req: IncomingMessage;

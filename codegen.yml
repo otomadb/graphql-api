@@ -35,13 +35,18 @@ generates:
         MylistTagInclusion: ./MylistTagInclusion/model.js#MylistTagInclusionModel
         MylistVideoRecommendation: ./MylistVideoRecommendation/model.js#MylistVideoRecommendationModel
         NicovideoMadRequestedTimelineEvent: ../Timeline/TimelineEvent.dto.js#NicovideoMadRequestedTimelineEventDTO
-        NicovideoOriginalSourceTag: ./NicovideoOriginalSourceTag/model.js#NicovideoOriginalSourceTagModel
+        NicovideoOriginalSourceTag: ../FetchExternal/NicovideoOriginalSourceTag.dto.js#NicovideoOriginalSourceTagDTO
         NicovideoRegistrationRequest: ../NicovideoRegistrationRequest/dto.js#NicovideoRegistrationRequestDTO
+        NicovideoRegistrationRequestAcceptEvent: ../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.dto.js#NicovideoRegistrationRequestAcceptEventDTO
         NicovideoRegistrationRequestAccepting: ../NicovideoRegistrationRequest/dto.js#NicovideoRegistrationRequestAcceptingDTO
         NicovideoRegistrationRequestAcceptingNotification: ./Notification/model.js#NotificationModel
         NicovideoRegistrationRequestConnection: ../NicovideoRegistrationRequest/dto.js#NicovideoRegistrationRequestConnectionDTO
+        NicovideoRegistrationRequestEvent: ../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.dto.js#NicovideoRegistrationRequestEventDTO
+        NicovideoRegistrationRequestEventConnection: ../NicovideoRegistrationRequest/NicovideoRegistrationRequestEventConnection.dto.js#NicovideoRegistrationRequestEventConnectionDTO
+        NicovideoRegistrationRequestRejectEvent: ../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.dto.js#NicovideoRegistrationRequestRejectEventDTO
         NicovideoRegistrationRequestRejecting: ../NicovideoRegistrationRequest/dto.js#NicovideoRegistrationRequestRejectingDTO
         NicovideoRegistrationRequestRejectingNotification: ./Notification/model.js#NotificationModel
+        NicovideoRegistrationRequestRequestEvent: ../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.dto.js#NicovideoRegistrationRequestRequestEventDTO
         NicovideoVideoSource: ../NicovideoVideoSource/dto.js#NicovideoVideoSourceDTO
         NicovideoVideoSourceCreateEvent: ../NicovideoVideoSource/dto.js#NicovideoVideoSourceEventDTO
         NicovideoVideoSourceEvent: ../NicovideoVideoSource/dto.js#NicovideoVideoSourceEventDTO
@@ -103,11 +108,16 @@ generates:
         VideoTitleUnsetPrimaryEvent: ../Video/dto.js#VideoTitleEventDTO
         YoutubeMadRequestedTimelineEvent: ../Timeline/TimelineEvent.dto.js#YoutubeMadRequestedTimelineEventDTO
         YoutubeRegistrationRequest: ../YoutubeRegistrationRequest/dto.js#YoutubeRegistrationRequestDTO
+        YoutubeRegistrationRequestAcceptEvent: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.dto.js#YoutubeRegistrationRequestAcceptEventDTO
         YoutubeRegistrationRequestAccepting: ../YoutubeRegistrationRequest/dto.js#YoutubeRegistrationRequestAcceptingDTO
         YoutubeRegistrationRequestAcceptingNotification: ../YoutubeRegistrationRequest/dto.js#YoutubeRegistrationRequestAcceptingNotificationDTO
         YoutubeRegistrationRequestConnection: ../YoutubeRegistrationRequest/dto.js#YoutubeRegistrationRequestConnectionDTO
+        YoutubeRegistrationRequestEvent: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.dto.js#YoutubeRegistrationRequestEventDTO
+        YoutubeRegistrationRequestEventConnection: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestEventConnection.dto.js#YoutubeRegistrationRequestEventConnectionDTO
+        YoutubeRegistrationRequestRejectEvent: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.dto.js#YoutubeRegistrationRequestRejectEventDTO
         YoutubeRegistrationRequestRejecting: ../YoutubeRegistrationRequest/dto.js#YoutubeRegistrationRequestRejectingDTO
         YoutubeRegistrationRequestRejectingNotification: ../YoutubeRegistrationRequest/dto.js#YoutubeRegistrationRequestRejectingNotificationDTO
+        YoutubeRegistrationRequestRequestEvent: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.dto.js#YoutubeRegistrationRequestRequestEventDTO
         YoutubeVideoSource: ../YoutubeVideoSource/dto.js#YoutubeVideoSourceDTO
         YoutubeVideoSourceCreateEvent: ../YoutubeVideoSource/dto.js#YoutubeVideoSourceEventDTO
         YoutubeVideoSourceEvent: ../YoutubeVideoSource/dto.js#YoutubeVideoSourceEventDTO

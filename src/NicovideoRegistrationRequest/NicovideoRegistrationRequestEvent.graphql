@@ -1,0 +1,55 @@
+"""
+ニコニコ動画の動画リクエスト関連のイベント
+"""
+interface NicovideoRegistrationRequestEvent implements Node & Event {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+  request: NicovideoRegistrationRequest!
+}
+
+type NicovideoRegistrationRequestEventEdge {
+  cursor: String!
+  node: NicovideoRegistrationRequestEvent!
+}
+
+type NicovideoRegistrationRequestEventConnection {
+  nodes: [NicovideoRegistrationRequestEvent!]!
+  edges: [NicovideoRegistrationRequestEventEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""
+ニコニコ動画の動画をリクエスト時に発生するイベント
+"""
+type NicovideoRegistrationRequestRequestEvent implements Node & Event & NicovideoRegistrationRequestEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+  request: NicovideoRegistrationRequest!
+}
+
+"""
+ニコニコ動画の動画をリクエストを承認した時に発生するイベント
+"""
+type NicovideoRegistrationRequestAcceptEvent implements Node & Event & NicovideoRegistrationRequestEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+  request: NicovideoRegistrationRequest!
+}
+
+"""
+ニコニコ動画の動画をリクエストを拒否した時に発生するイベント
+"""
+type NicovideoRegistrationRequestRejectEvent implements Node & Event & NicovideoRegistrationRequestEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+  request: NicovideoRegistrationRequest!
+}
