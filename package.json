@@ -31,7 +31,7 @@
     "@envelop/generic-auth": "^5.0.6",
     "@envelop/prometheus": "^7.0.4",
     "@prisma/client": "5.4.2",
-    "auth0": "^3.3.0",
+    "auth0": "^4.0.0",
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
     "graphql-yoga": "^5.0.0",
