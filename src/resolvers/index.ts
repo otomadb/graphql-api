@@ -76,6 +76,13 @@ import { resolverYoutubeRegistrationRequest } from "../YoutubeRegistrationReques
 import { resolverYoutubeRegistrationRequestAccepting } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestAccepting.resolver.js";
 import { resolverYoutubeRegistrationRequestAcceptingNotification } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestAcceptingNotification.resolver.js";
 import { resolverYoutubeRegistrationRequestConnection } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestConnection.resolver.js";
+import {
+  mkYoutubeRegistrationRequestAcceptEventResolver,
+  mkYoutubeRegistrationRequestEventResolver,
+  mkYoutubeRegistrationRequestRejectEventResolver,
+  mkYoutubeRegistrationRequestRequestEventResolver,
+} from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.resolver.js";
+import { mkYoutubeRegistrationRequestEventConnectionResolver } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestEventConnection.resolver.js";
 import { resolverYoutubeRegistrationRequestRejecting } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestRejecting.resolver.js";
 import { resolverYoutubeRegistrationRequestRejectingNotification } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestRejectingNotification.resolver.js";
 import { resolveYoutubeVideoSource } from "../YoutubeVideoSource/YoutubeVideoSource.resolver.js";
@@ -198,11 +205,16 @@ export const makeResolvers = (deps: ResolverDeps) =>
     VideoTitleUnsetPrimaryEvent: resolveVideoTitleUnsetPrimaryEvent(deps),
     YoutubeMadRequestedTimelineEvent: mkYoutubeMadRequestedTimelineEventResolver(deps),
     YoutubeRegistrationRequest: resolverYoutubeRegistrationRequest(deps),
+    YoutubeRegistrationRequestAcceptEvent: mkYoutubeRegistrationRequestAcceptEventResolver(deps),
     YoutubeRegistrationRequestAccepting: resolverYoutubeRegistrationRequestAccepting(deps),
     YoutubeRegistrationRequestAcceptingNotification: resolverYoutubeRegistrationRequestAcceptingNotification(deps),
     YoutubeRegistrationRequestConnection: resolverYoutubeRegistrationRequestConnection(),
+    YoutubeRegistrationRequestEvent: mkYoutubeRegistrationRequestEventResolver(deps),
+    YoutubeRegistrationRequestEventConnection: mkYoutubeRegistrationRequestEventConnectionResolver(deps),
+    YoutubeRegistrationRequestRejectEvent: mkYoutubeRegistrationRequestRejectEventResolver(deps),
     YoutubeRegistrationRequestRejecting: resolverYoutubeRegistrationRequestRejecting(deps),
     YoutubeRegistrationRequestRejectingNotification: resolverYoutubeRegistrationRequestRejectingNotification(deps),
+    YoutubeRegistrationRequestRequestEvent: mkYoutubeRegistrationRequestRequestEventResolver(deps),
     YoutubeVideoSource: resolveYoutubeVideoSource(deps),
     YoutubeVideoSourceCreateEvent: resolveYoutubeVideoSourceCreateEvent(deps),
     YoutubeVideoSourceEvent: resolveYoutubeVideoSourceEvent(),

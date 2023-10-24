@@ -30,6 +30,7 @@ import { mkTimelineEventService } from "./Timeline/TimelineEvent.service.js";
 import { UserService } from "./User/service.js";
 import { mkVideoService } from "./Video/Video.service.js";
 import { mkYoutubeRegistrationRequestService } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequest.service.js";
+import { mkYoutubeRegistrationRequestEventService } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.service.js";
 
 const jwksClient = createJwksClient({
   jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`,
@@ -144,6 +145,10 @@ const yoga = createYoga<ServerContext, UserContext>({
       NicovideoRegistrationRequestEventService: mkNicovideoRegistrationRequestEventService({
         prisma: prismaClient,
         logger: logger.child({ service: "NicovideoRegistrationRequestEventService" }),
+      }),
+      YoutubeRegistrationRequestEventService: mkYoutubeRegistrationRequestEventService({
+        prisma: prismaClient,
+        logger: logger.child({ service: "YoutubeRegistrationRequestEventService" }),
       }),
     }),
   }),

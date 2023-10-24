@@ -16,6 +16,7 @@ import { TimelineEventService } from "../Timeline/TimelineEvent.service.js";
 import { UserService } from "../User/service.js";
 import { VideoService } from "../Video/Video.service.js";
 import { YoutubeRegistrationRequestService } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequest.service.js";
+import { YoutubeRegistrationRequestEventService } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.service.js";
 
 export type Auth0User = User<AppMetadata, UserMetadata>;
 
@@ -34,6 +35,7 @@ export type ResolverDeps = {
   NicovideoRegistrationRequestService: NicovideoRegistrationRequestService;
   YoutubeRegistrationRequestService: YoutubeRegistrationRequestService;
   NicovideoRegistrationRequestEventService: NicovideoRegistrationRequestEventService;
+  YoutubeRegistrationRequestEventService: YoutubeRegistrationRequestEventService;
 };
 export type ServerContext = {
   req: IncomingMessage;
