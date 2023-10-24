@@ -28,7 +28,7 @@
   "license": "MIT",
   "dependencies": {
     "@devoxa/prisma-relay-cursor-connection": "^3.0.0",
-    "@envelop/generic-auth": "^5.0.6",
+    "@envelop/generic-auth": "^7.0.0",
     "@envelop/prometheus": "^7.0.4",
     "@prisma/client": "5.4.2",
     "auth0": "^3.3.0",
