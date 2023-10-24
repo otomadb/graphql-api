@@ -4,6 +4,7 @@ import { GraphQLError } from "graphql";
 import { Integer } from "neo4j-driver";
 import z from "zod";
 
+import { BilibiliMADSourceDTO } from "../BilibiliMADSource/BilibiliMADSource.dto.js";
 import { NicovideoVideoSourceDTO } from "../NicovideoVideoSource/dto.js";
 import { cursorOptions } from "../resolvers/connection.js";
 import { Resolvers, VideoResolvers } from "../resolvers/graphql.js";
@@ -206,6 +207,11 @@ export const resolveVideo = ({
       prisma.soundcloudVideoSource
         .findMany({ where: { videoId } })
         .then((ss) => ss.map((s) => SoundcloudMADSourceDTO.fromPrisma(s))),
+
+    bilibiliSources: async ({ id: videoId }) =>
+      prisma.bilibiliMADSource
+        .findMany({ where: { videoId } })
+        .then((ss) => ss.map((s) => BilibiliMADSourceDTO.fromPrisma(s))),
 
     semitags: ({ id: videoId }, { checked }) =>
       prisma.semitag
