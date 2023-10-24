@@ -15,6 +15,7 @@ import { SoundcloudMADSourceService } from "../SoundcloudMADSource/SoundcloudMAD
 import { TimelineEventService } from "../Timeline/TimelineEvent.service.js";
 import { UserService } from "../User/service.js";
 import { VideoService } from "../Video/Video.service.js";
+import { VideoEventService } from "../Video/VideoEvent.service.js";
 import { YoutubeRegistrationRequestService } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequest.service.js";
 import { YoutubeRegistrationRequestEventService } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.service.js";
 
@@ -36,6 +37,7 @@ export type ResolverDeps = {
   YoutubeRegistrationRequestService: YoutubeRegistrationRequestService;
   NicovideoRegistrationRequestEventService: NicovideoRegistrationRequestEventService;
   YoutubeRegistrationRequestEventService: YoutubeRegistrationRequestEventService;
+  VideoEventService: VideoEventService;
 };
 export type ServerContext = {
   req: IncomingMessage;

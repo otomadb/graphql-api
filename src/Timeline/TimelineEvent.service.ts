@@ -9,9 +9,9 @@ import {
   YoutubeMadRequestedTimelineEventDTO,
 } from "./TimelineEvent.dto.js";
 
-export type RegisterVideoCache = { type: "REGISTER"; videoId: string; createdAt: Date };
-export type RequestNicovideoCache = { type: "REQUEST_NICOVIDEO"; requestId: string; createdAt: Date };
-export type RequestYoutubeCache = { type: "REQUEST_YOUTUBE"; requestId: string; createdAt: Date };
+export type RegisterVideoCache = { type: "REGISTER"; videoId: string; createdAt: Date; eventId: string };
+export type RequestNicovideoCache = { type: "REQUEST_NICOVIDEO"; requestId: string; createdAt: Date; eventId: string };
+export type RequestYoutubeCache = { type: "REQUEST_YOUTUBE"; requestId: string; createdAt: Date; eventId: string };
 export type Cache = RegisterVideoCache | RequestNicovideoCache | RequestYoutubeCache;
 
 export const mkTimelineEventService = ({
@@ -39,16 +39,19 @@ export const mkTimelineEventService = ({
               type: z.literal("REGISTER"),
               createdAt: z.string().datetime(),
               videoId: z.string(),
+              eventId: z.string(),
             }),
             z.object({
               type: z.literal("REQUEST_NICOVIDEO"),
               createdAt: z.string().datetime(),
               requestId: z.string(),
+              eventId: z.string(),
             }),
             z.object({
               type: z.literal("REQUEST_YOUTUBE"),
               createdAt: z.string().datetime(),
               requestId: z.string(),
+              eventId: z.string(),
             }),
           ]),
         )
@@ -90,27 +93,30 @@ export const mkTimelineEventService = ({
       ]);
       const merged = [
         ...v.map(
-          ({ createdAt, videoId }) =>
+          ({ createdAt, videoId, id }) =>
             ({
               type: "REGISTER" as const,
               videoId,
               createdAt,
+              eventId: id,
             }) satisfies RegisterVideoCache,
         ),
         ...nr.map(
-          ({ createdAt, requestId }) =>
+          ({ createdAt, requestId, id }) =>
             ({
               type: "REQUEST_NICOVIDEO" as const,
               requestId,
               createdAt,
+              eventId: id,
             }) satisfies RequestNicovideoCache,
         ),
         ...yr.map(
-          ({ createdAt, requestId }) =>
+          ({ createdAt, requestId, id }) =>
             ({
               type: "REQUEST_YOUTUBE" as const,
               requestId,
               createdAt,
+              eventId: id,
             }) satisfies RequestYoutubeCache,
         ),
       ]
