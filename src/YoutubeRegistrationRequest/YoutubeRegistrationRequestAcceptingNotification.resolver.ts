@@ -4,7 +4,7 @@ import z from "zod";
 import { Resolvers } from "../resolvers/graphql.js";
 import { resolverNotification } from "../resolvers/Notification/resolver.js";
 import { ResolverDeps } from "../resolvers/types.js";
-import { YoutubeRegistrationRequestAcceptingDTO } from "./dto.js";
+import { YoutubeRegistrationRequestAcceptingDTO } from "./YoutubeRegistrationRequestAccepting.dto.js";
 
 export const resolverYoutubeRegistrationRequestAcceptingNotification = ({
   prisma,

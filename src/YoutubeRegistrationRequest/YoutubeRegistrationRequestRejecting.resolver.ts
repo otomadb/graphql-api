@@ -1,7 +1,7 @@
 import { Resolvers } from "../resolvers/graphql.js";
 import { GraphQLNotExistsInDBError } from "../resolvers/id.js";
 import { ResolverDeps } from "../resolvers/types.js";
-import { YoutubeRegistrationRequestDTO } from "./dto.js";
+import { YoutubeRegistrationRequestDTO } from "./YoutubeRegistrationRequest.dto.js";
 
 export const resolverYoutubeRegistrationRequestRejecting = ({
   prisma,

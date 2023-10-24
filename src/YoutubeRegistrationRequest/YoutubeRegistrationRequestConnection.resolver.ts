@@ -1,5 +1,5 @@
 import { Resolvers } from "../resolvers/graphql.js";
-import { YoutubeRegistrationRequestDTO } from "./dto.js";
+import { YoutubeRegistrationRequestDTO } from "./YoutubeRegistrationRequest.dto.js";
 
 export const resolverYoutubeRegistrationRequestConnection = () =>
   ({

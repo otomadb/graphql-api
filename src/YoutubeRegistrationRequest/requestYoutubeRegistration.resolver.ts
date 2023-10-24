@@ -5,7 +5,7 @@ import { parseGqlID2 } from "../resolvers/id.js";
 import { ResolverDeps } from "../resolvers/types.js";
 import { isErr } from "../utils/Result.js";
 import { YoutubeVideoSourceDTO } from "../YoutubeVideoSource/dto.js";
-import { YoutubeRegistrationRequestDTO } from "./dto.js";
+import { YoutubeRegistrationRequestDTO } from "./YoutubeRegistrationRequest.dto.js";
 
 export const mkRequestYoutubeRegistrationResolver = ({
   logger,

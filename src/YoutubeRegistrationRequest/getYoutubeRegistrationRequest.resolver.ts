@@ -1,7 +1,7 @@
 import { QueryResolvers } from "../resolvers/graphql.js";
 import { GraphQLNotExistsInDBError, parseGqlID } from "../resolvers/id.js";
 import { ResolverDeps } from "../resolvers/types.js";
-import { YoutubeRegistrationRequestDTO } from "./dto.js";
+import { YoutubeRegistrationRequestDTO } from "./YoutubeRegistrationRequest.dto.js";
 
 export const resolverGetYoutubeRegistrationRequest = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async (_parent, { id }, _ctx, info) =>
