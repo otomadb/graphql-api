@@ -1,5 +1,6 @@
 interface TimelineEvent {
   createdAt: DateTime!
+  event: Event!
 }
 
 """
@@ -9,6 +10,7 @@ type MadRegisteredTimelineEvent implements TimelineEvent {
   createdAt: DateTime!
 
   video: Video!
+  event: VideoRegisterEvent!
 }
 
 """
@@ -18,6 +20,7 @@ type NicovideoMadRequestedTimelineEvent implements TimelineEvent {
   createdAt: DateTime!
 
   request: NicovideoRegistrationRequest!
+  event: NicovideoRegistrationRequestRequestEvent!
 }
 
 """
@@ -27,4 +30,5 @@ type YoutubeMadRequestedTimelineEvent implements TimelineEvent {
   createdAt: DateTime!
 
   request: YoutubeRegistrationRequest!
+  event: YoutubeRegistrationRequestRequestEvent!
 }

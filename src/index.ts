@@ -29,6 +29,7 @@ import { mkSoundcloudMADSourceService } from "./SoundcloudMADSource/SoundcloudMA
 import { mkTimelineEventService } from "./Timeline/TimelineEvent.service.js";
 import { UserService } from "./User/service.js";
 import { mkVideoService } from "./Video/Video.service.js";
+import { mkVideoEventService } from "./Video/VideoEvent.service.js";
 import { mkYoutubeRegistrationRequestService } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequest.service.js";
 import { mkYoutubeRegistrationRequestEventService } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.service.js";
 
@@ -149,6 +150,9 @@ const yoga = createYoga<ServerContext, UserContext>({
       YoutubeRegistrationRequestEventService: mkYoutubeRegistrationRequestEventService({
         prisma: prismaClient,
         logger: logger.child({ service: "YoutubeRegistrationRequestEventService" }),
+      }),
+      VideoEventService: mkVideoEventService({
+        prisma: prismaClient,
       }),
     }),
   }),
