@@ -18,6 +18,11 @@ generates:
         DateTime: Date
       contextType: ./types.js#Context
       mappers:
+        NicovideoRegistrationRequestEvent: ../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.dto.js#NicovideoRegistrationRequestEventDTO
+        NicovideoRegistrationRequestRequestEvent: ../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.dto.js#NicovideoRegistrationRequestRequestEventDTO
+        NicovideoRegistrationRequestAcceptEvent: ../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.dto.js#NicovideoRegistrationRequestAcceptEventDTO
+        NicovideoRegistrationRequestRejectEvent: ../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.dto.js#NicovideoRegistrationRequestRejectEventDTO
+        NicovideoRegistrationRequestEventConnection: ../NicovideoRegistrationRequest/NicovideoRegistrationRequestEventConnection.dto.js#NicovideoRegistrationRequestEventConnectionDTO
         BilibiliMADSource: ../BilibiliMADSource/BilibiliMADSource.dto.js#BilibiliMADSourceDTO
         BilibiliMADSourceCreateEvent: ../BilibiliMADSource/BilibiliMADSourceEvent.dto.js#BilibiliMADSourceEventDTO
         BilibiliMADSourceEvent: ../BilibiliMADSource/BilibiliMADSourceEvent.dto.js#BilibiliMADSourceEventDTO

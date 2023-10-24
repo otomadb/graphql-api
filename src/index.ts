@@ -21,6 +21,7 @@ import { mkLoggerService } from "./Common/Logger.service.js";
 import { mkSoundcloudService } from "./Common/Soundcloud.service.js";
 import { mkNeo4jService } from "./Neo4j/Neo4j.service.js";
 import { mkNicovideoRegistrationRequestService } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequest.service.js";
+import { mkNicovideoRegistrationRequestEventService } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.service.js";
 import { makeResolvers } from "./resolvers/index.js";
 import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
 import typeDefs from "./schema.graphql";
@@ -139,6 +140,10 @@ const yoga = createYoga<ServerContext, UserContext>({
       }),
       YoutubeRegistrationRequestService: mkYoutubeRegistrationRequestService({
         prisma: prismaClient,
+      }),
+      NicovideoRegistrationRequestEventService: mkNicovideoRegistrationRequestEventService({
+        prisma: prismaClient,
+        logger: logger.child({ service: "NicovideoRegistrationRequestEventService" }),
       }),
     }),
   }),

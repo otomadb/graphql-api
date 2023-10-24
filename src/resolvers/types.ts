@@ -10,6 +10,7 @@ import { BilibiliMADSourceService } from "../BilibiliMADSource/BilibiliMADSource
 import { ImagesService } from "../Common/Images.service.js";
 import { SoundcloudService as SoundcloudService2 } from "../Common/Soundcloud.service.js";
 import { NicovideoRegistrationRequestService } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequest.service.js";
+import { NicovideoRegistrationRequestEventService } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.service.js";
 import { SoundcloudMADSourceService } from "../SoundcloudMADSource/SoundcloudMADSource.service.js";
 import { TimelineEventService } from "../Timeline/TimelineEvent.service.js";
 import { UserService } from "../User/service.js";
@@ -32,6 +33,7 @@ export type ResolverDeps = {
   VideoService: VideoService;
   NicovideoRegistrationRequestService: NicovideoRegistrationRequestService;
   YoutubeRegistrationRequestService: YoutubeRegistrationRequestService;
+  NicovideoRegistrationRequestEventService: NicovideoRegistrationRequestEventService;
 };
 export type ServerContext = {
   req: IncomingMessage;
