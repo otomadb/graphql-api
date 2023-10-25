@@ -66,6 +66,17 @@ generates:
         SoundcloudMADSourceEvent: ../SoundcloudMADSource/SoundcloudMADSourceEvent.dto.js#SoundcloudMADSourceEventDTO
         SoundcloudMADSourceEventConnection: ../SoundcloudMADSource/SoundcloudMADSourceEventConnection.dto.js#SoundcloudMADSourceEventConnectionDTO
         SoundcloudOriginalSource: ../FetchExternal/SoundcloudOriginalSource.dto.js#SoundcloudOriginalSourceDTO
+        SoundcloudRegistrationRequest: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequest.dto.js#SoundcloudRegistrationRequestDTO
+        SoundcloudRegistrationRequestAcceptEvent: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEvent.dto.js#SoundcloudRegistrationRequestAcceptEventDTO
+        SoundcloudRegistrationRequestAccepting: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestAccepting.dto.js#SoundcloudRegistrationRequestAcceptingDTO
+        SoundcloudRegistrationRequestAcceptingNotification: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestAcceptingNotification.dto.js#SoundcloudRegistrationRequestAcceptingNotificationDTO
+        SoundcloudRegistrationRequestConnection: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestConnection.dto.js#SoundcloudRegistrationRequestConnectionDTO
+        SoundcloudRegistrationRequestEvent: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEvent.dto.js#SoundcloudRegistrationRequestEventDTO
+        SoundcloudRegistrationRequestEventConnection: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEventConnection.dto.js#SoundcloudRegistrationRequestEventConnectionDTO
+        SoundcloudRegistrationRequestRejectEvent: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEvent.dto.js#SoundcloudRegistrationRequestRejectEventDTO
+        SoundcloudRegistrationRequestRejecting: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestRejecting.dto.js#SoundcloudRegistrationRequestRejectingDTO
+        SoundcloudRegistrationRequestRejectingNotification: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestRejectingNotification.dto.js#SoundcloudRegistrationRequestRejectingNotificationDTO
+        SoundcloudRegistrationRequestRequestEvent: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEvent.dto.js#SoundcloudRegistrationRequestRequestEventDTO
         Tag: ../Tag/dto.js#TagDTO
         TagEvent: ../Tag/dto.js#TagEventDTO
         TagName: ../Tag/dto.js#TagNameDTO

@@ -4,7 +4,7 @@ export class SoundcloudOriginalSourceDTO {
       sourceId: string;
       url: string;
       title: string;
-      originalThumbnailUrl: string;
+      originalThumbnailUrl: string | null;
     },
   ) {}
 
@@ -17,7 +17,7 @@ export class SoundcloudOriginalSourceDTO {
     sourceId: string;
     url: string;
     title: string;
-    originalThumbnailUrl: string;
+    originalThumbnailUrl: string | null;
   }) {
     return new SoundcloudOriginalSourceDTO({ sourceId, title, url, originalThumbnailUrl });
   }

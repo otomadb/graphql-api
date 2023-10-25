@@ -1,0 +1,55 @@
+"""
+Soundcloudの動画リクエスト関連のイベント
+"""
+interface SoundcloudRegistrationRequestEvent implements Node & Event {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+  request: SoundcloudRegistrationRequest!
+}
+
+type SoundcloudRegistrationRequestEventEdge {
+  cursor: String!
+  node: SoundcloudRegistrationRequestEvent!
+}
+
+type SoundcloudRegistrationRequestEventConnection {
+  nodes: [SoundcloudRegistrationRequestEvent!]!
+  edges: [SoundcloudRegistrationRequestEventEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""
+Soundcloudの動画をリクエスト時に発生するイベント
+"""
+type SoundcloudRegistrationRequestRequestEvent implements Node & Event & SoundcloudRegistrationRequestEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+  request: SoundcloudRegistrationRequest!
+}
+
+"""
+Soundcloudの動画をリクエストを承認した時に発生するイベント
+"""
+type SoundcloudRegistrationRequestAcceptEvent implements Node & Event & SoundcloudRegistrationRequestEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+  request: SoundcloudRegistrationRequest!
+}
+
+"""
+Soundcloudの動画をリクエストを拒否した時に発生するイベント
+"""
+type SoundcloudRegistrationRequestRejectEvent implements Node & Event & SoundcloudRegistrationRequestEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+  request: SoundcloudRegistrationRequest!
+}

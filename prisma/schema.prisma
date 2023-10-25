@@ -202,8 +202,9 @@ model Tag {
 
   events TagEvent[]
 
-  NicovideoSubmitRequestTagging     NicovideoRegistrationRequestTagging[]
-  YoutubeRegistrationRequestTagging YoutubeRegistrationRequestTagging[]
+  NicovideoSubmitRequestTagging        NicovideoRegistrationRequestTagging[]
+  YoutubeRegistrationRequestTagging    YoutubeRegistrationRequestTagging[]
+  SoundcloudRegistrationRequestTagging SoundcloudRegistrationRequestTagging[]
 }
 
 model CategoryTagTyping {
@@ -347,29 +348,32 @@ model User {
   mylists      Mylist[]
   mylistGroups MylistGroup[]
 
-  MylistEvent                          MylistEvent[]
-  MylistRegistrationEvent              MylistRegistrationEvent[]
-  MylistGroupEvent                     MylistGroupEvent[]
-  MylistGroupMylistInclsionEvent       MylistGroupMylistInclsionEvent[]
-  CategoryTagTyping                    CategoryTagTyping[]
-  TagEvent                             TagEvent[]
-  TagNameEvent                         TagNameEvent[]
-  TagParentEvent                       TagParentEvent[]
-  VideoEvent                           VideoEvent[]
-  VideoTitleEvent                      VideoTitleEvent[]
-  VideoThumbnailEvent                  VideoThumbnailEvent[]
-  VideoTagEvent                        VideoTagEvent[]
-  SemitagEvent                         SemitagEvent[]
-  NicovideoVideoSourceEvent            NicovideoVideoSourceEvent[]
-  NicovideoRegistrationRequest         NicovideoRegistrationRequest[]
-  NicovideoRegistrationRequestChecking NicovideoRegistrationRequestChecking[]
-  NicovideoRegistrationRequestEvent    NicovideoRegistrationRequestEvent[]
-  YoutubeVideoSourceEvent              YoutubeVideoSourceEvent[]
-  YoutubeRegistrationRequest           YoutubeRegistrationRequest[]
-  YoutubeRegistrationRequestChecking   YoutubeRegistrationRequestChecking[]
-  YoutubeRegistrationRequestEvent      YoutubeRegistrationRequestEvent[]
-  SoundcloudVideoSourceEvent           SoundcloudVideoSourceEvent[]
-  BilibiliMADSourceEvent               BilibiliMADSourceEvent[]
+  MylistEvent                           MylistEvent[]
+  MylistRegistrationEvent               MylistRegistrationEvent[]
+  MylistGroupEvent                      MylistGroupEvent[]
+  MylistGroupMylistInclsionEvent        MylistGroupMylistInclsionEvent[]
+  CategoryTagTyping                     CategoryTagTyping[]
+  TagEvent                              TagEvent[]
+  TagNameEvent                          TagNameEvent[]
+  TagParentEvent                        TagParentEvent[]
+  VideoEvent                            VideoEvent[]
+  VideoTitleEvent                       VideoTitleEvent[]
+  VideoThumbnailEvent                   VideoThumbnailEvent[]
+  VideoTagEvent                         VideoTagEvent[]
+  SemitagEvent                          SemitagEvent[]
+  NicovideoVideoSourceEvent             NicovideoVideoSourceEvent[]
+  NicovideoRegistrationRequest          NicovideoRegistrationRequest[]
+  NicovideoRegistrationRequestChecking  NicovideoRegistrationRequestChecking[]
+  NicovideoRegistrationRequestEvent     NicovideoRegistrationRequestEvent[]
+  YoutubeVideoSourceEvent               YoutubeVideoSourceEvent[]
+  YoutubeRegistrationRequest            YoutubeRegistrationRequest[]
+  YoutubeRegistrationRequestChecking    YoutubeRegistrationRequestChecking[]
+  YoutubeRegistrationRequestEvent       YoutubeRegistrationRequestEvent[]
+  SoundcloudVideoSourceEvent            SoundcloudVideoSourceEvent[]
+  BilibiliMADSourceEvent                BilibiliMADSourceEvent[]
+  SoundcloudRegistrationRequest         SoundcloudRegistrationRequest[]
+  SoundcloudRegistrationRequestChecking SoundcloudRegistrationRequestChecking[]
+  SoundcloudRegistrationRequestEvent    SoundcloudRegistrationRequestEvent[]
 }
 
 model Video {
@@ -396,6 +400,7 @@ model Video {
 
   NicovideoRegistrationRequestCheckings NicovideoRegistrationRequestChecking[]
   YoutubeRegistrationRequestChecking    YoutubeRegistrationRequestChecking[]
+  SoundcloudRegistrationRequestChecking SoundcloudRegistrationRequestChecking[]
 }
 
 model VideoEvent {
@@ -845,6 +850,98 @@ model YoutubeRegistrationRequestEvent {
 }
 
 enum YoutubeRegistrationRequestEventType {
+  REQUEST
+
+  ACCEPT
+  REJECT
+}
+
+model SoundcloudRegistrationRequest {
+  id String @id
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  requestedBy   User   @relation(fields: [requestedById], references: [id])
+  requestedById String
+
+  sourceId String @unique
+
+  title        String
+  thumbnailUrl String?
+  taggings     SoundcloudRegistrationRequestTagging[]
+  semitaggings SoundcloudRegistrationRequestSemitagging[]
+
+  isChecked Boolean
+  checking  SoundcloudRegistrationRequestChecking?
+
+  events SoundcloudRegistrationRequestEvent[]
+}
+
+model SoundcloudRegistrationRequestTagging {
+  id String @id
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  request   SoundcloudRegistrationRequest @relation(fields: [requestId], references: [id])
+  requestId String
+
+  tag   Tag    @relation(fields: [tagId], references: [id])
+  tagId String
+
+  note String?
+}
+
+model SoundcloudRegistrationRequestSemitagging {
+  id String @id
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  request   SoundcloudRegistrationRequest @relation(fields: [requestId], references: [id])
+  requestId String
+
+  name String
+
+  note String?
+}
+
+model SoundcloudRegistrationRequestChecking {
+  id String @id
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  checkedBy   User   @relation(fields: [checkedById], references: [id])
+  checkedById String
+
+  request   SoundcloudRegistrationRequest @relation(fields: [requestId], references: [id])
+  requestId String                        @unique
+
+  video   Video?  @relation(fields: [videoId], references: [id])
+  videoId String?
+
+  note String?
+}
+
+model SoundcloudRegistrationRequestEvent {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  request   SoundcloudRegistrationRequest @relation(fields: [requestId], references: [id])
+  requestId String
+
+  type    SoundcloudRegistrationRequestEventType
+  payload Json?
+}
+
+enum SoundcloudRegistrationRequestEventType {
   REQUEST
 
   ACCEPT

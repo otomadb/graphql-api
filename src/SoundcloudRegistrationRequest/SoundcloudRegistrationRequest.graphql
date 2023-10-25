@@ -1,0 +1,107 @@
+type SoundcloudRegistrationRequestRejectingNotification implements Node & Notification {
+  id: ID!
+  createdAt: DateTime!
+  notifyTo: User!
+  watched: Boolean!
+
+  rejecting: SoundcloudRegistrationRequestRejecting!
+}
+type SoundcloudRegistrationRequestRejecting {
+  request: SoundcloudRegistrationRequest!
+
+  note: String
+
+  rejectedBy: User!
+}
+type SoundcloudRegistrationRequestConnection {
+  nodes: [SoundcloudRegistrationRequest!]!
+  edges: [SoundcloudRegistrationRequestEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type SoundcloudRegistrationRequestEdge {
+  cursor: String!
+  node: SoundcloudRegistrationRequest!
+}
+type SoundcloudRegistrationRequestAcceptingNotification implements Node & Notification {
+  id: ID!
+  createdAt: DateTime!
+  notifyTo: User!
+  watched: Boolean!
+
+  accepting: SoundcloudRegistrationRequestAccepting!
+}
+type SoundcloudRegistrationRequestAccepting {
+  request: SoundcloudRegistrationRequest!
+
+  note: String
+  video: Video!
+
+  acceptedBy: User!
+}
+type SoundcloudRegistrationRequest implements Node & RegistrationRequest {
+  id: ID!
+  title: String!
+
+  requestedBy: User!
+
+  sourceId: String!
+
+  title: String!
+
+  """
+  OtoMADB側でプロキシしているサムネイル画像のURL
+
+  **無い場合は適当にダミー画像を返す．**
+  """
+  thumbnailUrl: String!
+
+  """
+  Soundcloud側のサムネイル画像のURL
+
+  **無い場合もある場合に注意.**
+  """
+  originalThumbnailUrl: String
+
+  taggings: [SoundcloudRegistrationRequestTagging!]!
+  semitaggings: [SoundcloudRegistrationRequestSemitagging!]!
+
+  checked: Boolean!
+  checking: SoundcloudRegistrationRequestChecking
+
+  originalUrl: String!
+  embedUrl: String!
+
+  events(input: SoundcloudRegistrationRequestEventsInput!): SoundcloudRegistrationRequestEventConnection!
+}
+
+input SoundcloudRegistrationRequestEventsInput {
+  first: Int
+  after: String
+
+  last: Int
+  before: String
+
+  orderBy: SoundcloudRegistrationRequestEventsInputOrderBy! = { createdAt: DESC }
+}
+
+input SoundcloudRegistrationRequestEventsInputOrderBy {
+  createdAt: SortOrder
+}
+
+type SoundcloudRegistrationRequestTagging implements Node & RegistrationRequestTagging {
+  id: ID!
+  tag: Tag!
+  note: String
+}
+
+type SoundcloudRegistrationRequestSemitagging implements Node & RegistrationRequestSemitagging {
+  id: ID!
+  name: String!
+  note: String
+}
+
+union SoundcloudRegistrationRequestChecking =
+    SoundcloudRegistrationRequestAccepting
+  | SoundcloudRegistrationRequestRejecting

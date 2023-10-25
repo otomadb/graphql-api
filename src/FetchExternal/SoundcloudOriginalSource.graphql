@@ -1,0 +1,14 @@
+type SoundcloudOriginalSource {
+  sourceId: String!
+
+  title: String!
+  url: String!
+
+  "プロキシしたサムネイル画像"
+  thumbnailUrl(scale: FetchExternalSourceThumbnailScale! = LARGE): String
+
+  """
+  SoundCloud側のサムネイル画像（場合によってはない可能性がある）
+  """
+  originalThumbnailUrl: String
+}

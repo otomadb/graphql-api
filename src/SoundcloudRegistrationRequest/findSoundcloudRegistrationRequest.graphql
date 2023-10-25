@@ -1,0 +1,8 @@
+type Query {
+  findSoundcloudRegistrationRequest(input: FindSoundcloudRegistrationRequestInput): SoundcloudRegistrationRequest
+}
+
+input FindSoundcloudRegistrationRequestInput {
+  id: ID
+  sourceId: String
+}

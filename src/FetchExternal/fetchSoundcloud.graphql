@@ -11,13 +11,3 @@ input FetchSoundcloudInput {
 type FetchSoundcloudPayload {
   source: SoundcloudOriginalSource
 }
-
-type SoundcloudOriginalSource {
-  sourceId: String!
-
-  title: String!
-  url: String!
-
-  thumbnailUrl(scale: FetchExternalSourceThumbnailScale! = LARGE): String!
-  originalThumbnailUrl: String!
-}
