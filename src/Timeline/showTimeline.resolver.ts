@@ -10,6 +10,7 @@ export const mkShowTimelineResolver: MkQueryResolver<"showTimeline", "TimelineEv
         REGISTER: true,
         REQUEST_NICOVIDEO: true,
         REQUEST_YOUTUBE: true,
+        REQUEST_SOUNDCLOUD: true,
       },
     });
   };
