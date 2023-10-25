@@ -30,7 +30,7 @@ export const mkSoundcloudService = ({ redis, logger }: { redis: Redis; logger: L
           z
             .array(
               z.object({
-                artwork_url: z.string(),
+                artwork_url: z.string().url().nullable(),
                 id: z.number(),
                 title: z.string(),
                 permalink_url: z.string(),
@@ -79,7 +79,7 @@ export const mkSoundcloudService = ({ redis, logger }: { redis: Redis; logger: L
         .then((json) =>
           z
             .object({
-              artwork_url: z.string(),
+              artwork_url: z.string().url().nullable(),
               id: z.number(),
               title: z.string(),
               permalink: z.string(),
