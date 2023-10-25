@@ -4,7 +4,7 @@ import z from "zod";
 import { QueryResolvers } from "../resolvers/graphql.js";
 import { parseGqlID } from "../resolvers/id.js";
 import { ResolverDeps } from "../resolvers/types.js";
-import { YoutubeRegistrationRequestDTO } from "./dto.js";
+import { YoutubeRegistrationRequestDTO } from "./YoutubeRegistrationRequest.dto.js";
 
 export const resolverFindYoutubeRegistrationRequest = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async (_, { input: unparsedInput }, { currentUser: ctxUser }, info) => {

@@ -2,7 +2,7 @@ import { PrismaClient, YoutubeRegistrationRequest, YoutubeVideoSource } from "@p
 import { ulid } from "ulid";
 
 import { err, ok, Result } from "../utils/Result.js";
-import { YoutubeRegistrationRequestDTO } from "./dto.js";
+import { YoutubeRegistrationRequestDTO } from "./YoutubeRegistrationRequest.dto.js";
 
 export const mkYoutubeRegistrationRequestService = ({ prisma }: { prisma: PrismaClient }) => {
   return {

@@ -7,7 +7,7 @@ import { QueryResolvers } from "../resolvers/graphql.js";
 import { parseOrderBy } from "../resolvers/parseSortOrder.js";
 import { ResolverDeps } from "../resolvers/types.js";
 import { isErr } from "../utils/Result.js";
-import { YoutubeRegistrationRequestConnectionDTO } from "./dto.js";
+import { YoutubeRegistrationRequestConnectionDTO } from "./YoutubeRegistrationRequestConnection.dto.js";
 
 export const resolverFindUncheckedYoutubeRegistrationRequests = ({
   prisma,
