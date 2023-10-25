@@ -1,0 +1,39 @@
+type Mutation {
+  requestSoundcloudRegistration(input: RequestSoundcloudRegistrationInput!): RequestSoundcloudRegistrationReturnUnion!
+    @auth(scopes: ["create:registration_request"])
+}
+
+input RequestSoundcloudRegistrationInput {
+  sourceId: String!
+
+  title: String!
+  thumbnailUrl: String!
+
+  taggings: [RequestSoundcloudRegistrationInputTagging!]!
+  semitaggings: [RequestSoundcloudRegistrationInputSemitagging!]!
+}
+
+input RequestSoundcloudRegistrationInputTagging {
+  tagId: ID!
+  note: String
+}
+
+input RequestSoundcloudRegistrationInputSemitagging {
+  name: String!
+  note: String
+}
+
+union RequestSoundcloudRegistrationReturnUnion =
+    MutationInvalidTagIdError
+  | MutationTagNotFoundError
+  | RequestSoundcloudRegistrationVideoAlreadyRegisteredError
+  | RequestSoundcloudRegistrationSucceededPayload
+
+"動画が既に登録されている場合のエラー"
+type RequestSoundcloudRegistrationVideoAlreadyRegisteredError {
+  source: SoundcloudMADSource!
+}
+
+type RequestSoundcloudRegistrationSucceededPayload {
+  request: SoundcloudRegistrationRequest!
+}

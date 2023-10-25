@@ -12,6 +12,8 @@ import { SoundcloudService as SoundcloudService2 } from "../Common/Soundcloud.se
 import { NicovideoRegistrationRequestService } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequest.service.js";
 import { NicovideoRegistrationRequestEventService } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.service.js";
 import { SoundcloudMADSourceService } from "../SoundcloudMADSource/SoundcloudMADSource.service.js";
+import { SoundcloudRegistrationRequestService } from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequest.service.js";
+import { SoundcloudRegistrationRequestEventService } from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEvent.service.js";
 import { TimelineEventService } from "../Timeline/TimelineEvent.service.js";
 import { UserService } from "../User/service.js";
 import { VideoService } from "../Video/Video.service.js";
@@ -38,6 +40,8 @@ export type ResolverDeps = {
   NicovideoRegistrationRequestEventService: NicovideoRegistrationRequestEventService;
   YoutubeRegistrationRequestEventService: YoutubeRegistrationRequestEventService;
   VideoEventService: VideoEventService;
+  SoundcloudRegistrationRequestService: SoundcloudRegistrationRequestService;
+  SoundcloudRegistrationRequestEventService: SoundcloudRegistrationRequestEventService;
 };
 export type ServerContext = {
   req: IncomingMessage;

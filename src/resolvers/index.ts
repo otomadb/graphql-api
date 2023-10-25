@@ -28,6 +28,19 @@ import {
 import { mkSoundcloudMADSourceResolver } from "../SoundcloudMADSource/SoundcloudMADSource.resolver.js";
 import { resolveSoundcloudMADSourceCreateEvent } from "../SoundcloudMADSource/SoundcloudMADSourceEvent.resolver.js";
 import { resolverSoundcloudMADSourceEventConnection } from "../SoundcloudMADSource/SoundcloudMADSourceEventConnection.resolver.js";
+import { resolverSoundcloudRegistrationRequest } from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequest.resolver.js";
+import { resolverSoundcloudRegistrationRequestAccepting } from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestAccepting.resolver.js";
+import { resolverSoundcloudRegistrationRequestAcceptingNotification } from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestAcceptingNotification.resolver.js";
+import { resolverSoundcloudRegistrationRequestConnection } from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestConnection.resolver.js";
+import {
+  mkSoundcloudRegistrationRequestAcceptEventResolver,
+  mkSoundcloudRegistrationRequestEventResolver,
+  mkSoundcloudRegistrationRequestRejectEventResolver,
+  mkSoundcloudRegistrationRequestRequestEventResolver,
+} from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEvent.resolver.js";
+import { mkSoundcloudRegistrationRequestEventConnectionResolver } from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEventConnection.resolver.js";
+import { mkSoundcloudRegistrationRequestRejectingResolver } from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestRejecting.resolver.js";
+import { resolverSoundcloudRegistrationRequestRejectingNotification } from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestRejectingNotification.resolver.js";
 import { resolveTag } from "../Tag/Tag.resolver.js";
 import { resolveTagEvent, resolveTagRegisterEvent } from "../Tag/TagEvent.resolver.js";
 import { resolveTagName } from "../Tag/TagName.resolver.js";
@@ -169,6 +182,19 @@ export const makeResolvers = (deps: ResolverDeps) =>
     SoundcloudMADSourceCreateEvent: resolveSoundcloudMADSourceCreateEvent(deps),
     SoundcloudMADSourceEventConnection: resolverSoundcloudMADSourceEventConnection(deps),
     SoundcloudOriginalSource: mkSoundcloudOriginalSourceResolver(deps),
+    SoundcloudRegistrationRequest: resolverSoundcloudRegistrationRequest(deps),
+    SoundcloudRegistrationRequestAcceptEvent: mkSoundcloudRegistrationRequestAcceptEventResolver(deps),
+    SoundcloudRegistrationRequestAccepting: resolverSoundcloudRegistrationRequestAccepting(deps),
+    SoundcloudRegistrationRequestAcceptingNotification:
+      resolverSoundcloudRegistrationRequestAcceptingNotification(deps),
+    SoundcloudRegistrationRequestConnection: resolverSoundcloudRegistrationRequestConnection(),
+    SoundcloudRegistrationRequestEvent: mkSoundcloudRegistrationRequestEventResolver(deps),
+    SoundcloudRegistrationRequestEventConnection: mkSoundcloudRegistrationRequestEventConnectionResolver(deps),
+    SoundcloudRegistrationRequestRejectEvent: mkSoundcloudRegistrationRequestRejectEventResolver(deps),
+    SoundcloudRegistrationRequestRejecting: mkSoundcloudRegistrationRequestRejectingResolver(deps),
+    SoundcloudRegistrationRequestRejectingNotification:
+      resolverSoundcloudRegistrationRequestRejectingNotification(deps),
+    SoundcloudRegistrationRequestRequestEvent: mkSoundcloudRegistrationRequestRequestEventResolver(deps),
     Tag: resolveTag(deps),
     TagEvent: resolveTagEvent(),
     TagName: resolveTagName(deps),

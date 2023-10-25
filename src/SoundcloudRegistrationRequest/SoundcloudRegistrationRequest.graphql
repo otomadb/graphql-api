@@ -1,0 +1,124 @@
+type SoundcloudRegistrationRequestRejectingNotification implements Node & Notification {
+  id: ID!
+  createdAt: DateTime!
+  notifyTo: User!
+  watched: Boolean!
+
+  rejecting: SoundcloudRegistrationRequestRejecting!
+}
+type SoundcloudRegistrationRequestRejecting {
+  request: SoundcloudRegistrationRequest!
+
+  note: String
+
+  rejectedBy: User!
+}
+type SoundcloudRegistrationRequestConnection {
+  nodes: [SoundcloudRegistrationRequest!]!
+  edges: [SoundcloudRegistrationRequestEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type SoundcloudRegistrationRequestEdge {
+  cursor: String!
+  node: SoundcloudRegistrationRequest!
+}
+type SoundcloudRegistrationRequestAcceptingNotification implements Node & Notification {
+  id: ID!
+  createdAt: DateTime!
+  notifyTo: User!
+  watched: Boolean!
+
+  accepting: SoundcloudRegistrationRequestAccepting!
+}
+type SoundcloudRegistrationRequestAccepting {
+  request: SoundcloudRegistrationRequest!
+
+  note: String
+  video: Video!
+
+  acceptedBy: User!
+}
+type SoundcloudRegistrationRequest implements Node & RegistrationRequest {
+  id: ID!
+  title: String!
+
+  requestedBy: User!
+
+  sourceId: String!
+
+  title: String!
+  thumbnailUrl: String!
+
+  taggings: [SoundcloudRegistrationRequestTagging!]!
+  semitaggings: [SoundcloudRegistrationRequestSemitagging!]!
+
+  checked: Boolean!
+  checking: SoundcloudRegistrationRequestChecking
+
+  originalUrl: String!
+  embedUrl: String!
+
+  events(input: SoundcloudRegistrationRequestEventsInput!): SoundcloudRegistrationRequestEventConnection!
+}
+
+input SoundcloudRegistrationRequestEventsInput {
+  first: Int
+  after: String
+
+  last: Int
+  before: String
+
+  orderBy: SoundcloudRegistrationRequestEventsInputOrderBy! = { createdAt: DESC }
+}
+
+input SoundcloudRegistrationRequestEventsInputOrderBy {
+  createdAt: SortOrder
+}
+
+type SoundcloudRegistrationRequestTagging implements Node & RegistrationRequestTagging {
+  id: ID!
+  tag: Tag!
+  note: String
+}
+
+type SoundcloudRegistrationRequestSemitagging implements Node & RegistrationRequestSemitagging {
+  id: ID!
+  name: String!
+  note: String
+}
+
+union SoundcloudRegistrationRequestChecking =
+    SoundcloudRegistrationRequestAccepting
+  | SoundcloudRegistrationRequestRejecting
+type Query {
+  getSoundcloudRegistrationRequest(id: ID!): SoundcloudRegistrationRequest!
+}
+type Query {
+  findSoundcloudRegistrationRequest(input: FindSoundcloudRegistrationRequestInput): SoundcloudRegistrationRequest
+}
+
+input FindSoundcloudRegistrationRequestInput {
+  id: ID
+  sourceId: String
+}
+type Query {
+  findUncheckedSoundcloudRegistrationRequests(
+    input: FindUncheckedSoundcloudRegistrationRequestsInput!
+  ): SoundcloudRegistrationRequestConnection!
+}
+
+input FindUncheckedSoundcloudRegistrationRequestsInput {
+  first: Int
+  after: String
+
+  last: Int
+  before: String
+
+  orderBy: FindUncheckedSoundcloudRegistrationRequestsOrderBy! = { createdAt: DESC }
+}
+
+input FindUncheckedSoundcloudRegistrationRequestsOrderBy {
+  createdAt: SortOrder
+}

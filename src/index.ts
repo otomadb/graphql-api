@@ -26,6 +26,8 @@ import { makeResolvers } from "./resolvers/index.js";
 import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
 import typeDefs from "./schema.graphql";
 import { mkSoundcloudMADSourceService } from "./SoundcloudMADSource/SoundcloudMADSource.service.js";
+import { mkSoundcloudRegistrationRequestService } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequest.service.js";
+import { mkSoundcloudRegistrationRequestEventService } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEvent.service.js";
 import { mkTimelineEventService } from "./Timeline/TimelineEvent.service.js";
 import { UserService } from "./User/service.js";
 import { mkVideoService } from "./Video/Video.service.js";
@@ -153,6 +155,13 @@ const yoga = createYoga<ServerContext, UserContext>({
       }),
       VideoEventService: mkVideoEventService({
         prisma: prismaClient,
+      }),
+      SoundcloudRegistrationRequestService: mkSoundcloudRegistrationRequestService({
+        prisma: prismaClient,
+      }),
+      SoundcloudRegistrationRequestEventService: mkSoundcloudRegistrationRequestEventService({
+        prisma: prismaClient,
+        logger: logger.child({ service: "SoundcloudRegistrationRequestEventService" }),
       }),
     }),
   }),
