@@ -32,3 +32,13 @@ type YoutubeMadRequestedTimelineEvent implements TimelineEvent {
   request: YoutubeRegistrationRequest!
   event: YoutubeRegistrationRequestRequestEvent!
 }
+
+"""
+SoundCloudの音MADがリクエストされたことを表すタイムラインイベント
+"""
+type SoundcloudMadRequestedTimelineEvent implements TimelineEvent {
+  createdAt: DateTime!
+
+  request: SoundcloudRegistrationRequest!
+  event: SoundcloudRegistrationRequestRequestEvent!
+}

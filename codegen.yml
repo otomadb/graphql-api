@@ -61,6 +61,7 @@ generates:
         SemitagResolveEvent: ./SemitagEvent/model.js#SemitagEventModel
         SemitagResolving: ./SemitagResolving/model.js#SemitagResolvingModel
         SemitagSuggestTagsItem: ./SemitagSuggestTagsItem/model.js#SemitagSuggestTagsItemModel
+        SoundcloudMadRequestedTimelineEvent: ../Timeline/TimelineEvent.dto.js#SoundcloudMadRequestedTimelineEventDTO
         SoundcloudMADSource: ../SoundcloudMADSource/SoundcloudMADSource.dto.js#SoundcloudMADSourceDTO
         SoundcloudMADSourceCreateEvent: ../SoundcloudMADSource/SoundcloudMADSourceEvent.dto.js#SoundcloudMADSourceEventDTO
         SoundcloudMADSourceEvent: ../SoundcloudMADSource/SoundcloudMADSourceEvent.dto.js#SoundcloudMADSourceEventDTO

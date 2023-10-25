@@ -57,6 +57,7 @@ import { resolverTypeCategoryTag } from "../Tag/TypeCategoryTag.resolver.js";
 import {
   mkMadRegisteredTimelineEventResolver,
   mkNicovideoMadRequestedTimelineEventResolver,
+  mkSoundcloudMadRequestedTimelineEventResolver,
   mkYoutubeMadRequestedTimelineEventResolver,
 } from "../Timeline/TimelineEvent.resolver.js";
 import { resolveUser } from "../User/User.resolver.js";
@@ -181,6 +182,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     SoundcloudMADSource: mkSoundcloudMADSourceResolver(deps),
     SoundcloudMADSourceCreateEvent: resolveSoundcloudMADSourceCreateEvent(deps),
     SoundcloudMADSourceEventConnection: resolverSoundcloudMADSourceEventConnection(deps),
+    SoundcloudMadRequestedTimelineEvent: mkSoundcloudMadRequestedTimelineEventResolver(deps),
     SoundcloudOriginalSource: mkSoundcloudOriginalSourceResolver(deps),
     SoundcloudRegistrationRequest: resolverSoundcloudRegistrationRequest(deps),
     SoundcloudRegistrationRequestAcceptEvent: mkSoundcloudRegistrationRequestAcceptEventResolver(deps),

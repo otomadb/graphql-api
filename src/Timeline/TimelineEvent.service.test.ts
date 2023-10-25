@@ -7,6 +7,7 @@ import { cleanPrisma } from "../test/cleanPrisma.js";
 import {
   MadRegisteredTimelineEventDTO,
   NicovideoMadRequestedTimelineEventDTO,
+  SoundcloudMadRequestedTimelineEventDTO,
   YoutubeMadRequestedTimelineEventDTO,
 } from "./TimelineEvent.dto.js";
 import { Cache, mkTimelineEventService, TimelineEventService } from "./TimelineEvent.service.js";
@@ -38,7 +39,12 @@ describe("TimelineEventService", () => {
   describe("calcTimelineEvents()", () => {
     test("Redis側ですでに必要分がキャッシュ済み", async () => {
       await redis.set(
-        `timeline:user1:${JSON.stringify({ REGISTER: true, REQUEST_NICOVIDEO: true, REQUEST_YOUTUBE: true })}`,
+        `timeline:user1:${JSON.stringify({
+          REGISTER: true,
+          REQUEST_NICOVIDEO: true,
+          REQUEST_YOUTUBE: true,
+          REQUEST_SOUNDCLOUD: true,
+        })}`,
         JSON.stringify([
           {
             type: "REGISTER",
@@ -70,7 +76,12 @@ describe("TimelineEventService", () => {
       const actual = await service.calcTimelineEvents("user1", {
         take: 2,
         skip: 1,
-        filter: { REGISTER: true, REQUEST_NICOVIDEO: true, REQUEST_YOUTUBE: true },
+        filter: {
+          REGISTER: true,
+          REQUEST_NICOVIDEO: true,
+          REQUEST_YOUTUBE: true,
+          REQUEST_SOUNDCLOUD: true,
+        },
       });
       expect(actual.length).toBe(2);
 
@@ -106,6 +117,16 @@ describe("TimelineEventService", () => {
             requestedById: "user1",
             title: `youtube_req${i}`,
             sourceId: `youtube_req${i}`,
+            thumbnailUrl: "thumbnail",
+          })),
+        }),
+        prisma.soundcloudRegistrationRequest.createMany({
+          data: [...new Array(10)].map((_, i) => ({
+            id: `soundcloud_req${i}`,
+            isChecked: false,
+            requestedById: "user1",
+            title: `soundcloud_req${i}`,
+            sourceId: `soundcloud_req${i}`,
             thumbnailUrl: "thumbnail",
           })),
         }),
@@ -187,35 +208,77 @@ describe("TimelineEventService", () => {
             },
           ],
         }),
+        prisma.soundcloudRegistrationRequestEvent.createMany({
+          data: [
+            {
+              id: "4_1",
+              type: "REQUEST",
+              requestId: "soundcloud_req1",
+              userId: "user1",
+              createdAt: new Date("2021-01-30T03:00:00.000Z"),
+            },
+            {
+              id: "4_2",
+              type: "REQUEST",
+              requestId: "soundcloud_req2",
+              userId: "user1",
+              createdAt: new Date("2021-01-29T03:00:00.000Z"),
+            },
+            {
+              id: "4_3",
+              type: "REQUEST",
+              requestId: "soundcloud_req3",
+              userId: "user1",
+              createdAt: new Date("2021-01-28T03:00:00.000Z"),
+            },
+          ],
+        }),
       ]);
 
       const actual = await service.calcTimelineEvents("user1", {
-        take: 3,
-        skip: 3,
-        filter: { REGISTER: true, REQUEST_NICOVIDEO: true, REQUEST_YOUTUBE: true },
+        take: 4,
+        skip: 4,
+        filter: {
+          REGISTER: true,
+          REQUEST_NICOVIDEO: true,
+          REQUEST_YOUTUBE: true,
+          REQUEST_SOUNDCLOUD: true,
+        },
       });
-      expect(actual.length).toBe(3);
+      expect(actual.length).toBe(4);
 
-      const acutal0 = actual[0] as YoutubeMadRequestedTimelineEventDTO;
-      expect(acutal0.createdAt).toStrictEqual(new Date("2021-01-29T02:00:00.000Z"));
-      expect(acutal0.requestId).toBe("youtube_req2");
-      expect(acutal0.eventId).toBe("3_2");
+      const acutal0 = actual[0] as SoundcloudMadRequestedTimelineEventDTO;
+      expect(acutal0.createdAt).toStrictEqual(new Date("2021-01-29T03:00:00.000Z"));
+      expect(acutal0.requestId).toBe("soundcloud_req2");
+      expect(acutal0.eventId).toBe("4_2");
 
-      const acutal1 = actual[1] as NicovideoMadRequestedTimelineEventDTO;
-      expect(acutal1.createdAt).toStrictEqual(new Date("2021-01-29T01:00:00.000Z"));
-      expect(acutal1.requestId).toBe("nicovideo_req2");
-      expect(acutal1.eventId).toBe("2_2");
+      const acutal1 = actual[1] as YoutubeMadRequestedTimelineEventDTO;
+      expect(acutal1.createdAt).toStrictEqual(new Date("2021-01-29T02:00:00.000Z"));
+      expect(acutal1.requestId).toBe("youtube_req2");
+      expect(acutal1.eventId).toBe("3_2");
 
-      const acutal2 = actual[2] as MadRegisteredTimelineEventDTO;
-      expect(acutal2.createdAt).toStrictEqual(new Date("2021-01-29T00:00:00.000Z"));
-      expect(acutal2.videoId).toBe("video2");
-      expect(acutal2.eventId).toBe("1_2");
+      const acutal2 = actual[2] as NicovideoMadRequestedTimelineEventDTO;
+      expect(acutal2.createdAt).toStrictEqual(new Date("2021-01-29T01:00:00.000Z"));
+      expect(acutal2.requestId).toBe("nicovideo_req2");
+      expect(acutal2.eventId).toBe("2_2");
+
+      const acutal3 = actual[3] as MadRegisteredTimelineEventDTO;
+      expect(acutal3.createdAt).toStrictEqual(new Date("2021-01-29T00:00:00.000Z"));
+      expect(acutal3.videoId).toBe("video2");
+      expect(acutal3.eventId).toBe("1_2");
 
       const actualCached = await redis
-        .get(`timeline:user1:${JSON.stringify({ REGISTER: true, REQUEST_NICOVIDEO: true, REQUEST_YOUTUBE: true })}`)
+        .get(
+          `timeline:user1:${JSON.stringify({
+            REGISTER: true,
+            REQUEST_NICOVIDEO: true,
+            REQUEST_YOUTUBE: true,
+            REQUEST_SOUNDCLOUD: true,
+          })}`,
+        )
         .then((v) => JSON.parse(v ?? "[]"));
       expect(Array.isArray(actualCached)).toBe(true);
-      expect(actualCached.length).toBe(6);
+      expect(actualCached.length).toBe(8);
     });
 
     test("チェック済みのリクエストはタイムラインに反映しない", async () => {
@@ -239,6 +302,16 @@ describe("TimelineEventService", () => {
             requestedById: "user1",
             title: `youtube_req${i}`,
             sourceId: `youtube_req${i}`,
+            thumbnailUrl: "thumbnail",
+          })),
+        }),
+        prisma.soundcloudRegistrationRequest.createMany({
+          data: [...new Array(10)].map((_, i) => ({
+            id: `soundcloud_req${i}`,
+            isChecked: true,
+            requestedById: "user1",
+            title: `soundcloud_req${i}`,
+            sourceId: `soundcloud_req${i}`,
             thumbnailUrl: "thumbnail",
           })),
         }),
@@ -292,12 +365,28 @@ describe("TimelineEventService", () => {
             },
           ],
         }),
+        prisma.soundcloudRegistrationRequestEvent.createMany({
+          data: [
+            {
+              id: "4_1",
+              type: "REQUEST",
+              requestId: "soundcloud_req1",
+              userId: "user1",
+              createdAt: new Date("2021-01-30T03:00:00.000Z"),
+            },
+          ],
+        }),
       ]);
 
       const actual = await service.calcTimelineEvents("user1", {
         take: 3,
         skip: 1,
-        filter: { REGISTER: true, REQUEST_NICOVIDEO: true, REQUEST_YOUTUBE: true },
+        filter: {
+          REGISTER: true,
+          REQUEST_NICOVIDEO: true,
+          REQUEST_YOUTUBE: true,
+          REQUEST_SOUNDCLOUD: true,
+        },
       });
       expect(actual.length).toBe(2);
 
@@ -312,7 +401,14 @@ describe("TimelineEventService", () => {
       expect(acutal1.eventId).toBe("1_3");
 
       const actualCached = await redis
-        .get(`timeline:user1:${JSON.stringify({ REGISTER: true, REQUEST_NICOVIDEO: true, REQUEST_YOUTUBE: true })}`)
+        .get(
+          `timeline:user1:${JSON.stringify({
+            REGISTER: true,
+            REQUEST_NICOVIDEO: true,
+            REQUEST_YOUTUBE: true,
+            REQUEST_SOUNDCLOUD: true,
+          })}`,
+        )
         .then((v) => JSON.parse(v ?? "[]"));
       expect(Array.isArray(actualCached)).toBe(true);
       expect(actualCached.length).toBe(3);

@@ -2,6 +2,7 @@ import { MkResolverWithInclude } from "../utils/MkResolver.js";
 import {
   MadRegisteredTimelineEventDTO,
   NicovideoMadRequestedTimelineEventDTO,
+  SoundcloudMadRequestedTimelineEventDTO,
   YoutubeMadRequestedTimelineEventDTO,
 } from "./TimelineEvent.dto.js";
 
@@ -36,5 +37,17 @@ export const mkYoutubeMadRequestedTimelineEventResolver: MkResolverWithInclude<
   request: ({ requestId }) => YoutubeRegistrationRequestService.getByIdOrThrow(requestId),
   event: ({ eventId }) => {
     return YoutubeRegistrationRequestEventService.getByIdOrThrow(eventId);
+  },
+});
+
+export const mkSoundcloudMadRequestedTimelineEventResolver: MkResolverWithInclude<
+  "SoundcloudMadRequestedTimelineEvent",
+  "SoundcloudRegistrationRequestService" | "SoundcloudRegistrationRequestEventService"
+> = ({ SoundcloudRegistrationRequestService, SoundcloudRegistrationRequestEventService }) => ({
+  __isTypeOf: (v) => v instanceof SoundcloudMadRequestedTimelineEventDTO,
+  createdAt: ({ createdAt }) => createdAt,
+  request: ({ requestId }) => SoundcloudRegistrationRequestService.getByIdOrThrow(requestId),
+  event: ({ eventId }) => {
+    return SoundcloudRegistrationRequestEventService.getByIdOrThrow(eventId);
   },
 });

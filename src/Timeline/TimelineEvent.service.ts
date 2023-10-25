@@ -6,13 +6,20 @@ import z from "zod";
 import {
   MadRegisteredTimelineEventDTO,
   NicovideoMadRequestedTimelineEventDTO,
+  SoundcloudMadRequestedTimelineEventDTO,
   YoutubeMadRequestedTimelineEventDTO,
 } from "./TimelineEvent.dto.js";
 
 export type RegisterVideoCache = { type: "REGISTER"; videoId: string; createdAt: Date; eventId: string };
 export type RequestNicovideoCache = { type: "REQUEST_NICOVIDEO"; requestId: string; createdAt: Date; eventId: string };
 export type RequestYoutubeCache = { type: "REQUEST_YOUTUBE"; requestId: string; createdAt: Date; eventId: string };
-export type Cache = RegisterVideoCache | RequestNicovideoCache | RequestYoutubeCache;
+export type RequestSoundcloudCache = {
+  type: "REQUEST_SOUNDCLOUD";
+  requestId: string;
+  createdAt: Date;
+  eventId: string;
+};
+export type Cache = RegisterVideoCache | RequestNicovideoCache | RequestYoutubeCache | RequestSoundcloudCache;
 
 export const mkTimelineEventService = ({
   prisma,
@@ -53,6 +60,12 @@ export const mkTimelineEventService = ({
               requestId: z.string(),
               eventId: z.string(),
             }),
+            z.object({
+              type: z.literal("REQUEST_SOUNDCLOUD"),
+              createdAt: z.string().datetime(),
+              requestId: z.string(),
+              eventId: z.string(),
+            }),
           ]),
         )
         .safeParse(cached);
@@ -68,13 +81,15 @@ export const mkTimelineEventService = ({
                 return new NicovideoMadRequestedTimelineEventDTO(createdAt, v);
               case "REQUEST_YOUTUBE":
                 return new YoutubeMadRequestedTimelineEventDTO(createdAt, v);
+              case "REQUEST_SOUNDCLOUD":
+                return new SoundcloudMadRequestedTimelineEventDTO(createdAt, v);
             }
           });
       } else {
         logger.warn(parsedCached.error);
       }
 
-      const [v, nr, yr] = await prisma.$transaction([
+      const [v, nr, yr, sr] = await prisma.$transaction([
         prisma.videoEvent.findMany({
           where: { type: "REGISTER" },
           orderBy: { createdAt: "desc" },
@@ -86,6 +101,11 @@ export const mkTimelineEventService = ({
           take: take + skip,
         }),
         prisma.youtubeRegistrationRequestEvent.findMany({
+          where: { type: "REQUEST", request: { isChecked: false } },
+          orderBy: { createdAt: "desc" },
+          take: take + skip,
+        }),
+        prisma.soundcloudRegistrationRequestEvent.findMany({
           where: { type: "REQUEST", request: { isChecked: false } },
           orderBy: { createdAt: "desc" },
           take: take + skip,
@@ -119,6 +139,15 @@ export const mkTimelineEventService = ({
               eventId: id,
             }) satisfies RequestYoutubeCache,
         ),
+        ...sr.map(
+          ({ createdAt, requestId, id }) =>
+            ({
+              type: "REQUEST_SOUNDCLOUD" as const,
+              requestId,
+              createdAt,
+              eventId: id,
+            }) satisfies RequestSoundcloudCache,
+        ),
       ]
         .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
         .slice(0, skip + take);
@@ -132,6 +161,8 @@ export const mkTimelineEventService = ({
             return new NicovideoMadRequestedTimelineEventDTO(createdAt, v);
           case "REQUEST_YOUTUBE":
             return new YoutubeMadRequestedTimelineEventDTO(createdAt, v);
+          case "REQUEST_SOUNDCLOUD":
+            return new SoundcloudMadRequestedTimelineEventDTO(createdAt, v);
         }
       });
     },
