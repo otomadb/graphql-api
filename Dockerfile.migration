@@ -1,0 +1,15 @@
+FROM node:20.8.1-slim@sha256:4fa1430cd19507875e65896fdf3176fc1674bc5bbf51b5f750fa30484885c18d
+WORKDIR /app
+
+## install tini
+ADD https://github.com/krallin/tini/releases/download/v0.19.0/tini /bin/tini
+RUN chmod +x /bin/tini
+
+## install all node.js dependencies
+COPY package.json package-lock.json .npmrc ./
+RUN npm ci
+
+COPY ./prisma ./prisma
+
+ENTRYPOINT ["tini", "--"]
+CMD ["./node_modules/.bin/prisma", "migrate", "deploy"]
