@@ -134,5 +134,50 @@ describe("SoundcloudMADSourceService", () => {
 
       expect(Neo4jService.registerVideoTags).toBeCalledTimes(1);
     });
+
+    test("primaryThumbnailがnullでも許可", async () => {
+      await prisma.user.create({ data: { id: "1" } });
+      await prisma.tag.createMany({
+        data: [
+          { id: "1", isCategoryTag: false },
+          { id: "2", isCategoryTag: false },
+        ],
+      });
+
+      const actual = (await service.register(
+        {
+          primaryTitle: "Primary Title",
+          primaryThumbnail: null,
+          tagIds: ["1", "2"],
+          semitagNames: ["1", "2"],
+          sourceIds: ["1469143378"],
+        },
+        "1",
+      )) as ReturnOk<typeof service.register>;
+      expect(isOk(actual)).toBe(true);
+
+      expect(actual.data.id).toBeDefined();
+      expect(actual.data.serial).toBeDefined();
+
+      const video = await prisma.video.findUnique({ where: { id: actual.data.id } });
+      expect(video).toBeDefined();
+
+      const titles = await prisma.videoTitle.findMany({ where: { videoId: actual.data.id } });
+      expect(titles).toHaveLength(1);
+
+      const thumbnails = await prisma.videoThumbnail.findMany({ where: { videoId: actual.data.id } });
+      expect(thumbnails).toHaveLength(0);
+
+      const tags = await prisma.videoTag.findMany({ where: { videoId: actual.data.id } });
+      expect(tags).toHaveLength(2);
+
+      const semitags = await prisma.semitag.findMany({ where: { videoId: actual.data.id } });
+      expect(semitags).toHaveLength(2);
+
+      const sources = await prisma.soundcloudVideoSource.findMany({ where: { videoId: actual.data.id } });
+      expect(sources).toHaveLength(1);
+
+      expect(Neo4jService.registerVideoTags).toBeCalledTimes(1);
+    });
   });
 });

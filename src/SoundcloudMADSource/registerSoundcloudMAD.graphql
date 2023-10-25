@@ -5,7 +5,7 @@ type Mutation {
 
 input RegisterSoundcloudMADInput {
   primaryTitle: String!
-  primaryThumbnailUrl: String!
+  primaryThumbnailUrl: String
 
   tagIds: [ID!]!
   semitagNames: [String!]! = []
