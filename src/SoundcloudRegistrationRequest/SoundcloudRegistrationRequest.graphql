@@ -92,33 +92,3 @@ type SoundcloudRegistrationRequestSemitagging implements Node & RegistrationRequ
 union SoundcloudRegistrationRequestChecking =
     SoundcloudRegistrationRequestAccepting
   | SoundcloudRegistrationRequestRejecting
-type Query {
-  getSoundcloudRegistrationRequest(id: ID!): SoundcloudRegistrationRequest!
-}
-type Query {
-  findSoundcloudRegistrationRequest(input: FindSoundcloudRegistrationRequestInput): SoundcloudRegistrationRequest
-}
-
-input FindSoundcloudRegistrationRequestInput {
-  id: ID
-  sourceId: String
-}
-type Query {
-  findUncheckedSoundcloudRegistrationRequests(
-    input: FindUncheckedSoundcloudRegistrationRequestsInput!
-  ): SoundcloudRegistrationRequestConnection!
-}
-
-input FindUncheckedSoundcloudRegistrationRequestsInput {
-  first: Int
-  after: String
-
-  last: Int
-  before: String
-
-  orderBy: FindUncheckedSoundcloudRegistrationRequestsOrderBy! = { createdAt: DESC }
-}
-
-input FindUncheckedSoundcloudRegistrationRequestsOrderBy {
-  createdAt: SortOrder
-}
