@@ -13,12 +13,19 @@ export const resolverSoundcloudRegistrationRequest = ({
   userService,
   logger,
   SoundcloudRegistrationRequestEventService,
-}: Pick<ResolverDeps, "prisma" | "userService" | "logger" | "SoundcloudRegistrationRequestEventService">) =>
+  ImagesService,
+}: Pick<
+  ResolverDeps,
+  "prisma" | "userService" | "logger" | "SoundcloudRegistrationRequestEventService" | "ImagesService"
+>) =>
   ({
     id: ({ dbId: requestId }) => buildGqlId("SoundcloudRegistrationRequest", requestId),
 
     originalUrl: ({ sourceId }) => `https://www.soundcloud.com/watch?v=${sourceId}`,
     embedUrl: ({ sourceId }) => `https://www.soundcloud.com/embed/${sourceId}`,
+
+    thumbnailUrl: ({ thumbnailUrl }) => ImagesService.prepareDummy(thumbnailUrl),
+    originalThumbnailUrl: ({ thumbnailUrl }) => thumbnailUrl ?? null,
 
     taggings: ({ dbId: requestId }) => {
       return prisma.soundcloudRegistrationRequestTagging

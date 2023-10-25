@@ -72,7 +72,7 @@ export const mkSoundcloudService = ({ redis, logger }: { redis: Redis; logger: L
       const apiUrl = new URL("/resolve", "https://api-v2.soundcloud.com");
       apiUrl.searchParams.set("url", url);
       apiUrl.searchParams.set("client_id", clientId);
-      logger.debug(apiUrl.toString());
+      logger.trace(apiUrl.toString());
 
       const parsed = await fetch(apiUrl.toString())
         .then((res) => res.json())

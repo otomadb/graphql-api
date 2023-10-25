@@ -7,7 +7,11 @@ input RequestSoundcloudRegistrationInput {
   sourceId: String!
 
   title: String!
-  thumbnailUrl: String!
+
+  """
+  プラットフォーム側のサムネイル画像のURL（無い場合もある）
+  """
+  thumbnailUrl: String
 
   taggings: [RequestSoundcloudRegistrationInputTagging!]!
   semitaggings: [RequestSoundcloudRegistrationInputSemitagging!]!

@@ -1,0 +1,3 @@
+type Query {
+  findSoundcloudRegistrationRequestByUrl(url: String!): SoundcloudRegistrationRequest
+}

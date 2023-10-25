@@ -868,7 +868,7 @@ model SoundcloudRegistrationRequest {
   sourceId String @unique
 
   title        String
-  thumbnailUrl String
+  thumbnailUrl String?
   taggings     SoundcloudRegistrationRequestTagging[]
   semitaggings SoundcloudRegistrationRequestSemitagging[]
 

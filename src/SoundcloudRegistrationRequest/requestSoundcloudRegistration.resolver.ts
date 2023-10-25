@@ -33,7 +33,7 @@ export const mkRequestSoundcloudRegistrationResolver = ({
     const result = await SoundcloudRegistrationRequestService.requestRegistration({
       userId: user.id,
       title,
-      thumbnailUrl,
+      thumbnailUrl: thumbnailUrl || null,
       sourceId,
       taggings,
       semitaggings: semitaggings.map(({ name, note }) => ({ name, note: note || null })),

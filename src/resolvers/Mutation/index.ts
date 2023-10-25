@@ -5,6 +5,7 @@ import { resolverRejectRequestNicovideoRegistration } from "../../NicovideoRegis
 import { resolverRequestNicovideoRegistration } from "../../NicovideoRegistrationRequest/requestNicovideoRegistration.resolver.js";
 import { resolverRegisterVideoFromNicovideo } from "../../NicovideoVideoSource/registerVideoFromNicovideo.resolver.js";
 import { mkRegisterSoundcloudMADResolver } from "../../SoundcloudMADSource/registerSoundcloudMAD.resolver.js";
+import { mkRequestSoundcloudRegistrationResolver } from "../../SoundcloudRegistrationRequest/requestSoundcloudRegistration.resolver.js";
 import { resolverAddTagToVideo } from "../../Tag/addTagToVideo.resolver.js";
 import { resolverExplicitizeTagParent } from "../../Tag/explicitizeTagParent.resolver.js";
 import { resolverImplicitizeTagParent } from "../../Tag/implicitizeTagParent.resolver.js";
@@ -57,6 +58,7 @@ export const resolveMutation = (deps: ResolverDeps) =>
     removeTagFromVideo: resolverRemoveTagFromVideo(deps),
     removeVideoFromMylist: removeVideoFromMylist(deps),
     requestNicovideoRegistration: resolverRequestNicovideoRegistration(deps),
+    requestSoundcloudRegistration: mkRequestSoundcloudRegistrationResolver(deps),
     requestYoutubeRegistration: mkRequestYoutubeRegistrationResolver(deps),
     resovleSemitag: resolverResolveSemitag(deps),
     undoLikeVideo: resolverUndoLikeVideo(deps),

@@ -58,4 +58,11 @@ export class ImagesService {
     }
     return url.toString();
   }
+
+  public prepareDummy(imageUrl: string | null): string {
+    if (imageUrl) return imageUrl;
+
+    // TODO: 早く直す
+    return "https://img.youtube.com/vi/0/0.jpg";
+  }
 }

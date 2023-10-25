@@ -11,6 +11,11 @@ export const mkSoundcloudRegistrationRequestService = ({ prisma }: { prisma: Pri
         .findUniqueOrThrow({ where: { id } })
         .then((v) => SoundcloudRegistrationRequestDTO.fromPrisma(v));
     },
+    async findBySourceId(sourceId: string) {
+      const a = await prisma.soundcloudRegistrationRequest.findUnique({ where: { sourceId } });
+      if (a) return SoundcloudRegistrationRequestDTO.fromPrisma(a);
+      return null;
+    },
     async requestRegistration({
       title,
       thumbnailUrl,
@@ -21,7 +26,7 @@ export const mkSoundcloudRegistrationRequestService = ({ prisma }: { prisma: Pri
     }: {
       title: string;
       sourceId: string;
-      thumbnailUrl: string;
+      thumbnailUrl: string | null;
       userId: string;
       taggings: { tagId: string; note: string | null }[];
       semitaggings: { name: string; note: string | null }[];
