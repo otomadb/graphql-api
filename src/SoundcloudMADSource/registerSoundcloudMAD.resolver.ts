@@ -31,7 +31,7 @@ export const mkRegisterSoundcloudMADResolver: MkMutationResolver<
     const result = await SoundcloudMADSourceService.register(
       {
         primaryTitle: input.primaryTitle,
-        primaryThumbnail: input.primaryThumbnailUrl,
+        primaryThumbnail: input.primaryThumbnailUrl || null,
         tagIds: tagIds.data,
         semitagNames: semitagNames.data,
         sourceIds: sourceIds.data,

@@ -65,7 +65,7 @@ export const mkSoundcloudMADSourceService = ({
         sourceIds,
       }: {
         primaryTitle: string;
-        primaryThumbnail: string;
+        primaryThumbnail: string | null;
         tagIds: string[];
         semitagNames: string[];
         sourceIds: string[];
@@ -74,7 +74,7 @@ export const mkSoundcloudMADSourceService = ({
     ): Promise<Result<"", VideoDTO>> {
       const videoId = ulid();
       const dataTitles = [{ id: ulid(), title: primaryTitle, isPrimary: true }];
-      const dataThumbnails = [{ id: ulid(), imageUrl: primaryThumbnail, isPrimary: true }];
+      const dataThumbnails = primaryThumbnail ? [{ id: ulid(), imageUrl: primaryThumbnail, isPrimary: true }] : [];
       const dataTags = tagIds.map((tagId) => ({ id: ulid(), tagId }));
       const dataSemitags = semitagNames.map((name) => ({ id: ulid(), name, isChecked: false }));
       const dataSources = sourceIds.map((sourceId) => ({ id: ulid(), sourceId }));
@@ -127,12 +127,16 @@ export const mkSoundcloudMADSourceService = ({
               type: VideoThumbnailEventType.CREATE,
               payload: {},
             })),
-            {
-              userId,
-              videoThumbnailId: dataThumbnails[0].id,
-              type: VideoThumbnailEventType.SET_PRIMARY,
-              payload: {},
-            },
+            ...(dataThumbnails.length > 0
+              ? [
+                  {
+                    userId,
+                    videoThumbnailId: dataThumbnails[0].id,
+                    type: VideoThumbnailEventType.SET_PRIMARY,
+                    payload: {},
+                  },
+                ]
+              : []),
           ],
         }),
         prisma.videoTagEvent.createMany({
