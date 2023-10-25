@@ -18,6 +18,17 @@ generates:
         DateTime: Date
       contextType: ./types.js#Context
       mappers:
+        BilibiliRegistrationRequest: ../BilibiliRegistrationRequest/BilibiliRegistrationRequest.dto.js#BilibiliRegistrationRequestDTO
+        BilibiliRegistrationRequestAcceptEvent: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestEvent.dto.js#BilibiliRegistrationRequestAcceptEventDTO
+        BilibiliRegistrationRequestAccepting: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestAccepting.dto.js#BilibiliRegistrationRequestAcceptingDTO
+        BilibiliRegistrationRequestAcceptingNotification: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestAcceptingNotification.dto.js#BilibiliRegistrationRequestAcceptingNotificationDTO
+        BilibiliRegistrationRequestConnection: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestConnection.dto.js#BilibiliRegistrationRequestConnectionDTO
+        BilibiliRegistrationRequestEvent: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestEvent.dto.js#BilibiliRegistrationRequestEventDTO
+        BilibiliRegistrationRequestEventConnection: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestEventConnection.dto.js#BilibiliRegistrationRequestEventConnectionDTO
+        BilibiliRegistrationRequestRejectEvent: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestEvent.dto.js#BilibiliRegistrationRequestRejectEventDTO
+        BilibiliRegistrationRequestRejecting: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestRejecting.dto.js#BilibiliRegistrationRequestRejectingDTO
+        BilibiliRegistrationRequestRejectingNotification: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestRejectingNotification.dto.js#BilibiliRegistrationRequestRejectingNotificationDTO
+        BilibiliRegistrationRequestRequestEvent: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestEvent.dto.js#BilibiliRegistrationRequestRequestEventDTO
         BilibiliMADSource: ../BilibiliMADSource/BilibiliMADSource.dto.js#BilibiliMADSourceDTO
         BilibiliMADSourceCreateEvent: ../BilibiliMADSource/BilibiliMADSourceEvent.dto.js#BilibiliMADSourceEventDTO
         BilibiliMADSourceEvent: ../BilibiliMADSource/BilibiliMADSourceEvent.dto.js#BilibiliMADSourceEventDTO

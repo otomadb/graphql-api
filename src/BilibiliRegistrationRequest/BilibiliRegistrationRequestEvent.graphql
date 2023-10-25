@@ -1,0 +1,55 @@
+"""
+Bilibiliの動画リクエスト関連のイベント
+"""
+interface BilibiliRegistrationRequestEvent implements Node & Event {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+  request: BilibiliRegistrationRequest!
+}
+
+type BilibiliRegistrationRequestEventEdge {
+  cursor: String!
+  node: BilibiliRegistrationRequestEvent!
+}
+
+type BilibiliRegistrationRequestEventConnection {
+  nodes: [BilibiliRegistrationRequestEvent!]!
+  edges: [BilibiliRegistrationRequestEventEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""
+Bilibiliの動画をリクエスト時に発生するイベント
+"""
+type BilibiliRegistrationRequestRequestEvent implements Node & Event & BilibiliRegistrationRequestEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+  request: BilibiliRegistrationRequest!
+}
+
+"""
+Bilibiliの動画をリクエストを承認した時に発生するイベント
+"""
+type BilibiliRegistrationRequestAcceptEvent implements Node & Event & BilibiliRegistrationRequestEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+  request: BilibiliRegistrationRequest!
+}
+
+"""
+Bilibiliの動画をリクエストを拒否した時に発生するイベント
+"""
+type BilibiliRegistrationRequestRejectEvent implements Node & Event & BilibiliRegistrationRequestEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+  request: BilibiliRegistrationRequest!
+}

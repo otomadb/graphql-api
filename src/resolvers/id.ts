@@ -45,7 +45,11 @@ export type NodeType =
   | "SoundcloudRegistrationRequest"
   | "SoundcloudRegistrationRequestEvent"
   | "SoundcloudRegistrationRequestTagging"
-  | "SoundcloudRegistrationRequestSemitagging";
+  | "SoundcloudRegistrationRequestSemitagging"
+  | "BilibiliRegistrationRequest"
+  | "BilibiliRegistrationRequestEvent"
+  | "BilibiliRegistrationRequestTagging"
+  | "BilibiliRegistrationRequestSemitagging";
 
 export const buildGqlId = (type: NodeType, dbId: string): string =>
   Buffer.from(`${type}:${dbId}`).toString("base64url");

@@ -5,6 +5,19 @@ import { DateTimeResolver } from "graphql-scalars";
 import { resolverBilibiliMADSource } from "../BilibiliMADSource/BilibiliMADSource.resolver.js";
 import { resolverBilibiliMADSourceCreateEvent } from "../BilibiliMADSource/BilibiliMADSourceEvent.resolver.js";
 import { resolverBilibiliMADSourceEventConnection } from "../BilibiliMADSource/BilibiliMADSourceEventConnection.resolver.js";
+import { resolverBilibiliRegistrationRequest } from "../BilibiliRegistrationRequest/BilibiliRegistrationRequest.resolver.js";
+import { resolverBilibiliRegistrationRequestAccepting } from "../BilibiliRegistrationRequest/BilibiliRegistrationRequestAccepting.resolver.js";
+import { resolverBilibiliRegistrationRequestAcceptingNotification } from "../BilibiliRegistrationRequest/BilibiliRegistrationRequestAcceptingNotification.resolver.js";
+import { resolverBilibiliRegistrationRequestConnection } from "../BilibiliRegistrationRequest/BilibiliRegistrationRequestConnection.resolver.js";
+import {
+  mkBilibiliRegistrationRequestAcceptEventResolver,
+  mkBilibiliRegistrationRequestEventResolver,
+  mkBilibiliRegistrationRequestRejectEventResolver,
+  mkBilibiliRegistrationRequestRequestEventResolver,
+} from "../BilibiliRegistrationRequest/BilibiliRegistrationRequestEvent.resolver.js";
+import { mkBilibiliRegistrationRequestEventConnectionResolver } from "../BilibiliRegistrationRequest/BilibiliRegistrationRequestEventConnection.resolver.js";
+import { mkBilibiliRegistrationRequestRejectingResolver } from "../BilibiliRegistrationRequest/BilibiliRegistrationRequestRejecting.resolver.js";
+import { resolverBilibiliRegistrationRequestRejectingNotification } from "../BilibiliRegistrationRequest/BilibiliRegistrationRequestRejectingNotification.resolver.js";
 import { mkBilibiliOriginalSourceResolver } from "../FetchExternal/BilibiliOriginalSource.resolver.js";
 import { resolverBilibiliOriginalSourceTag } from "../FetchExternal/BilibiliOriginalSourceTag.resolver.js";
 import { mkNicovideoOriginalSourceResolver } from "../FetchExternal/NicovideoOriginalSource.resolver.js";
@@ -143,6 +156,17 @@ export const makeResolvers = (deps: ResolverDeps) =>
     BilibiliMADSourceEventConnection: resolverBilibiliMADSourceEventConnection(deps),
     BilibiliOriginalSource: mkBilibiliOriginalSourceResolver(deps),
     BilibiliOriginalSourceTag: resolverBilibiliOriginalSourceTag(deps),
+    BilibiliRegistrationRequest: resolverBilibiliRegistrationRequest(deps),
+    BilibiliRegistrationRequestAcceptEvent: mkBilibiliRegistrationRequestAcceptEventResolver(deps),
+    BilibiliRegistrationRequestAccepting: resolverBilibiliRegistrationRequestAccepting(deps),
+    BilibiliRegistrationRequestAcceptingNotification: resolverBilibiliRegistrationRequestAcceptingNotification(deps),
+    BilibiliRegistrationRequestConnection: resolverBilibiliRegistrationRequestConnection(),
+    BilibiliRegistrationRequestEvent: mkBilibiliRegistrationRequestEventResolver(deps),
+    BilibiliRegistrationRequestEventConnection: mkBilibiliRegistrationRequestEventConnectionResolver(deps),
+    BilibiliRegistrationRequestRejectEvent: mkBilibiliRegistrationRequestRejectEventResolver(deps),
+    BilibiliRegistrationRequestRejecting: mkBilibiliRegistrationRequestRejectingResolver(deps),
+    BilibiliRegistrationRequestRejectingNotification: resolverBilibiliRegistrationRequestRejectingNotification(deps),
+    BilibiliRegistrationRequestRequestEvent: mkBilibiliRegistrationRequestRequestEventResolver(deps),
     DateTime: DateTimeResolver,
     MadRegisteredTimelineEvent: mkMadRegisteredTimelineEventResolver(deps),
     Mutation: resolveMutation(deps),

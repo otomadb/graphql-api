@@ -18,6 +18,8 @@ import { pino } from "pino";
 import z from "zod";
 
 import { mkBilibiliMADSourceService } from "./BilibiliMADSource/BilibiliMADSource.service.js";
+import { mkBilibiliRegistrationRequestService } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequest.service.js";
+import { mkBilibiliRegistrationRequestEventService } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequestEvent.service.js";
 import { ImagesService } from "./Common/Images.service.js";
 import { mkLoggerService } from "./Common/Logger.service.js";
 import { mkNicovideoService } from "./Common/Nicovideo.service.js";
@@ -181,6 +183,13 @@ const yoga = createYoga<ServerContext, UserContext>({
         logger: logger.child({ service: "SoundcloudRegistrationRequestEventService" }),
       }),
       NicochuuService: nicochuuService,
+      BilibiliRegistrationRequestService: mkBilibiliRegistrationRequestService({
+        prisma: prismaClient,
+      }),
+      BilibiliRegistrationRequestEventService: mkBilibiliRegistrationRequestEventService({
+        prisma: prismaClient,
+        logger: logger.child({ service: "BilibiliRegistrationRequestEventService" }),
+      }),
     }),
   }),
   cors: (request) => {
