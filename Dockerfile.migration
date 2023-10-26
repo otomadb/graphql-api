@@ -1,6 +1,12 @@
 FROM node:20.8.1-slim@sha256:4fa1430cd19507875e65896fdf3176fc1674bc5bbf51b5f750fa30484885c18d
 WORKDIR /app
 
+# install OpenSSL
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends openssl=3.0.11-1~deb12u1 \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
 ## install tini
 ADD https://github.com/krallin/tini/releases/download/v0.19.0/tini /bin/tini
 RUN chmod +x /bin/tini
