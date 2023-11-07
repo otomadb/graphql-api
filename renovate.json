@@ -3,5 +3,13 @@
   "extends": ["config:best-practices", ":automergePatch"],
   "lockFileMaintenance": {
     "enabled": true
-  }
+  },
+  "digest": {
+    "automerge": true
+  },
+  "packageRules": [
+    {
+      "extends": ["packages:eslint", ":automergeMinor"]
+    }
+  ]
 }
