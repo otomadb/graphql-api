@@ -22,7 +22,7 @@ services:
         target: /var/lib/postgresql/data
 
   adminer:
-    image: adminer@sha256:77a22055543ed66374415ef1981b0a035b6fae9179313bfd74124c62a9d7826b
+    image: adminer@sha256:b7f0e6681e9a77916daf2f070616d25e3fd687b84550aa6673de9a24407dd613
     ports:
       - target: 8080
         published: 8081
