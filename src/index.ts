@@ -28,6 +28,7 @@ import typeDefs from "./schema.graphql";
 import { mkSoundcloudMADSourceService } from "./SoundcloudMADSource/SoundcloudMADSource.service.js";
 import { mkSoundcloudRegistrationRequestService } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequest.service.js";
 import { mkSoundcloudRegistrationRequestEventService } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEvent.service.js";
+import { mkTagService } from "./Tag/Tag.service.js";
 import { mkTimelineEventService } from "./Timeline/TimelineEvent.service.js";
 import { UserService } from "./User/service.js";
 import { mkVideoService } from "./Video/Video.service.js";
@@ -137,6 +138,9 @@ const yoga = createYoga<ServerContext, UserContext>({
         logger: logger.child({ service: "TimelineEventService" }),
       }),
       VideoService: mkVideoService({
+        prisma: prismaClient,
+      }),
+      TagsService: mkTagService({
         prisma: prismaClient,
       }),
       NicovideoRegistrationRequestService: mkNicovideoRegistrationRequestService({

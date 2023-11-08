@@ -7,6 +7,9 @@ export const mkVideoService = ({ prisma }: { prisma: PrismaClient }) => {
     getByIdOrThrow(id: string) {
       return prisma.video.findUniqueOrThrow({ where: { id } }).then((v) => VideoDTO.fromPrisma(v));
     },
+    countAll() {
+      return prisma.video.count();
+    },
   };
 };
 
