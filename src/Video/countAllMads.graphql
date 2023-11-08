@@ -1,0 +1,4 @@
+type Query {
+  "全ての音MADの個数を数える"
+  countAllMads: Int!
+}
