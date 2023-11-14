@@ -27,7 +27,7 @@ services:
         published: 4000
 
   postgres:
-    image: postgres:15@sha256:d1168ad5397bf9c94cc417c530469805a8767ed585481d93f174461ac8557e3a
+    image: postgres:15@sha256:c573497259fe4e42e633ad393afdf197ec92fa0d4e8c27b75d1db62c3e9b734f
     healthcheck:
       test: pg_isready
       interval: 10s
