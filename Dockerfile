@@ -1,5 +1,5 @@
 # Builder
-FROM node:20.9.0-slim@sha256:3e3c22e030c25395a11f498983e246e660679f29d66002598cda5c1560be3854 AS builder
+FROM node:20.9.0-slim@sha256:99f3452abd6b90465cd52cf87d4349316fa6ece7715637a3d0fc1363eec0d43a AS builder
 WORKDIR /app
 
 RUN apt-get update \
@@ -21,7 +21,7 @@ COPY ./tsconfig.json rollup.config.js ./
 RUN npm run rollup:build
 
 # Runner
-FROM node:20.9.0-slim@sha256:3e3c22e030c25395a11f498983e246e660679f29d66002598cda5c1560be3854 AS runner
+FROM node:20.9.0-slim@sha256:99f3452abd6b90465cd52cf87d4349316fa6ece7715637a3d0fc1363eec0d43a AS runner
 WORKDIR /app
 
 RUN apt-get update \
