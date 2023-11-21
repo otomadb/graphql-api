@@ -1,15 +1,4 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:best-practices", ":automergePatch"],
-  "lockFileMaintenance": {
-    "enabled": true
-  },
-  "digest": {
-    "automerge": true
-  },
-  "packageRules": [
-    {
-      "extends": ["packages:eslint", ":automergeMinor"]
-    }
-  ]
+  "extends": ["github>otomadb/renovate-config"]
 }
