@@ -72,7 +72,7 @@ jobs:
         env:
           NEO4J_AUTH: ${{ env.NEO4J_USERNAME }}/${{ env.NEO4J_PASSWORD }}
       redis:
-        image: redis:7.0@sha256:1767163e8ddbc933cb368cf63109111563896aaf02c8e06f0d4424e304aabbd4
+        image: redis:7.0@sha256:ac54e1e4c288cb02d414f9c7579f6aa3db8cfd003e72bdc42dd273d61a290630
         ports:
           - 6379:6379
     steps:
