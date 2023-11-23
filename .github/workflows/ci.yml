@@ -58,7 +58,7 @@ jobs:
       NEO4J_PASSWORD: password
     services:
       postgres:
-        image: postgres:15@sha256:c49ba31e91bcf0a0594ff4204f4a1fa0eac47a60c4baab6e247b0df21bfbedd0
+        image: postgres:15@sha256:da76f1e3d9a1728600f062ba02d8e46b9c521012e87d402ce03e38ef0389979f
         ports:
           - 5432:5432
         env:
