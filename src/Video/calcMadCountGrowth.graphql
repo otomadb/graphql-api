@@ -1,0 +1,18 @@
+type Query {
+  "一定区間の音MADの登録個数の時系列データを計算する"
+  calcMadCountGrowth(input: CalcMadCountGrowthInput!): [MadCountGrowth]!
+}
+
+input CalcMadCountGrowthInput {
+  "開始日時"
+  start: DateTime!
+  "終了日時"
+  end: DateTime!
+  "何分割するか"
+  split: Int!
+}
+
+type MadCountGrowth {
+  date: DateTime!
+  count: Int!
+}
