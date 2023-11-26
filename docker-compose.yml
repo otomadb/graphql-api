@@ -3,7 +3,7 @@ version: "3.9"
 
 services:
   postgres:
-    image: postgres:15@sha256:3faff326de0fa3713424d44f3b85993459ac1917e0a4bfd35bab9e0a58e41900
+    image: postgres:15@sha256:da76f1e3d9a1728600f062ba02d8e46b9c521012e87d402ce03e38ef0389979f
     healthcheck:
       test: pg_isready
       interval: 10s
@@ -22,13 +22,13 @@ services:
         target: /var/lib/postgresql/data
 
   adminer:
-    image: adminer@sha256:f762276d79d2f18ae7fe28c79ee25a0a3b3dba9dc92ed695a3e88d613b3e6bde
+    image: adminer@sha256:0ce7583815dabdd9f560ee0afed630ecb33df6756f4b66c85c197011559a0248
     ports:
       - target: 8080
         published: 8081
 
   neo4j:
-    image: neo4j:5.13@sha256:5ba8a00a38444cc07623f3de1dd72d0f8cc3dcd64a198c8d87af5a64f65c8457
+    image: neo4j:5.13@sha256:6c6003e890c75c9136df06b9061afbbf9a70673711d2d9abc5937ca7f01abb16
     ports:
       # http
       - target: 7474
@@ -57,7 +57,7 @@ services:
         target: /meili_data
 
   redis:
-    image: redis:7.0@sha256:d634d2c07d1f70672aa2e8c2443643b23b5755ecfc068685b0dcf0b76a9db72b
+    image: redis:7.0@sha256:ac54e1e4c288cb02d414f9c7579f6aa3db8cfd003e72bdc42dd273d61a290630
     ports:
       - target: 6379
         published: 6379

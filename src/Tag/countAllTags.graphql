@@ -1,0 +1,4 @@
+type Query {
+  "全てのタグの個数を数える"
+  countAllTags: Int!
+}

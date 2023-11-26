@@ -27,7 +27,7 @@ services:
         published: 4000
 
   postgres:
-    image: postgres:15@sha256:3faff326de0fa3713424d44f3b85993459ac1917e0a4bfd35bab9e0a58e41900
+    image: postgres:15@sha256:da76f1e3d9a1728600f062ba02d8e46b9c521012e87d402ce03e38ef0389979f
     healthcheck:
       test: pg_isready
       interval: 10s
@@ -53,7 +53,7 @@ services:
   #     PRISMA_DATABASE_URL: "postgres://user:pass@postgres:5432/test"
 
   neo4j:
-    image: neo4j:5.13@sha256:5ba8a00a38444cc07623f3de1dd72d0f8cc3dcd64a198c8d87af5a64f65c8457
+    image: neo4j:5.13@sha256:6c6003e890c75c9136df06b9061afbbf9a70673711d2d9abc5937ca7f01abb16
     environment:
       NEO4J_AUTH: neo4j/password
     healthcheck:
