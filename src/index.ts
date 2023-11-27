@@ -18,6 +18,7 @@ import z from "zod";
 import { mkBilibiliMADSourceService } from "./BilibiliMADSource/BilibiliMADSource.service.js";
 import { ImagesService } from "./Common/Images.service.js";
 import { mkLoggerService } from "./Common/Logger.service.js";
+import { mkNicovideoService } from "./Common/Nicovideo.service.js";
 import { mkSoundcloudService } from "./Common/Soundcloud.service.js";
 import { mkNeo4jService } from "./Neo4j/Neo4j.service.js";
 import { mkNicovideoRegistrationRequestService } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequest.service.js";
@@ -98,6 +99,9 @@ const LoggerService = mkLoggerService({ pinoLogger: logger });
 const Neo4jService = mkNeo4jService({ driver: neo4jDriver, LoggerService });
 
 const SoundcloudService = mkSoundcloudService({ redis: redisClient, logger });
+const NicovideoService = mkNicovideoService({
+  logger: logger.child({ service: "NicovideoService" }),
+});
 
 const yoga = createYoga<ServerContext, UserContext>({
   graphiql: process.env.ENABLE_GRAPHIQL === "true",
@@ -132,6 +136,7 @@ const yoga = createYoga<ServerContext, UserContext>({
         logger: logger.child({ service: "SoundcloudMADSourceService" }),
       }),
       SoundcloudService,
+      NicovideoService,
       TimelineEventService: mkTimelineEventService({
         prisma: prismaClient,
         redis: redisClient,

@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { QueryResolvers } from "../resolvers/graphql.js";
 import { isValidNicovideoSourceId } from "../utils/isValidNicovideoSourceId.js";
-import { NicovideoOriginalSourceTagDTO } from "./NicovideoOriginalSourceTag.dto.js";
+import { NicovideoOriginalSourceDTO } from "./NicovideoOriginalSource.dto.js";
 
 const apiResponse = z.object({
   data: z.object({
@@ -17,6 +17,7 @@ const apiResponse = z.object({
     video: z.object({
       id: z.string(),
       title: z.string(),
+      description: z.string(),
       count: z.object({
         view: z.number().int(),
         comment: z.number().int(),
@@ -55,48 +56,7 @@ export const fetchNicovideo = () =>
       return {
         source: null,
       }; // TODO: もう少し詳細な情報を出しても良い気がする
-
-    const {
-      data: { video },
-    } = parsed.data;
-    const { tags, excludeTags } = filterTags(parsed.data.data.tag.items.map(({ name }) => name));
-
     return {
-      source: {
-        sourceId: video.id,
-        title: video.title,
-
-        thumbnailUrl: video.thumbnail.ogp,
-
-        countViews: video.count.view,
-        countLikes: video.count.like,
-        countMylists: video.count.mylist,
-        countComments: video.count.comment,
-
-        tags: tags.map((name) => new NicovideoOriginalSourceTagDTO({ name })),
-        excludeTags,
-
-        registeredAt: video.registeredAt,
-        duration: video.duration,
-
-        url: `https://www.nicovideo.jp/watch/${video.id}`,
-        embedUrl: `https://embed.nicovideo.jp/watch/${video.id}`,
-      },
+      source: NicovideoOriginalSourceDTO.make({ sourceId }),
     };
   }) satisfies QueryResolvers["fetchNicovideo"];
-
-export const filterTags = (names: string[]) => {
-  return {
-    tags: names.filter((n) => !isExcludeTag(n)),
-    excludeTags: names.filter((n) => isExcludeTag(n)),
-  };
-};
-
-export const isExcludeTag = (name: string) => {
-  switch (name.toLowerCase()) {
-    case "音mad":
-      return true;
-    default:
-      return false;
-  }
-};
