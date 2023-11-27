@@ -99,6 +99,9 @@ const LoggerService = mkLoggerService({ pinoLogger: logger });
 const Neo4jService = mkNeo4jService({ driver: neo4jDriver, LoggerService });
 
 const SoundcloudService = mkSoundcloudService({ redis: redisClient, logger });
+const NicovideoService = mkNicovideoService({
+  logger: logger.child({ service: "NicovideoService" }),
+});
 
 const yoga = createYoga<ServerContext, UserContext>({
   graphiql: process.env.ENABLE_GRAPHIQL === "true",
@@ -133,6 +136,7 @@ const yoga = createYoga<ServerContext, UserContext>({
         logger: logger.child({ service: "SoundcloudMADSourceService" }),
       }),
       SoundcloudService,
+      NicovideoService,
       TimelineEventService: mkTimelineEventService({
         prisma: prismaClient,
         redis: redisClient,
