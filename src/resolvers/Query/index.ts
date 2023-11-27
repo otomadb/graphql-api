@@ -6,6 +6,7 @@ import { resolverFetchBilibili } from "../../FetchExternal/fetchBilibili.resolve
 import { fetchNicovideo } from "../../FetchExternal/fetchNicovideo.js";
 import { mkFetchSoundcloudResolver } from "../../FetchExternal/fetchSoundcloud.resolver.js";
 import { resolverFetchYoutube } from "../../FetchExternal/fetchYoutube.js";
+import { mkListNicovideoBotRegistrationRequestsResolver } from "../../NicovideoBotRegistrationRequest/listNicovideoBotRegistrationRequests.resolver.js";
 import { resolverFindNicovideoRegistrationRequest } from "../../NicovideoRegistrationRequest/findNicovideoRegistrationRequest.resolver.js";
 import { findNicovideoRegistrationRequests } from "../../NicovideoRegistrationRequest/findNicovideoRegistrationRequests.resolver.js";
 import { resolverFindUncheckedNicovideoRegistrationRequests } from "../../NicovideoRegistrationRequest/findUncheckedNicovideoRegistrationRequests.resolver.js";
@@ -93,6 +94,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
     getVideo: resolverGetVideo(deps),
     getYoutubeRegistrationRequest: resolverGetYoutubeRegistrationRequest(deps),
     getYoutubeVideoSource: getYoutubeVideoSource(deps),
+    listNicovideoBotRegistrationRequests: mkListNicovideoBotRegistrationRequestsResolver(deps),
     notifications: resolverNotifications(deps),
     searchTags: resolverSearchTags(deps),
     searchVideos: resolverSearchVideos(deps),

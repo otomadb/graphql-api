@@ -1,5 +1,6 @@
 import { IncomingMessage, ServerResponse } from "node:http";
 
+import { PromiseClient } from "@connectrpc/connect";
 import { PrismaClient } from "@prisma/client";
 import { AppMetadata, User, UserMetadata } from "auth0";
 import { MeiliSearch } from "meilisearch";
@@ -12,6 +13,7 @@ import { NicovideoService } from "../Common/Nicovideo.service.js";
 import { SoundcloudService as SoundcloudService2 } from "../Common/Soundcloud.service.js";
 import { NicovideoRegistrationRequestService } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequest.service.js";
 import { NicovideoRegistrationRequestEventService } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.service.js";
+import { NicochuuService } from "../protobuf/nicochuu_connect.js";
 import { SoundcloudMADSourceService } from "../SoundcloudMADSource/SoundcloudMADSource.service.js";
 import { SoundcloudRegistrationRequestService } from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequest.service.js";
 import { SoundcloudRegistrationRequestEventService } from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEvent.service.js";
@@ -46,6 +48,7 @@ export type ResolverDeps = {
   SoundcloudRegistrationRequestService: SoundcloudRegistrationRequestService;
   SoundcloudRegistrationRequestEventService: SoundcloudRegistrationRequestEventService;
   TagsService: TagService;
+  NicochuuService: PromiseClient<typeof NicochuuService>;
 };
 export type ServerContext = {
   req: IncomingMessage;

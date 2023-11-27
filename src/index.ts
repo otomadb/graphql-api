@@ -2,6 +2,8 @@
 /* eslint-disable no-process-env */
 import { createServer } from "node:http";
 
+import { createPromiseClient } from "@connectrpc/connect";
+import { createConnectTransport } from "@connectrpc/connect-node";
 import { ResolveUserFn, useGenericAuth, ValidateUserFn } from "@envelop/generic-auth";
 import { PrismaClient } from "@prisma/client";
 import { ManagementClient } from "auth0";
@@ -23,6 +25,7 @@ import { mkSoundcloudService } from "./Common/Soundcloud.service.js";
 import { mkNeo4jService } from "./Neo4j/Neo4j.service.js";
 import { mkNicovideoRegistrationRequestService } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequest.service.js";
 import { mkNicovideoRegistrationRequestEventService } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.service.js";
+import { NicochuuService } from "./protobuf/nicochuu_connect.js";
 import { makeResolvers } from "./resolvers/index.js";
 import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
 import typeDefs from "./schema.graphql";
@@ -93,15 +96,20 @@ const meilisearchClient = new MeiliSearch({
   host: process.env.MEILISEARCH_URL,
 });
 
+const nicochuuService = createPromiseClient(
+  NicochuuService,
+  createConnectTransport({ baseUrl: process.env.NICOCHUU_BASE_URL, httpVersion: "1.1" }),
+);
+
 const redisClient = new Redis(process.env.REDIS_URL);
 
 const LoggerService = mkLoggerService({ pinoLogger: logger });
 const Neo4jService = mkNeo4jService({ driver: neo4jDriver, LoggerService });
 
-const SoundcloudService = mkSoundcloudService({ redis: redisClient, logger });
 const NicovideoService = mkNicovideoService({
   logger: logger.child({ service: "NicovideoService" }),
 });
+const SoundcloudService = mkSoundcloudService({ redis: redisClient, logger });
 
 const yoga = createYoga<ServerContext, UserContext>({
   graphiql: process.env.ENABLE_GRAPHIQL === "true",
@@ -172,6 +180,7 @@ const yoga = createYoga<ServerContext, UserContext>({
         prisma: prismaClient,
         logger: logger.child({ service: "SoundcloudRegistrationRequestEventService" }),
       }),
+      NicochuuService: nicochuuService,
     }),
   }),
   cors: (request) => {

@@ -13,6 +13,10 @@ RUN npm ci
 COPY ./prisma/schema.prisma ./prisma/schema.prisma
 RUN npm run prisma:client
 
+COPY buf.gen.yaml ./
+COPY proto ./proto
+RUN npm run generate:buf
+
 COPY ./codegen.yml ./
 COPY ./src ./src
 RUN npm run codegen
