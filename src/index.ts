@@ -18,6 +18,7 @@ import z from "zod";
 import { mkBilibiliMADSourceService } from "./BilibiliMADSource/BilibiliMADSource.service.js";
 import { ImagesService } from "./Common/Images.service.js";
 import { mkLoggerService } from "./Common/Logger.service.js";
+import { mkNicovideoService } from "./Common/Nicovideo.service.js";
 import { mkSoundcloudService } from "./Common/Soundcloud.service.js";
 import { mkNeo4jService } from "./Neo4j/Neo4j.service.js";
 import { mkNicovideoRegistrationRequestService } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequest.service.js";

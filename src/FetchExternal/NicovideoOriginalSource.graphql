@@ -1,0 +1,51 @@
+type NicovideoOriginalSource {
+  "ニコニコ動画での動画ID"
+  sourceId: String!
+
+  "ニコニコ動画での動画URL"
+  url: String!
+
+  "ニコニコ動画の埋め込み用URL"
+  embedUrl: String!
+
+  """
+  削除されている場合は`null`を返却
+  """
+  info: NicovideoOriginalSourceFreshInfo
+}
+
+"ニコニコ動画のフレッシュな動画情報"
+type NicovideoOriginalSourceFreshInfo {
+  "ニコニコ動画での投稿日時"
+  registeredAt: DateTime!
+
+  "タイトル"
+  title: String!
+
+  "説明文"
+  description: String!
+
+  "サムネイル画像のURL"
+  thumbnailUrl: String!
+
+  "再生数"
+  countViews: Int!
+
+  "コメントの数"
+  countComments: Int!
+
+  "マイリストの数"
+  countMylists: Int!
+
+  "いいね！の数"
+  countLikes: Int!
+
+  "動画の長さ"
+  duration: Int!
+
+  "検索可能なタグ"
+  tags: [NicovideoOriginalSourceTag!]!
+
+  "「音MAD」など範囲が広すぎるので除外したタグ"
+  excludeTags: [String!]!
+}

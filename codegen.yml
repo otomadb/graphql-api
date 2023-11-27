@@ -35,6 +35,7 @@ generates:
         MylistTagInclusion: ./MylistTagInclusion/model.js#MylistTagInclusionModel
         MylistVideoRecommendation: ./MylistVideoRecommendation/model.js#MylistVideoRecommendationModel
         NicovideoMadRequestedTimelineEvent: ../Timeline/TimelineEvent.dto.js#NicovideoMadRequestedTimelineEventDTO
+        NicovideoOriginalSource: ../FetchExternal/NicovideoOriginalSource.dto.js#NicovideoOriginalSourceDTO
         NicovideoOriginalSourceTag: ../FetchExternal/NicovideoOriginalSourceTag.dto.js#NicovideoOriginalSourceTagDTO
         NicovideoRegistrationRequest: ../NicovideoRegistrationRequest/dto.js#NicovideoRegistrationRequestDTO
         NicovideoRegistrationRequestAcceptEvent: ../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.dto.js#NicovideoRegistrationRequestAcceptEventDTO
