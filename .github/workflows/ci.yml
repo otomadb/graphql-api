@@ -18,33 +18,10 @@ jobs:
           node-version-file: .node-version
           cache: npm
       - run: npm ci
-
+      - run: npm run lint:eslint
       - run: npm run lint:prettier
-
-      - run: npm run lint:eslint:report
-      - name: Annotate ESLint results
-        uses: ataylorme/eslint-annotate-action@v2
-        with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          report-json: ".eslint-report.json"
-
       - run: npm run codegen
       - run: npm run lint:graphql-schema-linter:report
-
-  typecheck:
-    name: Type Check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4
-        with:
-          node-version-file: .node-version
-          cache: npm
-      - run: npm ci
-      - run: npm run codegen
-      - run: npm run prisma:client
-      - run: npm run generate:buf
-      - run: npm run typecheck
 
   test:
     name: Test
@@ -85,7 +62,8 @@ jobs:
       - run: npm ci
       - run: npm run codegen
       - run: npm run prisma:client
-      - run: npm run generate:buf
+      - run: npm run buf:generate
+      - run: npm run typecheck
       - run: npm run test
         env:
           PRISMA_DATABASE_URL: postgres://${{ env.POSTGRES_USERNAME }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DATABASE }}

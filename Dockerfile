@@ -15,7 +15,7 @@ RUN npm run prisma:client
 
 COPY buf.gen.yaml ./
 COPY proto ./proto
-RUN npm run generate:buf
+RUN npm run buf:generate
 
 COPY ./codegen.yml ./
 COPY ./src ./src
