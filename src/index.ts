@@ -110,9 +110,6 @@ const NicovideoService = mkNicovideoService({
   logger: logger.child({ service: "NicovideoService" }),
 });
 const SoundcloudService = mkSoundcloudService({ redis: redisClient, logger });
-const NicovideoService = mkNicovideoService({
-  logger: logger.child({ service: "NicovideoService" }),
-});
 
 const yoga = createYoga<ServerContext, UserContext>({
   graphiql: process.env.ENABLE_GRAPHIQL === "true",
@@ -123,7 +120,6 @@ const yoga = createYoga<ServerContext, UserContext>({
       prisma: prismaClient,
       meilisearch: meilisearchClient,
       logger,
-      NicovideoService,
       userService: UserService.make({
         auth0Management,
         logger,
