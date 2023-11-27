@@ -120,6 +120,7 @@ const yoga = createYoga<ServerContext, UserContext>({
       prisma: prismaClient,
       meilisearch: meilisearchClient,
       logger,
+      NicovideoService,
       userService: UserService.make({
         auth0Management,
         logger,
