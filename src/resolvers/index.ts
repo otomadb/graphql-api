@@ -1,5 +1,7 @@
 /* eslint sort-keys: 2 */
 
+import { DateTimeResolver } from "graphql-scalars";
+
 import { resolverBilibiliMADSource } from "../BilibiliMADSource/BilibiliMADSource.resolver.js";
 import { resolverBilibiliMADSourceCreateEvent } from "../BilibiliMADSource/BilibiliMADSourceEvent.resolver.js";
 import { resolverBilibiliMADSourceEventConnection } from "../BilibiliMADSource/BilibiliMADSourceEventConnection.resolver.js";
@@ -141,6 +143,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     BilibiliMADSourceEventConnection: resolverBilibiliMADSourceEventConnection(deps),
     BilibiliOriginalSource: mkBilibiliOriginalSourceResolver(deps),
     BilibiliOriginalSourceTag: resolverBilibiliOriginalSourceTag(deps),
+    DateTime: DateTimeResolver,
     MadRegisteredTimelineEvent: mkMadRegisteredTimelineEventResolver(deps),
     Mutation: resolveMutation(deps),
     Mylist: resolveMylist(deps),

@@ -8,10 +8,7 @@ type NicovideoOriginalSource {
   "ニコニコ動画の埋め込み用URL"
   embedUrl: String!
 
-  """
-  削除されている場合は`null`を返却
-  """
-  info: NicovideoOriginalSourceFreshInfo
+  info: NicovideoOriginalSourceFreshInfo!
 }
 
 "ニコニコ動画のフレッシュな動画情報"
