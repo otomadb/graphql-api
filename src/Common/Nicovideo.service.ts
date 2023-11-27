@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export const mkNicovideoService = ({ logger }: { logger: Logger }) => {
   return {
-    async getInfo(sourceId: string) {
+    async getFreshInfo(sourceId: string) {
       const url = new URL(`/api/watch/v3_guest/${sourceId}`, "https://www.nicovideo.jp");
       url.searchParams.set("_frontendId", "6");
       url.searchParams.set("_frontendVersion", "0");
