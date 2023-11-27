@@ -1,0 +1,9 @@
+type Query {
+  "自動的に検知したニコニコ動画の音MADを列挙する"
+  listNicovideoBotRegistrationRequests(input: ListNicovideoBotRegistrationRequestsInput!): [NicovideoOriginalSource!]!
+}
+
+input ListNicovideoBotRegistrationRequestsInput {
+  skip: Int!
+  limit: Int!
+}

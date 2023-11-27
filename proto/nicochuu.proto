@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package com.otomadb.nicochuu.v1;
+
+service NicochuuService {
+  rpc ListVideos(ListVideoRequest) returns (ListVideoResponse) {}
+  rpc GetVideo(GetVideoRequest) returns (GetVideoResponse) {}
+  rpc CheckVideo(CheckVideoRequest) returns (CheckVideoResponse) {}
+}
+
+message Video {
+  string source_id = 1;
+  string posted_at = 2;
+}
+
+message ListVideoRequest {
+  int32 take = 1;
+  int32 skip = 2;
+}
+
+message ListVideoResponse {
+  repeated Video videos = 1;
+  int32 total = 2;
+}
+
+message GetVideoRequest {
+  string source_id = 1;
+}
+
+message GetVideoResponse {
+  optional Video video = 1;
+}
+
+message CheckVideoRequest {
+  string source_id = 1;
+}
+
+message CheckVideoResponse {
+  bool ok = 1;
+}

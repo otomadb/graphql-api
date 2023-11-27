@@ -34,3 +34,6 @@ dist/
 
 # GraphQL Schema Linter
 .graphql-schema-linter-report.json
+
+# generated files
+src/protobuf
