@@ -8,6 +8,7 @@ import { Logger } from "pino";
 
 import { BilibiliMADSourceService } from "../BilibiliMADSource/BilibiliMADSource.service.js";
 import { ImagesService } from "../Common/Images.service.js";
+import { NicovideoService } from "../Common/Nicovideo.service.js";
 import { SoundcloudService as SoundcloudService2 } from "../Common/Soundcloud.service.js";
 import { NicovideoRegistrationRequestService } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequest.service.js";
 import { NicovideoRegistrationRequestEventService } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.service.js";
@@ -33,6 +34,7 @@ export type ResolverDeps = {
   ImagesService: ImagesService;
   BilibiliMADSourceService: BilibiliMADSourceService;
   SoundcloudMADSourceService: SoundcloudMADSourceService;
+  NicovideoService: NicovideoService;
   SoundcloudService: SoundcloudService2;
   TimelineEventService: TimelineEventService;
   VideoService: VideoService;
