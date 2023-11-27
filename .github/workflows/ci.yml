@@ -43,6 +43,7 @@ jobs:
       - run: npm ci
       - run: npm run codegen
       - run: npm run prisma:client
+      - run: npm run generate:buf
       - run: npm run typecheck
 
   test:
@@ -84,6 +85,7 @@ jobs:
       - run: npm ci
       - run: npm run codegen
       - run: npm run prisma:client
+      - run: npm run generate:buf
       - run: npm run test
         env:
           PRISMA_DATABASE_URL: postgres://${{ env.POSTGRES_USERNAME }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DATABASE }}
