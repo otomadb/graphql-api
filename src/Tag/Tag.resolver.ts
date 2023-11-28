@@ -188,7 +188,7 @@ export const resolveTagType = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
     }
   }) satisfies TagResolvers["type"];
 
-export const resolveTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
+export const resolveTag = ({ prisma, logger, TagsService }: Pick<ResolverDeps, "prisma" | "logger" | "TagsService">) =>
   ({
     id: ({ id }): string => buildGqlId("Tag", id),
     type: resolveTagType({ prisma }),
@@ -217,6 +217,21 @@ export const resolveTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "lo
     children: resolverChildren({ prisma, logger }),
 
     taggedVideos: resolveTaggedVideos({ prisma, logger }),
+
+    taggedVideosByOffset: async ({ id: tagId }, { input: { offset, take, orderBy: unparsedOrderBy } }, _ctx, info) => {
+      const orderBy = parseOrderBy(unparsedOrderBy);
+      if (isErr(orderBy)) {
+        logger.error({ path: info.path, args: unparsedOrderBy }, "OrderBy args error");
+        throw new GraphQLError("Wrong args");
+      }
+
+      const { hasMore, nodes } = await TagsService.taggedVideosByOffset(tagId, {
+        offset,
+        take,
+        orderBy: orderBy.data,
+      });
+      return { hasMore, nodes };
+    },
 
     canTagTo: async ({ id: tagId }, { videoId: videoGqlId }) =>
       prisma.videoTag
