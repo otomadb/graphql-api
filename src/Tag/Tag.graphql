@@ -54,6 +54,21 @@ type Tag implements Node {
 
     orderBy: TagTaggedVideosOrderBy! = { createdAt: DESC }
   ): VideoTagConnection!
+
+  "offsetベースでタグ付けされた動画を取得する"
+  taggedVideosByOffset(input: TaggedVideosByOffsetInput!): TagTaggedVideosByOffsetPayload!
+}
+
+input TaggedVideosByOffsetInput {
+  offset: Int!
+  take: Int!
+  orderBy: TagTaggedVideosOrderBy! = { createdAt: DESC }
+}
+
+type TagTaggedVideosByOffsetPayload {
+  nodes: [VideoTag!]!
+  hasMore: Boolean!
+  totalCount: Int!
 }
 
 enum TagType {
