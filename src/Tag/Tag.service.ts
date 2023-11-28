@@ -17,6 +17,7 @@ export const mkTagService = ({ prisma }: { prisma: PrismaClient }) => {
       ]);
       return {
         hasMore: offset + take < count,
+        totalCount: count,
         nodes: nodes.map((v) => new VideoTagDTO(v)),
       };
     },

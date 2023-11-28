@@ -68,6 +68,7 @@ input TaggedVideosByOffsetInput {
 type TagTaggedVideosByOffsetPayload {
   nodes: [VideoTag!]!
   hasMore: Boolean!
+  totalCount: Int!
 }
 
 enum TagType {

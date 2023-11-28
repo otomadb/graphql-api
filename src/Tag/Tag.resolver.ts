@@ -225,12 +225,12 @@ export const resolveTag = ({ prisma, logger, TagsService }: Pick<ResolverDeps, "
         throw new GraphQLError("Wrong args");
       }
 
-      const { hasMore, nodes } = await TagsService.taggedVideosByOffset(tagId, {
+      const { hasMore, nodes, totalCount } = await TagsService.taggedVideosByOffset(tagId, {
         offset,
         take,
         orderBy: orderBy.data,
       });
-      return { hasMore, nodes };
+      return { hasMore, nodes, totalCount };
     },
 
     canTagTo: async ({ id: tagId }, { videoId: videoGqlId }) =>
