@@ -216,6 +216,8 @@ export const resolveTag = ({ prisma, logger, TagsService }: Pick<ResolverDeps, "
     },
     children: resolverChildren({ prisma, logger }),
 
+    totalTaggedVideos: ({ id: tagId }) => TagsService.totalTaggedVideos(tagId),
+
     taggedVideos: resolveTaggedVideos({ prisma, logger }),
 
     taggedVideosByOffset: async ({ id: tagId }, { input: { offset, take, orderBy: unparsedOrderBy } }, _ctx, info) => {

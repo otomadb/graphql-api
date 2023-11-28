@@ -45,6 +45,8 @@ type Tag implements Node {
     categoryTag: Boolean
   ): TagParentConnection!
 
+  totalTaggedVideos: Int!
+
   taggedVideos(
     first: Int
     after: String
