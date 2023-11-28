@@ -7,6 +7,9 @@ export const mkTagService = ({ prisma }: { prisma: PrismaClient }) => {
     countAll() {
       return prisma.tag.count();
     },
+    async totalTaggedVideos(tagId: string) {
+      return prisma.videoTag.count({ where: { tagId } });
+    },
     async taggedVideosByOffset(
       tagId: string,
       { offset, take, orderBy }: { offset: number; take: number; orderBy: { createdAt?: "desc" | "asc" } },
