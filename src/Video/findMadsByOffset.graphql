@@ -1,0 +1,19 @@
+type Query {
+  findMadsByOffset(input: FindMadsByOffsetInput!): FindMadsByOffsetPayload!
+}
+
+input FindMadsByOffsetInput {
+  offset: Int!
+  take: Int!
+  orderBy: FindMadsByOffsetInputOrderBy! = { createdAt: DESC }
+}
+
+input FindMadsByOffsetInputOrderBy {
+  createdAt: SortOrder
+}
+
+type FindMadsByOffsetPayload {
+  nodes: [Video!]!
+  hasMore: Boolean!
+  totalCount: Int!
+}

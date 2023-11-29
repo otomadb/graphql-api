@@ -30,6 +30,7 @@ import { resolverGetUser } from "../../User/getUser.resolver.js";
 import { mkCalcMadCountGrowthResolver } from "../../Video/calcMadCountGrowth.resolver.js";
 import { mkCountAllMadsResolver } from "../../Video/countAllMads.resolver.js";
 import { resolverFindMadBySerial } from "../../Video/findMadBySerial.resolver.js";
+import { mkFindMadsByOffsetResolver } from "../../Video/findMadsByOffset.resolver.js";
 import { resolverFindVideo } from "../../Video/findVideo.resolver.js";
 import { resolverFindVideos } from "../../Video/findVideos.resolver.js";
 import { resolverGetVideo } from "../../Video/getVideo.resolver.js";
@@ -61,6 +62,10 @@ export const resolveQuery = (deps: ResolverDeps) =>
     fetchYoutube: resolverFetchYoutube(),
     findBilibiliMADSource: mkFindBilibiliMADSourceResolver(deps),
     findMadBySerial: resolverFindMadBySerial(deps),
+    findMadsByOffset: mkFindMadsByOffsetResolver({
+      ...deps,
+      logger: deps.logger.child({ resolver: "Query.findMadsByOffset" }),
+    }),
     findMylist: resolverFindMylist(deps),
     findNicovideoRegistrationRequest: resolverFindNicovideoRegistrationRequest(deps),
     findNicovideoRegistrationRequests: findNicovideoRegistrationRequests(deps),
