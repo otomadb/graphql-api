@@ -9,6 +9,7 @@ import { MylistShareRange as GqlMylistShareRange, Resolvers, UserResolvers, User
 import { buildGqlId, parseGqlID } from "../resolvers/id.js";
 import { MylistModel } from "../resolvers/Mylist/model.js";
 import { MylistConnectionModel } from "../resolvers/MylistConnection/model.js";
+import { NotificationConnectionModel } from "../resolvers/NotificationConnection/model.js";
 import { parseOrderBy } from "../resolvers/parseSortOrder.js";
 import { ResolverDeps } from "../resolvers/types.js";
 import { err, isErr, ok, Result } from "../utils/Result.js";
@@ -210,4 +211,39 @@ export const resolveUser = ({ prisma, logger, userService }: Pick<ResolverDeps, 
     isAdministrator: () => false,
 
     hasRole: resolverUserHasRole({ userService }),
+
+    notifications({ id }, { input: { orderBy: unparsedOrderBy, filter, ...unparsedConnectionArgs } }, _ctx, info) {
+      const connectionArgs = z
+        .union([
+          z.object({ first: z.number(), after: z.string().optional() }),
+          z.object({ last: z.number(), before: z.string().optional() }),
+          z.object({}),
+        ])
+        .safeParse(unparsedConnectionArgs);
+      if (!connectionArgs.success) {
+        logger.error({ path: info.path, args: unparsedConnectionArgs }, "Wrong args");
+        throw new GraphQLError("Wrong args");
+      }
+
+      const orderBy = parseOrderBy(unparsedOrderBy);
+      if (isErr(orderBy)) {
+        logger.error({ path: info.path, args: unparsedOrderBy }, "OrderBy args error");
+        throw new GraphQLError("Wrong args");
+      }
+
+      return findManyCursorConnection(
+        (args) =>
+          prisma.notification.findMany({
+            ...args,
+            where: { notifyToId: id, isWatched: filter.watched?.valueOf() },
+            orderBy: orderBy.data,
+          }),
+        () =>
+          prisma.notification.count({
+            where: { notifyToId: id, isWatched: filter.watched?.valueOf() },
+          }),
+        connectionArgs.data,
+        { resolveInfo: info, ...cursorOptions },
+      ).then((c) => NotificationConnectionModel.fromPrisma(c));
+    },
   }) satisfies Resolvers["User"];
