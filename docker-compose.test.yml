@@ -31,7 +31,7 @@ services:
       NEO4J_AUTH: neo4j/password
 
   redis:
-    image: redis:7.0@sha256:ac54e1e4c288cb02d414f9c7579f6aa3db8cfd003e72bdc42dd273d61a290630
+    image: redis:7.2@sha256:2976bc0437deff693af2dcf081a1d1758de8b413e6de861151a5a136c25eb9e4
     ports:
       - target: 6379
         published: 6380
