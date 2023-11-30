@@ -221,7 +221,11 @@ const yoga = createYoga<ServerContext, UserContext>({
         return null;
       }) satisfies ResolveUserFn<CurrentUser, ServerContext>,
       validateUser: (({ user, fieldAuthDirectiveNode }) => {
+        // `@auth`がない場合はスキップ
         if (!fieldAuthDirectiveNode) return;
+
+        // `@auth(optional: true)`ならスキップ
+        if (fieldAuthDirectiveNode.arguments?.find((arg) => arg.name.value === "optional")?.value) return;
 
         if (!user) {
           throw new GraphQLError(`Not authenticated`, {
