@@ -34,6 +34,9 @@ type User implements Node {
   likes: Mylist
 
   hasRole(role: UserRole!): Boolean
+
+  "現在このユーザに届いている通知．"
+  notifications(input: UserNotificationsInput!): NotificationConnection! @auth
 }
 
 enum UserRole {
@@ -56,4 +59,21 @@ type Query {
 
 input FindUserInput {
   name: String
+}
+
+input UserNotificationsInput {
+  after: String
+  before: String
+  first: Int
+  last: Int
+  orderBy: UserNotificationsOrderBy! = { createdAt: DESC }
+  filter: UserNotificationsFilter! = {}
+}
+
+input UserNotificationsOrderBy {
+  createdAt: SortOrder
+}
+
+input UserNotificationsFilter {
+  watched: Boolean
 }
