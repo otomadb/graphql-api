@@ -27,6 +27,7 @@ import { resolverSearchTags } from "../../Tag/searchTags.resolver.js";
 import { mkShowTimelineResolver } from "../../Timeline/showTimeline.resolver.js";
 import { resolverFindUser } from "../../User/findUser.resolver.js";
 import { resolverGetUser } from "../../User/getUser.resolver.js";
+import { mkViewerResolver } from "../../User/viewer.resolver.js";
 import { mkCalcMadCountGrowthResolver } from "../../Video/calcMadCountGrowth.resolver.js";
 import { mkCountAllMadsResolver } from "../../Video/countAllMads.resolver.js";
 import { resolverFindMadBySerial } from "../../Video/findMadBySerial.resolver.js";
@@ -104,5 +105,6 @@ export const resolveQuery = (deps: ResolverDeps) =>
     searchTags: resolverSearchTags(deps),
     searchVideos: resolverSearchVideos(deps),
     showTimeline: mkShowTimelineResolver(deps),
+    viewer: mkViewerResolver({ ...deps }),
     whoami: resolverWhoami(deps),
   }) satisfies Resolvers["Query"];
