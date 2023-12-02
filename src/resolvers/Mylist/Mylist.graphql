@@ -18,6 +18,23 @@ type Mylist implements Node {
   recommendedVideos(input: MylistRecommendedVideosInput!): MylistRecommendedVideosPayload!
 
   includeTags(input: MylistIncludeTagsInput!): MylistIncludeTagsPayload!
+
+  """
+  登録された音MADをoffsetベースで取得する
+  """
+  registrationsByOffset(input: MylistRegistrationsByOffsetInput!): MylistRegistrationsByOffsetPayload!
+}
+
+input MylistRegistrationsByOffsetInput {
+  offset: Int!
+  take: Int!
+  orderBy: MylistRegistrationsOrderBy! = { createdAt: DESC }
+}
+
+type MylistRegistrationsByOffsetPayload {
+  nodes: [MylistRegistration!]!
+  hasMore: Boolean!
+  totalCount: Int!
 }
 
 enum MylistShareRange {
