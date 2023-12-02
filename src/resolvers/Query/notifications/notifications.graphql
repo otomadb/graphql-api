@@ -6,7 +6,7 @@ type Query {
     last: Int
     orderBy: NotificationsOrderBy! = { createdAt: DESC }
     filter: NotificationsFilter! = {}
-  ): NotificationConnection! @auth
+  ): NotificationConnection! @auth @deprecated(reason: "Use `User.notifications` instead")
 }
 
 input NotificationsOrderBy {
