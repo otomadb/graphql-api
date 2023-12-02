@@ -1,7 +1,11 @@
 import { MylistShareRange } from "@prisma/client";
+import { GraphQLError } from "graphql";
 
+import { isErr } from "../../utils/Result.js";
 import { MylistShareRange as GQLMylistShareRange, Resolvers } from "../graphql.js";
 import { buildGqlId, parseGqlID } from "../id.js";
+import { MylistRegistrationModel } from "../MylistRegistration/model.js";
+import { parseOrderBy } from "../parseSortOrder.js";
 import { ResolverDeps } from "../types.js";
 import { resolveIncludeTags } from "./includesTags.js";
 import { resolveRecommendedVideos } from "./recommendedVideos.js";
@@ -38,4 +42,27 @@ export const resolveMylist = ({
 
     recommendedVideos: resolveRecommendedVideos({ neo4j }),
     includeTags: resolveIncludeTags({ prisma }),
+
+    registrationsByOffset: async (
+      { id: mylistId },
+      { input: { offset, take, orderBy: unparsedOrderBy } },
+      _ctx,
+      info,
+    ) => {
+      const orderBy = parseOrderBy(unparsedOrderBy);
+      if (isErr(orderBy)) {
+        logger.error({ path: info.path, args: unparsedOrderBy }, "OrderBy args error");
+        throw new GraphQLError("Wrong args");
+      }
+
+      const [count, nodes] = await prisma.$transaction([
+        prisma.mylistRegistration.count({ where: { mylistId } }),
+        prisma.mylistRegistration.findMany({ orderBy: orderBy.data, skip: offset, take, where: { mylistId } }),
+      ]);
+      return {
+        hasMore: offset + take < count,
+        totalCount: count,
+        nodes: nodes.map((v) => MylistRegistrationModel.fromPrisma(v)),
+      };
+    },
   }) satisfies Resolvers["Mylist"];
