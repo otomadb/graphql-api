@@ -213,6 +213,43 @@ export const resolveUser = ({ prisma, logger, userService }: Pick<ResolverDeps, 
 
       return new MylistModel(mylist);
     },
+    publicMylistsByOffset: async (
+      { id: holderId },
+      { input: { offset, take, orderBy: unparsedOrderBy } },
+      _ctx,
+      info,
+    ) => {
+      const orderBy = parseOrderBy(unparsedOrderBy);
+      if (isErr(orderBy)) {
+        logger.error({ path: info.path, args: unparsedOrderBy }, "OrderBy args error");
+        throw new GraphQLError("Wrong args");
+      }
+
+      const [count, nodes] = await prisma.$transaction([
+        prisma.mylist.count({
+          where: {
+            holderId,
+            shareRange: MylistShareRange.PUBLIC,
+            slug: { not: "likes" },
+          },
+        }),
+        prisma.mylist.findMany({
+          where: {
+            holderId,
+            shareRange: MylistShareRange.PUBLIC,
+            slug: { not: "likes" },
+          },
+          orderBy: orderBy.data,
+          skip: offset,
+          take,
+        }),
+      ]);
+      return {
+        hasMore: offset + take < count,
+        totalCount: count,
+        nodes: nodes.map((v) => new MylistModel(v)),
+      };
+    },
 
     mylists: resolverUserMylists({ prisma, logger }),
 
