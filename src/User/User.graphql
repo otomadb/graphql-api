@@ -6,6 +6,7 @@ type User implements Node {
 
   mylist(id: ID!): Mylist
 
+  publicLikes: Mylist
   publicMylist(slug: String!): Mylist
 
   "公開マイリストの一覧をoffsetベースで取得する"
