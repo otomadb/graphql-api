@@ -5,8 +5,11 @@ import { checkDuplicate } from "../utils/checkDuplicate.js";
 import { MkMutationResolver } from "../utils/MkResolver.js";
 import { isErr } from "../utils/Result.js";
 
-export const mkRegisterBilibiliMADResolver: MkMutationResolver<"registerBilibiliMAD", "BilibiliMADSourceService"> =
-  ({ BilibiliMADSourceService }) =>
+export const mkRegisterBilibiliMADResolver: MkMutationResolver<
+  "registerBilibiliMAD",
+  "BilibiliMADSourceService" | "TimelineEventService"
+> =
+  ({ BilibiliMADSourceService, TimelineEventService }) =>
   async (_parent, { input }, { currentUser: { id: userId } }) => {
     const tagIds = parseGqlIDs3("Tag", input.tagIds);
     if (isErr(tagIds)) {
@@ -37,6 +40,8 @@ export const mkRegisterBilibiliMADResolver: MkMutationResolver<"registerBilibili
     );
 
     if (isErr(result)) return { __typename: "MutationInternalServerError" };
+
+    await TimelineEventService.clearAll();
 
     return {
       __typename: "RegisterBilibiliMADSucceededPayload",

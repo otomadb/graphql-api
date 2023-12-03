@@ -7,9 +7,9 @@ import { isErr } from "../utils/Result.js";
 
 export const mkRegisterSoundcloudMADResolver: MkMutationResolver<
   "registerSoundcloudMAD",
-  "SoundcloudMADSourceService"
+  "SoundcloudMADSourceService" | "TimelineEventService"
 > =
-  ({ SoundcloudMADSourceService }) =>
+  ({ SoundcloudMADSourceService, TimelineEventService }) =>
   async (_parent, { input }, { currentUser: { id: userId } }) => {
     const tagIds = parseGqlIDs3("Tag", input.tagIds);
     if (isErr(tagIds)) {
@@ -40,6 +40,8 @@ export const mkRegisterSoundcloudMADResolver: MkMutationResolver<
     );
 
     if (isErr(result)) return { __typename: "MutationInternalServerError" };
+
+    await TimelineEventService.clearAll();
 
     return {
       __typename: "RegisterSoundcloudMADSucceededPayload",

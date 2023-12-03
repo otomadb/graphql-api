@@ -4,6 +4,7 @@ import { beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 import { RegisterSoundcloudMadSucceededPayload } from "../resolvers/graphql.js";
 import { buildGqlId } from "../resolvers/id.js";
 import { Context } from "../resolvers/types.js";
+import { mkTimelineEventService } from "../Timeline/TimelineEvent.service.js";
 import { err, ok } from "../utils/Result.js";
 import { mkRegisterSoundcloudMADResolver, RegisterSoundcloudMADResolver } from "./registerSoundcloudMAD.resolver.js";
 import { mkSoundcloudMADSourceService } from "./SoundcloudMADSource.service.js";
@@ -17,13 +18,27 @@ vi.mock("./SoundcloudMADSource.service.js", () => {
   };
 });
 
+const clearAllTimeline = vi.fn();
+vi.mock("../Timeline/TimelineEvent.service.js", () => {
+  return {
+    mkTimelineEventService: () => ({
+      clearAll: clearAllTimeline,
+    }),
+  };
+});
+
 describe("registerSoundcloudMAD", () => {
   let service: ReturnType<typeof mkSoundcloudMADSourceService>;
+  let timelineService: ReturnType<typeof mkTimelineEventService>;
   let resolver: RegisterSoundcloudMADResolver;
 
   beforeAll(async () => {
     service = mkSoundcloudMADSourceService({} as Parameters<typeof mkSoundcloudMADSourceService>[0]);
-    resolver = mkRegisterSoundcloudMADResolver({ SoundcloudMADSourceService: service });
+    timelineService = mkTimelineEventService({} as Parameters<typeof mkTimelineEventService>[0]);
+    resolver = mkRegisterSoundcloudMADResolver({
+      SoundcloudMADSourceService: service,
+      TimelineEventService: timelineService,
+    });
   });
 
   beforeEach(async () => {
@@ -114,6 +129,7 @@ describe("registerSoundcloudMAD", () => {
 
   test("正常系", async () => {
     mockRegister.mockResolvedValueOnce(ok({ id: "1" }));
+    clearAllTimeline.mockResolvedValueOnce(void 0);
 
     const actual = await resolver(
       {},
@@ -132,5 +148,7 @@ describe("registerSoundcloudMAD", () => {
 
     expect(actual.__typename).toBe("RegisterSoundcloudMADSucceededPayload");
     expect((actual as RegisterSoundcloudMadSucceededPayload).mad.id).toBe("1");
+
+    expect(clearAllTimeline).toBeCalledTimes(1);
   });
 });
