@@ -4,6 +4,7 @@ import { beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 import { RegisterBilibiliMadSucceededPayload } from "../resolvers/graphql.js";
 import { buildGqlId } from "../resolvers/id.js";
 import { Context } from "../resolvers/types.js";
+import { mkTimelineEventService } from "../Timeline/TimelineEvent.service.js";
 import { err, ok } from "../utils/Result.js";
 import { mkBilibiliMADSourceService } from "./BilibiliMADSource.service.js";
 import { mkRegisterBilibiliMADResolver, RegisterBilibiliMADResolver } from "./registerBilibiliMAD.resolver.js";
@@ -17,13 +18,27 @@ vi.mock("./BilibiliMADSource.service.js", () => {
   };
 });
 
+const clearAllTimeline = vi.fn();
+vi.mock("../Timeline/TimelineEvent.service.js", () => {
+  return {
+    mkTimelineEventService: () => ({
+      clearAll: clearAllTimeline,
+    }),
+  };
+});
+
 describe("registerBilibiliMAD", () => {
   let service: ReturnType<typeof mkBilibiliMADSourceService>;
+  let timelineService: ReturnType<typeof mkTimelineEventService>;
   let resolver: RegisterBilibiliMADResolver;
 
   beforeAll(async () => {
     service = mkBilibiliMADSourceService({} as Parameters<typeof mkBilibiliMADSourceService>[0]);
-    resolver = mkRegisterBilibiliMADResolver({ BilibiliMADSourceService: service });
+    timelineService = mkTimelineEventService({} as Parameters<typeof mkTimelineEventService>[0]);
+    resolver = mkRegisterBilibiliMADResolver({
+      BilibiliMADSourceService: service,
+      TimelineEventService: timelineService,
+    });
   });
 
   beforeEach(async () => {
@@ -114,6 +129,7 @@ describe("registerBilibiliMAD", () => {
 
   test("正常系", async () => {
     mockRegister.mockResolvedValueOnce(ok({ id: "1" }));
+    clearAllTimeline.mockResolvedValueOnce(void 0);
 
     const actual = await resolver(
       {},
@@ -132,5 +148,7 @@ describe("registerBilibiliMAD", () => {
 
     expect(actual.__typename).toBe("RegisterBilibiliMADSucceededPayload");
     expect((actual as RegisterBilibiliMadSucceededPayload).video.id).toBe("1");
+
+    expect(clearAllTimeline).toBeCalledTimes(1);
   });
 });
