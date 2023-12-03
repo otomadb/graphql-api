@@ -62,37 +62,6 @@ export const get = async (
   }
 };
 
-export const resolverUserLikes = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async ({ id: userId }, _args, { currentUser }, info) => {
-    const result = await get(prisma, { holderId: userId, currentUserId: currentUser?.id || null });
-
-    if (isErr(result))
-      switch (result.error.type) {
-        case "INTERNAL_SERVER_ERROR":
-          logger.error(
-            {
-              path: info.path,
-              error: result.error.error,
-              holderId: result.error.holderId,
-              currentUserId: result.error.currentUserId,
-            },
-            "Internal server error",
-          );
-          throw new GraphQLError("Internal server error");
-        case "PRIVATE_MYLIST_NOT_AUTH":
-          logger.warn({ path: info.path, mylistId: result.error.mylistId }, "Not authenticated");
-          return null;
-        case "PRIVATE_MYLIST_WRONG_HOLDER":
-          logger.warn(
-            { path: info.path, mylistId: result.error.mylistId, currentUserId: result.error.currentUserId },
-            "Wrong holder",
-          );
-          return null;
-      }
-
-    return MylistModel.fromPrisma(result.data);
-  }) satisfies UserResolvers["likes"];
-
 export const resolverUserMylists = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async (
     { id: userId },
@@ -193,7 +162,17 @@ export const resolverUserNicovideoRegistrationRequests = ({
 export const resolveUser = ({ prisma, logger, userService }: Pick<ResolverDeps, "prisma" | "logger" | "userService">) =>
   ({
     id: ({ id }): string => buildGqlId("User", id),
-    likes: resolverUserLikes({ prisma, logger }),
+    likes: async ({ id: holderId }, _args, { currentUser }, info) => {
+      if (holderId !== currentUser.id) throw new GraphQLError("Not authenticated");
+
+      try {
+        const mylist = await prisma.mylist.findUniqueOrThrow({ where: { holderId_slug: { holderId, slug: "likes" } } });
+        return new MylistModel(mylist);
+      } catch (e) {
+        logger.error({ path: info.path, ctxUser: currentUser }, "Likes list not found");
+        throw new GraphQLError("likes list not found");
+      }
+    },
     nicovideoRegistrationRequests: resolverUserNicovideoRegistrationRequests({ prisma, logger }),
 
     mylist: async ({ id: userId }, { id: gqlMylistId }, { currentUser: ctxUser }) => {
