@@ -37,7 +37,7 @@ type User implements Node {
     orderBy: UserMylistsOrderBy! = { createdAt: DESC }
   ): MylistConnection!
 
-  likes: Mylist
+  likes: Mylist! @auth
 
   hasRole(role: UserRole!): Boolean
 
