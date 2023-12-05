@@ -5,6 +5,9 @@ pnpm-lock.yaml
 
 dist/
 
+# Nix
+flake.lock
+
 # migrations
 src/db/migrations/
 
