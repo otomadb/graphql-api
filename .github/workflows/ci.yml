@@ -21,7 +21,7 @@ jobs:
       - run: npm run lint:eslint
       - run: npm run lint:prettier
       - run: npm run codegen
-      - run: npm run lint:graphql-schema-linter:report
+      - run: npm run lint:graphql-schema-linter
 
   test:
     name: Test
