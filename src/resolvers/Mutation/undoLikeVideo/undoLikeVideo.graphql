@@ -9,7 +9,6 @@ input UndoLikeVideoInput {
 union UndoLikeVideoReturnUnion =
     MutationVideoNotFoundError
   | MutationInvalidVideoIdError
-  | UndoLikeVideoNotLikedError
   | UndoLikeVideoSucceededPayload
 
 type UndoLikeVideoNotLikedError {
@@ -18,6 +17,5 @@ type UndoLikeVideoNotLikedError {
 }
 
 type UndoLikeVideoSucceededPayload {
-  registration: MylistRegistration!
   user: User!
 }
