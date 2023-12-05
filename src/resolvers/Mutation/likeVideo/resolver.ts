@@ -31,11 +31,6 @@ export const resolverLikeVideo = ({
             __typename: "MutationVideoNotFoundError",
             videoId: buildGqlId("Video", videoId.data),
           } satisfies ResolversTypes["LikeVideoReturnUnion"];
-        case "ALREADY_REGISTERED":
-          return {
-            __typename: "LikeVideoAlreadyLikedError",
-            registration: new MylistRegistrationModel(result.error.registration),
-          } satisfies ResolversTypes["LikeVideoReturnUnion"];
         case "INTERNAL_SERVER_ERROR":
           logger.error({ error: result.error.error, path: info.path }, "Something error happens");
           throw new GraphQLError("Internal server error");
