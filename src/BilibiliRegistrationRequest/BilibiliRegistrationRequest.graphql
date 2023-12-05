@@ -1,0 +1,101 @@
+type BilibiliRegistrationRequestRejectingNotification implements Node & Notification {
+  id: ID!
+  createdAt: DateTime!
+  notifyTo: User!
+  watched: Boolean!
+
+  rejecting: BilibiliRegistrationRequestRejecting!
+}
+type BilibiliRegistrationRequestRejecting {
+  request: BilibiliRegistrationRequest!
+
+  note: String
+
+  rejectedBy: User!
+}
+type BilibiliRegistrationRequestConnection {
+  nodes: [BilibiliRegistrationRequest!]!
+  edges: [BilibiliRegistrationRequestEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type BilibiliRegistrationRequestEdge {
+  cursor: String!
+  node: BilibiliRegistrationRequest!
+}
+type BilibiliRegistrationRequestAcceptingNotification implements Node & Notification {
+  id: ID!
+  createdAt: DateTime!
+  notifyTo: User!
+  watched: Boolean!
+
+  accepting: BilibiliRegistrationRequestAccepting!
+}
+type BilibiliRegistrationRequestAccepting {
+  request: BilibiliRegistrationRequest!
+
+  note: String
+  video: Video!
+
+  acceptedBy: User!
+}
+type BilibiliRegistrationRequest implements Node & RegistrationRequest {
+  id: ID!
+  title: String!
+
+  requestedBy: User!
+
+  sourceId: String!
+
+  title: String!
+
+  """
+  OtoMADB側でプロキシしているサムネイル画像のURL
+  """
+  thumbnailUrl: String!
+
+  """
+  Bilibili側のサムネイル画像のURL
+  """
+  originalThumbnailUrl: String!
+
+  taggings: [BilibiliRegistrationRequestTagging!]!
+  semitaggings: [BilibiliRegistrationRequestSemitagging!]!
+
+  checked: Boolean!
+  checking: BilibiliRegistrationRequestChecking
+
+  originalUrl: String!
+  embedUrl: String!
+
+  events(input: BilibiliRegistrationRequestEventsInput!): BilibiliRegistrationRequestEventConnection!
+}
+
+input BilibiliRegistrationRequestEventsInput {
+  first: Int
+  after: String
+
+  last: Int
+  before: String
+
+  orderBy: BilibiliRegistrationRequestEventsInputOrderBy! = { createdAt: DESC }
+}
+
+input BilibiliRegistrationRequestEventsInputOrderBy {
+  createdAt: SortOrder
+}
+
+type BilibiliRegistrationRequestTagging implements Node & RegistrationRequestTagging {
+  id: ID!
+  tag: Tag!
+  note: String
+}
+
+type BilibiliRegistrationRequestSemitagging implements Node & RegistrationRequestSemitagging {
+  id: ID!
+  name: String!
+  note: String
+}
+
+union BilibiliRegistrationRequestChecking = BilibiliRegistrationRequestAccepting | BilibiliRegistrationRequestRejecting

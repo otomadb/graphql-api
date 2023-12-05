@@ -8,6 +8,8 @@ import { Driver as Neo4jDriver } from "neo4j-driver";
 import { Logger } from "pino";
 
 import { BilibiliMADSourceService } from "../BilibiliMADSource/BilibiliMADSource.service.js";
+import { BilibiliRegistrationRequestService } from "../BilibiliRegistrationRequest/BilibiliRegistrationRequest.service.js";
+import { BilibiliRegistrationRequestEventService } from "../BilibiliRegistrationRequest/BilibiliRegistrationRequestEvent.service.js";
 import { ImagesService } from "../Common/Images.service.js";
 import { NicovideoService } from "../Common/Nicovideo.service.js";
 import { SoundcloudService as SoundcloudService2 } from "../Common/Soundcloud.service.js";
@@ -49,6 +51,8 @@ export type ResolverDeps = {
   SoundcloudRegistrationRequestEventService: SoundcloudRegistrationRequestEventService;
   TagsService: TagService;
   NicochuuService: PromiseClient<typeof NicochuuService>;
+  BilibiliRegistrationRequestService: BilibiliRegistrationRequestService;
+  BilibiliRegistrationRequestEventService: BilibiliRegistrationRequestEventService;
 };
 export type ServerContext = {
   req: IncomingMessage;

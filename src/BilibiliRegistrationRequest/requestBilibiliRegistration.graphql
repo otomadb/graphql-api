@@ -1,0 +1,43 @@
+type Mutation {
+  requestBilibiliRegistration(input: RequestBilibiliRegistrationInput!): RequestBilibiliRegistrationReturnUnion!
+    @auth(scopes: ["create:registration_request"])
+}
+
+input RequestBilibiliRegistrationInput {
+  sourceId: String!
+
+  title: String!
+
+  """
+  **Bilibili側の**サムネイル画像のURL
+  """
+  thumbnailUrl: String!
+
+  taggings: [RequestBilibiliRegistrationInputTagging!]!
+  semitaggings: [RequestBilibiliRegistrationInputSemitagging!]!
+}
+
+input RequestBilibiliRegistrationInputTagging {
+  tagId: ID!
+  note: String
+}
+
+input RequestBilibiliRegistrationInputSemitagging {
+  name: String!
+  note: String
+}
+
+union RequestBilibiliRegistrationReturnUnion =
+    MutationInvalidTagIdError
+  | MutationTagNotFoundError
+  | RequestBilibiliRegistrationVideoAlreadyRegisteredError
+  | RequestBilibiliRegistrationSucceededPayload
+
+"動画が既に登録されている場合のエラー"
+type RequestBilibiliRegistrationVideoAlreadyRegisteredError {
+  source: BilibiliMADSource!
+}
+
+type RequestBilibiliRegistrationSucceededPayload {
+  request: BilibiliRegistrationRequest!
+}

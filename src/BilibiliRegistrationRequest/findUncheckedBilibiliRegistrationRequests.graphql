@@ -1,0 +1,19 @@
+type Query {
+  findUncheckedBilibiliRegistrationRequests(
+    input: FindUncheckedBilibiliRegistrationRequestsInput!
+  ): BilibiliRegistrationRequestConnection!
+}
+
+input FindUncheckedBilibiliRegistrationRequestsInput {
+  first: Int
+  after: String
+
+  last: Int
+  before: String
+
+  orderBy: FindUncheckedBilibiliRegistrationRequestsOrderBy! = { createdAt: DESC }
+}
+
+input FindUncheckedBilibiliRegistrationRequestsOrderBy {
+  createdAt: SortOrder
+}

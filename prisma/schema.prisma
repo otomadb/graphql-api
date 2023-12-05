@@ -205,6 +205,7 @@ model Tag {
   NicovideoSubmitRequestTagging        NicovideoRegistrationRequestTagging[]
   YoutubeRegistrationRequestTagging    YoutubeRegistrationRequestTagging[]
   SoundcloudRegistrationRequestTagging SoundcloudRegistrationRequestTagging[]
+  BilibiliRegistrationRequestTagging   BilibiliRegistrationRequestTagging[]
 }
 
 model CategoryTagTyping {
@@ -374,6 +375,9 @@ model User {
   SoundcloudRegistrationRequest         SoundcloudRegistrationRequest[]
   SoundcloudRegistrationRequestChecking SoundcloudRegistrationRequestChecking[]
   SoundcloudRegistrationRequestEvent    SoundcloudRegistrationRequestEvent[]
+  BilibiliRegistrationRequest           BilibiliRegistrationRequest[]
+  BilibiliRegistrationRequestChecking   BilibiliRegistrationRequestChecking[]
+  BilibiliRegistrationRequestEvent      BilibiliRegistrationRequestEvent[]
 }
 
 model Video {
@@ -401,6 +405,7 @@ model Video {
   NicovideoRegistrationRequestCheckings NicovideoRegistrationRequestChecking[]
   YoutubeRegistrationRequestChecking    YoutubeRegistrationRequestChecking[]
   SoundcloudRegistrationRequestChecking SoundcloudRegistrationRequestChecking[]
+  BilibiliRegistrationRequestChecking   BilibiliRegistrationRequestChecking[]
 }
 
 model VideoEvent {
@@ -1040,4 +1045,96 @@ model BilibiliMADSourceEvent {
 
 enum BilibiliMADSourceEventType {
   CREATE
+}
+
+model BilibiliRegistrationRequest {
+  id String @id
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  requestedBy   User   @relation(fields: [requestedById], references: [id])
+  requestedById String
+
+  sourceId String @unique
+
+  title        String
+  thumbnailUrl String
+  taggings     BilibiliRegistrationRequestTagging[]
+  semitaggings BilibiliRegistrationRequestSemitagging[]
+
+  isChecked Boolean
+  checking  BilibiliRegistrationRequestChecking?
+
+  events BilibiliRegistrationRequestEvent[]
+}
+
+model BilibiliRegistrationRequestTagging {
+  id String @id
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  request   BilibiliRegistrationRequest @relation(fields: [requestId], references: [id])
+  requestId String
+
+  tag   Tag    @relation(fields: [tagId], references: [id])
+  tagId String
+
+  note String?
+}
+
+model BilibiliRegistrationRequestSemitagging {
+  id String @id
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  request   BilibiliRegistrationRequest @relation(fields: [requestId], references: [id])
+  requestId String
+
+  name String
+
+  note String?
+}
+
+model BilibiliRegistrationRequestChecking {
+  id String @id
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  checkedBy   User   @relation(fields: [checkedById], references: [id])
+  checkedById String
+
+  request   BilibiliRegistrationRequest @relation(fields: [requestId], references: [id])
+  requestId String                      @unique
+
+  video   Video?  @relation(fields: [videoId], references: [id])
+  videoId String?
+
+  note String?
+}
+
+model BilibiliRegistrationRequestEvent {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  request   BilibiliRegistrationRequest @relation(fields: [requestId], references: [id])
+  requestId String
+
+  type    BilibiliRegistrationRequestEventType
+  payload Json?
+}
+
+enum BilibiliRegistrationRequestEventType {
+  REQUEST
+
+  ACCEPT
+  REJECT
 }
