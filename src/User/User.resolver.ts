@@ -6,9 +6,10 @@ import z from "zod";
 import { NicovideoRegistrationRequestConnectionDTO } from "../NicovideoRegistrationRequest/dto.js";
 import { cursorOptions } from "../resolvers/connection.js";
 import { MylistShareRange as GqlMylistShareRange, Resolvers, UserResolvers, UserRole } from "../resolvers/graphql.js";
-import { buildGqlId, parseGqlID } from "../resolvers/id.js";
+import { buildGqlId, parseGqlID, parseGqlID3 } from "../resolvers/id.js";
 import { MylistModel } from "../resolvers/Mylist/model.js";
 import { MylistConnectionModel } from "../resolvers/MylistConnection/model.js";
+import { MylistRegistrationModel } from "../resolvers/MylistRegistration/model.js";
 import { NotificationConnectionModel } from "../resolvers/NotificationConnection/model.js";
 import { parseOrderBy } from "../resolvers/parseSortOrder.js";
 import { ResolverDeps } from "../resolvers/types.js";
@@ -162,6 +163,24 @@ export const resolverUserNicovideoRegistrationRequests = ({
 export const resolveUser = ({ prisma, logger, userService }: Pick<ResolverDeps, "prisma" | "logger" | "userService">) =>
   ({
     id: ({ id }): string => buildGqlId("User", id),
+    like: async ({ id: holderId }, { videoId: unparsedVideoId }, { currentUser }, info) => {
+      if (holderId !== currentUser.id) throw new GraphQLError("Not authenticated");
+      const videoId = parseGqlID3("Video", unparsedVideoId);
+      if (isErr(videoId)) {
+        logger.error({ path: info.path, videoId: unparsedVideoId }, "Invalid video id");
+        throw new GraphQLError("Invalid video id");
+      }
+
+      const reg = await prisma.mylistRegistration.findFirst({
+        where: {
+          mylist: { holderId, slug: "likes" },
+          videoId: videoId.data,
+          // isRemoved: false,
+        },
+      });
+      if (!reg) return null;
+      return new MylistRegistrationModel(reg);
+    },
     likes: async ({ id: holderId }, _args, { currentUser }, info) => {
       if (holderId !== currentUser.id) throw new GraphQLError("Not authenticated");
 
