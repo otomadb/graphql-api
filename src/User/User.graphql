@@ -38,6 +38,7 @@ type User implements Node {
   ): MylistConnection!
 
   likes: Mylist! @auth
+  like(videoId: ID!): MylistRegistration @auth
 
   hasRole(role: UserRole!): Boolean
 

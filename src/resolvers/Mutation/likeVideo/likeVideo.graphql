@@ -6,16 +6,9 @@ input LikeVideoInput {
   videoId: ID!
 }
 
-union LikeVideoReturnUnion =
-    MutationVideoNotFoundError
-  | MutationInvalidVideoIdError
-  | LikeVideoAlreadyLikedError
-  | LikeVideoSucceededPayload
-
-type LikeVideoAlreadyLikedError {
-  registration: MylistRegistration!
-}
+union LikeVideoReturnUnion = MutationVideoNotFoundError | MutationInvalidVideoIdError | LikeVideoSucceededPayload
 
 type LikeVideoSucceededPayload {
   registration: MylistRegistration!
+  user: User!
 }
