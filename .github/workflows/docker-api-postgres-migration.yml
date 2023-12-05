@@ -1,0 +1,36 @@
+name: Docker Image for Postgres Migration
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "prisma/migrations/**"
+  pull_request:
+  merge_group:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile.migration
+
+      - uses: docker/setup-buildx-action@v2
+      - uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo "LATEST_MIGRATION_NAME=$(ls -1 --ignore migration_lock.toml --reverse | head -n 1)" >> $GITHUB_ENV
+      - uses: docker/build-push-action@v4
+        with:
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          context: .
+          file: Dockerfile.migration
+          push: ${{ github.event_name == 'push' }}
+          tags: ghcr.io/${{ github.repository_owner }}/api-postgres-migration:${{ env.LATEST_MIGRATION_NAME }}
