@@ -175,7 +175,7 @@ export const resolveUser = ({ prisma, logger, userService }: Pick<ResolverDeps, 
         where: {
           mylist: { holderId, slug: "likes" },
           videoId: videoId.data,
-          // isRemoved: false,
+          isRemoved: false,
         },
       });
       if (!reg) return null;
