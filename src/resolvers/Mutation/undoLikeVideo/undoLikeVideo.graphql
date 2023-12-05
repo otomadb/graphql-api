@@ -11,11 +11,6 @@ union UndoLikeVideoReturnUnion =
   | MutationInvalidVideoIdError
   | UndoLikeVideoSucceededPayload
 
-type UndoLikeVideoNotLikedError {
-  video: Video!
-  likes: Mylist!
-}
-
 type UndoLikeVideoSucceededPayload {
   user: User!
 }
