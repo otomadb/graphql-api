@@ -1,16 +1,18 @@
 import { GraphQLError } from "graphql";
 
 import { isErr } from "../../../utils/Result.js";
-import { VideoDTO } from "../../../Video/dto.js";
 import { MutationResolvers, ResolversTypes } from "../../graphql.js";
 import { buildGqlId, parseGqlID3 } from "../../id.js";
-import { MylistModel } from "../../Mylist/model.js";
-import { MylistRegistrationModel } from "../../MylistRegistration/model.js";
 import { ResolverDeps } from "../../types.js";
 import { undoLikeVideoInNeo4j } from "./neo4j.js";
 import { undo } from "./prisma.js";
 
-export const resolverUndoLikeVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+export const resolverUndoLikeVideo = ({
+  prisma,
+  neo4j,
+  logger,
+  userService,
+}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "userService">) =>
   (async (_parent, { input: { videoId: videoGqlId } }, { currentUser: user }, info) => {
     const videoId = parseGqlID3("Video", videoGqlId);
     if (isErr(videoId)) {
@@ -31,18 +33,6 @@ export const resolverUndoLikeVideo = ({ prisma, neo4j, logger }: Pick<ResolverDe
             __typename: "MutationVideoNotFoundError",
             videoId: buildGqlId("Video", result.error.videoId),
           } satisfies ResolversTypes["UndoLikeVideoReturnUnion"];
-        case "NOT_LIKED":
-          return {
-            __typename: "UndoLikeVideoNotLikedError",
-            video: new VideoDTO(result.error.video),
-            likes: new MylistModel(result.error.mylist),
-          } satisfies ResolversTypes["UndoLikeVideoReturnUnion"];
-        case "ALREADY_REMOVED":
-          return {
-            __typename: "UndoLikeVideoNotLikedError",
-            video: new VideoDTO(result.error.video),
-            likes: new MylistModel(result.error.mylist),
-          } satisfies ResolversTypes["UndoLikeVideoReturnUnion"];
       }
     }
 
@@ -54,6 +44,6 @@ export const resolverUndoLikeVideo = ({ prisma, neo4j, logger }: Pick<ResolverDe
 
     return {
       __typename: "UndoLikeVideoSucceededPayload",
-      registration: new MylistRegistrationModel(registration),
+      user: await userService.getById(user.id),
     };
   }) satisfies MutationResolvers["undoLikeVideo"];

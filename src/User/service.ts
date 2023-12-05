@@ -85,7 +85,7 @@ export class UserService {
     return user;
   }
 
-  public async getById(userId: string) {
+  public async getById(userId: string): Promise<UserDTO> {
     const cached = await this.redis.get(`auth0:${userId}`);
 
     if (cached) {
