@@ -10,7 +10,12 @@ import { ResolverDeps } from "../../types.js";
 import { undoLikeVideoInNeo4j } from "./neo4j.js";
 import { undo } from "./prisma.js";
 
-export const resolverUndoLikeVideo = ({ prisma, neo4j, logger }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger">) =>
+export const resolverUndoLikeVideo = ({
+  prisma,
+  neo4j,
+  logger,
+  userService,
+}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "userService">) =>
   (async (_parent, { input: { videoId: videoGqlId } }, { currentUser: user }, info) => {
     const videoId = parseGqlID3("Video", videoGqlId);
     if (isErr(videoId)) {
@@ -55,5 +60,6 @@ export const resolverUndoLikeVideo = ({ prisma, neo4j, logger }: Pick<ResolverDe
     return {
       __typename: "UndoLikeVideoSucceededPayload",
       registration: new MylistRegistrationModel(registration),
+      user: await userService.getById(user.id),
     };
   }) satisfies MutationResolvers["undoLikeVideo"];

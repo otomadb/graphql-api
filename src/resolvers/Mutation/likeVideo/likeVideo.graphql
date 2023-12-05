@@ -18,4 +18,5 @@ type LikeVideoAlreadyLikedError {
 
 type LikeVideoSucceededPayload {
   registration: MylistRegistration!
+  user: User!
 }
