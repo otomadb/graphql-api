@@ -9,9 +9,7 @@ export const like = async (
   { videoId, userId }: { videoId: string; userId: string },
 ): Promise<
   Result<
-    | { type: "VIDEO_NOT_FOUND"; videoId: string }
-    | { type: "ALREADY_REGISTERED"; registration: MylistRegistration }
-    | { type: "INTERNAL_SERVER_ERROR"; error: unknown },
+    { type: "VIDEO_NOT_FOUND"; videoId: string } | { type: "INTERNAL_SERVER_ERROR"; error: unknown },
     MylistRegistration
   >
 > => {
@@ -39,7 +37,8 @@ export const like = async (
   });
 
   if (ext) {
-    if (!ext.isRemoved) return err({ type: "ALREADY_REGISTERED", registration: ext });
+    if (!ext.isRemoved) return ok(ext);
+
     const registration = await prisma.mylistRegistration.update({
       where: { id: ext.id },
       data: { isRemoved: false, events: { create: { type: "REREGISTER", userId, payload: {} } } },
