@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
+import { MylistRegistrationModel } from "../resolvers/MylistRegistration/model.js";
 import { VideoDTO } from "../Video/dto.js";
 
 export const mkVideoService = ({ prisma }: { prisma: PrismaClient }) => {
@@ -33,6 +34,12 @@ export const mkVideoService = ({ prisma }: { prisma: PrismaClient }) => {
         totalCount: count,
         nodes: nodes.map((v) => VideoDTO.fromPrisma(v)),
       };
+    },
+    async findLike({ videoId, holderId }: { videoId: string; holderId: string }) {
+      const registration = await prisma.mylistRegistration.findFirst({
+        where: { mylist: { slug: "likes", holderId }, videoId, isRemoved: false },
+      });
+      return registration ? MylistRegistrationModel.fromPrisma(registration) : null;
     },
   };
 };

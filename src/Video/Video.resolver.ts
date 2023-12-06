@@ -166,7 +166,8 @@ export const resolveVideo = ({
   neo4j,
   logger,
   ImagesService,
-}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "ImagesService">) =>
+  VideoService,
+}: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "ImagesService" | "VideoService">) =>
   ({
     id: ({ id }): string => buildGqlId("Video", id),
 
@@ -229,7 +230,10 @@ export const resolveVideo = ({
         .then((es) => es.map((e) => new VideoEventDTO(e)));
       return { nodes };
     },
-
-    isLiked: resolveVideoIsLiked({ prisma, logger }),
+    isLiked: async ({ id: videoId }, _args, { currentUser }) => {
+      if (!currentUser) return null;
+      const like = await VideoService.findLike({ videoId, holderId: currentUser.id });
+      return !!like;
+    },
     like: resolveVideoLike({ prisma, logger }),
   }) satisfies Resolvers["Video"];
