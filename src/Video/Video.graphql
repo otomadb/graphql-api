@@ -11,7 +11,9 @@ type Video implements Node {
   events(input: VideoEventsInput!): VideoEventsConnection!
   registeredAt: DateTime!
 
-  isLiked: Boolean! @auth
+  "現在ログイン中のユーザがいいね済みかどうか．認証していない場合は`null`"
+  isLiked: Boolean @auth(optional: true)
+
   like: MylistRegistration @auth
 
   nicovideoSources: [NicovideoVideoSource!]!
