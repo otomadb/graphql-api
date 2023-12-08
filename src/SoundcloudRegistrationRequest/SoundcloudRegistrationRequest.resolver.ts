@@ -24,7 +24,7 @@ export const resolverSoundcloudRegistrationRequest = ({
     originalUrl: ({ sourceId }) => `https://www.soundcloud.com/watch?v=${sourceId}`,
     embedUrl: ({ sourceId }) => `https://www.soundcloud.com/embed/${sourceId}`,
 
-    thumbnailUrl: ({ thumbnailUrl }, { scale }) => (thumbnailUrl ? ImagesService.proxyThis(thumbnailUrl, scale) : null),
+    thumbnailUrl: ({ thumbnailUrl }, { scale }) => (thumbnailUrl ? ImagesService.proxyThis(thumbnailUrl, scale) : ""), // TODO: 早急にない場合をどうするか決める
     originalThumbnailUrl: ({ thumbnailUrl }) => thumbnailUrl ?? null,
 
     taggings: ({ dbId: requestId }) => {
