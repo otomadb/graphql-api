@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
 
-import { parseGqlIDs3 } from "../resolvers/id.js";
+import { parseGqlID3, parseGqlIDs3 } from "../resolvers/id.js";
 import { checkDuplicate } from "../utils/checkDuplicate.js";
 import { MkMutationResolver } from "../utils/MkResolver.js";
 import { isErr } from "../utils/Result.js";
@@ -21,6 +21,10 @@ export const mkRegisterSoundcloudMADResolver: MkMutationResolver<
       }
     }
 
+    // requestIdのチェック
+    const requestId = input.requestId ? parseGqlID3("SoundcloudRegistrationRequest", input.requestId) : null;
+    if (requestId && isErr(requestId)) throw new GraphQLError("Invalid Request");
+
     const semitagNames = checkDuplicate(input.semitagNames);
     if (isErr(semitagNames)) throw new GraphQLError("bad request: duplicated semitag names");
 
@@ -35,6 +39,7 @@ export const mkRegisterSoundcloudMADResolver: MkMutationResolver<
         tagIds: tagIds.data,
         semitagNames: semitagNames.data,
         sourceIds: sourceIds.data,
+        requestId: requestId?.data ?? null,
       },
       userId,
     );

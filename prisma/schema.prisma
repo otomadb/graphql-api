@@ -873,7 +873,7 @@ model SoundcloudRegistrationRequest {
   sourceId String @unique
 
   title        String
-  thumbnailUrl String?
+  thumbnailUrl String
   taggings     SoundcloudRegistrationRequestTagging[]
   semitaggings SoundcloudRegistrationRequestSemitagging[]
 
@@ -1009,6 +1009,10 @@ enum NotificationType {
   REJECTING_NICOVIDEO_REGISTRATION_REQUEST
   ACCEPTING_YOUTUBE_REGISTRATION_REQUEST
   REJECTING_YOUTUBE_REGISTRATION_REQUEST
+  ACCEPTING_BILIBILI_REGISTRATION_REQUEST
+  REJECTING_BILIBILI_REGISTRATION_REQUEST
+  ACCEPTING_SOUNDCLOUD_REGISTRATION_REQUEST
+  REJECTING_SOUNDCLOUD_REGISTRATION_REQUEST
 }
 
 model BilibiliMADSource {

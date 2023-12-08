@@ -1,15 +1,12 @@
 import { GraphQLError } from "graphql";
 
-import { parseGqlIDs3 } from "../resolvers/id.js";
+import { parseGqlID3, parseGqlIDs3 } from "../resolvers/id.js";
 import { checkDuplicate } from "../utils/checkDuplicate.js";
 import { MkMutationResolver } from "../utils/MkResolver.js";
 import { isErr } from "../utils/Result.js";
 
-export const mkRegisterBilibiliMADResolver: MkMutationResolver<
-  "registerBilibiliMAD",
-  "BilibiliMADSourceService" | "TimelineEventService"
-> =
-  ({ BilibiliMADSourceService, TimelineEventService }) =>
+export const mkRegisterBilibiliMADResolver: MkMutationResolver<"registerBilibiliMAD", "BilibiliMADSourceService"> =
+  ({ BilibiliMADSourceService }) =>
   async (_parent, { input }, { currentUser: { id: userId } }) => {
     const tagIds = parseGqlIDs3("Tag", input.tagIds);
     if (isErr(tagIds)) {
@@ -20,6 +17,10 @@ export const mkRegisterBilibiliMADResolver: MkMutationResolver<
           throw new GraphQLError("bad request: duplicated tag id");
       }
     }
+
+    // requestIdのチェック
+    const requestId = input.requestId ? parseGqlID3("BilibiliRegistrationRequest", input.requestId) : null;
+    if (requestId && isErr(requestId)) throw new GraphQLError("Invalid Request");
 
     const semitagNames = checkDuplicate(input.semitagNames);
     if (isErr(semitagNames)) throw new GraphQLError("bad request: duplicated semitag names");
@@ -35,13 +36,12 @@ export const mkRegisterBilibiliMADResolver: MkMutationResolver<
         tagIds: tagIds.data,
         semitagNames: semitagNames.data,
         sourceIds: sourceIds.data,
+        requestId: requestId?.data ?? null,
       },
       userId,
     );
 
     if (isErr(result)) return { __typename: "MutationInternalServerError" };
-
-    await TimelineEventService.clearAll();
 
     return {
       __typename: "RegisterBilibiliMADSucceededPayload",

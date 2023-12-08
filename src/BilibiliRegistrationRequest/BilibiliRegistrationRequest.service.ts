@@ -1,4 +1,4 @@
-import { BilibiliMADSource, BilibiliRegistrationRequest, PrismaClient } from "@prisma/client";
+import { BilibiliMADSource, BilibiliRegistrationRequest, Prisma, PrismaClient } from "@prisma/client";
 import { ulid } from "ulid";
 
 import { err, ok, Result } from "../utils/Result.js";
@@ -83,6 +83,58 @@ export const mkBilibiliRegistrationRequestService = ({ prisma }: { prisma: Prism
       } catch (e) {
         return err({ message: "INTERNAL_SERVER_ERROR", error: e });
       }
+    },
+    async mkAcceptTransaction(
+      requestId: string | null,
+      {
+        videoId,
+        userId,
+      }: {
+        videoId: string;
+        userId: string;
+      },
+    ): Promise<
+      Result<
+        | { type: "REQUEST_NOT_FOUND"; requestId: string }
+        | { type: "REQUEST_ALREADY_CHECKED"; requestId: string }
+        | { type: "INTERNAL_SERVER_ERROR"; error: unknown },
+        (
+          | Prisma.Prisma__BilibiliRegistrationRequestClient<unknown, never>
+          | Prisma.Prisma__NotificationClient<unknown, never>
+        )[]
+      >
+    > {
+      if (!requestId) return ok([]);
+
+      const request = await prisma.bilibiliRegistrationRequest.findUnique({ where: { id: requestId } });
+
+      if (!request) return err({ type: "REQUEST_NOT_FOUND", requestId });
+      if (request.isChecked) return err({ type: "REQUEST_ALREADY_CHECKED", requestId });
+
+      const checkingId = ulid();
+      return ok([
+        prisma.bilibiliRegistrationRequest.update({
+          where: { id: requestId },
+          data: {
+            isChecked: true,
+            checking: {
+              create: {
+                id: checkingId,
+                video: { connect: { id: videoId } },
+                checkedBy: { connect: { id: userId } },
+              },
+            },
+            events: { create: { userId, type: "ACCEPT" } },
+          },
+        }),
+        prisma.notification.create({
+          data: {
+            notifyToId: request.requestedById,
+            type: "ACCEPTING_BILIBILI_REGISTRATION_REQUEST",
+            payload: { id: checkingId },
+          },
+        }),
+      ]);
     },
   };
 };

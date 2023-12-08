@@ -35,6 +35,9 @@ export const mkSoundcloudService = ({ redis, logger }: { redis: Redis; logger: L
                 title: z.string(),
                 permalink_url: z.string(),
                 kind: z.literal("track"),
+                user: z.object({
+                  avatar_url: z.string().url(),
+                }),
               }),
             )
             .min(1)
@@ -54,7 +57,8 @@ export const mkSoundcloudService = ({ redis, logger }: { redis: Redis; logger: L
         SoundcloudOriginalSourceDTO.make({
           title: d.title,
           sourceId: d.id.toString(),
-          originalThumbnailUrl: d.artwork_url,
+          originalThumbnailUrl: d.artwork_url?.replace("-large.jpg", "-t500x500.jpg") || null,
+          userAvatarUrl: d.user.avatar_url,
           url: d.permalink_url,
         }),
       );
@@ -85,6 +89,9 @@ export const mkSoundcloudService = ({ redis, logger }: { redis: Redis; logger: L
               permalink: z.string(),
               permalink_url: z.string(),
               kind: z.literal("track"),
+              user: z.object({
+                avatar_url: z.string().url(),
+              }),
             })
             .safeParse(json),
         );
@@ -100,7 +107,8 @@ export const mkSoundcloudService = ({ redis, logger }: { redis: Redis; logger: L
         SoundcloudOriginalSourceDTO.make({
           title: parsed.data.title,
           sourceId: parsed.data.id.toString(),
-          originalThumbnailUrl: parsed.data.artwork_url,
+          originalThumbnailUrl: parsed.data.artwork_url?.replace("-large.jpg", "-t500x500.jpg") || null,
+          userAvatarUrl: parsed.data.user.avatar_url,
           url: parsed.data.permalink_url,
         }),
       );
