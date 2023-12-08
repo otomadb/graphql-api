@@ -13,7 +13,7 @@ RUN chmod +x /bin/tini
 
 ## install all node.js dependencies
 COPY package.json package-lock.json .npmrc ./
-RUN npm ci
+RUN npm ci --ignore-scripts
 
 COPY ./prisma ./prisma
 

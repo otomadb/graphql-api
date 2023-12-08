@@ -8,7 +8,7 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 COPY package.json package-lock.json .npmrc ./
-RUN npm ci
+RUN npm ci --ignore-scripts
 
 COPY ./prisma/schema.prisma ./prisma/schema.prisma
 RUN npm run prisma:client
@@ -40,7 +40,7 @@ RUN chmod +x /bin/tini
 ## install production-only node.js dependencies
 ENV NODE_ENV production
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev --ignore-scripts
 
 ## copy build dist
 COPY --from=builder /app/dist ./dist
