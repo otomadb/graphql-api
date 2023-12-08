@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { SoundcloudOriginalSourceDTO } from "../FetchExternal/SoundcloudOriginalSource.dto.js";
 import { fetchSoundcloudKey } from "../utils/fetchSoundcloudKey.js";
-import { err, ok, Result } from "../utils/Result.js";
+import { err, isErr, ok, Result, ReturnErr } from "../utils/Result.js";
 
 const scK = "soundcloud:client_id";
 
@@ -112,6 +112,16 @@ export const mkSoundcloudService = ({ redis, logger }: { redis: Redis; logger: L
           url: parsed.data.permalink_url,
         }),
       );
+    },
+
+    async getEmbedUrl(sourceId: string): Promise<Result<ReturnErr<typeof this.fetchFromSourceId>["error"], string>> {
+      const result = await this.fetchFromSourceId(sourceId);
+      if (isErr(result)) return result;
+
+      const embedUrl = new URL("https://w.soundcloud.com/player");
+      embedUrl.searchParams.set("url", result.data.url);
+      embedUrl.searchParams.set("show_artwork", "true");
+      return ok(embedUrl.toString());
     },
   };
 };
