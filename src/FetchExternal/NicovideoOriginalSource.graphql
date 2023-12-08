@@ -8,14 +8,6 @@ type NicovideoOriginalSource {
   "ニコニコ動画の埋め込み用URL"
   embedUrl: String!
 
-  "プロキシされた画像URL"
-  proxiedThumbnailUrl(scale: FetchExternalSourceThumbnailScale! = LARGE): String!
-
-  """
-  オリジナルのサムネイル画像URL
-  """
-  originalThumbnailUrl: String!
-
   info: NicovideoOriginalSourceFreshInfo!
 }
 

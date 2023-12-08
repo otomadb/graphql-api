@@ -59,7 +59,6 @@ export const fetchNicovideo = () =>
     return {
       source: NicovideoOriginalSourceDTO.make({
         sourceId,
-        originalThumbnailUrl: parsed.data.data.video.thumbnail.ogp,
       }),
     };
   }) satisfies QueryResolvers["fetchNicovideo"];
