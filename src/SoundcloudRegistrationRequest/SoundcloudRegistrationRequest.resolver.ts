@@ -24,7 +24,7 @@ export const resolverSoundcloudRegistrationRequest = ({
     originalUrl: ({ sourceId }) => `https://www.soundcloud.com/watch?v=${sourceId}`,
     embedUrl: ({ sourceId }) => `https://www.soundcloud.com/embed/${sourceId}`,
 
-    thumbnailUrl: ({ thumbnailUrl }) => ImagesService.prepareDummy(thumbnailUrl),
+    thumbnailUrl: ({ thumbnailUrl }, { scale }) => (thumbnailUrl ? ImagesService.proxyThis(thumbnailUrl, scale) : null),
     originalThumbnailUrl: ({ thumbnailUrl }) => thumbnailUrl ?? null,
 
     taggings: ({ dbId: requestId }) => {

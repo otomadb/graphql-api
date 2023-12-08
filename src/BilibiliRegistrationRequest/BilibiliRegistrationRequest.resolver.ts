@@ -21,11 +21,11 @@ export const resolverBilibiliRegistrationRequest = ({
   ({
     id: ({ dbId: requestId }) => buildGqlId("BilibiliRegistrationRequest", requestId),
 
-    originalUrl: ({ sourceId }) => `https://www.bilibili.com/watch?v=${sourceId}`,
+    originalUrl: ({ sourceId }) => `https://www.bilibili.com/video/${sourceId}`,
     embedUrl: ({ sourceId }) => `https://www.bilibili.com/embed/${sourceId}`,
 
-    thumbnailUrl: ({ thumbnailUrl }) => ImagesService.prepareDummy(thumbnailUrl),
-    originalThumbnailUrl: ({ thumbnailUrl }) => thumbnailUrl ?? null,
+    thumbnailUrl: ({ thumbnailUrl }, { scale }) => ImagesService.proxyThis(thumbnailUrl, scale),
+    originalThumbnailUrl: ({ thumbnailUrl }) => thumbnailUrl,
 
     taggings: ({ dbId: requestId }) => {
       return prisma.bilibiliRegistrationRequestTagging

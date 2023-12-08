@@ -180,7 +180,10 @@ export const resolveVideo = ({
     titles: async ({ id: videoId }) =>
       prisma.videoTitle.findMany({ where: { videoId } }).then((vs) => vs.map((t) => new VideoTitleDTO(t))),
 
-    thumbnailUrl: async ({ serial }, { size }) => ImagesService.thumbnailPrimary(serial, size),
+    thumbnailUrl: async ({ id: videoId }, { size }) =>
+      prisma.videoThumbnail
+        .findFirstOrThrow({ where: { videoId, isPrimary: true } })
+        .then((t) => ImagesService.proxyThis(t.imageUrl, size)),
 
     thumbnails: async ({ id: videoId }) =>
       prisma.videoThumbnail.findMany({ where: { videoId } }).then((vs) => vs.map((t) => new VideoThumbnailDTO(t))),

@@ -53,10 +53,10 @@ type BilibiliRegistrationRequest implements Node & RegistrationRequest {
   """
   OtoMADB側でプロキシしているサムネイル画像のURL
   """
-  thumbnailUrl: String!
+  thumbnailUrl(scale: RegistrationRequestThumbnailScale! = LARGE): String!
 
   """
-  Bilibili側のサムネイル画像のURL
+  Bilibili側のオリジナルのサムネイル画像のURL
   """
   originalThumbnailUrl: String!
 

@@ -13,12 +13,19 @@ export const resolverYoutubeRegistrationRequest = ({
   userService,
   logger,
   YoutubeRegistrationRequestEventService,
-}: Pick<ResolverDeps, "prisma" | "userService" | "logger" | "YoutubeRegistrationRequestEventService">) =>
+  ImagesService,
+}: Pick<
+  ResolverDeps,
+  "prisma" | "userService" | "logger" | "YoutubeRegistrationRequestEventService" | "ImagesService"
+>) =>
   ({
     id: ({ dbId: requestId }) => buildGqlId("YoutubeRegistrationRequest", requestId),
 
     originalUrl: ({ sourceId }) => `https://www.youtube.com/watch?v=${sourceId}`,
     embedUrl: ({ sourceId }) => `https://www.youtube.com/embed/${sourceId}`,
+
+    thumbnailUrl: ({ thumbnailUrl }, { scale }) => ImagesService.proxyThis(thumbnailUrl, scale),
+    originalThumbnailUrl: ({ thumbnailUrl }) => thumbnailUrl,
 
     taggings: ({ dbId: requestId }) => {
       return prisma.youtubeRegistrationRequestTagging

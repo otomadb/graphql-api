@@ -4,7 +4,10 @@ type Video implements Node {
 
   title: String!
   titles: [VideoTitle!]!
+
+  "プロキシされた最も優先されるサムネイルのURL"
   thumbnailUrl(size: VideoThumbnailScale! = LARGE): String!
+
   thumbnails: [VideoThumbnail!]!
 
   hasTag(id: ID!): Boolean!

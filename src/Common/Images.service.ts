@@ -65,4 +65,19 @@ export class ImagesService {
     // TODO: 早く直す
     return "https://img.youtube.com/vi/0/0.jpg";
   }
+
+  public proxyThis(imgUrl: string, scale: "LARGE" | "OGP"): string {
+    const url = new URL(`proxy`, this.baseUrl);
+    url.searchParams.set("url", imgUrl);
+    switch (scale) {
+      case "LARGE":
+        url.searchParams.set("scale", "large");
+        break;
+      case "OGP":
+        url.searchParams.set("scale", "ogp");
+        break;
+    }
+
+    return url.toString();
+  }
 }
