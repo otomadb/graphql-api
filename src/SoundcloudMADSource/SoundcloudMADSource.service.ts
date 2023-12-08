@@ -98,6 +98,7 @@ export const mkSoundcloudMADSourceService = ({
         videoId,
         userId,
       });
+
       if (isErr(transactionReq)) {
         switch (transactionReq.error.type) {
           case "REQUEST_NOT_FOUND":
@@ -118,103 +119,108 @@ export const mkSoundcloudMADSourceService = ({
         }
       }
 
-      const [video] = await prisma.$transaction([
-        prisma.video.create({
-          data: {
-            id: videoId,
-            titles: { createMany: { data: dataTitles } },
-            thumbnails: { createMany: { data: dataThumbnails } },
-            tags: { createMany: { data: dataTags } },
-            semitags: { createMany: { data: dataSemitags } },
-            soundcloudSources: { createMany: { data: dataSources } },
-          },
-          include: {
-            tags: true,
-          },
-        }),
-        prisma.videoEvent.createMany({
-          data: [
-            {
-              userId,
-              videoId,
-              type: VideoEventType.REGISTER,
-              payload: {},
+      try {
+        const [video] = await prisma.$transaction([
+          prisma.video.create({
+            data: {
+              id: videoId,
+              titles: { createMany: { data: dataTitles } },
+              thumbnails: { createMany: { data: dataThumbnails } },
+              tags: { createMany: { data: dataTags } },
+              semitags: { createMany: { data: dataSemitags } },
+              soundcloudSources: { createMany: { data: dataSources } },
             },
-          ],
-        }),
-        prisma.videoTitleEvent.createMany({
-          data: [
-            ...dataTitles.map(({ id }) => ({
-              userId,
-              videoTitleId: id,
-              type: VideoTitleEventType.CREATE,
-              payload: {},
-            })),
-            {
-              userId,
-              videoTitleId: dataTitles[0].id,
-              type: VideoTitleEventType.SET_PRIMARY,
-              payload: {},
+            include: {
+              tags: true,
             },
-          ],
-        }),
-        prisma.videoThumbnailEvent.createMany({
-          data: [
-            ...dataThumbnails.map(({ id }) => ({
-              userId,
-              videoThumbnailId: id,
-              type: VideoThumbnailEventType.CREATE,
-              payload: {},
-            })),
-            ...(dataThumbnails.length > 0
-              ? [
-                  {
-                    userId,
-                    videoThumbnailId: dataThumbnails[0].id,
-                    type: VideoThumbnailEventType.SET_PRIMARY,
-                    payload: {},
-                  },
-                ]
-              : []),
-          ],
-        }),
-        prisma.videoTagEvent.createMany({
-          data: [
-            ...dataTags.map(({ id }) => ({
-              userId,
-              videoTagId: id,
-              type: VideoTagEventType.ATTACH,
-              payload: {},
-            })),
-          ],
-        }),
-        prisma.semitagEvent.createMany({
-          data: [
-            ...dataSemitags.map(({ id }) => ({
-              userId,
-              semitagId: id,
-              type: SemitagEventType.ATTACH,
-              payload: {},
-            })),
-          ],
-        }),
-        prisma.soundcloudVideoSourceEvent.createMany({
-          data: [
-            ...dataSources.map(({ id }) => ({
-              userId,
-              sourceId: id,
-              payload: {},
-              type: SoundcloudVideoSourceEventType.CREATE,
-            })),
-          ],
-        }),
-        ...transactionReq.data,
-      ]);
+          }),
+          prisma.videoEvent.createMany({
+            data: [
+              {
+                userId,
+                videoId,
+                type: VideoEventType.REGISTER,
+                payload: {},
+              },
+            ],
+          }),
+          prisma.videoTitleEvent.createMany({
+            data: [
+              ...dataTitles.map(({ id }) => ({
+                userId,
+                videoTitleId: id,
+                type: VideoTitleEventType.CREATE,
+                payload: {},
+              })),
+              {
+                userId,
+                videoTitleId: dataTitles[0].id,
+                type: VideoTitleEventType.SET_PRIMARY,
+                payload: {},
+              },
+            ],
+          }),
+          prisma.videoThumbnailEvent.createMany({
+            data: [
+              ...dataThumbnails.map(({ id }) => ({
+                userId,
+                videoThumbnailId: id,
+                type: VideoThumbnailEventType.CREATE,
+                payload: {},
+              })),
+              ...(dataThumbnails.length > 0
+                ? [
+                    {
+                      userId,
+                      videoThumbnailId: dataThumbnails[0].id,
+                      type: VideoThumbnailEventType.SET_PRIMARY,
+                      payload: {},
+                    },
+                  ]
+                : []),
+            ],
+          }),
+          prisma.videoTagEvent.createMany({
+            data: [
+              ...dataTags.map(({ id }) => ({
+                userId,
+                videoTagId: id,
+                type: VideoTagEventType.ATTACH,
+                payload: {},
+              })),
+            ],
+          }),
+          prisma.semitagEvent.createMany({
+            data: [
+              ...dataSemitags.map(({ id }) => ({
+                userId,
+                semitagId: id,
+                type: SemitagEventType.ATTACH,
+                payload: {},
+              })),
+            ],
+          }),
+          prisma.soundcloudVideoSourceEvent.createMany({
+            data: [
+              ...dataSources.map(({ id }) => ({
+                userId,
+                sourceId: id,
+                payload: {},
+                type: SoundcloudVideoSourceEventType.CREATE,
+              })),
+            ],
+          }),
+          ...transactionReq.data,
+        ]);
 
-      neo4j.registerVideoTags(video.tags.map((tag) => ({ videoId: tag.videoId, tagId: tag.tagId })));
-      TimelineEventService.clearAll();
+        neo4j.registerVideoTags(video.tags.map((tag) => ({ videoId: tag.videoId, tagId: tag.tagId })));
+        TimelineEventService.clearAll();
 
-      return ok(VideoDTO.fromPrisma(video));
+        return ok(VideoDTO.fromPrisma(video));
+      } catch (e) {
+        logger.error(e);
+        return err({ type: "INTERNAL_SERVER_ERROR", error: e });
+      }
     },
   };
 };
