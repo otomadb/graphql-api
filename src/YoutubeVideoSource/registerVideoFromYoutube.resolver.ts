@@ -10,16 +10,71 @@ import {
   YoutubeRegistrationRequest,
   YoutubeVideoSourceEventType,
 } from "@prisma/client";
+import { GraphQLError } from "graphql";
 import { ulid } from "ulid";
 
 import { MutationResolvers, RegisterVideoFromYoutubeFailedMessage, ResolversTypes } from "../resolvers/graphql.js";
-import { parseGqlIDs3 } from "../resolvers/id.js";
+import { parseGqlID3, parseGqlIDs3 } from "../resolvers/id.js";
 import { updateWholeVideoTags } from "../resolvers/Mutation/resolveSemitag/neo4j.js";
 import { ResolverDeps } from "../resolvers/types.js";
 import { checkDuplicate } from "../utils/checkDuplicate.js";
 import { isValidYoutubeSourceId } from "../utils/isValidYoutubeSourceId.js";
 import { err, isErr, ok, Result } from "../utils/Result.js";
 import { VideoDTO } from "../Video/dto.js";
+
+async function mkAcceptTransaction(
+  prisma: ResolverDeps["prisma"],
+  requestId: string | null,
+  {
+    videoId,
+    userId,
+  }: {
+    videoId: string;
+    userId: string;
+  },
+): Promise<
+  Result<
+    | { type: "REQUEST_NOT_FOUND"; requestId: string }
+    | { type: "REQUEST_ALREADY_CHECKED"; requestId: string }
+    | { type: "INTERNAL_SERVER_ERROR"; error: unknown },
+    (
+      | Prisma.Prisma__YoutubeRegistrationRequestClient<unknown, never>
+      | Prisma.Prisma__NotificationClient<unknown, never>
+    )[]
+  >
+> {
+  if (!requestId) return ok([]);
+
+  const request = await prisma.youtubeRegistrationRequest.findUnique({ where: { id: requestId } });
+
+  if (!request) return err({ type: "REQUEST_NOT_FOUND", requestId });
+  if (request.isChecked) return err({ type: "REQUEST_ALREADY_CHECKED", requestId });
+
+  const checkingId = ulid();
+  return ok([
+    prisma.youtubeRegistrationRequest.update({
+      where: { id: requestId },
+      data: {
+        isChecked: true,
+        checking: {
+          create: {
+            id: checkingId,
+            video: { connect: { id: videoId } },
+            checkedBy: { connect: { id: userId } },
+          },
+        },
+        events: { create: { userId, type: "ACCEPT" } },
+      },
+    }),
+    prisma.notification.create({
+      data: {
+        notifyToId: request.requestedById,
+        type: "ACCEPTING_YOUTUBE_REGISTRATION_REQUEST",
+        payload: { id: checkingId },
+      },
+    }),
+  ]);
+}
 
 export const getRequestCheck = async (
   prisma: ResolverDeps["prisma"],
@@ -177,6 +232,27 @@ export const register = async (
   const checkRequest = await getRequestCheck(prisma, { requestId, videoId, userId: authUserId });
   if (isErr(checkRequest)) return checkRequest;
 
+  const transactionReq = await mkAcceptTransaction(prisma, requestId, { userId: authUserId, videoId });
+  if (isErr(transactionReq)) {
+    switch (transactionReq.error.type) {
+      case "REQUEST_NOT_FOUND":
+        return err({
+          type: "REQUEST_NOT_FOUND",
+          requestId: transactionReq.error.requestId,
+        });
+      case "REQUEST_ALREADY_CHECKED":
+        return err({
+          type: "REQUEST_ALREADY_CHECKED",
+          requestId: transactionReq.error.requestId,
+        });
+      case "INTERNAL_SERVER_ERROR":
+        return err({
+          type: "INTERNAL_SERVER_ERROR",
+          error: transactionReq.error.error,
+        });
+    }
+  }
+
   const [video] = await prisma.$transaction([
     prisma.video.create({
       data: {
@@ -260,6 +336,7 @@ export const register = async (
         })),
       ],
     }),
+    ...transactionReq.data,
   ]);
 
   return ok(video);
@@ -272,6 +349,13 @@ export const resolverRegisterVideoFromYoutube = ({
   TimelineEventService,
 }: Pick<ResolverDeps, "prisma" | "neo4j" | "logger" | "TimelineEventService">) =>
   (async (_parent, { input }, { currentUser: user }) => {
+    // Request IDの妥当性チェック
+    const requestId = input.requestId ? parseGqlID3("YoutubeRegistrationRequest", input.requestId) : null;
+    if (requestId && isErr(requestId)) {
+      logger.error("Request ID is wrong form", { requestId: input.requestId });
+      throw new GraphQLError("Invalid Request");
+    }
+
     // TagのIDの妥当性及び重複チェック
     const tagIds = parseGqlIDs3("Tag", input.tagIds);
     if (isErr(tagIds)) {
@@ -314,7 +398,7 @@ export const resolverRegisterVideoFromYoutube = ({
       tagIds: tagIds.data,
       semitagNames: semitagNames.data,
       sourceIds: input.sourceIds,
-      requestId: input.requestId || null,
+      requestId: requestId?.data ?? null,
     });
 
     if (isErr(result)) {
