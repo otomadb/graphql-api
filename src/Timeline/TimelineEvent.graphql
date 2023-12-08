@@ -44,7 +44,7 @@ type SoundcloudMadRequestedTimelineEvent implements TimelineEvent {
 }
 
 """
-SoundCloudの音MADがリクエストされたことを表すタイムラインイベント
+Bilibiliの音MADがリクエストされたことを表すタイムラインイベント
 """
 type BilibiliMadRequestedTimelineEvent implements TimelineEvent {
   createdAt: DateTime!
