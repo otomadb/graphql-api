@@ -5,6 +5,7 @@ export class SoundcloudOriginalSourceDTO {
       url: string;
       title: string;
       originalThumbnailUrl: string | null;
+      userAvatarUrl: string;
     },
   ) {}
 
@@ -13,13 +14,15 @@ export class SoundcloudOriginalSourceDTO {
     title,
     url,
     originalThumbnailUrl,
+    userAvatarUrl,
   }: {
     sourceId: string;
     url: string;
     title: string;
     originalThumbnailUrl: string | null;
+    userAvatarUrl: string;
   }) {
-    return new SoundcloudOriginalSourceDTO({ sourceId, title, url, originalThumbnailUrl });
+    return new SoundcloudOriginalSourceDTO({ sourceId, title, url, originalThumbnailUrl, userAvatarUrl });
   }
 
   get sourceId() {
@@ -36,5 +39,9 @@ export class SoundcloudOriginalSourceDTO {
 
   get originalThumbnailUrl() {
     return this.source.originalThumbnailUrl;
+  }
+
+  get userAvatarUrl() {
+    return this.source.userAvatarUrl;
   }
 }
