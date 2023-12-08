@@ -53,3 +53,8 @@ interface RegistrationRequestSemitagging implements Node {
   name: String!
   note: String
 }
+
+interface FindUncheckedRequestsByOffsetPayload {
+  nodes: [RegistrationRequest!]!
+  totalCount: Int!
+}

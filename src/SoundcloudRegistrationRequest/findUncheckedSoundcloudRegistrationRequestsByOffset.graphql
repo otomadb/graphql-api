@@ -1,0 +1,21 @@
+type Query {
+  findUncheckedSoundcloudRegistrationRequestsByOffset(
+    input: FindUncheckedSoundcloudRegistrationRequestsByOffsetInput!
+  ): FindUncheckedSoundcloudRegistrationRequestsByOffsetPayload!
+}
+
+input FindUncheckedSoundcloudRegistrationRequestsByOffsetInput {
+  take: Int! = 20
+  skip: Int! = 0
+
+  orderBy: FindUncheckedSoundcloudRegistrationRequestsByOffsetOrderBy! = { createdAt: DESC }
+}
+
+input FindUncheckedSoundcloudRegistrationRequestsByOffsetOrderBy {
+  createdAt: SortOrder
+}
+
+type FindUncheckedSoundcloudRegistrationRequestsByOffsetPayload implements FindUncheckedRequestsByOffsetPayload {
+  nodes: [SoundcloudRegistrationRequest!]!
+  totalCount: Int!
+}

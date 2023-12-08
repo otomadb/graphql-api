@@ -4,6 +4,7 @@ import { mkFindBilibiliMADSourceResolver } from "./BilibiliMADSource/findBilibil
 import { resolverGetBilibiliMADSource } from "./BilibiliMADSource/getBilibiliMADSource.resolver.js";
 import { mkFindBilibiliRegistrationRequestByUrlResolver } from "./BilibiliRegistrationRequest/findBilibiliRegistrationRequestBySourceId.resolver.js";
 import { resolverFindUncheckedBilibiliRegistrationRequests } from "./BilibiliRegistrationRequest/findUncheckedBilibiliRegistrationRequests.resolver.js";
+import { mkFindUncheckedBilibiliRegistrationRequestsByOffsetResolver } from "./BilibiliRegistrationRequest/findUncheckedBilibiliRegistrationRequestsByOffset.resolver.js";
 import { resolverGetBilibiliRegistrationRequest } from "./BilibiliRegistrationRequest/getBilibiliRegistrationRequest.resolver.js";
 import { resolverFetchBilibili } from "./FetchExternal/fetchBilibili.resolver.js";
 import { fetchNicovideo } from "./FetchExternal/fetchNicovideo.js";
@@ -32,6 +33,7 @@ import { getSoundcloudMADSource } from "./SoundcloudMADSource/getSoundcloudMADSo
 import { resolverFindSoundcloudRegistrationRequest } from "./SoundcloudRegistrationRequest/findSoundcloudRegistrationRequest.resolver.js";
 import { mkFindSoundcloudRegistrationRequestByUrlResolver } from "./SoundcloudRegistrationRequest/findSoundcloudRegistrationRequestByUrl.resolver.js";
 import { resolverFindUncheckedSoundcloudRegistrationRequests } from "./SoundcloudRegistrationRequest/findUncheckedSoundcloudRegistrationRequests.resolver.js";
+import { mkFindUncheckedSoundcloudRegistrationRequestsByOffsetResolver } from "./SoundcloudRegistrationRequest/findUncheckedSoundcloudRegistrationRequestsByOffset.resolver.js";
 import { resolverGetSoundcloudRegistrationRequest } from "./SoundcloudRegistrationRequest/getSoundcloudRegistrationRequest.resolver.js";
 import { mkCountAllTagsResolver } from "./Tag/countAllTags.resolver.js";
 import { resolverFindTag } from "./Tag/findTag.resolver.js";
@@ -54,6 +56,7 @@ import { resolverFindVideos } from "./Video/findVideos.resolver.js";
 import { resolverGetVideo } from "./Video/getVideo.resolver.js";
 import { resolverSearchVideos } from "./Video/searchVideos.resolver.js";
 import { resolverFindUncheckedYoutubeRegistrationRequests } from "./YoutubeRegistrationRequest/findUncheckedYoutubeRegistrationRequests.resolver.js";
+import { mkFindUncheckedYoutubeRegistrationRequestsByOffsetResolver } from "./YoutubeRegistrationRequest/findUncheckedYoutubeRegistrationRequestsByOffset.resolver.js";
 import { resolverFindYoutubeRegistrationRequest } from "./YoutubeRegistrationRequest/findYoutubeRegistrationRequest.resolver.js";
 import { resolverGetYoutubeRegistrationRequest } from "./YoutubeRegistrationRequest/getYoutubeRegistrationRequest.resolver.js";
 import { resolverFindYoutubeVideoSource } from "./YoutubeVideoSource/findYoutubeVideoSource.resolver.js";
@@ -87,11 +90,25 @@ export const resolveQuery = (deps: ResolverDeps) =>
     findTagBySerial: resolverFindTagBySerial(deps),
     findTags: resolverFindTags(deps),
     findUncheckedBilibiliRegistrationRequests: resolverFindUncheckedBilibiliRegistrationRequests(deps),
+    findUncheckedBilibiliRegistrationRequestsByOffset: mkFindUncheckedBilibiliRegistrationRequestsByOffsetResolver({
+      ...deps,
+      logger: deps.logger.child({ resolver: "Query.findUncheckedBilibiliRegistrationRequestsByOffset" }),
+    }),
     findUncheckedNicovideoRegistrationRequests: resolverFindUncheckedNicovideoRegistrationRequests(deps),
-    findUncheckedNicovideoRegistrationRequestsByOffset:
-      resolverFindUncheckedNicovideoRegistrationRequestsByOffset(deps),
+    findUncheckedNicovideoRegistrationRequestsByOffset: resolverFindUncheckedNicovideoRegistrationRequestsByOffset({
+      ...deps,
+      logger: deps.logger.child({ resolver: "Query.findUncheckedNicovideoRegistrationRequestsByOffset" }),
+    }),
     findUncheckedSoundcloudRegistrationRequests: resolverFindUncheckedSoundcloudRegistrationRequests(deps),
+    findUncheckedSoundcloudRegistrationRequestsByOffset: mkFindUncheckedSoundcloudRegistrationRequestsByOffsetResolver({
+      ...deps,
+      logger: deps.logger.child({ resolver: "Query.findUncheckedSoundcloudRegistrationRequestsByOffset" }),
+    }),
     findUncheckedYoutubeRegistrationRequests: resolverFindUncheckedYoutubeRegistrationRequests(deps),
+    findUncheckedYoutubeRegistrationRequestsByOffset: mkFindUncheckedYoutubeRegistrationRequestsByOffsetResolver({
+      ...deps,
+      logger: deps.logger.child({ resolver: "Query.findUncheckedYoutubeRegistrationRequestsByOffset" }),
+    }),
     findUser: resolverFindUser(deps),
     findVideo: resolverFindVideo(deps),
     findVideos: resolverFindVideos(deps),
