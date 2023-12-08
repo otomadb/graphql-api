@@ -23,6 +23,7 @@ import { resolverBilibiliOriginalSourceTag } from "./FetchExternal/BilibiliOrigi
 import { mkNicovideoOriginalSourceResolver } from "./FetchExternal/NicovideoOriginalSource.resolver.js";
 import { resolveNicovideoOriginalSourceTag } from "./FetchExternal/NicovideoOriginalSourceTag.resolver.js";
 import { mkSoundcloudOriginalSourceResolver } from "./FetchExternal/SoundcloudOriginalSource.resolver.js";
+import { mkYoutubeOriginalSourceResolver } from "./FetchExternal/YoutubeOriginalSource.resolver.js";
 import { resolveMutation } from "./mutation.js";
 import { resolverNicovideoRegistrationRequest } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequest.resolver.js";
 import { resolverNicovideoRegistrationRequestAccepting } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestAccepting.resolver.js";
@@ -263,6 +264,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     VideoTitleSetPrimaryEvent: resolveVideoTitleSetPrimaryEvent(deps),
     VideoTitleUnsetPrimaryEvent: resolveVideoTitleUnsetPrimaryEvent(deps),
     YoutubeMadRequestedTimelineEvent: mkYoutubeMadRequestedTimelineEventResolver(deps),
+    YoutubeOriginalSource: mkYoutubeOriginalSourceResolver(deps),
     YoutubeRegistrationRequest: resolverYoutubeRegistrationRequest(deps),
     YoutubeRegistrationRequestAcceptEvent: mkYoutubeRegistrationRequestAcceptEventResolver(deps),
     YoutubeRegistrationRequestAccepting: resolverYoutubeRegistrationRequestAccepting(deps),

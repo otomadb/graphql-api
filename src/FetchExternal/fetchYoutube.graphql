@@ -11,9 +11,3 @@ input FetchYoutubeInput {
 type FetchYoutubePayload {
   source: YoutubeOriginalSource
 }
-
-type YoutubeOriginalSource {
-  sourceId: String!
-  url: String!
-  thumbnailUrl: String!
-}

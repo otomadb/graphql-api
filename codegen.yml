@@ -132,6 +132,7 @@ generates:
         VideoTitleSetPrimaryEvent: ../Video/dto.js#VideoTitleEventDTO
         VideoTitleUnsetPrimaryEvent: ../Video/dto.js#VideoTitleEventDTO
         YoutubeMadRequestedTimelineEvent: ../Timeline/TimelineEvent.dto.js#YoutubeMadRequestedTimelineEventDTO
+        YoutubeOriginalSource: ../FetchExternal/YoutubeOriginalSource.dto.js#YoutubeOriginalSourceDTO
         YoutubeRegistrationRequest: ../YoutubeRegistrationRequest/YoutubeRegistrationRequest.dto.js#YoutubeRegistrationRequestDTO
         YoutubeRegistrationRequestAcceptEvent: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.dto.js#YoutubeRegistrationRequestAcceptEventDTO
         YoutubeRegistrationRequestAccepting: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestAccepting.dto.js#YoutubeRegistrationRequestAcceptingDTO

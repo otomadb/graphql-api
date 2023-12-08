@@ -11,37 +11,3 @@ input FetchBilibiliInput {
 type FetchBilibiliPayload {
   source: BilibiliOriginalSource
 }
-
-type BilibiliOriginalSource {
-  sourceId: String!
-
-  title: String!
-  url: String!
-
-  thumbnailUrl(scale: FetchExternalSourceThumbnailScale! = LARGE): String!
-  originalThumbnailUrl: String!
-
-  tags: [BilibiliOriginalSourceTag!]!
-}
-
-type BilibiliOriginalSourceTag {
-  name: String!
-  searchTags(input: BilibiliOriginalSourceTagSearchTagsInput!): BilibiliOriginalSourceTagSearchTagsPayload!
-}
-
-input BilibiliOriginalSourceTagSearchTagsInput {
-  limit: Int! = 3
-  skip: Int! = 0
-}
-
-type BilibiliOriginalSourceTagSearchTagsPayload {
-  items: [TagSearchItemByName!]!
-}
-
-enum FetchExternalSourceThumbnailScale {
-  "960 x 700"
-  LARGE
-
-  "720 x 400"
-  OGP
-}

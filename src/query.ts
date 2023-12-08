@@ -75,7 +75,9 @@ export const resolveQuery = (deps: ResolverDeps) =>
     fetchSoundcloud: mkFetchSoundcloudResolver(deps),
     fetchSoundcloudBySourceId: mkFetchSoundcloudBySourceIdResolver(deps),
     fetchSoundcloudByUrl: mkFetchSoundcloudByUrlResolver(deps),
-    fetchYoutube: resolverFetchYoutube(),
+    fetchYoutube: resolverFetchYoutube({
+      ...deps,
+    }),
     findBilibiliMADSource: mkFindBilibiliMADSourceResolver(deps),
     findBilibiliRegistrationRequestBySourceId: mkFindBilibiliRegistrationRequestByUrlResolver(deps),
     findMadBySerial: resolverFindMadBySerial(deps),

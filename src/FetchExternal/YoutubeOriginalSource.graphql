@@ -1,0 +1,9 @@
+type YoutubeOriginalSource {
+  sourceId: String!
+  url: String!
+
+  thumbnailUrl: String! @deprecated(reason: "Use `originalThumbnailUrl`")
+  originalThumbnailUrl: String!
+
+  proxiedThumbnailUrl(scale: FetchExternalSourceThumbnailScale! = LARGE): String!
+}
