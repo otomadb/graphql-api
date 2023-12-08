@@ -113,6 +113,16 @@ const NicovideoService = mkNicovideoService({
 });
 const SoundcloudService = mkSoundcloudService({ redis: redisClient, logger });
 
+const BilibiliRegistrationRequestService = mkBilibiliRegistrationRequestService({
+  prisma: prismaClient,
+});
+
+const TimelineEventService = mkTimelineEventService({
+  prisma: prismaClient,
+  redis: redisClient,
+  logger: logger.child({ service: "TimelineEventService" }),
+});
+
 const yoga = createYoga<ServerContext, UserContext>({
   graphiql: process.env.ENABLE_GRAPHIQL === "true",
   schema: createSchema({
@@ -138,6 +148,9 @@ const yoga = createYoga<ServerContext, UserContext>({
       BilibiliMADSourceService: mkBilibiliMADSourceService({
         prisma: prismaClient,
         Neo4jService,
+        BilibiliRegistrationRequestService,
+        TimelineEventService,
+        logger: logger.child({ service: "BilibiliMADSourceService" }),
       }),
       SoundcloudMADSourceService: mkSoundcloudMADSourceService({
         prisma: prismaClient,
@@ -147,11 +160,7 @@ const yoga = createYoga<ServerContext, UserContext>({
       }),
       SoundcloudService,
       NicovideoService,
-      TimelineEventService: mkTimelineEventService({
-        prisma: prismaClient,
-        redis: redisClient,
-        logger: logger.child({ service: "TimelineEventService" }),
-      }),
+      TimelineEventService,
       VideoService: mkVideoService({
         prisma: prismaClient,
       }),
@@ -183,9 +192,7 @@ const yoga = createYoga<ServerContext, UserContext>({
         logger: logger.child({ service: "SoundcloudRegistrationRequestEventService" }),
       }),
       NicochuuService: nicochuuService,
-      BilibiliRegistrationRequestService: mkBilibiliRegistrationRequestService({
-        prisma: prismaClient,
-      }),
+      BilibiliRegistrationRequestService,
       BilibiliRegistrationRequestEventService: mkBilibiliRegistrationRequestEventService({
         prisma: prismaClient,
         logger: logger.child({ service: "BilibiliRegistrationRequestEventService" }),

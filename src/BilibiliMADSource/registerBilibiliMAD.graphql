@@ -10,6 +10,7 @@ input RegisterBilibiliMADInput {
   semitagNames: [String!]! = []
 
   sourceIds: [String!]!
+  requestId: ID
 }
 
 union RegisterBilibiliMADResult =
