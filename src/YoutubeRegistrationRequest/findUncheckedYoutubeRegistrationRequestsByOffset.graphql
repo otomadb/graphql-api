@@ -1,0 +1,21 @@
+type Query {
+  findUncheckedYoutubeRegistrationRequestsByOffset(
+    input: FindUncheckedYoutubeRegistrationRequestsByOffsetInput!
+  ): FindUncheckedYoutubeRegistrationRequestsByOffsetPayload!
+}
+
+input FindUncheckedYoutubeRegistrationRequestsByOffsetInput {
+  take: Int! = 20
+  skip: Int! = 0
+
+  orderBy: FindUncheckedYoutubeRegistrationRequestsByOffsetOrderBy! = { createdAt: DESC }
+}
+
+input FindUncheckedYoutubeRegistrationRequestsByOffsetOrderBy {
+  createdAt: SortOrder
+}
+
+type FindUncheckedYoutubeRegistrationRequestsByOffsetPayload implements FindUncheckedRequestsByOffsetPayload {
+  nodes: [YoutubeRegistrationRequest!]!
+  totalCount: Int!
+}

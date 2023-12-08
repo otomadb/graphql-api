@@ -1,0 +1,21 @@
+type Query {
+  findUncheckedBilibiliRegistrationRequestsByOffset(
+    input: FindUncheckedBilibiliRegistrationRequestsByOffsetInput!
+  ): FindUncheckedBilibiliRegistrationRequestsByOffsetPayload!
+}
+
+input FindUncheckedBilibiliRegistrationRequestsByOffsetInput {
+  take: Int! = 20
+  skip: Int! = 0
+
+  orderBy: FindUncheckedBilibiliRegistrationRequestsByOffsetOrderBy! = { createdAt: DESC }
+}
+
+input FindUncheckedBilibiliRegistrationRequestsByOffsetOrderBy {
+  createdAt: SortOrder
+}
+
+type FindUncheckedBilibiliRegistrationRequestsByOffsetPayload implements FindUncheckedRequestsByOffsetPayload {
+  nodes: [BilibiliRegistrationRequest!]!
+  totalCount: Int!
+}

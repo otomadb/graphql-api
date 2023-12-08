@@ -157,22 +157,22 @@ input FindUncheckedNicovideoRegistrationRequestsOrderBy {
 
 type Query {
   findUncheckedNicovideoRegistrationRequestsByOffset(
-    input: findUncheckedNicovideoRegistrationRequestsByOffsetInput!
+    input: FindUncheckedNicovideoRegistrationRequestsByOffsetInput!
   ): FindUncheckedNicovideoRegistrationRequestsByOffsetPayload!
 }
 
-input findUncheckedNicovideoRegistrationRequestsByOffsetInput {
+input FindUncheckedNicovideoRegistrationRequestsByOffsetInput {
   take: Int! = 20
   skip: Int! = 0
 
-  orderBy: findUncheckedNicovideoRegistrationRequestsByOffsetOrderBy! = { createdAt: DESC }
+  orderBy: FindUncheckedNicovideoRegistrationRequestsByOffsetOrderBy! = { createdAt: DESC }
 }
 
-input findUncheckedNicovideoRegistrationRequestsByOffsetOrderBy {
+input FindUncheckedNicovideoRegistrationRequestsByOffsetOrderBy {
   createdAt: SortOrder
 }
 
-type FindUncheckedNicovideoRegistrationRequestsByOffsetPayload {
+type FindUncheckedNicovideoRegistrationRequestsByOffsetPayload implements FindUncheckedRequestsByOffsetPayload {
   nodes: [NicovideoRegistrationRequest!]!
   totalCount: Int!
 }
