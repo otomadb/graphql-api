@@ -30,6 +30,7 @@ import { ResolverDeps } from "./resolvers/types.js";
 import { mkFindSoundcloudMADSourceResolver } from "./SoundcloudMADSource/findSoundcloudMADSource.resolver.js";
 import { getSoundcloudMADSource } from "./SoundcloudMADSource/getSoundcloudMADSource.resolver.js";
 import { resolverFindSoundcloudRegistrationRequest } from "./SoundcloudRegistrationRequest/findSoundcloudRegistrationRequest.resolver.js";
+import { mkFindSoundcloudRegistrationRequestBySourceIdResolver } from "./SoundcloudRegistrationRequest/findSoundcloudRegistrationRequestBySourceId.resolver.js";
 import { mkFindSoundcloudRegistrationRequestByUrlResolver } from "./SoundcloudRegistrationRequest/findSoundcloudRegistrationRequestByUrl.resolver.js";
 import { resolverFindUncheckedSoundcloudRegistrationRequests } from "./SoundcloudRegistrationRequest/findUncheckedSoundcloudRegistrationRequests.resolver.js";
 import { resolverGetSoundcloudRegistrationRequest } from "./SoundcloudRegistrationRequest/getSoundcloudRegistrationRequest.resolver.js";
@@ -82,6 +83,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
     findSemitags: findSemitags(deps),
     findSoundcloudMADSource: mkFindSoundcloudMADSourceResolver(deps),
     findSoundcloudRegistrationRequest: resolverFindSoundcloudRegistrationRequest(deps),
+    findSoundcloudRegistrationRequestBySourceId: mkFindSoundcloudRegistrationRequestBySourceIdResolver(deps),
     findSoundcloudRegistrationRequestByUrl: mkFindSoundcloudRegistrationRequestByUrlResolver(deps),
     findTag: resolverFindTag(deps),
     findTagBySerial: resolverFindTagBySerial(deps),
