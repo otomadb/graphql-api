@@ -1,6 +1,7 @@
 type Query {
   "SoundCloudから動画情報を取得する"
   fetchSoundcloud(input: FetchSoundcloudInput!): FetchSoundcloudPayload!
+    @deprecated(reason: "use `fetchSoundcloudByUrl`")
 }
 
 input FetchSoundcloudInput {

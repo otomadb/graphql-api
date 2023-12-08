@@ -1,0 +1,8 @@
+type Query {
+  "SoundCloudのIDから情報を取得する"
+  fetchSoundcloudBySourceId(sourceId: String!): FetchSoundcloudBySourceIdPayload!
+}
+
+type FetchSoundcloudBySourceIdPayload {
+  source: SoundcloudOriginalSource
+}

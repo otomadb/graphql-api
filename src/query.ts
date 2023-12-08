@@ -9,6 +9,8 @@ import { resolverGetBilibiliRegistrationRequest } from "./BilibiliRegistrationRe
 import { resolverFetchBilibili } from "./FetchExternal/fetchBilibili.resolver.js";
 import { fetchNicovideo } from "./FetchExternal/fetchNicovideo.js";
 import { mkFetchSoundcloudResolver } from "./FetchExternal/fetchSoundcloud.resolver.js";
+import { mkFetchSoundcloudBySourceIdResolver } from "./FetchExternal/fetchSoundcloudBySourceId.resolver.js";
+import { mkFetchSoundcloudByUrlResolver } from "./FetchExternal/fetchSoundcloudByUrl.resolver.js";
 import { resolverFetchYoutube } from "./FetchExternal/fetchYoutube.js";
 import { mkListNicovideoBotRegistrationRequestsResolver } from "./NicovideoBotRegistrationRequest/listNicovideoBotRegistrationRequests.resolver.js";
 import { resolverFindNicovideoRegistrationRequest } from "./NicovideoRegistrationRequest/findNicovideoRegistrationRequest.resolver.js";
@@ -71,6 +73,8 @@ export const resolveQuery = (deps: ResolverDeps) =>
     fetchBilibili: resolverFetchBilibili(deps),
     fetchNicovideo: fetchNicovideo(),
     fetchSoundcloud: mkFetchSoundcloudResolver(deps),
+    fetchSoundcloudBySourceId: mkFetchSoundcloudBySourceIdResolver(deps),
+    fetchSoundcloudByUrl: mkFetchSoundcloudByUrlResolver(deps),
     fetchYoutube: resolverFetchYoutube(),
     findBilibiliMADSource: mkFindBilibiliMADSourceResolver(deps),
     findBilibiliRegistrationRequestBySourceId: mkFindBilibiliRegistrationRequestByUrlResolver(deps),
