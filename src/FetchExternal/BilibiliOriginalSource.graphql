@@ -1,0 +1,22 @@
+type BilibiliOriginalSource {
+  sourceId: String!
+
+  title: String!
+  url: String!
+
+  "プロキシされた画像URL"
+  thumbnailUrl(scale: FetchExternalSourceThumbnailScale! = LARGE): String!
+    @deprecated(reason: "Use `proxiedThumbnailUrl`")
+
+  "プロキシされた画像URL"
+  proxiedThumbnailUrl(scale: FetchExternalSourceThumbnailScale! = LARGE): String!
+
+  """
+  bilibili側のオリジナルの画像URL
+
+  bilibili側の制約上、別のオリジンから直接埋め込んだりすることはほとんど出来ないことに注意．
+  """
+  originalThumbnailUrl: String!
+
+  tags: [BilibiliOriginalSourceTag!]!
+}

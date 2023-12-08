@@ -7,6 +7,8 @@ export const mkSoundcloudOriginalSourceResolver: MkResolver<"SoundcloudOriginalS
   sourceId: ({ sourceId }) => sourceId,
   thumbnailUrl: ({ originalThumbnailUrl, userAvatarUrl }, { scale }) =>
     ImagesService.proxyThis(originalThumbnailUrl || userAvatarUrl, scale),
+  proxiedThumbnailUrl: ({ originalThumbnailUrl, userAvatarUrl }, { scale }) =>
+    ImagesService.proxyThis(originalThumbnailUrl || userAvatarUrl, scale),
   originalThumbnailUrl: ({ originalThumbnailUrl, userAvatarUrl }) => originalThumbnailUrl || userAvatarUrl,
   url: ({ url }) => url,
 });

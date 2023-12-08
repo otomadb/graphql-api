@@ -1,0 +1,13 @@
+type BilibiliOriginalSourceTag {
+  name: String!
+  searchTags(input: BilibiliOriginalSourceTagSearchTagsInput!): BilibiliOriginalSourceTagSearchTagsPayload!
+}
+
+input BilibiliOriginalSourceTagSearchTagsInput {
+  limit: Int! = 3
+  skip: Int! = 0
+}
+
+type BilibiliOriginalSourceTagSearchTagsPayload {
+  items: [TagSearchItemByName!]!
+}

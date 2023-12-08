@@ -57,6 +57,8 @@ export const fetchNicovideo = () =>
         source: null,
       }; // TODO: もう少し詳細な情報を出しても良い気がする
     return {
-      source: NicovideoOriginalSourceDTO.make({ sourceId }),
+      source: NicovideoOriginalSourceDTO.make({
+        sourceId,
+      }),
     };
   }) satisfies QueryResolvers["fetchNicovideo"];

@@ -83,3 +83,11 @@ type MutationYoutubeRegistrationRequestNotFoundError {
 type MutationYoutubeRegistrationRequestAlreadyCheckedError {
   requestId: String!
 }
+
+enum FetchExternalSourceThumbnailScale {
+  "960 x 700"
+  LARGE
+
+  "720 x 400"
+  OGP
+}
