@@ -28,7 +28,7 @@ import { mkNeo4jService } from "./Neo4j/Neo4j.service.js";
 import { mkNicovideoRegistrationRequestService } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequest.service.js";
 import { mkNicovideoRegistrationRequestEventService } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.service.js";
 import { NicochuuService } from "./protobuf/nicochuu_connect.js";
-import { makeResolvers } from "./resolvers/index.js";
+import { makeResolvers } from "./resolvers.js";
 import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
 import typeDefs from "./schema.graphql";
 import { mkSoundcloudMADSourceService } from "./SoundcloudMADSource/SoundcloudMADSource.service.js";
