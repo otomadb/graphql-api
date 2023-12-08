@@ -49,7 +49,16 @@ type YoutubeRegistrationRequest implements Node & RegistrationRequest {
   sourceId: String!
 
   title: String!
-  thumbnailUrl: String!
+
+  """
+  OtoMADB側でプロキシしているサムネイル画像のURL
+  """
+  thumbnailUrl(scale: RegistrationRequestThumbnailScale! = LARGE): String!
+
+  """
+  Youtube側のオリジナルのサムネイル画像のURL
+  """
+  originalThumbnailUrl: String!
 
   taggings: [YoutubeRegistrationRequestTagging!]!
   semitaggings: [YoutubeRegistrationRequestSemitagging!]!

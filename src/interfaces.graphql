@@ -37,6 +37,11 @@ interface RegistrationRequest implements Node {
   checked: Boolean!
 }
 
+enum RegistrationRequestThumbnailScale {
+  LARGE
+  OGP
+}
+
 interface RegistrationRequestTagging implements Node {
   id: ID!
   tag: Tag!

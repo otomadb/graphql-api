@@ -13,12 +13,19 @@ export const resolverNicovideoRegistrationRequest = ({
   userService,
   NicovideoRegistrationRequestEventService,
   logger,
-}: Pick<ResolverDeps, "prisma" | "userService" | "NicovideoRegistrationRequestEventService" | "logger">) =>
+  ImagesService,
+}: Pick<
+  ResolverDeps,
+  "prisma" | "userService" | "NicovideoRegistrationRequestEventService" | "logger" | "ImagesService"
+>) =>
   ({
     id: ({ dbId: requestId }) => buildGqlId("NicovideoRegistrationRequest", requestId),
 
     originalUrl: ({ sourceId }) => `https://www.nicovideo.jp/watch/${sourceId}`,
     embedUrl: ({ sourceId }) => `https://embed.nicovideo.jp/watch/${sourceId}`,
+
+    thumbnailUrl: ({ thumbnailUrl }, { scale }) => ImagesService.proxyThis(thumbnailUrl, scale),
+    originalThumbnailUrl: ({ thumbnailUrl }) => thumbnailUrl,
 
     taggings: ({ dbId: requestId }) => {
       return prisma.nicovideoRegistrationRequestTagging

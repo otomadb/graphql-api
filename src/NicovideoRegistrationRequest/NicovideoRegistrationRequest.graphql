@@ -7,7 +7,16 @@ type NicovideoRegistrationRequest implements Node & RegistrationRequest {
   sourceId: String!
 
   title: String!
-  thumbnailUrl: String!
+
+  """
+  OtoMADB側でプロキシしているサムネイル画像のURL
+  """
+  thumbnailUrl(scale: RegistrationRequestThumbnailScale! = LARGE): String!
+
+  """
+  Nicovideo側のオリジナルのサムネイル画像のURL
+  """
+  originalThumbnailUrl: String!
 
   taggings: [NicovideoRegistrationRequestTagging!]!
   semitaggings: [NicovideoRegistrationRequestSemitagging!]!

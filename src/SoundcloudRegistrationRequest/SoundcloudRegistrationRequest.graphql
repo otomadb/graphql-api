@@ -55,12 +55,12 @@ type SoundcloudRegistrationRequest implements Node & RegistrationRequest {
 
   **無い場合は適当にダミー画像を返す．**
   """
-  thumbnailUrl: String!
+  thumbnailUrl(scale: RegistrationRequestThumbnailScale! = LARGE): String!
 
   """
-  Soundcloud側のサムネイル画像のURL
+  SoundCloud側のオリジナルのサムネイル画像のURL
 
-  **無い場合もある場合に注意.**
+  **無い場合もあることに注意.**
   """
   originalThumbnailUrl: String
 
