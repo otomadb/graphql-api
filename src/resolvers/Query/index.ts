@@ -2,6 +2,7 @@
 
 import { mkFindBilibiliMADSourceResolver } from "../../BilibiliMADSource/findBilibiliMADSource.resolver.js";
 import { resolverGetBilibiliMADSource } from "../../BilibiliMADSource/getBilibiliMADSource.resolver.js";
+import { mkFindBilibiliRegistrationRequestByUrlResolver } from "../../BilibiliRegistrationRequest/findBilibiliRegistrationRequestBySourceId.resolver.js";
 import { resolverFetchBilibili } from "../../FetchExternal/fetchBilibili.resolver.js";
 import { fetchNicovideo } from "../../FetchExternal/fetchNicovideo.js";
 import { mkFetchSoundcloudResolver } from "../../FetchExternal/fetchSoundcloud.resolver.js";
@@ -62,6 +63,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
     fetchSoundcloud: mkFetchSoundcloudResolver(deps),
     fetchYoutube: resolverFetchYoutube(),
     findBilibiliMADSource: mkFindBilibiliMADSourceResolver(deps),
+    findBilibiliRegistrationRequestBySourceId: mkFindBilibiliRegistrationRequestByUrlResolver(deps),
     findMadBySerial: resolverFindMadBySerial(deps),
     findMadsByOffset: mkFindMadsByOffsetResolver({
       ...deps,
