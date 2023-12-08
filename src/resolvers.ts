@@ -2,153 +2,153 @@
 
 import { DateTimeResolver } from "graphql-scalars";
 
-import { resolverBilibiliMADSource } from "../BilibiliMADSource/BilibiliMADSource.resolver.js";
-import { resolverBilibiliMADSourceCreateEvent } from "../BilibiliMADSource/BilibiliMADSourceEvent.resolver.js";
-import { resolverBilibiliMADSourceEventConnection } from "../BilibiliMADSource/BilibiliMADSourceEventConnection.resolver.js";
-import { resolverBilibiliRegistrationRequest } from "../BilibiliRegistrationRequest/BilibiliRegistrationRequest.resolver.js";
-import { resolverBilibiliRegistrationRequestAccepting } from "../BilibiliRegistrationRequest/BilibiliRegistrationRequestAccepting.resolver.js";
-import { resolverBilibiliRegistrationRequestAcceptingNotification } from "../BilibiliRegistrationRequest/BilibiliRegistrationRequestAcceptingNotification.resolver.js";
-import { resolverBilibiliRegistrationRequestConnection } from "../BilibiliRegistrationRequest/BilibiliRegistrationRequestConnection.resolver.js";
+import { resolverBilibiliMADSource } from "./BilibiliMADSource/BilibiliMADSource.resolver.js";
+import { resolverBilibiliMADSourceCreateEvent } from "./BilibiliMADSource/BilibiliMADSourceEvent.resolver.js";
+import { resolverBilibiliMADSourceEventConnection } from "./BilibiliMADSource/BilibiliMADSourceEventConnection.resolver.js";
+import { resolverBilibiliRegistrationRequest } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequest.resolver.js";
+import { resolverBilibiliRegistrationRequestAccepting } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequestAccepting.resolver.js";
+import { resolverBilibiliRegistrationRequestAcceptingNotification } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequestAcceptingNotification.resolver.js";
+import { resolverBilibiliRegistrationRequestConnection } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequestConnection.resolver.js";
 import {
   mkBilibiliRegistrationRequestAcceptEventResolver,
   mkBilibiliRegistrationRequestEventResolver,
   mkBilibiliRegistrationRequestRejectEventResolver,
   mkBilibiliRegistrationRequestRequestEventResolver,
-} from "../BilibiliRegistrationRequest/BilibiliRegistrationRequestEvent.resolver.js";
-import { mkBilibiliRegistrationRequestEventConnectionResolver } from "../BilibiliRegistrationRequest/BilibiliRegistrationRequestEventConnection.resolver.js";
-import { mkBilibiliRegistrationRequestRejectingResolver } from "../BilibiliRegistrationRequest/BilibiliRegistrationRequestRejecting.resolver.js";
-import { resolverBilibiliRegistrationRequestRejectingNotification } from "../BilibiliRegistrationRequest/BilibiliRegistrationRequestRejectingNotification.resolver.js";
-import { mkBilibiliOriginalSourceResolver } from "../FetchExternal/BilibiliOriginalSource.resolver.js";
-import { resolverBilibiliOriginalSourceTag } from "../FetchExternal/BilibiliOriginalSourceTag.resolver.js";
-import { mkNicovideoOriginalSourceResolver } from "../FetchExternal/NicovideoOriginalSource.resolver.js";
-import { resolveNicovideoOriginalSourceTag } from "../FetchExternal/NicovideoOriginalSourceTag.resolver.js";
-import { mkSoundcloudOriginalSourceResolver } from "../FetchExternal/SoundcloudOriginalSource.resolver.js";
-import { resolverNicovideoRegistrationRequest } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequest.resolver.js";
-import { resolverNicovideoRegistrationRequestAccepting } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestAccepting.resolver.js";
-import { resolverNicovideoRegistrationRequestAcceptingNotification } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestAcceptingNotification.resolver.js";
-import { resolverNicovideoRegistrationRequestConnection } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestConnection.resolver.js";
+} from "./BilibiliRegistrationRequest/BilibiliRegistrationRequestEvent.resolver.js";
+import { mkBilibiliRegistrationRequestEventConnectionResolver } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequestEventConnection.resolver.js";
+import { mkBilibiliRegistrationRequestRejectingResolver } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequestRejecting.resolver.js";
+import { resolverBilibiliRegistrationRequestRejectingNotification } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequestRejectingNotification.resolver.js";
+import { mkBilibiliOriginalSourceResolver } from "./FetchExternal/BilibiliOriginalSource.resolver.js";
+import { resolverBilibiliOriginalSourceTag } from "./FetchExternal/BilibiliOriginalSourceTag.resolver.js";
+import { mkNicovideoOriginalSourceResolver } from "./FetchExternal/NicovideoOriginalSource.resolver.js";
+import { resolveNicovideoOriginalSourceTag } from "./FetchExternal/NicovideoOriginalSourceTag.resolver.js";
+import { mkSoundcloudOriginalSourceResolver } from "./FetchExternal/SoundcloudOriginalSource.resolver.js";
+import { resolveMutation } from "./mutation.js";
+import { resolverNicovideoRegistrationRequest } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequest.resolver.js";
+import { resolverNicovideoRegistrationRequestAccepting } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestAccepting.resolver.js";
+import { resolverNicovideoRegistrationRequestAcceptingNotification } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestAcceptingNotification.resolver.js";
+import { resolverNicovideoRegistrationRequestConnection } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestConnection.resolver.js";
 import {
   mkNicovideoRegistrationRequestAcceptEventResolver,
   mkNicovideoRegistrationRequestEventResolver,
   mkNicovideoRegistrationRequestRejectEventResolver,
   mkNicovideoRegistrationRequestRequestEventResolver,
-} from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.resolver.js";
-import { mkNicovideoRegistrationRequestEventConnectionResolver } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestEventConnection.resolver.js";
-import { resolverNicovideoRegistrationRequestRejecting } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestRejecting.resolver.js";
-import { resolverNicovideoRegistrationRequestRejectingNotification } from "../NicovideoRegistrationRequest/NicovideoRegistrationRequestRejectingNotification.resolver.js";
-import { resolverNicovideoVideoSource } from "../NicovideoVideoSource/NicovideoVideoSource.resolver.js";
+} from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.resolver.js";
+import { mkNicovideoRegistrationRequestEventConnectionResolver } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestEventConnection.resolver.js";
+import { resolverNicovideoRegistrationRequestRejecting } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestRejecting.resolver.js";
+import { resolverNicovideoRegistrationRequestRejectingNotification } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestRejectingNotification.resolver.js";
+import { resolverNicovideoVideoSource } from "./NicovideoVideoSource/NicovideoVideoSource.resolver.js";
 import {
   resolveNicovideoVideoSourceCreateEvent,
   resolveNicovideoVideoSourceEvent,
-} from "../NicovideoVideoSource/NicovideoVideoSourceEvent.resolver.js";
-import { mkSoundcloudMADSourceResolver } from "../SoundcloudMADSource/SoundcloudMADSource.resolver.js";
-import { resolveSoundcloudMADSourceCreateEvent } from "../SoundcloudMADSource/SoundcloudMADSourceEvent.resolver.js";
-import { resolverSoundcloudMADSourceEventConnection } from "../SoundcloudMADSource/SoundcloudMADSourceEventConnection.resolver.js";
-import { resolverSoundcloudRegistrationRequest } from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequest.resolver.js";
-import { resolverSoundcloudRegistrationRequestAccepting } from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestAccepting.resolver.js";
-import { resolverSoundcloudRegistrationRequestAcceptingNotification } from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestAcceptingNotification.resolver.js";
-import { resolverSoundcloudRegistrationRequestConnection } from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestConnection.resolver.js";
+} from "./NicovideoVideoSource/NicovideoVideoSourceEvent.resolver.js";
+import { resolveQuery } from "./query.js";
+import { type Resolvers } from "./resolvers/graphql.js";
+import { resolveMylist } from "./resolvers/Mylist/index.js";
+import { resolverMylistConnection } from "./resolvers/MylistConnection/resolver.js";
+import { resolveMylistGroup } from "./resolvers/MylistGroup/index.js";
+import { resolveMylistGroupMylistInclusion } from "./resolvers/MylistGroupMylistInclusion/index.js";
+import { resolveMylistGroupVideoAggregation } from "./resolvers/MylistGroupVideoAggregation/index.js";
+import { resolveMylistRegistration } from "./resolvers/MylistRegistration/index.js";
+import { resolverMylistRegistrationConnection } from "./resolvers/MylistRegistrationConnection/resolver.js";
+import { resolveMylistTagInclusion } from "./resolvers/MylistTagInclusion/index.js";
+import { resolveMylistVideoRecommendation } from "./resolvers/MylistVideoRecommendation/index.js";
+import { resolverNotification } from "./resolvers/Notification/resolver.js";
+import { resolverNotificationConnection } from "./resolvers/NotificationConnection/resolver.js";
+import { resolveSemitag } from "./resolvers/Semitag/index.js";
+import { resolverSemitagConnection } from "./resolvers/SemitagConnection/resolver.js";
+import {
+  resolveSemitagEvent,
+  resolveSemitagEventAttachEvent,
+  resolveSemitagEventRejectEvent,
+  resolveSemitagEventResolveEvent,
+} from "./resolvers/SemitagEvent/index.js";
+import { resolverSemitagRejecting } from "./resolvers/SemitagRejecting/resolver.js";
+import { resolverSemitagResolving } from "./resolvers/SemitagResolving/resolver.js";
+import { resolverSemitagSuggestTagsItem } from "./resolvers/SemitagSuggestTagsItem/resolver.js";
+import { ResolverDeps } from "./resolvers/types.js";
+import { mkSoundcloudMADSourceResolver } from "./SoundcloudMADSource/SoundcloudMADSource.resolver.js";
+import { resolveSoundcloudMADSourceCreateEvent } from "./SoundcloudMADSource/SoundcloudMADSourceEvent.resolver.js";
+import { resolverSoundcloudMADSourceEventConnection } from "./SoundcloudMADSource/SoundcloudMADSourceEventConnection.resolver.js";
+import { resolverSoundcloudRegistrationRequest } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequest.resolver.js";
+import { resolverSoundcloudRegistrationRequestAccepting } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequestAccepting.resolver.js";
+import { resolverSoundcloudRegistrationRequestAcceptingNotification } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequestAcceptingNotification.resolver.js";
+import { resolverSoundcloudRegistrationRequestConnection } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequestConnection.resolver.js";
 import {
   mkSoundcloudRegistrationRequestAcceptEventResolver,
   mkSoundcloudRegistrationRequestEventResolver,
   mkSoundcloudRegistrationRequestRejectEventResolver,
   mkSoundcloudRegistrationRequestRequestEventResolver,
-} from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEvent.resolver.js";
-import { mkSoundcloudRegistrationRequestEventConnectionResolver } from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEventConnection.resolver.js";
-import { mkSoundcloudRegistrationRequestRejectingResolver } from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestRejecting.resolver.js";
-import { resolverSoundcloudRegistrationRequestRejectingNotification } from "../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestRejectingNotification.resolver.js";
-import { resolveTag } from "../Tag/Tag.resolver.js";
-import { resolveTagEvent, resolveTagRegisterEvent } from "../Tag/TagEvent.resolver.js";
-import { resolveTagName } from "../Tag/TagName.resolver.js";
+} from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEvent.resolver.js";
+import { mkSoundcloudRegistrationRequestEventConnectionResolver } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEventConnection.resolver.js";
+import { mkSoundcloudRegistrationRequestRejectingResolver } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequestRejecting.resolver.js";
+import { resolverSoundcloudRegistrationRequestRejectingNotification } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequestRejectingNotification.resolver.js";
+import { resolveTag } from "./Tag/Tag.resolver.js";
+import { resolveTagEvent, resolveTagRegisterEvent } from "./Tag/TagEvent.resolver.js";
+import { resolveTagName } from "./Tag/TagName.resolver.js";
 import {
   resolveTagNameCreateEvent,
   resolveTagNameEvent,
   resolveTagNameSetPrimaryEvent,
   resolveTagNameUnsetPrimaryEvent,
-} from "../Tag/TagNameEvent.resolver.js";
-import { resolveTagParent } from "../Tag/TagParent.resolver.js";
-import { resolverTagParentConnection } from "../Tag/TagParentConnection.resolver.js";
-import { resolverTagSearchItemByName } from "../Tag/TagSearchItemByName.resolver.js";
-import { resolverTypeCategoryTag } from "../Tag/TypeCategoryTag.resolver.js";
+} from "./Tag/TagNameEvent.resolver.js";
+import { resolveTagParent } from "./Tag/TagParent.resolver.js";
+import { resolverTagParentConnection } from "./Tag/TagParentConnection.resolver.js";
+import { resolverTagSearchItemByName } from "./Tag/TagSearchItemByName.resolver.js";
+import { resolverTypeCategoryTag } from "./Tag/TypeCategoryTag.resolver.js";
 import {
   mkBilibiliMadRequestedTimelineEventResolver,
   mkMadRegisteredTimelineEventResolver,
   mkNicovideoMadRequestedTimelineEventResolver,
   mkSoundcloudMadRequestedTimelineEventResolver,
   mkYoutubeMadRequestedTimelineEventResolver,
-} from "../Timeline/TimelineEvent.resolver.js";
-import { resolveUser } from "../User/User.resolver.js";
-import { resolveVideo } from "../Video/Video.resolver.js";
-import { resolverVideoConnection } from "../Video/VideoConnection.resolver.js";
-import { resolveVideoEvent, resolveVideoRegisterEvent } from "../Video/VideoEvent.resolver.js";
-import { resolverVideoSearchItemByTitle } from "../Video/VideoSearchItemByTitle.resolver.js";
-import { resolveVideoSimilarity } from "../Video/VideoSimilarity.resolver.js";
-import { resolveVideoTag } from "../Video/VideoTag.resolver.js";
+} from "./Timeline/TimelineEvent.resolver.js";
+import { resolveUser } from "./User/User.resolver.js";
+import { resolveVideo } from "./Video/Video.resolver.js";
+import { resolverVideoConnection } from "./Video/VideoConnection.resolver.js";
+import { resolveVideoEvent, resolveVideoRegisterEvent } from "./Video/VideoEvent.resolver.js";
+import { resolverVideoSearchItemByTitle } from "./Video/VideoSearchItemByTitle.resolver.js";
+import { resolveVideoSimilarity } from "./Video/VideoSimilarity.resolver.js";
+import { resolveVideoTag } from "./Video/VideoTag.resolver.js";
 import {
   resolveVideoTagAttachEvent,
   resolveVideoTagDetachEvent,
   resolveVideoTagEvent,
   resolveVideoTagReattachEvent,
-} from "../Video/VideoTagEvent.resolver.js";
-import { resolveVideoThumbnail } from "../Video/VideoThumbnail.resolver.js";
+} from "./Video/VideoTagEvent.resolver.js";
+import { resolveVideoThumbnail } from "./Video/VideoThumbnail.resolver.js";
 import {
   resolveVideoThumbnailCreateEvent,
   resolveVideoThumbnailEvent,
   resolveVideoThumbnailSetPrimaryEvent,
   resolveVideoThumbnailUnsetPrimaryEvent,
-} from "../Video/VideoThumbnailEvent.resolver.js";
-import { resolveVideoTitle } from "../Video/VideoTitle.resolver.js";
+} from "./Video/VideoThumbnailEvent.resolver.js";
+import { resolveVideoTitle } from "./Video/VideoTitle.resolver.js";
 import {
   resolveVideoTitleCreateEvent,
   resolveVideoTitleEvent,
   resolveVideoTitleSetPrimaryEvent,
   resolveVideoTitleUnsetPrimaryEvent,
-} from "../Video/VideoTitleEvent.resolver.js";
-import { resolverYoutubeRegistrationRequest } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequest.resolver.js";
-import { resolverYoutubeRegistrationRequestAccepting } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestAccepting.resolver.js";
-import { resolverYoutubeRegistrationRequestAcceptingNotification } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestAcceptingNotification.resolver.js";
-import { resolverYoutubeRegistrationRequestConnection } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestConnection.resolver.js";
+} from "./Video/VideoTitleEvent.resolver.js";
+import { resolverYoutubeRegistrationRequest } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequest.resolver.js";
+import { resolverYoutubeRegistrationRequestAccepting } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestAccepting.resolver.js";
+import { resolverYoutubeRegistrationRequestAcceptingNotification } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestAcceptingNotification.resolver.js";
+import { resolverYoutubeRegistrationRequestConnection } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestConnection.resolver.js";
 import {
   mkYoutubeRegistrationRequestAcceptEventResolver,
   mkYoutubeRegistrationRequestEventResolver,
   mkYoutubeRegistrationRequestRejectEventResolver,
   mkYoutubeRegistrationRequestRequestEventResolver,
-} from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.resolver.js";
-import { mkYoutubeRegistrationRequestEventConnectionResolver } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestEventConnection.resolver.js";
-import { resolverYoutubeRegistrationRequestRejecting } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestRejecting.resolver.js";
-import { resolverYoutubeRegistrationRequestRejectingNotification } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestRejectingNotification.resolver.js";
-import { resolveYoutubeVideoSource } from "../YoutubeVideoSource/YoutubeVideoSource.resolver.js";
+} from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.resolver.js";
+import { mkYoutubeRegistrationRequestEventConnectionResolver } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestEventConnection.resolver.js";
+import { resolverYoutubeRegistrationRequestRejecting } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestRejecting.resolver.js";
+import { resolverYoutubeRegistrationRequestRejectingNotification } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestRejectingNotification.resolver.js";
+import { resolveYoutubeVideoSource } from "./YoutubeVideoSource/YoutubeVideoSource.resolver.js";
 import {
   resolveYoutubeVideoSourceCreateEvent,
   resolveYoutubeVideoSourceEvent,
-} from "../YoutubeVideoSource/YoutubeVideoSourceEvent.resolver.js";
-import { resolverYoutubeVideoSourceEventConnection } from "../YoutubeVideoSource/YoutubeVideoSourceEventConnection.resolver.js";
-import { type Resolvers } from "./graphql.js";
-import { resolveMutation } from "./Mutation/index.js";
-import { resolveMylist } from "./Mylist/index.js";
-import { resolverMylistConnection } from "./MylistConnection/resolver.js";
-import { resolveMylistGroup } from "./MylistGroup/index.js";
-import { resolveMylistGroupMylistInclusion } from "./MylistGroupMylistInclusion/index.js";
-import { resolveMylistGroupVideoAggregation } from "./MylistGroupVideoAggregation/index.js";
-import { resolveMylistRegistration } from "./MylistRegistration/index.js";
-import { resolverMylistRegistrationConnection } from "./MylistRegistrationConnection/resolver.js";
-import { resolveMylistTagInclusion } from "./MylistTagInclusion/index.js";
-import { resolveMylistVideoRecommendation } from "./MylistVideoRecommendation/index.js";
-import { resolverNotification } from "./Notification/resolver.js";
-import { resolverNotificationConnection } from "./NotificationConnection/resolver.js";
-import { resolveQuery } from "./Query/index.js";
-import { resolveSemitag } from "./Semitag/index.js";
-import { resolverSemitagConnection } from "./SemitagConnection/resolver.js";
-import {
-  resolveSemitagEvent,
-  resolveSemitagEventAttachEvent,
-  resolveSemitagEventRejectEvent,
-  resolveSemitagEventResolveEvent,
-} from "./SemitagEvent/index.js";
-import { resolverSemitagRejecting } from "./SemitagRejecting/resolver.js";
-import { resolverSemitagResolving } from "./SemitagResolving/resolver.js";
-import { resolverSemitagSuggestTagsItem } from "./SemitagSuggestTagsItem/resolver.js";
-import { ResolverDeps } from "./types.js";
+} from "./YoutubeVideoSource/YoutubeVideoSourceEvent.resolver.js";
+import { resolverYoutubeVideoSourceEventConnection } from "./YoutubeVideoSource/YoutubeVideoSourceEventConnection.resolver.js";
 
 export const makeResolvers = (deps: ResolverDeps) =>
   ({
