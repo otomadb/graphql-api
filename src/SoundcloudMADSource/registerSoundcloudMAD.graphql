@@ -11,6 +11,7 @@ input RegisterSoundcloudMADInput {
   semitagNames: [String!]! = []
 
   sourceIds: [String!]!
+  requestId: ID
 }
 
 union RegisterSoundcloudMADResult =

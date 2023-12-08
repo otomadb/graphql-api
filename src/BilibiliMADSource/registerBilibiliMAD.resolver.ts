@@ -5,11 +5,8 @@ import { checkDuplicate } from "../utils/checkDuplicate.js";
 import { MkMutationResolver } from "../utils/MkResolver.js";
 import { isErr } from "../utils/Result.js";
 
-export const mkRegisterBilibiliMADResolver: MkMutationResolver<
-  "registerBilibiliMAD",
-  "BilibiliMADSourceService" | "TimelineEventService"
-> =
-  ({ BilibiliMADSourceService, TimelineEventService }) =>
+export const mkRegisterBilibiliMADResolver: MkMutationResolver<"registerBilibiliMAD", "BilibiliMADSourceService"> =
+  ({ BilibiliMADSourceService }) =>
   async (_parent, { input }, { currentUser: { id: userId } }) => {
     const tagIds = parseGqlIDs3("Tag", input.tagIds);
     if (isErr(tagIds)) {

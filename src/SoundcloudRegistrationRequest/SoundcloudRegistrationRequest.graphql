@@ -58,11 +58,9 @@ type SoundcloudRegistrationRequest implements Node & RegistrationRequest {
   thumbnailUrl(scale: RegistrationRequestThumbnailScale! = LARGE): String!
 
   """
-  SoundCloud側のオリジナルのサムネイル画像のURL
-
-  **無い場合もあることに注意.**
+  SoundCloud側のオリジナルのサムネイル画像または投稿者のユーザ画像のURL
   """
-  originalThumbnailUrl: String
+  originalThumbnailUrl: String!
 
   taggings: [SoundcloudRegistrationRequestTagging!]!
   semitaggings: [SoundcloudRegistrationRequestSemitagging!]!

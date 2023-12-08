@@ -220,7 +220,14 @@ export const mkTimelineEventService = ({
     },
 
     async clearAll() {
-      return redis.keys("timeline:*").then((keys) => redis.del(...keys));
+      try {
+        const keys = await redis.keys("timeline:*");
+        await redis.del(...keys);
+        return;
+      } catch (e) {
+        logger.error(e);
+        return;
+      }
     },
   };
 };

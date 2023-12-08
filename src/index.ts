@@ -123,6 +123,15 @@ const TimelineEventService = mkTimelineEventService({
   logger: logger.child({ service: "TimelineEventService" }),
 });
 
+const SoundcloudRegistrationRequestEventService = mkSoundcloudRegistrationRequestEventService({
+  prisma: prismaClient,
+  logger: logger.child({ service: "SoundcloudRegistrationRequestEventService" }),
+});
+
+const SoundcloudRegistrationRequestService = mkSoundcloudRegistrationRequestService({
+  prisma: prismaClient,
+});
+
 const yoga = createYoga<ServerContext, UserContext>({
   graphiql: process.env.ENABLE_GRAPHIQL === "true",
   schema: createSchema({
@@ -157,6 +166,8 @@ const yoga = createYoga<ServerContext, UserContext>({
         Neo4jService,
         SoundcloudService,
         logger: logger.child({ service: "SoundcloudMADSourceService" }),
+        TimelineEventService,
+        SoundcloudRegistrationRequestService,
       }),
       SoundcloudService,
       NicovideoService,
@@ -184,13 +195,8 @@ const yoga = createYoga<ServerContext, UserContext>({
       VideoEventService: mkVideoEventService({
         prisma: prismaClient,
       }),
-      SoundcloudRegistrationRequestService: mkSoundcloudRegistrationRequestService({
-        prisma: prismaClient,
-      }),
-      SoundcloudRegistrationRequestEventService: mkSoundcloudRegistrationRequestEventService({
-        prisma: prismaClient,
-        logger: logger.child({ service: "SoundcloudRegistrationRequestEventService" }),
-      }),
+      SoundcloudRegistrationRequestService,
+      SoundcloudRegistrationRequestEventService,
       NicochuuService: nicochuuService,
       BilibiliRegistrationRequestService,
       BilibiliRegistrationRequestEventService: mkBilibiliRegistrationRequestEventService({
