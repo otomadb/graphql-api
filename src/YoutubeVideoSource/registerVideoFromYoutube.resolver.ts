@@ -69,7 +69,7 @@ async function mkAcceptTransaction(
     prisma.notification.create({
       data: {
         notifyToId: request.requestedById,
-        type: "ACCEPTING_SOUNDCLOUD_REGISTRATION_REQUEST",
+        type: "ACCEPTING_YOUTUBE_REGISTRATION_REQUEST",
         payload: { id: checkingId },
       },
     }),
