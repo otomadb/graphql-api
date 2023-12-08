@@ -3,8 +3,8 @@ pre-push:
   commands:
     typecheck:
       run: |
-        pnpm run codegen
-        pnpm run typecheck
+        npm run codegen
+        npm run typecheck
 
 pre-commit:
   parallel: true
@@ -12,16 +12,14 @@ pre-commit:
     eslint:
       glob: "*.{js,ts,jsx,tsx,mdx}"
       run: |
-        pnpm eslint --fix {staged_files}
-        git add {staged_files}
+        npx eslint {staged_files}
       skip:
         - merge
         - rebase
     prettier:
       glob: "*.{js,ts,jsx,tsx,md,mdx,html,json,yml,yaml,graphql}"
       run: |
-        pnpm prettier --write --ignore-unknown {staged_files}
-        git add {staged_files}
+        npx prettier --ignore-unknown {staged_files}
       skip:
         - merge
         - rebase
