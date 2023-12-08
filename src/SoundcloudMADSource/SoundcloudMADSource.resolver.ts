@@ -23,13 +23,9 @@ export const mkSoundcloudMADSourceResolver: MkResolver<
       return result.data.url;
     },
     embedUrl: async ({ sourceId }) => {
-      const result = await SoundcloudService.fetchFromSourceId(sourceId);
+      const result = await SoundcloudService.getEmbedUrl(sourceId);
       if (isErr(result)) throw new GraphQLError("Something wrong");
-
-      const embedUrl = new URL("https://w.soundcloud.com/player");
-      embedUrl.searchParams.set("url", result.data.url);
-      embedUrl.searchParams.set("show_artwork", "true");
-      return embedUrl.toString();
+      return result.data;
     },
     video: ({ videoId }) => VideoDTO.getPrismaClientById(prisma, videoId),
     events: ({ id }, { orderBy: unparsedOrderBy, ...unparsedConnectionArgs }, _ctx, info) => {

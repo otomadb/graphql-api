@@ -14,15 +14,30 @@ export const resolverSoundcloudRegistrationRequest = ({
   logger,
   SoundcloudRegistrationRequestEventService,
   ImagesService,
+  SoundcloudService,
 }: Pick<
   ResolverDeps,
-  "prisma" | "userService" | "logger" | "SoundcloudRegistrationRequestEventService" | "ImagesService"
+  | "prisma"
+  | "userService"
+  | "logger"
+  | "SoundcloudRegistrationRequestEventService"
+  | "ImagesService"
+  | "SoundcloudService"
 >) =>
   ({
     id: ({ dbId: requestId }) => buildGqlId("SoundcloudRegistrationRequest", requestId),
 
-    originalUrl: ({ sourceId }) => `https://www.soundcloud.com/watch?v=${sourceId}`,
-    embedUrl: ({ sourceId }) => `https://www.soundcloud.com/embed/${sourceId}`,
+    originalUrl: async ({ sourceId }) => {
+      const scrp = await SoundcloudService.fetchFromSourceId(sourceId);
+      if (isErr(scrp)) throw new GraphQLError("Something wrong");
+      return scrp.data.url;
+    },
+
+    embedUrl: async ({ sourceId }) => {
+      const result = await SoundcloudService.getEmbedUrl(sourceId);
+      if (isErr(result)) throw new GraphQLError("Something wrong");
+      return result.data;
+    },
 
     thumbnailUrl: ({ thumbnailUrl }, { scale }) => ImagesService.proxyThis(thumbnailUrl, scale),
     originalThumbnailUrl: ({ thumbnailUrl }) => thumbnailUrl,
