@@ -18,6 +18,13 @@ generates:
         DateTime: Date
       contextType: ./types.js#Context
       mappers:
+        BilibiliMadRequestedTimelineEvent: ../Timeline/TimelineEvent.dto.js#BilibiliMadRequestedTimelineEventDTO
+        BilibiliMADSource: ../BilibiliMADSource/BilibiliMADSource.dto.js#BilibiliMADSourceDTO
+        BilibiliMADSourceCreateEvent: ../BilibiliMADSource/BilibiliMADSourceEvent.dto.js#BilibiliMADSourceEventDTO
+        BilibiliMADSourceEvent: ../BilibiliMADSource/BilibiliMADSourceEvent.dto.js#BilibiliMADSourceEventDTO
+        BilibiliMADSourceEventConnection: ../BilibiliMADSource/BilibiliMADSourceEventConnection.dto.js#BilibiliMADSourceEventConnectionDTO
+        BilibiliOriginalSource: ../FetchExternal/BilibiliOriginalSource.dto.js#BilibiliOriginalSourceDTO
+        BilibiliOriginalSourceTag: ../FetchExternal/BilibiliOriginalSourceTag.dto.js#BilibiliOriginalSourceTagDTO
         BilibiliRegistrationRequest: ../BilibiliRegistrationRequest/BilibiliRegistrationRequest.dto.js#BilibiliRegistrationRequestDTO
         BilibiliRegistrationRequestAcceptEvent: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestEvent.dto.js#BilibiliRegistrationRequestAcceptEventDTO
         BilibiliRegistrationRequestAccepting: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestAccepting.dto.js#BilibiliRegistrationRequestAcceptingDTO
@@ -29,12 +36,6 @@ generates:
         BilibiliRegistrationRequestRejecting: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestRejecting.dto.js#BilibiliRegistrationRequestRejectingDTO
         BilibiliRegistrationRequestRejectingNotification: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestRejectingNotification.dto.js#BilibiliRegistrationRequestRejectingNotificationDTO
         BilibiliRegistrationRequestRequestEvent: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestEvent.dto.js#BilibiliRegistrationRequestRequestEventDTO
-        BilibiliMADSource: ../BilibiliMADSource/BilibiliMADSource.dto.js#BilibiliMADSourceDTO
-        BilibiliMADSourceCreateEvent: ../BilibiliMADSource/BilibiliMADSourceEvent.dto.js#BilibiliMADSourceEventDTO
-        BilibiliMADSourceEvent: ../BilibiliMADSource/BilibiliMADSourceEvent.dto.js#BilibiliMADSourceEventDTO
-        BilibiliMADSourceEventConnection: ../BilibiliMADSource/BilibiliMADSourceEventConnection.dto.js#BilibiliMADSourceEventConnectionDTO
-        BilibiliOriginalSource: ../FetchExternal/BilibiliOriginalSource.dto.js#BilibiliOriginalSourceDTO
-        BilibiliOriginalSourceTag: ../FetchExternal/BilibiliOriginalSourceTag.dto.js#BilibiliOriginalSourceTagDTO
         MadRegisteredTimelineEvent: ../Timeline/TimelineEvent.dto.js#MadRegisteredTimelineEventDTO
         Mylist: ./Mylist/model.js#MylistModel
         MylistConnection: ./MylistConnection/model.js#MylistConnectionModel

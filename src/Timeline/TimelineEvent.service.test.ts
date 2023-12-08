@@ -5,12 +5,13 @@ import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from "vit
 
 import { cleanPrisma } from "../test/cleanPrisma.js";
 import {
+  BilibiliMadRequestedTimelineEventDTO,
   MadRegisteredTimelineEventDTO,
   NicovideoMadRequestedTimelineEventDTO,
   SoundcloudMadRequestedTimelineEventDTO,
   YoutubeMadRequestedTimelineEventDTO,
 } from "./TimelineEvent.dto.js";
-import { Cache, mkTimelineEventService, TimelineEventService } from "./TimelineEvent.service.js";
+import { Cache, Filter, mkTimelineEventService, TimelineEventService } from "./TimelineEvent.service.js";
 
 describe("TimelineEventService", () => {
   let prisma: PrismaClient;
@@ -38,13 +39,16 @@ describe("TimelineEventService", () => {
 
   describe("calcTimelineEvents()", () => {
     test("Redis側ですでに必要分がキャッシュ済み", async () => {
+      const filter: Filter = {
+        REGISTER: true,
+        REQUEST_NICOVIDEO: true,
+        REQUEST_YOUTUBE: true,
+        REQUEST_SOUNDCLOUD: true,
+        REQUEST_BILIBILI: true,
+      };
+
       await redis.set(
-        `timeline:user1:${JSON.stringify({
-          REGISTER: true,
-          REQUEST_NICOVIDEO: true,
-          REQUEST_YOUTUBE: true,
-          REQUEST_SOUNDCLOUD: true,
-        })}`,
+        `timeline:user1:${JSON.stringify(filter)}`,
         JSON.stringify([
           {
             type: "REGISTER",
@@ -76,12 +80,7 @@ describe("TimelineEventService", () => {
       const actual = await service.calcTimelineEvents("user1", {
         take: 2,
         skip: 1,
-        filter: {
-          REGISTER: true,
-          REQUEST_NICOVIDEO: true,
-          REQUEST_YOUTUBE: true,
-          REQUEST_SOUNDCLOUD: true,
-        },
+        filter,
       });
       expect(actual.length).toBe(2);
 
@@ -233,52 +232,90 @@ describe("TimelineEventService", () => {
             },
           ],
         }),
+        prisma.bilibiliRegistrationRequest.createMany({
+          data: [...new Array(10)].map((_, i) => ({
+            id: `bilibili_regreq:${i}`,
+            isChecked: false,
+            requestedById: "user1",
+            title: `bilibili_req ${i}`,
+            sourceId: `bilibili_req:${i}`,
+            thumbnailUrl: "thumbnail",
+          })),
+        }),
+        prisma.bilibiliRegistrationRequestEvent.createMany({
+          data: [
+            {
+              id: "bilibili_regreq_event:1",
+              requestId: "bilibili_regreq:1",
+              type: "REQUEST",
+              userId: "user1",
+              createdAt: new Date("2021-01-30T04:00:00.000Z"),
+            },
+            {
+              id: "bilibili_regreq_event:2",
+              requestId: "bilibili_regreq:2",
+              type: "REQUEST",
+              userId: "user1",
+              createdAt: new Date("2021-01-29T04:00:00.000Z"),
+            },
+            {
+              id: "bilibili_regreq_event:3",
+              requestId: "bilibili_regreq:3",
+              type: "REQUEST",
+              userId: "user1",
+              createdAt: new Date("2021-01-28T04:00:00.000Z"),
+            },
+          ],
+        }),
       ]);
 
+      const filter: Filter = {
+        REGISTER: true,
+        REQUEST_NICOVIDEO: true,
+        REQUEST_YOUTUBE: true,
+        REQUEST_SOUNDCLOUD: true,
+        REQUEST_BILIBILI: true,
+      };
+
       const actual = await service.calcTimelineEvents("user1", {
-        take: 4,
-        skip: 4,
-        filter: {
-          REGISTER: true,
-          REQUEST_NICOVIDEO: true,
-          REQUEST_YOUTUBE: true,
-          REQUEST_SOUNDCLOUD: true,
-        },
+        take: 5,
+        skip: 5,
+        filter,
       });
-      expect(actual.length).toBe(4);
+      expect(actual.length).toBe(5);
 
-      const acutal0 = actual[0] as SoundcloudMadRequestedTimelineEventDTO;
-      expect(acutal0.createdAt).toStrictEqual(new Date("2021-01-29T03:00:00.000Z"));
-      expect(acutal0.requestId).toBe("soundcloud_req2");
-      expect(acutal0.eventId).toBe("4_2");
+      const ractual = actual.toReversed();
 
-      const acutal1 = actual[1] as YoutubeMadRequestedTimelineEventDTO;
-      expect(acutal1.createdAt).toStrictEqual(new Date("2021-01-29T02:00:00.000Z"));
-      expect(acutal1.requestId).toBe("youtube_req2");
-      expect(acutal1.eventId).toBe("3_2");
+      const ractual0 = ractual[0] as MadRegisteredTimelineEventDTO;
+      expect(ractual0.createdAt).toStrictEqual(new Date("2021-01-29T00:00:00.000Z"));
+      expect(ractual0.videoId).toBe("video2");
+      expect(ractual0.eventId).toBe("1_2");
 
-      const acutal2 = actual[2] as NicovideoMadRequestedTimelineEventDTO;
-      expect(acutal2.createdAt).toStrictEqual(new Date("2021-01-29T01:00:00.000Z"));
-      expect(acutal2.requestId).toBe("nicovideo_req2");
-      expect(acutal2.eventId).toBe("2_2");
+      const racutal1 = ractual[1] as NicovideoMadRequestedTimelineEventDTO;
+      expect(racutal1.createdAt).toStrictEqual(new Date("2021-01-29T01:00:00.000Z"));
+      expect(racutal1.requestId).toBe("nicovideo_req2");
+      expect(racutal1.eventId).toBe("2_2");
 
-      const acutal3 = actual[3] as MadRegisteredTimelineEventDTO;
-      expect(acutal3.createdAt).toStrictEqual(new Date("2021-01-29T00:00:00.000Z"));
-      expect(acutal3.videoId).toBe("video2");
-      expect(acutal3.eventId).toBe("1_2");
+      const acutal2 = ractual[2] as YoutubeMadRequestedTimelineEventDTO;
+      expect(acutal2.createdAt).toStrictEqual(new Date("2021-01-29T02:00:00.000Z"));
+      expect(acutal2.requestId).toBe("youtube_req2");
+      expect(acutal2.eventId).toBe("3_2");
+
+      const racutal3 = ractual[3] as SoundcloudMadRequestedTimelineEventDTO;
+      expect(racutal3.createdAt).toStrictEqual(new Date("2021-01-29T03:00:00.000Z"));
+      expect(racutal3.requestId).toBe("soundcloud_req2");
+      expect(racutal3.eventId).toBe("4_2");
+
+      const racutal4 = ractual[4] as BilibiliMadRequestedTimelineEventDTO;
+      expect(racutal4.createdAt).toStrictEqual(new Date("2021-01-29T04:00:00.000Z"));
+      expect(racutal4.requestId).toBe("bilibili_regreq:2");
+      expect(racutal4.eventId).toBe("bilibili_regreq_event:2");
 
       const actualCached = await redis
-        .get(
-          `timeline:user1:${JSON.stringify({
-            REGISTER: true,
-            REQUEST_NICOVIDEO: true,
-            REQUEST_YOUTUBE: true,
-            REQUEST_SOUNDCLOUD: true,
-          })}`,
-        )
+        .get(`timeline:user1:${JSON.stringify(filter)}`)
         .then((v) => JSON.parse(v ?? "[]"));
       expect(Array.isArray(actualCached)).toBe(true);
-      expect(actualCached.length).toBe(8);
+      expect(actualCached.length).toBe(10);
     });
 
     test("チェック済みのリクエストはタイムラインに反映しない", async () => {
@@ -376,17 +413,40 @@ describe("TimelineEventService", () => {
             },
           ],
         }),
+        prisma.bilibiliRegistrationRequest.createMany({
+          data: [...new Array(10)].map((_, i) => ({
+            id: `bilibili_regreq:${i}`,
+            isChecked: true,
+            requestedById: "user1",
+            title: `bilibili_req ${i}`,
+            sourceId: `bilibili_req:${i}`,
+            thumbnailUrl: "thumbnail",
+          })),
+        }),
+        prisma.bilibiliRegistrationRequestEvent.createMany({
+          data: [
+            {
+              id: "bilibili_regreq_event:1",
+              requestId: "bilibili_regreq:1",
+              type: "REQUEST",
+              userId: "user1",
+              createdAt: new Date("2021-01-30T04:00:00.000Z"),
+            },
+          ],
+        }),
       ]);
 
+      const filter: Filter = {
+        REGISTER: true,
+        REQUEST_NICOVIDEO: true,
+        REQUEST_YOUTUBE: true,
+        REQUEST_SOUNDCLOUD: true,
+        REQUEST_BILIBILI: true,
+      };
       const actual = await service.calcTimelineEvents("user1", {
         take: 3,
         skip: 1,
-        filter: {
-          REGISTER: true,
-          REQUEST_NICOVIDEO: true,
-          REQUEST_YOUTUBE: true,
-          REQUEST_SOUNDCLOUD: true,
-        },
+        filter,
       });
       expect(actual.length).toBe(2);
 
@@ -401,14 +461,7 @@ describe("TimelineEventService", () => {
       expect(acutal1.eventId).toBe("1_3");
 
       const actualCached = await redis
-        .get(
-          `timeline:user1:${JSON.stringify({
-            REGISTER: true,
-            REQUEST_NICOVIDEO: true,
-            REQUEST_YOUTUBE: true,
-            REQUEST_SOUNDCLOUD: true,
-          })}`,
-        )
+        .get(`timeline:user1:${JSON.stringify(filter)}`)
         .then((v) => JSON.parse(v ?? "[]"));
       expect(Array.isArray(actualCached)).toBe(true);
       expect(actualCached.length).toBe(3);

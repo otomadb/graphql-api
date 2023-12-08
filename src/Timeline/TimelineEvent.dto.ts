@@ -45,3 +45,15 @@ export class SoundcloudMadRequestedTimelineEventDTO {
     this.eventId = payload.eventId;
   }
 }
+
+export class BilibiliMadRequestedTimelineEventDTO {
+  createdAt: Date;
+  requestId: string;
+  eventId: string;
+
+  constructor(createdAt: Date | string, payload: { requestId: string; eventId: string }) {
+    this.createdAt = typeof createdAt === "string" ? new Date(createdAt) : createdAt;
+    this.requestId = payload.requestId;
+    this.eventId = payload.eventId;
+  }
+}
