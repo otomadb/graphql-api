@@ -11,6 +11,7 @@ export const mkShowTimelineResolver: MkQueryResolver<"showTimeline", "TimelineEv
         REQUEST_NICOVIDEO: true,
         REQUEST_YOUTUBE: true,
         REQUEST_SOUNDCLOUD: true,
+        REQUEST_BILIBILI: true,
       },
     });
   };

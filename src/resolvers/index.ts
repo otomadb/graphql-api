@@ -71,6 +71,7 @@ import { resolverTagParentConnection } from "../Tag/TagParentConnection.resolver
 import { resolverTagSearchItemByName } from "../Tag/TagSearchItemByName.resolver.js";
 import { resolverTypeCategoryTag } from "../Tag/TypeCategoryTag.resolver.js";
 import {
+  mkBilibiliMadRequestedTimelineEventResolver,
   mkMadRegisteredTimelineEventResolver,
   mkNicovideoMadRequestedTimelineEventResolver,
   mkSoundcloudMadRequestedTimelineEventResolver,
@@ -154,6 +155,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     BilibiliMADSource: resolverBilibiliMADSource(deps),
     BilibiliMADSourceCreateEvent: resolverBilibiliMADSourceCreateEvent(deps),
     BilibiliMADSourceEventConnection: resolverBilibiliMADSourceEventConnection(deps),
+    BilibiliMadRequestedTimelineEvent: mkBilibiliMadRequestedTimelineEventResolver(deps),
     BilibiliOriginalSource: mkBilibiliOriginalSourceResolver(deps),
     BilibiliOriginalSourceTag: resolverBilibiliOriginalSourceTag(deps),
     BilibiliRegistrationRequest: resolverBilibiliRegistrationRequest(deps),

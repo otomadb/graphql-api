@@ -4,22 +4,50 @@ import { Logger } from "pino";
 import z from "zod";
 
 import {
+  BilibiliMadRequestedTimelineEventDTO,
   MadRegisteredTimelineEventDTO,
   NicovideoMadRequestedTimelineEventDTO,
   SoundcloudMadRequestedTimelineEventDTO,
   YoutubeMadRequestedTimelineEventDTO,
 } from "./TimelineEvent.dto.js";
 
-export type RegisterVideoCache = { type: "REGISTER"; videoId: string; createdAt: Date; eventId: string };
-export type RequestNicovideoCache = { type: "REQUEST_NICOVIDEO"; requestId: string; createdAt: Date; eventId: string };
-export type RequestYoutubeCache = { type: "REQUEST_YOUTUBE"; requestId: string; createdAt: Date; eventId: string };
+export type RegisterVideoCache = {
+  type: "REGISTER";
+  videoId: string;
+  createdAt: Date;
+  eventId: string;
+};
+export type RequestNicovideoCache = {
+  type: "REQUEST_NICOVIDEO";
+  requestId: string;
+  createdAt: Date;
+  eventId: string;
+};
+export type RequestYoutubeCache = {
+  type: "REQUEST_YOUTUBE";
+  requestId: string;
+  createdAt: Date;
+  eventId: string;
+};
 export type RequestSoundcloudCache = {
   type: "REQUEST_SOUNDCLOUD";
   requestId: string;
   createdAt: Date;
   eventId: string;
 };
-export type Cache = RegisterVideoCache | RequestNicovideoCache | RequestYoutubeCache | RequestSoundcloudCache;
+export type RequestBilibiliCache = {
+  type: "REQUEST_BILIBILI";
+  requestId: string;
+  createdAt: Date;
+  eventId: string;
+};
+export type Cache =
+  | RegisterVideoCache
+  | RequestNicovideoCache
+  | RequestYoutubeCache
+  | RequestSoundcloudCache
+  | RequestBilibiliCache;
+export type Filter = Record<Cache["type"], boolean>;
 
 export const mkTimelineEventService = ({
   prisma,
@@ -33,7 +61,7 @@ export const mkTimelineEventService = ({
   return {
     async calcTimelineEvents(
       userId: string,
-      { take, skip, filter }: { take: number; skip: number; filter: Record<Cache["type"], boolean> },
+      { take, skip, filter }: { take: number; skip: number; filter: Filter },
     ): Promise<
       (MadRegisteredTimelineEventDTO | NicovideoMadRequestedTimelineEventDTO | YoutubeMadRequestedTimelineEventDTO)[]
     > {
@@ -66,6 +94,12 @@ export const mkTimelineEventService = ({
               requestId: z.string(),
               eventId: z.string(),
             }),
+            z.object({
+              type: z.literal("REQUEST_BILIBILI"),
+              createdAt: z.string().datetime(),
+              requestId: z.string(),
+              eventId: z.string(),
+            }),
           ]),
         )
         .safeParse(cached);
@@ -83,13 +117,15 @@ export const mkTimelineEventService = ({
                 return new YoutubeMadRequestedTimelineEventDTO(createdAt, v);
               case "REQUEST_SOUNDCLOUD":
                 return new SoundcloudMadRequestedTimelineEventDTO(createdAt, v);
+              case "REQUEST_BILIBILI":
+                return new BilibiliMadRequestedTimelineEventDTO(createdAt, v);
             }
           });
       } else {
         logger.warn(parsedCached.error);
       }
 
-      const [v, nr, yr, sr] = await prisma.$transaction([
+      const [v, nr, yr, sr, br] = await prisma.$transaction([
         prisma.videoEvent.findMany({
           where: { type: "REGISTER" },
           orderBy: { createdAt: "desc" },
@@ -106,6 +142,11 @@ export const mkTimelineEventService = ({
           take: take + skip,
         }),
         prisma.soundcloudRegistrationRequestEvent.findMany({
+          where: { type: "REQUEST", request: { isChecked: false } },
+          orderBy: { createdAt: "desc" },
+          take: take + skip,
+        }),
+        prisma.bilibiliRegistrationRequestEvent.findMany({
           where: { type: "REQUEST", request: { isChecked: false } },
           orderBy: { createdAt: "desc" },
           take: take + skip,
@@ -148,6 +189,15 @@ export const mkTimelineEventService = ({
               eventId: id,
             }) satisfies RequestSoundcloudCache,
         ),
+        ...br.map(
+          ({ createdAt, requestId, id }) =>
+            ({
+              type: "REQUEST_BILIBILI" as const,
+              requestId,
+              createdAt,
+              eventId: id,
+            }) satisfies RequestBilibiliCache,
+        ),
       ]
         .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
         .slice(0, skip + take);
@@ -162,6 +212,8 @@ export const mkTimelineEventService = ({
           case "REQUEST_YOUTUBE":
             return new YoutubeMadRequestedTimelineEventDTO(createdAt, v);
           case "REQUEST_SOUNDCLOUD":
+            return new SoundcloudMadRequestedTimelineEventDTO(createdAt, v);
+          case "REQUEST_BILIBILI":
             return new SoundcloudMadRequestedTimelineEventDTO(createdAt, v);
         }
       });

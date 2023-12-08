@@ -42,3 +42,13 @@ type SoundcloudMadRequestedTimelineEvent implements TimelineEvent {
   request: SoundcloudRegistrationRequest!
   event: SoundcloudRegistrationRequestRequestEvent!
 }
+
+"""
+Bilibiliの音MADがリクエストされたことを表すタイムラインイベント
+"""
+type BilibiliMadRequestedTimelineEvent implements TimelineEvent {
+  createdAt: DateTime!
+
+  request: BilibiliRegistrationRequest!
+  event: BilibiliRegistrationRequestRequestEvent!
+}

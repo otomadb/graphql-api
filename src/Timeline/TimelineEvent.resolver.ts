@@ -1,5 +1,6 @@
 import { MkResolverWithInclude } from "../utils/MkResolver.js";
 import {
+  BilibiliMadRequestedTimelineEventDTO,
   MadRegisteredTimelineEventDTO,
   NicovideoMadRequestedTimelineEventDTO,
   SoundcloudMadRequestedTimelineEventDTO,
@@ -49,5 +50,17 @@ export const mkSoundcloudMadRequestedTimelineEventResolver: MkResolverWithInclud
   request: ({ requestId }) => SoundcloudRegistrationRequestService.getByIdOrThrow(requestId),
   event: ({ eventId }) => {
     return SoundcloudRegistrationRequestEventService.getByIdOrThrow(eventId);
+  },
+});
+
+export const mkBilibiliMadRequestedTimelineEventResolver: MkResolverWithInclude<
+  "BilibiliMadRequestedTimelineEvent",
+  "BilibiliRegistrationRequestService" | "BilibiliRegistrationRequestEventService"
+> = ({ BilibiliRegistrationRequestService, BilibiliRegistrationRequestEventService }) => ({
+  __isTypeOf: (v) => v instanceof BilibiliMadRequestedTimelineEventDTO,
+  createdAt: ({ createdAt }) => createdAt,
+  request: ({ requestId }) => BilibiliRegistrationRequestService.getByIdOrThrow(requestId),
+  event: ({ eventId }) => {
+    return BilibiliRegistrationRequestEventService.getByIdOrThrow(eventId);
   },
 });
