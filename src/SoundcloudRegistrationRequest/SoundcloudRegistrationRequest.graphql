@@ -53,14 +53,14 @@ type SoundcloudRegistrationRequest implements Node & RegistrationRequest {
   """
   OtoMADB側でプロキシしているサムネイル画像のURL
 
-  **無い場合は適当にダミー画像を返す．**
+  **無い場合もあることに注意.**
   """
-  thumbnailUrl(scale: RegistrationRequestThumbnailScale! = LARGE): String!
+  thumbnailUrl(scale: RegistrationRequestThumbnailScale! = LARGE): String
 
   """
   SoundCloud側のオリジナルのサムネイル画像のURL
 
-  **無い場合もある場合に注意.**
+  **無い場合もあることに注意.**
   """
   originalThumbnailUrl: String
 
