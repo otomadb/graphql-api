@@ -7,8 +7,8 @@ export const mkBilibiliOriginalSourceResolver: MkResolver<"BilibiliOriginalSourc
   sourceId: ({ sourceId }) => sourceId,
   tags: ({ tags }) => tags,
 
-  thumbnailUrl: ({ sourceId }, { scale }) => ImagesService.proxyThis(sourceId, scale),
-  proxiedThumbnailUrl: ({ sourceId }, { scale }) => ImagesService.proxyThis(sourceId, scale),
+  thumbnailUrl: ({ originalThumbnailUrl }, { scale }) => ImagesService.proxyThis(originalThumbnailUrl, scale),
+  proxiedThumbnailUrl: ({ originalThumbnailUrl }, { scale }) => ImagesService.proxyThis(originalThumbnailUrl, scale),
 
   originalThumbnailUrl: ({ originalThumbnailUrl }) => originalThumbnailUrl,
   url: ({ sourceId }) => `https://www.bilibili.com/video/${sourceId}`,

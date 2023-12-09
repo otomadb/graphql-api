@@ -22,7 +22,7 @@ export const resolverBilibiliRegistrationRequest = ({
     id: ({ dbId: requestId }) => buildGqlId("BilibiliRegistrationRequest", requestId),
 
     originalUrl: ({ sourceId }) => `https://www.bilibili.com/video/${sourceId}`,
-    embedUrl: ({ sourceId }) => `https://www.bilibili.com/embed/${sourceId}`,
+    embedUrl: ({ sourceId }) => `https://player.bilibili.com/player.html?bvid=${sourceId}`,
 
     thumbnailUrl: ({ thumbnailUrl }, { scale }) => ImagesService.proxyThis(thumbnailUrl, scale),
     originalThumbnailUrl: ({ thumbnailUrl }) => thumbnailUrl,
