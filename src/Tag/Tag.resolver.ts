@@ -3,6 +3,7 @@ import { CategoryTagType } from "@prisma/client";
 import { GraphQLError } from "graphql";
 import { z } from "zod";
 
+import { AbstractGroupDTO } from "../AbstractGroup/AbstractGroup.dto.js";
 import { AbstractGroupingDTO } from "../AbstractGroup/AbstractGrouping.dto.js";
 import { cursorOptions } from "../resolvers/connection.js";
 import { Resolvers, TagResolvers, TagType as GqlTagType } from "../resolvers/graphql.js";
@@ -254,8 +255,8 @@ export const resolveTag = ({ prisma, logger, TagsService }: Pick<ResolverDeps, "
     },
 
     belongTo: async ({ id: tagId }) => {
-      const groupings = await prisma.abstractGrouping.findMany({ where: { tagId } });
-      return groupings.length === 1 ? groupings[0].groupKeyword : null;
+      const groupings = await prisma.abstractGrouping.findMany({ where: { tagId }, include: { group: true } });
+      return groupings.length === 1 ? AbstractGroupDTO.fromPrisma(groupings[0].group) : null;
     },
 
     allBelongTo: async ({ id: tagId }) =>
