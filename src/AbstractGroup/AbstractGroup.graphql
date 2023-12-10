@@ -1,4 +1,25 @@
 type AbstractGroup {
   keyword: ID!
   name(locale: String! = "ja"): String!
+
+  "このグループに属しているタグの一覧"
+  belongingTags(input: AbstractGroupBelongingTagsInput!): TagConnection!
+}
+
+"""
+**全取得が許容されています．**
+"""
+input AbstractGroupBelongingTagsInput {
+  first: Int
+  after: String
+
+  last: Int
+  before: String
+
+  orderBy: AbstractGroupBelongingTagsInputOrderBy! = { taggedMads: DESC }
+}
+
+input AbstractGroupBelongingTagsInputOrderBy {
+  "タグ付いている音MADの数でソート"
+  taggedMads: SortOrder
 }

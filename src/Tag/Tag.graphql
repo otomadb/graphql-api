@@ -95,10 +95,6 @@ input TagTaggedVideosOrderBy {
   createdAt: SortOrder
 }
 
-type TagConnection {
-  nodes: [Tag!]!
-}
-
 interface TagEvent implements Node & Event {
   id: ID!
   series: String!
@@ -264,23 +260,4 @@ type Query {
 input FindTagInput {
   id: ID
   serial: Int
-}
-
-type Query {
-  findTags(input: FindTagsInput!): TagConnection!
-}
-
-input FindTagsInput {
-  limit: Int! = 10
-  skip: Int! = 0
-  order: FindTagsInputOrder! = { updatedAt: DESC }
-
-  "正確に一致"
-  name: String
-  parents: [ID!]
-}
-
-input FindTagsInputOrder {
-  updatedAt: SortOrder
-  createdAt: SortOrder
 }

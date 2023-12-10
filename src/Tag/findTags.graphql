@@ -1,0 +1,18 @@
+type Query {
+  findTags(input: FindTagsInput!): TagConnection!
+}
+
+input FindTagsInput {
+  first: Int
+  after: String
+
+  last: Int
+  before: String
+
+  orderBy: FindTagsInputOrderBy! = { taggedMads: DESC }
+}
+
+input FindTagsInputOrderBy {
+  "タグ付いている音MADの数でソート"
+  taggedMads: SortOrder
+}

@@ -94,6 +94,7 @@ generates:
         SoundcloudRegistrationRequestRejectingNotification: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestRejectingNotification.dto.js#SoundcloudRegistrationRequestRejectingNotificationDTO
         SoundcloudRegistrationRequestRequestEvent: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEvent.dto.js#SoundcloudRegistrationRequestRequestEventDTO
         Tag: ../Tag/dto.js#TagDTO
+        TagConnection: ../Tag/TagConnection.dto.js#TagConnectionDTO
         TagEvent: ../Tag/dto.js#TagEventDTO
         TagName: ../Tag/dto.js#TagNameDTO
         TagNameCreateEvent: ../Tag/dto.js#TagNameEventDTO
