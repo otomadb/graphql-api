@@ -17,6 +17,7 @@ import neo4j from "neo4j-driver";
 import { pino } from "pino";
 import z from "zod";
 
+import { mkAbstractGroupService } from "./AbstractGroup/AbstractGroup.service.js";
 import { mkBilibiliMADSourceService } from "./BilibiliMADSource/BilibiliMADSource.service.js";
 import { mkBilibiliRegistrationRequestService } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequest.service.js";
 import { mkBilibiliRegistrationRequestEventService } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequestEvent.service.js";
@@ -130,6 +131,11 @@ const SoundcloudRegistrationRequestEventService = mkSoundcloudRegistrationReques
 
 const SoundcloudRegistrationRequestService = mkSoundcloudRegistrationRequestService({
   prisma: prismaClient,
+});
+
+const AbstractGroupService = mkAbstractGroupService({
+  prisma: prismaClient,
+  logger: logger.child({ service: "AbstractGroupService" }),
 });
 
 const yoga = createYoga<ServerContext, UserContext>({
@@ -329,7 +335,11 @@ const yoga = createYoga<ServerContext, UserContext>({
   ],
 });
 
+// AbstractGroupsの初期化
+await AbstractGroupService.initGroups();
+
 const server = createServer(yoga);
+
 server.listen(8080, () => {
   logger.info("Server is running on http://localhost:8080");
 });
