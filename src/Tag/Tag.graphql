@@ -7,10 +7,6 @@ type Tag implements Node {
 
   explicitParent: Tag
 
-  type: TagType!
-  meaningless: Boolean! @deprecated
-  isCategoryTag: Boolean! @deprecated
-
   """
   動画に対してタグを付けることができるか
   """
@@ -82,34 +78,6 @@ type TagTaggedVideosByOffsetPayload {
   totalCount: Int!
 }
 
-enum TagType {
-  "曲"
-  MUSIC
-  "作品名"
-  COPYRIGHT
-  "キャラクター"
-  CHARACTER
-  "特徴的なセリフなど"
-  PHRASE
-  "シリーズ"
-  SERIES
-  "戦法"
-  TACTICS
-  "動画そのものに対しての性質，作風など"
-  STYLE
-  "動画の内容に依らない情報，分類など"
-  CLASS
-  "合作などのイベント"
-  EVENT
-  "2つ以上のタイプが算出された場合"
-  SUBTLE
-  "タイプを算出できなかった場合"
-  UNKNOWN
-
-  "カテゴリー"
-  CATEGORY
-}
-
 input TagEventsInput {
   skip: Int! = 0
   limit: Int! = 10
@@ -152,35 +120,6 @@ type TagRegisterEvent implements Node & Event & TagEvent {
   user: User!
 
   tag: Tag!
-}
-
-"""
-タグにタイプを与えることが出来るカテゴリータグ
-"""
-type TypeCategoryTag {
-  type: TypeCategoryTagType!
-  tag: Tag!
-}
-
-enum TypeCategoryTagType {
-  "曲"
-  MUSIC
-  "作品名"
-  COPYRIGHT
-  "キャラクター"
-  CHARACTER
-  "特徴的なセリフなど"
-  PHRASE
-  "シリーズ"
-  SERIES
-  "戦法"
-  TACTICS
-  "動画そのものに対しての性質，作風など"
-  STYLE
-  "動画の内容に依らない情報，分類など"
-  CLASS
-  "合作などのイベント"
-  EVENT
 }
 
 type TagName {
@@ -316,9 +255,6 @@ type TagParentUnsetPrimaryEvent implements Node & Event & TagParentEvent {
 
 type Query {
   getTag(id: ID!): Tag!
-  getAllCategoryTag: [Tag!]!
-  "全てのTypeCategoryTagを取得する"
-  getAllTypeCategoryTag: [TypeCategoryTag!]!
 }
 
 type Query {

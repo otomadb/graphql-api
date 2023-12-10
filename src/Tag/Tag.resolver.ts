@@ -1,12 +1,11 @@
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection";
-import { CategoryTagType } from "@prisma/client";
 import { GraphQLError } from "graphql";
 import { z } from "zod";
 
 import { AbstractGroupDTO } from "../AbstractGroup/AbstractGroup.dto.js";
 import { AbstractGroupingDTO } from "../AbstractGroup/AbstractGrouping.dto.js";
 import { cursorOptions } from "../resolvers/connection.js";
-import { Resolvers, TagResolvers, TagType as GqlTagType } from "../resolvers/graphql.js";
+import { Resolvers, TagResolvers } from "../resolvers/graphql.js";
 import { buildGqlId, parseGqlID } from "../resolvers/id.js";
 import { parseOrderBy } from "../resolvers/parseSortOrder.js";
 import { ResolverDeps } from "../resolvers/types.js";
@@ -52,48 +51,9 @@ export const resolveTaggedVideos = ({ prisma, logger }: Pick<ResolverDeps, "pris
     ).then((c) => VideoTagConnectionDTO.fromPrisma(c));
   }) satisfies TagResolvers["taggedVideos"];
 
-export const resolveTagType = ({ prisma }: Pick<ResolverDeps, "prisma">) =>
-  (async ({ id: tagId, isCategoryTag }) => {
-    if (isCategoryTag) return GqlTagType.Category;
-
-    const typings = await prisma.tagParent
-      .findMany({
-        where: { childId: tagId, parent: { isCategoryTag: true } },
-        select: { parent: { select: { categoryType: { select: { type: true } } } } },
-      })
-      .then((t) =>
-        t.map(({ parent: { categoryType } }) => categoryType?.type).filter((t): t is CategoryTagType => !!t),
-      );
-
-    if (1 < typings.length) return GqlTagType.Subtle;
-    if (0 === typings.length) return GqlTagType.Unknown;
-    switch (typings[0]) {
-      case CategoryTagType.MUSIC:
-        return GqlTagType.Music;
-      case CategoryTagType.COPYRIGHT:
-        return GqlTagType.Copyright;
-      case CategoryTagType.CHARACTER:
-        return GqlTagType.Character;
-      case CategoryTagType.PHRASE:
-        return GqlTagType.Phrase;
-      case CategoryTagType.SERIES:
-        return GqlTagType.Series;
-      case CategoryTagType.TACTICS:
-        return GqlTagType.Tactics;
-      case CategoryTagType.STYLE:
-        return GqlTagType.Style;
-      case CategoryTagType.EVENT:
-        return GqlTagType.Event;
-      default:
-        return GqlTagType.Unknown;
-    }
-  }) satisfies TagResolvers["type"];
-
 export const resolveTag = ({ prisma, logger, TagsService }: Pick<ResolverDeps, "prisma" | "logger" | "TagsService">) =>
   ({
     id: ({ id }): string => buildGqlId("Tag", id),
-    type: resolveTagType({ prisma }),
-    meaningless: ({ isCategoryTag: categoryTag }) => categoryTag,
 
     names: async ({ id: tagId }, { primary }) =>
       prisma.tagName
@@ -150,7 +110,7 @@ export const resolveTag = ({ prisma, logger, TagsService }: Pick<ResolverDeps, "
             ...args,
             where: {
               childId: tagId,
-              parent: { isCategoryTag: categoryTag?.valueOf() },
+              parent: { disabled: categoryTag?.valueOf() },
               disabled: false,
             },
             orderBy: orderBy.data,
@@ -159,7 +119,7 @@ export const resolveTag = ({ prisma, logger, TagsService }: Pick<ResolverDeps, "
           prisma.tagParent.count({
             where: {
               childId: tagId,
-              parent: { isCategoryTag: categoryTag?.valueOf() },
+              parent: { disabled: categoryTag?.valueOf() },
               disabled: false,
             },
           }),
@@ -168,15 +128,10 @@ export const resolveTag = ({ prisma, logger, TagsService }: Pick<ResolverDeps, "
       ).then((c) => TagParentConnectionDTO.fromPrisma(c));
     },
 
-    children: async (
-      { id: tagId, isCategoryTag },
-      { orderBy: unparsedOrderBy, ...unparsedConnectionArgs },
-      _ctx,
-      info,
-    ) => {
+    children: async ({ id: tagId, disabled }, { orderBy: unparsedOrderBy, ...unparsedConnectionArgs }, _ctx, info) => {
       const connectionArgs = z
         .union(
-          isCategoryTag
+          disabled
             ? [
                 z.object({ first: z.number(), after: z.string().optional() }),
                 z.object({ last: z.number(), before: z.string().optional() }),

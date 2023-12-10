@@ -44,8 +44,6 @@ import { mkCountAllTagsResolver } from "./Tag/countAllTags.resolver.js";
 import { resolverFindTag } from "./Tag/findTag.resolver.js";
 import { resolverFindTagBySerial } from "./Tag/findTagBySerial.resolver.js";
 import { resolverFindTags } from "./Tag/findTags.resolver.js";
-import { resolverGetAllCategoryTag } from "./Tag/getAllCategoryTag.resolver.js";
-import { resolverGetAllTypeCategoryTag } from "./Tag/getAllTypeCategoryTag.resolver.js";
 import { resolverGetTag } from "./Tag/getTag.resolver.js";
 import { resolverSearchTags } from "./Tag/searchTags.resolver.js";
 import { mkShowTimelineResolver } from "./Timeline/showTimeline.resolver.js";
@@ -132,8 +130,6 @@ export const resolveQuery = (deps: ResolverDeps) =>
       ...deps,
       logger: deps.logger.child({ resolver: "Query.getAllAbstractGroups" }),
     }),
-    getAllCategoryTag: resolverGetAllCategoryTag(deps),
-    getAllTypeCategoryTag: resolverGetAllTypeCategoryTag(deps),
     getBilibiliMADSource: resolverGetBilibiliMADSource(deps),
     getBilibiliRegistrationRequest: resolverGetBilibiliRegistrationRequest(deps),
     getMylist: getMylist(deps),

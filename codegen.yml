@@ -108,7 +108,6 @@ generates:
         TagParentUnsetPrimaryEvent: ../Tag/dto.js#TagParentEventDTO
         TagRegisterEvent: ../Tag/dto.js#TagEventDTO
         TagSearchItemByName: ../Tag/dto.js#TagSearchItemByNameDTO
-        TypeCategoryTag: ../Tag/dto.js#TypeCategoryTagDTO
         User: ../User/dto.js#UserDTO
         Video: ../Video/dto.js#VideoDTO
         VideoAddNicovideoSourceEvent: ../Video/dto.js#VideoEventDTO

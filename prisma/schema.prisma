@@ -190,8 +190,7 @@ model Tag {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  isCategoryTag Boolean            @map("meaningless")
-  categoryType  CategoryTagTyping?
+  disabled Boolean @map("meaningless")
 
   names TagName[]
 
@@ -208,33 +207,6 @@ model Tag {
   BilibiliRegistrationRequestTagging   BilibiliRegistrationRequestTagging[]
 
   AbstractGrouping AbstractGrouping[]
-}
-
-model CategoryTagTyping {
-  id String @id @default(cuid())
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  createdBy   User   @relation(fields: [createdById], references: [id])
-  createdById String
-
-  tag   Tag    @relation(fields: [tagId], references: [id])
-  tagId String @unique
-
-  type CategoryTagType @unique
-}
-
-enum CategoryTagType {
-  CHARACTER
-  CLASS
-  COPYRIGHT
-  EVENT
-  MUSIC
-  PHRASE
-  SERIES
-  STYLE
-  TACTICS
 }
 
 model TagEvent {
@@ -357,7 +329,6 @@ model User {
   MylistRegistrationEvent               MylistRegistrationEvent[]
   MylistGroupEvent                      MylistGroupEvent[]
   MylistGroupMylistInclsionEvent        MylistGroupMylistInclsionEvent[]
-  CategoryTagTyping                     CategoryTagTyping[]
   TagEvent                              TagEvent[]
   TagNameEvent                          TagNameEvent[]
   TagParentEvent                        TagParentEvent[]

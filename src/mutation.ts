@@ -27,8 +27,6 @@ import { mkRequestSoundcloudRegistrationResolver } from "./SoundcloudRegistratio
 import { resolverAddTagToVideo } from "./Tag/addTagToVideo.resolver.js";
 import { resolverExplicitizeTagParent } from "./Tag/explicitizeTagParent.resolver.js";
 import { resolverImplicitizeTagParent } from "./Tag/implicitizeTagParent.resolver.js";
-import { registerCategoryTag } from "./Tag/registerCategoryTag.resolver.js";
-import { resolverRegisterCategoryTagTyping } from "./Tag/registerCategoryTagTyping.resolver.js";
 import { resolverRegisterTag } from "./Tag/registerTag.resolver.js";
 import { resolverRegisterTagParentRelation } from "./Tag/registerTagParentRelation.resolver.js";
 import { resolverRemoveTagFromVideo } from "./Tag/removeTagFromVideo.resolver.js";
@@ -51,8 +49,6 @@ export const resolveMutation = (deps: ResolverDeps) =>
     includeTagToGroup: mkIncludeTagToGroupResolver(deps),
     likeVideo: resolverLikeVideo(deps),
     registerBilibiliMAD: mkRegisterBilibiliMADResolver(deps),
-    registerCategoryTag: registerCategoryTag(deps),
-    registerCategoryTagTyping: resolverRegisterCategoryTagTyping(deps),
     registerSoundcloudMAD: mkRegisterSoundcloudMADResolver(deps),
     registerTag: resolverRegisterTag(deps),
     registerTagParentRelation: resolverRegisterTagParentRelation(deps),
