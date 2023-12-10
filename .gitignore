@@ -37,3 +37,6 @@ dist/
 
 # generated files
 src/protobuf
+
+# lefthook
+lefthook-local.yml
