@@ -14,107 +14,6 @@ import { isErr } from "../utils/Result.js";
 import { VideoTagConnectionDTO } from "../Video/dto.js";
 import { TagDTO, TagEventDTO, TagNameDTO, TagParentConnectionDTO } from "./dto.js";
 
-export const resolverChildren = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (
-    { id: tagId, isCategoryTag },
-    { orderBy: unparsedOrderBy, ...unparsedConnectionArgs },
-    { currentUser: ctxUser },
-    info,
-  ) => {
-    const connectionArgs = z
-      .union(
-        isCategoryTag
-          ? [
-              z.object({ first: z.number(), after: z.string().optional() }),
-              z.object({ last: z.number(), before: z.string().optional() }),
-            ]
-          : [
-              z.object({ first: z.number(), after: z.string().optional() }),
-              z.object({ last: z.number(), before: z.string().optional() }),
-              z.object({}), // カテゴリータグでない場合は全取得を許容
-            ],
-      )
-      .safeParse(unparsedConnectionArgs);
-    if (!connectionArgs.success) {
-      logger.error({ path: info.path, args: unparsedConnectionArgs }, "Wrong args");
-      throw new GraphQLError("Wrong args");
-    }
-
-    const orderBy = parseOrderBy(unparsedOrderBy);
-    if (isErr(orderBy)) {
-      logger.error({ path: info.path, args: unparsedOrderBy }, "OrderBy args error");
-      throw new GraphQLError("Wrong args");
-    }
-
-    return findManyCursorConnection(
-      (args) =>
-        prisma.tagParent.findMany({
-          ...args,
-          where: { parentId: tagId },
-          orderBy: orderBy.data,
-        }),
-      () =>
-        prisma.tagParent.count({
-          where: { parentId: tagId },
-        }),
-      connectionArgs.data,
-      { resolveInfo: info, ...cursorOptions },
-    ).then((c) => TagParentConnectionDTO.fromPrisma(c));
-  }) satisfies TagResolvers["children"];
-
-export const resolverParents = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (
-    { id: tagId },
-    { orderBy: unparsedOrderBy, categoryTag, ...unparsedConnectionArgs },
-    { currentUser: ctxUser },
-    info,
-  ) => {
-    const connectionArgs = z
-      .union([
-        z.object({
-          first: z.number(),
-          after: z.string().optional(),
-        }),
-        z.object({
-          last: z.number(),
-          before: z.string().optional(),
-        }),
-        z.object({}), // 全取得を許容
-      ])
-      .safeParse(unparsedConnectionArgs);
-    if (!connectionArgs.success) {
-      logger.error({ path: info.path, args: unparsedConnectionArgs }, "Wrong args");
-      throw new GraphQLError("Wrong args");
-    }
-
-    const orderBy = parseOrderBy(unparsedOrderBy);
-    if (isErr(orderBy)) {
-      logger.error({ path: info.path, args: unparsedOrderBy }, "OrderBy args error");
-      throw new GraphQLError("Wrong args");
-    }
-
-    return findManyCursorConnection(
-      (args) =>
-        prisma.tagParent.findMany({
-          ...args,
-          where: {
-            childId: tagId,
-            parent: { isCategoryTag: categoryTag?.valueOf() },
-          },
-          orderBy: orderBy.data,
-        }),
-      () =>
-        prisma.tagParent.count({
-          where: {
-            childId: tagId,
-            parent: { isCategoryTag: categoryTag?.valueOf() },
-          },
-        }),
-      connectionArgs.data,
-      { resolveInfo: info, ...cursorOptions },
-    ).then((c) => TagParentConnectionDTO.fromPrisma(c));
-  }) satisfies TagResolvers["parents"];
-
 export const resolveTaggedVideos = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async ({ id: tagId }, { orderBy: unparsedOrderBy, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
     const connectionArgs = z
@@ -206,8 +105,6 @@ export const resolveTag = ({ prisma, logger, TagsService }: Pick<ResolverDeps, "
       return name.name;
     },
 
-    parents: resolverParents({ prisma, logger }),
-
     explicitParent: async ({ id: tagId }) => {
       const rel = await prisma.tagParent.findFirst({
         where: { child: { id: tagId }, isExplicit: true },
@@ -216,7 +113,107 @@ export const resolveTag = ({ prisma, logger, TagsService }: Pick<ResolverDeps, "
       if (!rel) return null;
       return new TagDTO(rel.parent);
     },
-    children: resolverChildren({ prisma, logger }),
+
+    parents: async (
+      { id: tagId },
+      { orderBy: unparsedOrderBy, categoryTag, ...unparsedConnectionArgs },
+      _ctx,
+      info,
+    ) => {
+      const connectionArgs = z
+        .union([
+          z.object({
+            first: z.number(),
+            after: z.string().optional(),
+          }),
+          z.object({
+            last: z.number(),
+            before: z.string().optional(),
+          }),
+          z.object({}), // 全取得を許容
+        ])
+        .safeParse(unparsedConnectionArgs);
+      if (!connectionArgs.success) {
+        logger.error({ path: info.path, args: unparsedConnectionArgs }, "Wrong args");
+        throw new GraphQLError("Wrong args");
+      }
+
+      const orderBy = parseOrderBy(unparsedOrderBy);
+      if (isErr(orderBy)) {
+        logger.error({ path: info.path, args: unparsedOrderBy }, "OrderBy args error");
+        throw new GraphQLError("Wrong args");
+      }
+
+      return findManyCursorConnection(
+        (args) =>
+          prisma.tagParent.findMany({
+            ...args,
+            where: {
+              childId: tagId,
+              parent: { isCategoryTag: categoryTag?.valueOf() },
+              disabled: false,
+            },
+            orderBy: orderBy.data,
+          }),
+        () =>
+          prisma.tagParent.count({
+            where: {
+              childId: tagId,
+              parent: { isCategoryTag: categoryTag?.valueOf() },
+              disabled: false,
+            },
+          }),
+        connectionArgs.data,
+        { resolveInfo: info, ...cursorOptions },
+      ).then((c) => TagParentConnectionDTO.fromPrisma(c));
+    },
+
+    children: async (
+      { id: tagId, isCategoryTag },
+      { orderBy: unparsedOrderBy, ...unparsedConnectionArgs },
+      _ctx,
+      info,
+    ) => {
+      const connectionArgs = z
+        .union(
+          isCategoryTag
+            ? [
+                z.object({ first: z.number(), after: z.string().optional() }),
+                z.object({ last: z.number(), before: z.string().optional() }),
+              ]
+            : [
+                z.object({ first: z.number(), after: z.string().optional() }),
+                z.object({ last: z.number(), before: z.string().optional() }),
+                z.object({}), // カテゴリータグでない場合は全取得を許容
+              ],
+        )
+        .safeParse(unparsedConnectionArgs);
+      if (!connectionArgs.success) {
+        logger.error({ path: info.path, args: unparsedConnectionArgs }, "Wrong args");
+        throw new GraphQLError("Wrong args");
+      }
+
+      const orderBy = parseOrderBy(unparsedOrderBy);
+      if (isErr(orderBy)) {
+        logger.error({ path: info.path, args: unparsedOrderBy }, "OrderBy args error");
+        throw new GraphQLError("Wrong args");
+      }
+
+      return findManyCursorConnection(
+        (args) =>
+          prisma.tagParent.findMany({
+            ...args,
+            where: { parentId: tagId, disabled: false },
+            orderBy: orderBy.data,
+          }),
+        () =>
+          prisma.tagParent.count({
+            where: { parentId: tagId, disabled: false },
+          }),
+        connectionArgs.data,
+        { resolveInfo: info, ...cursorOptions },
+      ).then((c) => TagParentConnectionDTO.fromPrisma(c));
+    },
 
     totalTaggedVideos: ({ id: tagId }) => TagsService.totalTaggedVideos(tagId),
 
