@@ -29,10 +29,10 @@ export const groups: Record<string, { names: Partial<Record<"en" | "ja", string>
       ja: "シリーズ",
     },
   },
-  tactics: {
+  technique: {
     names: {
-      en: "tactics",
-      ja: "戦術",
+      en: "technique",
+      ja: "テクニック",
     },
   },
   phrase: {
