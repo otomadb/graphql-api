@@ -1,6 +1,7 @@
 /* eslint sort-keys: [2, "asc", {caseSensitive: false}] */
 
 import { mkGetAbstractGroupResolver } from "./AbstractGroup/getAbstractGroup.resolver.js";
+import { mkGetAbstractGroupsResolver } from "./AbstractGroup/getAllAbstractGroups.resolver.js";
 import { mkFindBilibiliMADSourceResolver } from "./BilibiliMADSource/findBilibiliMADSource.resolver.js";
 import { resolverGetBilibiliMADSource } from "./BilibiliMADSource/getBilibiliMADSource.resolver.js";
 import { mkFindBilibiliRegistrationRequestByUrlResolver } from "./BilibiliRegistrationRequest/findBilibiliRegistrationRequestBySourceId.resolver.js";
@@ -126,6 +127,10 @@ export const resolveQuery = (deps: ResolverDeps) =>
     getAbstractGroup: mkGetAbstractGroupResolver({
       ...deps,
       logger: deps.logger.child({ resolver: "Query.getAbstractGroup" }),
+    }),
+    getAllAbstractGroups: mkGetAbstractGroupsResolver({
+      ...deps,
+      logger: deps.logger.child({ resolver: "Query.getAllAbstractGroups" }),
     }),
     getAllCategoryTag: resolverGetAllCategoryTag(deps),
     getAllTypeCategoryTag: resolverGetAllTypeCategoryTag(deps),
