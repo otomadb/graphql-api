@@ -61,7 +61,7 @@ type Tag implements Node {
   taggedVideosByOffset(input: TaggedVideosByOffsetInput!): TagTaggedVideosByOffsetPayload!
 
   "このタグが帰属するAbstractGroup．ない場合または複数の場合は`null`を返す．"
-  belongTo: ID
+  belongTo: AbstractGroup
 
   """
   このタグが帰属するAbstractGroupを全て取得する．
