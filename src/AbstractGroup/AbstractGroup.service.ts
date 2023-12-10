@@ -48,4 +48,4 @@ export const mkAbstractGroupService = ({ prisma, logger }: { prisma: PrismaClien
   };
 };
 
-export type BilibiliMADSourceService = ReturnType<typeof mkBilibiliMADSourceService>;
+export type AbstractGroupService = ReturnType<typeof mkAbstractGroupService>;
