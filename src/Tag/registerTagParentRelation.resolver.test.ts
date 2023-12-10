@@ -120,6 +120,7 @@ describe("Register tag parent relation in Prisma", () => {
         isExplicit: false,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
+        disabled: false,
       },
     } satisfies ErrError<typeof actual>);
   });
@@ -165,6 +166,7 @@ describe("Register tag parent relation in Prisma", () => {
         isExplicit: true,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
+        disabled: false,
       },
     } satisfies ErrError<typeof actual>);
   });
@@ -197,6 +199,7 @@ describe("Register tag parent relation in Prisma", () => {
       isExplicit: true,
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
+      disabled: false,
     } satisfies OkData<typeof actual>);
   });
 
@@ -239,6 +242,7 @@ describe("Register tag parent relation in Prisma", () => {
       isExplicit: true,
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
+      disabled: false,
     } satisfies OkData<typeof actual>);
   });
 });

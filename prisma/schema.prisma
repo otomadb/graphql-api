@@ -314,6 +314,8 @@ model TagParent {
 
   events TagParentEvent[]
 
+  disabled Boolean @default(false)
+
   @@unique([parentId, childId])
 }
 
