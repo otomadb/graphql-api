@@ -19,6 +19,7 @@ export const resolverFindTags = ({ prisma, logger }: Pick<ResolverDeps, "prisma"
       skip: input.skip,
       orderBy: orderBy.data,
       where: {
+        disabled: false,
         ...(input.name && { names: { some: { name: input.name } } }),
         ...(input.parents && { parents: { some: { parentId: { in: input.parents } } } }),
         // ...(input.parents && { parents: { some: { id: { in: input.parents } } } }),

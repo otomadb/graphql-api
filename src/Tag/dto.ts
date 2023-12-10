@@ -1,14 +1,5 @@
 import { Connection, Edge } from "@devoxa/prisma-relay-cursor-connection";
-import {
-  CategoryTagType,
-  CategoryTagTyping,
-  Tag,
-  TagEvent,
-  TagName,
-  TagNameEvent,
-  TagParent,
-  TagParentEvent,
-} from "@prisma/client";
+import { Tag, TagEvent, TagName, TagNameEvent, TagParent, TagParentEvent } from "@prisma/client";
 
 import { AbstractConnectionModel } from "../resolvers/connection.js";
 
@@ -27,8 +18,8 @@ export class TagDTO {
     return this.tag.serial;
   }
 
-  get isCategoryTag() {
-    return this.tag.isCategoryTag;
+  get disabled() {
+    return this.tag.disabled;
   }
 }
 
@@ -178,25 +169,5 @@ export class TagSearchItemByNameDTO {
 
   get nameId() {
     return this.entity.nameId;
-  }
-}
-
-export class TypeCategoryTagDTO {
-  private constructor(protected readonly typing: { id: string; tagId: string; type: CategoryTagType }) {}
-
-  public static fromPrisma(typeing: CategoryTagTyping) {
-    return new TypeCategoryTagDTO({
-      id: typeing.id,
-      tagId: typeing.tagId,
-      type: typeing.type,
-    });
-  }
-
-  public get tagId() {
-    return this.typing.tagId;
-  }
-
-  public get type() {
-    return this.typing.type;
   }
 }

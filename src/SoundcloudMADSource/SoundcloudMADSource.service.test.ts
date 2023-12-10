@@ -100,8 +100,8 @@ describe("SoundcloudMADSourceService", () => {
         await prisma.user.create({ data: { id: "1" } });
         await prisma.tag.createMany({
           data: [
-            { id: "1", isCategoryTag: false },
-            { id: "2", isCategoryTag: false },
+            { id: "1", disabled: false },
+            { id: "2", disabled: false },
           ],
         });
 
@@ -155,8 +155,8 @@ describe("SoundcloudMADSourceService", () => {
         await prisma.user.create({ data: { id: "1" } });
         await prisma.tag.createMany({
           data: [
-            { id: "1", isCategoryTag: false },
-            { id: "2", isCategoryTag: false },
+            { id: "1", disabled: false },
+            { id: "2", disabled: false },
           ],
         });
 
@@ -189,8 +189,8 @@ describe("SoundcloudMADSourceService", () => {
         await prisma.user.create({ data: { id: "1" } });
         await prisma.tag.createMany({
           data: [
-            { id: "1", isCategoryTag: false },
-            { id: "2", isCategoryTag: false },
+            { id: "1", disabled: false },
+            { id: "2", disabled: false },
           ],
         });
 
@@ -221,8 +221,8 @@ describe("SoundcloudMADSourceService", () => {
         await prisma.user.create({ data: { id: "1" } });
         await prisma.tag.createMany({
           data: [
-            { id: "1", isCategoryTag: false },
-            { id: "2", isCategoryTag: false },
+            { id: "1", disabled: false },
+            { id: "2", disabled: false },
           ],
         });
 

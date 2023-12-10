@@ -5,7 +5,7 @@ import { VideoTagDTO } from "../Video/dto.js";
 export const mkTagService = ({ prisma }: { prisma: PrismaClient }) => {
   return {
     countAll() {
-      return prisma.tag.count();
+      return prisma.tag.count({ where: { disabled: false } });
     },
     async totalTaggedVideos(tagId: string) {
       return prisma.videoTag.count({ where: { tagId } });

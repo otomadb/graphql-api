@@ -6,7 +6,7 @@ import { TagDTO } from "./dto.js";
 export const resolverGetTag = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async (_parent, { id }, { currentUser: ctxUser }, info) =>
     prisma.tag
-      .findUniqueOrThrow({ where: { id: parseGqlID("Tag", id) } })
+      .findUniqueOrThrow({ where: { id: parseGqlID("Tag", id), disabled: false } })
       .then((v) => new TagDTO(v))
       .catch(() => {
         logger.error({ path: info.path, variables: { id }, userId: ctxUser?.id }, "Not found");

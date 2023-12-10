@@ -51,8 +51,8 @@ describe("Register video by Prisma", () => {
       }),
       prisma.tag.createMany({
         data: [
-          { id: "t1", isCategoryTag: false },
-          { id: "t2", isCategoryTag: false },
+          { id: "t1", disabled: false },
+          { id: "t2", disabled: false },
         ],
       }),
       prisma.tagParent.create({
@@ -88,8 +88,8 @@ describe("Register video by Prisma", () => {
       }),
       prisma.tag.createMany({
         data: [
-          { id: "t1", isCategoryTag: false },
-          { id: "t2", isCategoryTag: false },
+          { id: "t1", disabled: false },
+          { id: "t2", disabled: false },
         ],
       }),
       prisma.tagParent.create({

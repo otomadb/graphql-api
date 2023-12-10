@@ -34,8 +34,8 @@ describe("Register video by Prisma", () => {
       }),
       prisma.tag.createMany({
         data: [
-          { id: "t2", isCategoryTag: false },
-          { id: "t3", isCategoryTag: false },
+          { id: "t2", disabled: false },
+          { id: "t3", disabled: false },
         ],
       }),
       prisma.semitag.createMany({
@@ -73,8 +73,8 @@ describe("Register video by Prisma", () => {
       }),
       prisma.tag.createMany({
         data: [
-          { id: "t1", isCategoryTag: false },
-          { id: "t3", isCategoryTag: false },
+          { id: "t1", disabled: false },
+          { id: "t3", disabled: false },
         ],
       }),
       prisma.semitag.createMany({
@@ -112,9 +112,9 @@ describe("Register video by Prisma", () => {
       }),
       prisma.tag.createMany({
         data: [
-          { id: "t1", isCategoryTag: false },
-          { id: "t2", isCategoryTag: false },
-          { id: "t3", isCategoryTag: false },
+          { id: "t1", disabled: false },
+          { id: "t2", disabled: false },
+          { id: "t3", disabled: false },
         ],
       }),
       prisma.semitag.createMany({
@@ -149,9 +149,9 @@ describe("Register video by Prisma", () => {
       }),
       prisma.tag.createMany({
         data: [
-          { id: "t1", isCategoryTag: false },
-          { id: "t2", isCategoryTag: false },
-          { id: "t3", isCategoryTag: false },
+          { id: "t1", disabled: false },
+          { id: "t2", disabled: false },
+          { id: "t3", disabled: false },
         ],
       }),
       prisma.semitag.createMany({
@@ -189,9 +189,9 @@ describe("Register video by Prisma", () => {
       }),
       prisma.tag.createMany({
         data: [
-          { id: "t1", isCategoryTag: false },
-          { id: "t2", isCategoryTag: false },
-          { id: "t3", isCategoryTag: false },
+          { id: "t1", disabled: false },
+          { id: "t2", disabled: false },
+          { id: "t3", disabled: false },
         ],
       }),
       prisma.semitag.createMany({
@@ -216,7 +216,7 @@ describe("Register video by Prisma", () => {
       serial: expect.any(Number),
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
-      isCategoryTag: false,
+      disabled: false,
     } satisfies OkData<typeof actual>);
 
     const actualTagEvents = await prisma.tagEvent.findMany({});

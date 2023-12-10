@@ -31,7 +31,7 @@ describe("Remove tag in Prisma", () => {
         },
       }),
       prisma.tag.create({
-        data: { id: "t1", isCategoryTag: false },
+        data: { id: "t1", disabled: false },
       }),
     ]);
 
@@ -76,7 +76,7 @@ describe("Remove tag in Prisma", () => {
         data: { id: "v1" },
       }),
       prisma.tag.create({
-        data: { id: "t1", isCategoryTag: false },
+        data: { id: "t1", disabled: false },
       }),
     ]);
 
@@ -100,7 +100,7 @@ describe("Remove tag in Prisma", () => {
         data: { id: "v1" },
       }),
       prisma.tag.create({
-        data: { id: "t1", isCategoryTag: false },
+        data: { id: "t1", disabled: false },
       }),
       prisma.videoTag.create({
         data: {
@@ -129,7 +129,7 @@ describe("Remove tag in Prisma", () => {
         },
       }),
       prisma.tag.create({
-        data: { id: "t1", isCategoryTag: false },
+        data: { id: "t1", disabled: false },
       }),
       prisma.video.create({
         data: { id: "v1" },

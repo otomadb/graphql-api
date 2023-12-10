@@ -98,7 +98,6 @@ import {
 import { resolveTagParent } from "./Tag/TagParent.resolver.js";
 import { resolverTagParentConnection } from "./Tag/TagParentConnection.resolver.js";
 import { resolverTagSearchItemByName } from "./Tag/TagSearchItemByName.resolver.js";
-import { resolverTypeCategoryTag } from "./Tag/TypeCategoryTag.resolver.js";
 import {
   mkBilibiliMadRequestedTimelineEventResolver,
   mkMadRegisteredTimelineEventResolver,
@@ -244,7 +243,6 @@ export const makeResolvers = (deps: ResolverDeps) =>
     TagParentConnection: resolverTagParentConnection(),
     TagRegisterEvent: resolveTagRegisterEvent(deps),
     TagSearchItemByName: resolverTagSearchItemByName(deps),
-    TypeCategoryTag: resolverTypeCategoryTag(deps),
     User: resolveUser(deps),
     Video: resolveVideo(deps),
     VideoConnection: resolverVideoConnection(),
