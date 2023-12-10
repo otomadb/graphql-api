@@ -1,0 +1,14 @@
+type Mutation {
+  includeTagToGroup(input: IncludeTagToGroupInput!): IncludeTagToGroupPayload!
+}
+
+input IncludeTagToGroupInput {
+  groupKeyword: ID!
+  tagId: ID!
+}
+
+union IncludeTagToGroupPayload = IncludeTagToGroupSuccessfulPayload
+
+type IncludeTagToGroupSuccessfulPayload {
+  grouping: AbstractGrouping!
+}

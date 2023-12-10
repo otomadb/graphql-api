@@ -1,5 +1,7 @@
 /* eslint sort-keys: 2 */
 
+import { mkExcludeTagToGroupResolver } from "./AbstractGroup/excludeTagToGroup.resolver.js";
+import { mkIncludeTagToGroupResolver } from "./AbstractGroup/includeTagToGroup.resolver.js";
 import { mkRegisterBilibiliMADResolver } from "./BilibiliMADSource/registerBilibiliMAD.resolver.js";
 import { mkRequestBilibiliRegistrationResolver } from "./BilibiliRegistrationRequest/requestBilibiliRegistration.resolver.js";
 import { resolverRejectRequestNicovideoRegistration } from "./NicovideoRegistrationRequest/rejectNicovideoRegistrationRequest.resolver.js";
@@ -43,8 +45,10 @@ export const resolveMutation = (deps: ResolverDeps) =>
     changeUserDisplayName: resolverChangeUserDisplayName(deps),
     createMylist: createMylist(deps),
     createMylistGroup: createMylistGroup(deps),
+    excludeTagToGroup: mkExcludeTagToGroupResolver(deps),
     explicitizeTagParent: resolverExplicitizeTagParent(deps),
     implicitizeTagParent: resolverImplicitizeTagParent(deps),
+    includeTagToGroup: mkIncludeTagToGroupResolver(deps),
     likeVideo: resolverLikeVideo(deps),
     registerBilibiliMAD: mkRegisterBilibiliMADResolver(deps),
     registerCategoryTag: registerCategoryTag(deps),

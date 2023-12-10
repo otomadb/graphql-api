@@ -59,6 +59,15 @@ type Tag implements Node {
 
   "offsetベースでタグ付けされた動画を取得する"
   taggedVideosByOffset(input: TaggedVideosByOffsetInput!): TagTaggedVideosByOffsetPayload!
+
+  "このタグが帰属するAbstractGroup．ない場合または複数の場合は`null`を返す．"
+  belongTo: ID
+
+  """
+  このタグが帰属するAbstractGroupを全て取得する．
+  常に1つであることが望ましいが，場合によっては複数または存在しないこともある．
+  """
+  allBelongTo: [AbstractGrouping!]!
 }
 
 input TaggedVideosByOffsetInput {

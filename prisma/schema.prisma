@@ -206,6 +206,8 @@ model Tag {
   YoutubeRegistrationRequestTagging    YoutubeRegistrationRequestTagging[]
   SoundcloudRegistrationRequestTagging SoundcloudRegistrationRequestTagging[]
   BilibiliRegistrationRequestTagging   BilibiliRegistrationRequestTagging[]
+
+  AbstractGrouping AbstractGrouping[]
 }
 
 model CategoryTagTyping {
@@ -378,6 +380,7 @@ model User {
   BilibiliRegistrationRequest           BilibiliRegistrationRequest[]
   BilibiliRegistrationRequestChecking   BilibiliRegistrationRequestChecking[]
   BilibiliRegistrationRequestEvent      BilibiliRegistrationRequestEvent[]
+  AbstractGroupingEvent                 AbstractGroupingEvent[]
 }
 
 model Video {
@@ -1141,4 +1144,68 @@ enum BilibiliRegistrationRequestEventType {
 
   ACCEPT
   REJECT
+}
+
+model AbstractGroup {
+  keyword String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  names AbstractGroupName[]
+
+  groupings AbstractGrouping[]
+}
+
+model AbstractGroupName {
+  id String @id @default(cuid())
+
+  locale String
+  name   String
+
+  group        AbstractGroup @relation(fields: [groupKeyword], references: [keyword])
+  groupKeyword String
+
+  @@unique([groupKeyword, locale])
+}
+
+model AbstractGrouping {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  group        AbstractGroup @relation(fields: [groupKeyword], references: [keyword])
+  groupKeyword String
+
+  tag   Tag    @relation(fields: [tagId], references: [id])
+  tagId String
+
+  disabled Boolean
+
+  events AbstractGroupingEvent[]
+
+  @@unique([groupKeyword, tagId])
+}
+
+model AbstractGroupingEvent {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  AbstractGrouping   AbstractGrouping @relation(fields: [abstractGroupingId], references: [id])
+  abstractGroupingId String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  type    AbstractGroupingEventType
+  payload Json?
+}
+
+enum AbstractGroupingEventType {
+  INCLUDE // 入れた時
+  EXCLUDE // 排斥したとき
+  REINCLUDE // 再度入れたとき
 }
