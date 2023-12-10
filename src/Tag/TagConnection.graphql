@@ -1,0 +1,11 @@
+type TagConnection {
+  nodes: [Tag!]!
+  edges: [TagEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type TagEdge {
+  cursor: String!
+  node: Tag!
+}

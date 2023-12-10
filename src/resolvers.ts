@@ -87,6 +87,7 @@ import { mkSoundcloudRegistrationRequestEventConnectionResolver } from "./Soundc
 import { mkSoundcloudRegistrationRequestRejectingResolver } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequestRejecting.resolver.js";
 import { resolverSoundcloudRegistrationRequestRejectingNotification } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequestRejectingNotification.resolver.js";
 import { resolveTag } from "./Tag/Tag.resolver.js";
+import { mkTagConnectionResolver } from "./Tag/TagConnection.resolver.js";
 import { resolveTagEvent, resolveTagRegisterEvent } from "./Tag/TagEvent.resolver.js";
 import { resolveTagName } from "./Tag/TagName.resolver.js";
 import {
@@ -233,6 +234,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
       resolverSoundcloudRegistrationRequestRejectingNotification(deps),
     SoundcloudRegistrationRequestRequestEvent: mkSoundcloudRegistrationRequestRequestEventResolver(deps),
     Tag: resolveTag(deps),
+    TagConnection: mkTagConnectionResolver(deps),
     TagEvent: resolveTagEvent(),
     TagName: resolveTagName(deps),
     TagNameCreateEvent: resolveTagNameCreateEvent(deps),
