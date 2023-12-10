@@ -2,6 +2,8 @@
 
 import { DateTimeResolver } from "graphql-scalars";
 
+import { mkAbstractGroupResolver } from "./AbstractGroup/AbstractGroup.resolver.js";
+import { mkAbstractGroupingResolver } from "./AbstractGroup/AbstractGrouping.resolver.js";
 import { resolverBilibiliMADSource } from "./BilibiliMADSource/BilibiliMADSource.resolver.js";
 import { resolverBilibiliMADSourceCreateEvent } from "./BilibiliMADSource/BilibiliMADSourceEvent.resolver.js";
 import { resolverBilibiliMADSourceEventConnection } from "./BilibiliMADSource/BilibiliMADSourceEventConnection.resolver.js";
@@ -153,6 +155,8 @@ import { resolverYoutubeVideoSourceEventConnection } from "./YoutubeVideoSource/
 
 export const makeResolvers = (deps: ResolverDeps) =>
   ({
+    AbstractGroup: mkAbstractGroupResolver(deps),
+    AbstractGrouping: mkAbstractGroupingResolver(deps),
     BilibiliMADSource: resolverBilibiliMADSource(deps),
     BilibiliMADSourceCreateEvent: resolverBilibiliMADSourceCreateEvent(deps),
     BilibiliMADSourceEventConnection: resolverBilibiliMADSourceEventConnection(deps),

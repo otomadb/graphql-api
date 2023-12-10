@@ -1,5 +1,6 @@
 /* eslint sort-keys: [2, "asc", {caseSensitive: false}] */
 
+import { mkGetAbstractGroupResolver } from "./AbstractGroup/getAbstractGroup.resolver.js";
 import { mkFindBilibiliMADSourceResolver } from "./BilibiliMADSource/findBilibiliMADSource.resolver.js";
 import { resolverGetBilibiliMADSource } from "./BilibiliMADSource/getBilibiliMADSource.resolver.js";
 import { mkFindBilibiliRegistrationRequestByUrlResolver } from "./BilibiliRegistrationRequest/findBilibiliRegistrationRequestBySourceId.resolver.js";
@@ -122,6 +123,10 @@ export const resolveQuery = (deps: ResolverDeps) =>
     findVideos: resolverFindVideos(deps),
     findYoutubeRegistrationRequest: resolverFindYoutubeRegistrationRequest(deps),
     findYoutubeVideoSource: resolverFindYoutubeVideoSource(deps),
+    getAbstractGroup: mkGetAbstractGroupResolver({
+      ...deps,
+      logger: deps.logger.child({ resolver: "Query.getAbstractGroup" }),
+    }),
     getAllCategoryTag: resolverGetAllCategoryTag(deps),
     getAllTypeCategoryTag: resolverGetAllTypeCategoryTag(deps),
     getBilibiliMADSource: resolverGetBilibiliMADSource(deps),

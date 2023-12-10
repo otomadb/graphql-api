@@ -18,6 +18,8 @@ generates:
         DateTime: Date
       contextType: ./types.js#Context
       mappers:
+        AbstractGroup: ../AbstractGroup/AbstractGroup.dto.js#AbstractGroupDTO
+        AbstractGrouping: ../AbstractGroup/AbstractGrouping.dto.js#AbstractGroupingDTO
         BilibiliMadRequestedTimelineEvent: ../Timeline/TimelineEvent.dto.js#BilibiliMadRequestedTimelineEventDTO
         BilibiliMADSource: ../BilibiliMADSource/BilibiliMADSource.dto.js#BilibiliMADSourceDTO
         BilibiliMADSourceCreateEvent: ../BilibiliMADSource/BilibiliMADSourceEvent.dto.js#BilibiliMADSourceEventDTO

@@ -1,0 +1,6 @@
+type AbstractGrouping {
+  id: ID!
+
+  group: AbstractGroup!
+  tag: Tag!
+}

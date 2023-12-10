@@ -1,0 +1,14 @@
+type Mutation {
+  excludeTagToGroup(input: ExcludeTagToGroupInput!): ExcludeTagToGroupPayload!
+}
+
+input ExcludeTagToGroupInput {
+  groupKeyword: ID!
+  tagId: ID!
+}
+
+union ExcludeTagToGroupPayload = ExcludeTagToGroupSuccessfulPayload
+
+type ExcludeTagToGroupSuccessfulPayload {
+  grouping: AbstractGrouping!
+}
