@@ -48,7 +48,7 @@
     "zod": "^3.19.1"
   },
   "devDependencies": {
-    "@babel/core": "7.23.5",
+    "@babel/core": "7.23.6",
     "@bufbuild/buf": "1.28.1",
     "@bufbuild/protoc-gen-es": "1.5.1",
     "@connectrpc/protoc-gen-connect-es": "1.1.3",
