@@ -6,7 +6,7 @@ import z from "zod";
 import { NicovideoRegistrationRequestConnectionDTO } from "../NicovideoRegistrationRequest/dto.js";
 import { cursorOptions } from "../resolvers/connection.js";
 import { MylistShareRange as GqlMylistShareRange, Resolvers, UserResolvers, UserRole } from "../resolvers/graphql.js";
-import { buildGqlId, parseGqlID, parseGqlID3 } from "../resolvers/id.js";
+import { buildGqlId, parseGqlID3 } from "../resolvers/id.js";
 import { MylistModel } from "../resolvers/Mylist/model.js";
 import { MylistConnectionModel } from "../resolvers/MylistConnection/model.js";
 import { MylistRegistrationModel } from "../resolvers/MylistRegistration/model.js";
@@ -194,11 +194,12 @@ export const resolveUser = ({ prisma, logger, userService }: Pick<ResolverDeps, 
     },
     nicovideoRegistrationRequests: resolverUserNicovideoRegistrationRequests({ prisma, logger }),
 
-    mylist: async ({ id: userId }, { id: gqlMylistId }, { currentUser: ctxUser }) => {
-      const mylist = await prisma.mylist.findFirst({ where: { id: parseGqlID("Mylist", gqlMylistId) } });
+    mylist: async ({ id: holderId }, { slug }, { currentUser: ctxUser }) => {
+      if (ctxUser?.id !== holderId) return null;
+
+      const mylist = await prisma.mylist.findUnique({ where: { holderId_slug: { holderId, slug } } });
 
       if (!mylist) return null;
-      if (mylist.shareRange === MylistShareRange.PRIVATE && ctxUser?.id !== userId) return null; // TODO: 現状ではnullを返すが何らかのエラー型のunionにしても良い気がする
 
       return new MylistModel(mylist);
     },
