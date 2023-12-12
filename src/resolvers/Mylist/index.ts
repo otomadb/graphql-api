@@ -32,6 +32,8 @@ export const resolveMylist = ({
       }
     },
 
+    isLikeList: ({ slug }) => slug === "likes",
+
     holder: async ({ holderId }) => userService.getById(holderId),
     registrations: resolverMylistRegistrations({ prisma, logger }),
 
