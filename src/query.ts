@@ -70,6 +70,10 @@ export const resolveQuery = (deps: ResolverDeps) =>
     calcMadCountGrowth: mkCalcMadCountGrowthResolver(deps),
     countAllMads: mkCountAllMadsResolver(deps),
     countAllTags: mkCountAllTagsResolver(deps),
+    ensuredViewer: mkViewerResolver({
+      ...deps,
+      logger: deps.logger.child({ resolver: "Query.ensuredViewer" }),
+    }),
     fetchBilibili: resolverFetchBilibili(deps),
     fetchNicovideo: fetchNicovideo(),
     fetchSoundcloud: mkFetchSoundcloudResolver(deps),
