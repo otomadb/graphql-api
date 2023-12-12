@@ -16,7 +16,14 @@ import { ResolverDeps } from "../resolvers/types.js";
 import { SoundcloudMADSourceDTO } from "../SoundcloudMADSource/SoundcloudMADSource.dto.js";
 import { err, isErr, ok, Result } from "../utils/Result.js";
 import { YoutubeVideoSourceDTO } from "../YoutubeVideoSource/dto.js";
-import { VideoEventDTO, VideoSimilarityDTO, VideoTagConnectionDTO, VideoThumbnailDTO, VideoTitleDTO } from "./dto.js";
+import {
+  VideoEventDTO,
+  VideoSimilarityDTO,
+  VideoTagConnectionDTO,
+  VideoTagDTO,
+  VideoThumbnailDTO,
+  VideoTitleDTO,
+} from "./dto.js";
 
 export const resolveVideoIsLiked = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
   (async ({ id: videoId }, _args, { currentUser }, info) => {
@@ -189,6 +196,11 @@ export const resolveVideo = ({
       prisma.videoThumbnail.findMany({ where: { videoId } }).then((vs) => vs.map((t) => new VideoThumbnailDTO(t))),
 
     taggings: resolveTaggings({ prisma, logger }),
+
+    allTaggings: ({ id: videoId }) =>
+      prisma.videoTag
+        .findMany({ where: { videoId, isRemoved: false } })
+        .then((vts) => vts.map((vt) => VideoTagDTO.fromPrisma(vt))),
 
     hasTag: async ({ id: videoId }, { id: tagGqlId }) =>
       prisma.videoTag

@@ -34,6 +34,8 @@ type Video implements Node {
 
     orderBy: VideoTaggingsOrderBy! = { createdAt: DESC }
   ): VideoTagConnection!
+  allTaggings: [VideoTag!]!
+
   similarVideos(input: VideoSimilarVideosInput!): VideoSimilarVideosPayload!
 }
 
