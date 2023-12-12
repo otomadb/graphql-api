@@ -4,9 +4,12 @@ type User implements Node {
   displayName: String!
   icon: String!
 
-  mylist(id: ID!): Mylist
-
   publicLikes: Mylist
+
+  "非公開なものも含めてマイリストを取得する．見つからなかった場合は`null`．"
+  mylist(slug: String!): Mylist @auth
+
+  "公開されているマイリストを取得する．見つからなかった場合は`null`．"
   publicMylist(slug: String!): Mylist
 
   "公開マイリストの一覧をoffsetベースで取得する"
