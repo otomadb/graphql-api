@@ -1,0 +1,4 @@
+type Query {
+  "未読の通知を数える．未ログインなら`null`を返す．"
+  countUnwatchedNotifications: Int @auth(optional: true)
+}

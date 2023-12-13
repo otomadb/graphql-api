@@ -22,14 +22,15 @@ import { resolverFindUncheckedNicovideoRegistrationRequestsByOffset } from "./Ni
 import { resolverGetNicovideoRegistrationRequest } from "./NicovideoRegistrationRequest/getNicovideoRegistrationRequest.js";
 import { resolverFindNicovideoVideoSource } from "./NicovideoVideoSource/findNicovideoVideoSource.resolver.js";
 import { getNicovideoVideoSource } from "./NicovideoVideoSource/getNicovideoVideoSource.resolver.js";
+import { mkCountUnwatchedNotificationsResolver } from "./Notification/countUnwatchedNotifications.resolver.js";
+import { mkGetNotificationResolver } from "./Notification/getNotification.resolver.js";
+import { resolverNotifications } from "./Notification/notifications.resolver.js";
 import { type Resolvers } from "./resolvers/graphql.js";
 import { resolverFindMylist } from "./resolvers/Query/findMylist/findMylist.js";
 import { findSemitags } from "./resolvers/Query/findSemitags/findSemitags.js";
 import { getMylist } from "./resolvers/Query/getMylist/resolver.js";
 import { getMylistGroup } from "./resolvers/Query/getMylistGroup/resolver.js";
-import { getNotification } from "./resolvers/Query/getNotification/resolver.js";
 import { resolverGetSemitag } from "./resolvers/Query/getSemitag/resolver.js";
-import { resolverNotifications } from "./resolvers/Query/notifications/resolver.js";
 import { resolverWhoami } from "./resolvers/Query/whoami/resolver.js";
 import { ResolverDeps } from "./resolvers/types.js";
 import { mkFindSoundcloudMADSourceResolver } from "./SoundcloudMADSource/findSoundcloudMADSource.resolver.js";
@@ -70,6 +71,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
     calcMadCountGrowth: mkCalcMadCountGrowthResolver(deps),
     countAllMads: mkCountAllMadsResolver(deps),
     countAllTags: mkCountAllTagsResolver(deps),
+    countUnwatchedNotifications: mkCountUnwatchedNotificationsResolver(deps),
     ensuredViewer: mkViewerResolver({
       ...deps,
       logger: deps.logger.child({ resolver: "Query.ensuredViewer" }),
@@ -140,7 +142,7 @@ export const resolveQuery = (deps: ResolverDeps) =>
     getMylistGroup: getMylistGroup(deps),
     getNicovideoRegistrationRequest: resolverGetNicovideoRegistrationRequest(deps),
     getNicovideoVideoSource: getNicovideoVideoSource(deps),
-    getNotification: getNotification(deps),
+    getNotification: mkGetNotificationResolver(deps),
     getSemitag: resolverGetSemitag(deps),
     getSoundcloudMADSource: getSoundcloudMADSource(deps),
     getSoundcloudRegistrationRequest: resolverGetSoundcloudRegistrationRequest(deps),

@@ -1,0 +1,77 @@
+interface Notification implements Node {
+  id: ID!
+  createdAt: DateTime!
+  watched: Boolean!
+  notifyTo: User!
+}
+
+type BilibiliRegistrationRequestRejectingNotification implements Node & Notification {
+  id: ID!
+  createdAt: DateTime!
+  notifyTo: User!
+  watched: Boolean!
+
+  rejecting: BilibiliRegistrationRequestRejecting!
+}
+
+type BilibiliRegistrationRequestAcceptingNotification implements Node & Notification {
+  id: ID!
+  createdAt: DateTime!
+  notifyTo: User!
+  watched: Boolean!
+
+  accepting: BilibiliRegistrationRequestAccepting!
+}
+
+type NicovideoRegistrationRequestAcceptingNotification implements Node & Notification {
+  id: ID!
+  createdAt: DateTime!
+  notifyTo: User!
+  watched: Boolean!
+
+  accepting: NicovideoRegistrationRequestAccepting!
+}
+
+type NicovideoRegistrationRequestRejectingNotification implements Node & Notification {
+  id: ID!
+  createdAt: DateTime!
+  notifyTo: User!
+  watched: Boolean!
+
+  rejecting: NicovideoRegistrationRequestRejecting!
+}
+
+type SoundcloudRegistrationRequestAcceptingNotification implements Node & Notification {
+  id: ID!
+  createdAt: DateTime!
+  notifyTo: User!
+  watched: Boolean!
+
+  accepting: SoundcloudRegistrationRequestAccepting!
+}
+
+type SoundcloudRegistrationRequestRejectingNotification implements Node & Notification {
+  id: ID!
+  createdAt: DateTime!
+  notifyTo: User!
+  watched: Boolean!
+
+  rejecting: SoundcloudRegistrationRequestRejecting!
+}
+
+type YoutubeRegistrationRequestRejectingNotification implements Node & Notification {
+  id: ID!
+  createdAt: DateTime!
+  notifyTo: User!
+  watched: Boolean!
+
+  rejecting: YoutubeRegistrationRequestRejecting!
+}
+type YoutubeRegistrationRequestAcceptingNotification implements Node & Notification {
+  id: ID!
+  createdAt: DateTime!
+  notifyTo: User!
+  watched: Boolean!
+
+  accepting: YoutubeRegistrationRequestAccepting!
+}

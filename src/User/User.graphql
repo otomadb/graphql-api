@@ -46,7 +46,9 @@ type User implements Node {
   hasRole(role: UserRole!): Boolean
 
   "現在このユーザに届いている通知．"
-  notifications(input: UserNotificationsInput!): NotificationConnection! @auth
+  notifications(input: UserNotificationsInput!): NotificationConnection!
+    @auth
+    @deprecated(reason: "Use `Query.notifications` instead.")
 }
 
 input UserMylistsByOffsetInput {

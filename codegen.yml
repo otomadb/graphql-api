@@ -30,13 +30,13 @@ generates:
         BilibiliRegistrationRequest: ../BilibiliRegistrationRequest/BilibiliRegistrationRequest.dto.js#BilibiliRegistrationRequestDTO
         BilibiliRegistrationRequestAcceptEvent: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestEvent.dto.js#BilibiliRegistrationRequestAcceptEventDTO
         BilibiliRegistrationRequestAccepting: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestAccepting.dto.js#BilibiliRegistrationRequestAcceptingDTO
-        BilibiliRegistrationRequestAcceptingNotification: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestAcceptingNotification.dto.js#BilibiliRegistrationRequestAcceptingNotificationDTO
+        BilibiliRegistrationRequestAcceptingNotification: ../Notification/Notification.dto.js#BilibiliRegistrationRequestAcceptingNotificationDTO
         BilibiliRegistrationRequestConnection: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestConnection.dto.js#BilibiliRegistrationRequestConnectionDTO
         BilibiliRegistrationRequestEvent: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestEvent.dto.js#BilibiliRegistrationRequestEventDTO
         BilibiliRegistrationRequestEventConnection: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestEventConnection.dto.js#BilibiliRegistrationRequestEventConnectionDTO
         BilibiliRegistrationRequestRejectEvent: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestEvent.dto.js#BilibiliRegistrationRequestRejectEventDTO
         BilibiliRegistrationRequestRejecting: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestRejecting.dto.js#BilibiliRegistrationRequestRejectingDTO
-        BilibiliRegistrationRequestRejectingNotification: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestRejectingNotification.dto.js#BilibiliRegistrationRequestRejectingNotificationDTO
+        BilibiliRegistrationRequestRejectingNotification: ../Notification/Notification.dto.js#BilibiliRegistrationRequestRejectingNotificationDTO
         BilibiliRegistrationRequestRequestEvent: ../BilibiliRegistrationRequest/BilibiliRegistrationRequestEvent.dto.js#BilibiliRegistrationRequestRequestEventDTO
         MadRegisteredTimelineEvent: ../Timeline/TimelineEvent.dto.js#MadRegisteredTimelineEventDTO
         Mylist: ./Mylist/model.js#MylistModel
@@ -54,19 +54,19 @@ generates:
         NicovideoRegistrationRequest: ../NicovideoRegistrationRequest/dto.js#NicovideoRegistrationRequestDTO
         NicovideoRegistrationRequestAcceptEvent: ../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.dto.js#NicovideoRegistrationRequestAcceptEventDTO
         NicovideoRegistrationRequestAccepting: ../NicovideoRegistrationRequest/dto.js#NicovideoRegistrationRequestAcceptingDTO
-        NicovideoRegistrationRequestAcceptingNotification: ./Notification/model.js#NotificationModel
+        NicovideoRegistrationRequestAcceptingNotification: ../Notification/Notification.dto.js#NicovideoRegistrationRequestAcceptingNotificationDTO
         NicovideoRegistrationRequestConnection: ../NicovideoRegistrationRequest/dto.js#NicovideoRegistrationRequestConnectionDTO
         NicovideoRegistrationRequestEvent: ../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.dto.js#NicovideoRegistrationRequestEventDTO
         NicovideoRegistrationRequestEventConnection: ../NicovideoRegistrationRequest/NicovideoRegistrationRequestEventConnection.dto.js#NicovideoRegistrationRequestEventConnectionDTO
         NicovideoRegistrationRequestRejectEvent: ../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.dto.js#NicovideoRegistrationRequestRejectEventDTO
         NicovideoRegistrationRequestRejecting: ../NicovideoRegistrationRequest/dto.js#NicovideoRegistrationRequestRejectingDTO
-        NicovideoRegistrationRequestRejectingNotification: ./Notification/model.js#NotificationModel
+        NicovideoRegistrationRequestRejectingNotification: ../Notification/Notification.dto.js#NicovideoRegistrationRequestRejectingNotificationDTO
         NicovideoRegistrationRequestRequestEvent: ../NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.dto.js#NicovideoRegistrationRequestRequestEventDTO
         NicovideoVideoSource: ../NicovideoVideoSource/dto.js#NicovideoVideoSourceDTO
         NicovideoVideoSourceCreateEvent: ../NicovideoVideoSource/dto.js#NicovideoVideoSourceEventDTO
         NicovideoVideoSourceEvent: ../NicovideoVideoSource/dto.js#NicovideoVideoSourceEventDTO
-        Notification: ./Notification/model.js#NotificationModel
-        NotificationConnection: ./NotificationConnection/model.js#NotificationConnectionModel
+        Notification: ../Notification/Notification.dto.js#NotificationDTO
+        NotificationConnection: ../Notification/NotificationConnection.dto.js#NotificationConnectionDTO
         Semitag: ./Semitag/model.js#SemitagModel
         SemitagAttachEvent: ./SemitagEvent/model.js#SemitagEventModel
         SemitagConnection: ./SemitagConnection/model.js#SemitagConnectionModel
@@ -85,13 +85,13 @@ generates:
         SoundcloudRegistrationRequest: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequest.dto.js#SoundcloudRegistrationRequestDTO
         SoundcloudRegistrationRequestAcceptEvent: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEvent.dto.js#SoundcloudRegistrationRequestAcceptEventDTO
         SoundcloudRegistrationRequestAccepting: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestAccepting.dto.js#SoundcloudRegistrationRequestAcceptingDTO
-        SoundcloudRegistrationRequestAcceptingNotification: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestAcceptingNotification.dto.js#SoundcloudRegistrationRequestAcceptingNotificationDTO
+        SoundcloudRegistrationRequestAcceptingNotification: ../Notification/Notification.dto.js#SoundcloudRegistrationRequestAcceptingNotificationDTO
         SoundcloudRegistrationRequestConnection: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestConnection.dto.js#SoundcloudRegistrationRequestConnectionDTO
         SoundcloudRegistrationRequestEvent: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEvent.dto.js#SoundcloudRegistrationRequestEventDTO
         SoundcloudRegistrationRequestEventConnection: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEventConnection.dto.js#SoundcloudRegistrationRequestEventConnectionDTO
         SoundcloudRegistrationRequestRejectEvent: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEvent.dto.js#SoundcloudRegistrationRequestRejectEventDTO
         SoundcloudRegistrationRequestRejecting: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestRejecting.dto.js#SoundcloudRegistrationRequestRejectingDTO
-        SoundcloudRegistrationRequestRejectingNotification: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestRejectingNotification.dto.js#SoundcloudRegistrationRequestRejectingNotificationDTO
+        SoundcloudRegistrationRequestRejectingNotification: ../Notification/Notification.dto.js#SoundcloudRegistrationRequestRejectingNotificationDTO
         SoundcloudRegistrationRequestRequestEvent: ../SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEvent.dto.js#SoundcloudRegistrationRequestRequestEventDTO
         Tag: ../Tag/dto.js#TagDTO
         TagConnection: ../Tag/TagConnection.dto.js#TagConnectionDTO
@@ -138,13 +138,13 @@ generates:
         YoutubeRegistrationRequest: ../YoutubeRegistrationRequest/YoutubeRegistrationRequest.dto.js#YoutubeRegistrationRequestDTO
         YoutubeRegistrationRequestAcceptEvent: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.dto.js#YoutubeRegistrationRequestAcceptEventDTO
         YoutubeRegistrationRequestAccepting: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestAccepting.dto.js#YoutubeRegistrationRequestAcceptingDTO
-        YoutubeRegistrationRequestAcceptingNotification: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestAcceptingNotification.dto.js#YoutubeRegistrationRequestAcceptingNotificationDTO
+        YoutubeRegistrationRequestAcceptingNotification: ../Notification/Notification.dto.js#YoutubeRegistrationRequestAcceptingNotificationDTO
         YoutubeRegistrationRequestConnection: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestConnection.dto.js#YoutubeRegistrationRequestConnectionDTO
         YoutubeRegistrationRequestEvent: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.dto.js#YoutubeRegistrationRequestEventDTO
         YoutubeRegistrationRequestEventConnection: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestEventConnection.dto.js#YoutubeRegistrationRequestEventConnectionDTO
         YoutubeRegistrationRequestRejectEvent: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.dto.js#YoutubeRegistrationRequestRejectEventDTO
         YoutubeRegistrationRequestRejecting: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestRejecting.dto.js#YoutubeRegistrationRequestRejectingDTO
-        YoutubeRegistrationRequestRejectingNotification: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestRejectingNotification.dto.js#YoutubeRegistrationRequestRejectingNotificationDTO
+        YoutubeRegistrationRequestRejectingNotification: ../Notification/Notification.dto.js#YoutubeRegistrationRequestRejectingNotificationDTO
         YoutubeRegistrationRequestRequestEvent: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.dto.js#YoutubeRegistrationRequestRequestEventDTO
         YoutubeVideoSource: ../YoutubeVideoSource/dto.js#YoutubeVideoSourceDTO
         YoutubeVideoSourceCreateEvent: ../YoutubeVideoSource/dto.js#YoutubeVideoSourceEventDTO

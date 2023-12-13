@@ -1,11 +1,3 @@
-type YoutubeRegistrationRequestRejectingNotification implements Node & Notification {
-  id: ID!
-  createdAt: DateTime!
-  notifyTo: User!
-  watched: Boolean!
-
-  rejecting: YoutubeRegistrationRequestRejecting!
-}
 type YoutubeRegistrationRequestRejecting {
   request: YoutubeRegistrationRequest!
 
@@ -23,14 +15,6 @@ type YoutubeRegistrationRequestConnection {
 type YoutubeRegistrationRequestEdge {
   cursor: String!
   node: YoutubeRegistrationRequest!
-}
-type YoutubeRegistrationRequestAcceptingNotification implements Node & Notification {
-  id: ID!
-  createdAt: DateTime!
-  notifyTo: User!
-  watched: Boolean!
-
-  accepting: YoutubeRegistrationRequestAccepting!
 }
 type YoutubeRegistrationRequestAccepting {
   request: YoutubeRegistrationRequest!

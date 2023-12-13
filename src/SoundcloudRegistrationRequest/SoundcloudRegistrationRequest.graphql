@@ -1,11 +1,3 @@
-type SoundcloudRegistrationRequestRejectingNotification implements Node & Notification {
-  id: ID!
-  createdAt: DateTime!
-  notifyTo: User!
-  watched: Boolean!
-
-  rejecting: SoundcloudRegistrationRequestRejecting!
-}
 type SoundcloudRegistrationRequestRejecting {
   request: SoundcloudRegistrationRequest!
 
@@ -23,14 +15,6 @@ type SoundcloudRegistrationRequestConnection {
 type SoundcloudRegistrationRequestEdge {
   cursor: String!
   node: SoundcloudRegistrationRequest!
-}
-type SoundcloudRegistrationRequestAcceptingNotification implements Node & Notification {
-  id: ID!
-  createdAt: DateTime!
-  notifyTo: User!
-  watched: Boolean!
-
-  accepting: SoundcloudRegistrationRequestAccepting!
 }
 type SoundcloudRegistrationRequestAccepting {
   request: SoundcloudRegistrationRequest!
