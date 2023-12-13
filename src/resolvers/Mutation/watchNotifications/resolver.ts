@@ -1,9 +1,9 @@
 import { GraphQLError } from "graphql";
 
+import { NotificationDTO } from "../../../Notification/Notification.dto.js";
 import { isErr } from "../../../utils/Result.js";
 import { MutationResolvers, ResolversTypes } from "../../graphql.js";
 import { parseGqlIDs3SkipDupl } from "../../id.js";
-import { NotificationModel } from "../../Notification/model.js";
 import { ResolverDeps } from "../../types.js";
 import { update } from "./prisma.js";
 
@@ -54,6 +54,6 @@ export const resolverWatchNotifications = ({ prisma, logger }: Pick<ResolverDeps
 
     return {
       __typename: "WatchNotificationsSucceededPayload",
-      notifications: notifications.map((n) => NotificationModel.fromPrisma(n)),
+      notifications: notifications.map((n) => NotificationDTO.fromPrisma(n)),
     } satisfies ResolversTypes["WatchNotificationsReturnUnion"];
   }) satisfies MutationResolvers["watchNotifications"];

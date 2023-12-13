@@ -9,7 +9,6 @@ import { resolverBilibiliMADSourceCreateEvent } from "./BilibiliMADSource/Bilibi
 import { resolverBilibiliMADSourceEventConnection } from "./BilibiliMADSource/BilibiliMADSourceEventConnection.resolver.js";
 import { resolverBilibiliRegistrationRequest } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequest.resolver.js";
 import { resolverBilibiliRegistrationRequestAccepting } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequestAccepting.resolver.js";
-import { resolverBilibiliRegistrationRequestAcceptingNotification } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequestAcceptingNotification.resolver.js";
 import { resolverBilibiliRegistrationRequestConnection } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequestConnection.resolver.js";
 import {
   mkBilibiliRegistrationRequestAcceptEventResolver,
@@ -19,7 +18,6 @@ import {
 } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequestEvent.resolver.js";
 import { mkBilibiliRegistrationRequestEventConnectionResolver } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequestEventConnection.resolver.js";
 import { mkBilibiliRegistrationRequestRejectingResolver } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequestRejecting.resolver.js";
-import { resolverBilibiliRegistrationRequestRejectingNotification } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequestRejectingNotification.resolver.js";
 import { mkBilibiliOriginalSourceResolver } from "./FetchExternal/BilibiliOriginalSource.resolver.js";
 import { resolverBilibiliOriginalSourceTag } from "./FetchExternal/BilibiliOriginalSourceTag.resolver.js";
 import { mkNicovideoOriginalSourceResolver } from "./FetchExternal/NicovideoOriginalSource.resolver.js";
@@ -29,7 +27,6 @@ import { mkYoutubeOriginalSourceResolver } from "./FetchExternal/YoutubeOriginal
 import { resolveMutation } from "./mutation.js";
 import { resolverNicovideoRegistrationRequest } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequest.resolver.js";
 import { resolverNicovideoRegistrationRequestAccepting } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestAccepting.resolver.js";
-import { resolverNicovideoRegistrationRequestAcceptingNotification } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestAcceptingNotification.resolver.js";
 import { resolverNicovideoRegistrationRequestConnection } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestConnection.resolver.js";
 import {
   mkNicovideoRegistrationRequestAcceptEventResolver,
@@ -39,12 +36,22 @@ import {
 } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.resolver.js";
 import { mkNicovideoRegistrationRequestEventConnectionResolver } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestEventConnection.resolver.js";
 import { resolverNicovideoRegistrationRequestRejecting } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestRejecting.resolver.js";
-import { resolverNicovideoRegistrationRequestRejectingNotification } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestRejectingNotification.resolver.js";
 import { resolverNicovideoVideoSource } from "./NicovideoVideoSource/NicovideoVideoSource.resolver.js";
 import {
   resolveNicovideoVideoSourceCreateEvent,
   resolveNicovideoVideoSourceEvent,
 } from "./NicovideoVideoSource/NicovideoVideoSourceEvent.resolver.js";
+import {
+  mkBilibiliRegistrationRequestAcceptingNotificationResolver,
+  mkBilibiliRegistrationRequestRejectingNotificationResolver,
+  mkNicovideoRegistrationRequestAcceptingNotificationResolver,
+  mkNicovideoRegistrationRequestRejectingNotificationResolver,
+  mkSoundcloudRegistrationRequestAcceptingNotificationResolver,
+  mkSoundcloudRegistrationRequestRejectingNotificationResolver,
+  mkYoutubeRegistrationRequestAcceptingNotificationResolver,
+  mkYoutubeRegistrationRequestRejectingNotificationResolver,
+} from "./Notification/Notification.resolver.js";
+import { resolverNotificationConnection } from "./Notification/NotificationConnection.resolver.js";
 import { resolveQuery } from "./query.js";
 import { type Resolvers } from "./resolvers/graphql.js";
 import { resolveMylist } from "./resolvers/Mylist/index.js";
@@ -56,8 +63,6 @@ import { resolveMylistRegistration } from "./resolvers/MylistRegistration/index.
 import { resolverMylistRegistrationConnection } from "./resolvers/MylistRegistrationConnection/resolver.js";
 import { resolveMylistTagInclusion } from "./resolvers/MylistTagInclusion/index.js";
 import { resolveMylistVideoRecommendation } from "./resolvers/MylistVideoRecommendation/index.js";
-import { resolverNotification } from "./resolvers/Notification/resolver.js";
-import { resolverNotificationConnection } from "./resolvers/NotificationConnection/resolver.js";
 import { resolveSemitag } from "./resolvers/Semitag/index.js";
 import { resolverSemitagConnection } from "./resolvers/SemitagConnection/resolver.js";
 import {
@@ -75,7 +80,6 @@ import { resolveSoundcloudMADSourceCreateEvent } from "./SoundcloudMADSource/Sou
 import { resolverSoundcloudMADSourceEventConnection } from "./SoundcloudMADSource/SoundcloudMADSourceEventConnection.resolver.js";
 import { resolverSoundcloudRegistrationRequest } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequest.resolver.js";
 import { resolverSoundcloudRegistrationRequestAccepting } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequestAccepting.resolver.js";
-import { resolverSoundcloudRegistrationRequestAcceptingNotification } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequestAcceptingNotification.resolver.js";
 import { resolverSoundcloudRegistrationRequestConnection } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequestConnection.resolver.js";
 import {
   mkSoundcloudRegistrationRequestAcceptEventResolver,
@@ -85,7 +89,6 @@ import {
 } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEvent.resolver.js";
 import { mkSoundcloudRegistrationRequestEventConnectionResolver } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequestEventConnection.resolver.js";
 import { mkSoundcloudRegistrationRequestRejectingResolver } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequestRejecting.resolver.js";
-import { resolverSoundcloudRegistrationRequestRejectingNotification } from "./SoundcloudRegistrationRequest/SoundcloudRegistrationRequestRejectingNotification.resolver.js";
 import { resolveTag } from "./Tag/Tag.resolver.js";
 import { mkTagConnectionResolver } from "./Tag/TagConnection.resolver.js";
 import { resolveTagEvent, resolveTagRegisterEvent } from "./Tag/TagEvent.resolver.js";
@@ -135,7 +138,6 @@ import {
 } from "./Video/VideoTitleEvent.resolver.js";
 import { resolverYoutubeRegistrationRequest } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequest.resolver.js";
 import { resolverYoutubeRegistrationRequestAccepting } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestAccepting.resolver.js";
-import { resolverYoutubeRegistrationRequestAcceptingNotification } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestAcceptingNotification.resolver.js";
 import { resolverYoutubeRegistrationRequestConnection } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestConnection.resolver.js";
 import {
   mkYoutubeRegistrationRequestAcceptEventResolver,
@@ -145,7 +147,6 @@ import {
 } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.resolver.js";
 import { mkYoutubeRegistrationRequestEventConnectionResolver } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestEventConnection.resolver.js";
 import { resolverYoutubeRegistrationRequestRejecting } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestRejecting.resolver.js";
-import { resolverYoutubeRegistrationRequestRejectingNotification } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestRejectingNotification.resolver.js";
 import { resolveYoutubeVideoSource } from "./YoutubeVideoSource/YoutubeVideoSource.resolver.js";
 import {
   resolveYoutubeVideoSourceCreateEvent,
@@ -166,13 +167,13 @@ export const makeResolvers = (deps: ResolverDeps) =>
     BilibiliRegistrationRequest: resolverBilibiliRegistrationRequest(deps),
     BilibiliRegistrationRequestAcceptEvent: mkBilibiliRegistrationRequestAcceptEventResolver(deps),
     BilibiliRegistrationRequestAccepting: resolverBilibiliRegistrationRequestAccepting(deps),
-    BilibiliRegistrationRequestAcceptingNotification: resolverBilibiliRegistrationRequestAcceptingNotification(deps),
+    BilibiliRegistrationRequestAcceptingNotification: mkBilibiliRegistrationRequestAcceptingNotificationResolver(deps),
     BilibiliRegistrationRequestConnection: resolverBilibiliRegistrationRequestConnection(),
     BilibiliRegistrationRequestEvent: mkBilibiliRegistrationRequestEventResolver(deps),
     BilibiliRegistrationRequestEventConnection: mkBilibiliRegistrationRequestEventConnectionResolver(deps),
     BilibiliRegistrationRequestRejectEvent: mkBilibiliRegistrationRequestRejectEventResolver(deps),
     BilibiliRegistrationRequestRejecting: mkBilibiliRegistrationRequestRejectingResolver(deps),
-    BilibiliRegistrationRequestRejectingNotification: resolverBilibiliRegistrationRequestRejectingNotification(deps),
+    BilibiliRegistrationRequestRejectingNotification: mkBilibiliRegistrationRequestRejectingNotificationResolver(deps),
     BilibiliRegistrationRequestRequestEvent: mkBilibiliRegistrationRequestRequestEventResolver(deps),
     DateTime: DateTimeResolver,
     MadRegisteredTimelineEvent: mkMadRegisteredTimelineEventResolver(deps),
@@ -192,18 +193,19 @@ export const makeResolvers = (deps: ResolverDeps) =>
     NicovideoRegistrationRequest: resolverNicovideoRegistrationRequest(deps),
     NicovideoRegistrationRequestAcceptEvent: mkNicovideoRegistrationRequestAcceptEventResolver(deps),
     NicovideoRegistrationRequestAccepting: resolverNicovideoRegistrationRequestAccepting(deps),
-    NicovideoRegistrationRequestAcceptingNotification: resolverNicovideoRegistrationRequestAcceptingNotification(deps),
+    NicovideoRegistrationRequestAcceptingNotification:
+      mkNicovideoRegistrationRequestAcceptingNotificationResolver(deps),
     NicovideoRegistrationRequestConnection: resolverNicovideoRegistrationRequestConnection(),
     NicovideoRegistrationRequestEvent: mkNicovideoRegistrationRequestEventResolver(deps),
     NicovideoRegistrationRequestEventConnection: mkNicovideoRegistrationRequestEventConnectionResolver(deps),
     NicovideoRegistrationRequestRejectEvent: mkNicovideoRegistrationRequestRejectEventResolver(deps),
     NicovideoRegistrationRequestRejecting: resolverNicovideoRegistrationRequestRejecting(deps),
-    NicovideoRegistrationRequestRejectingNotification: resolverNicovideoRegistrationRequestRejectingNotification(deps),
+    NicovideoRegistrationRequestRejectingNotification:
+      mkNicovideoRegistrationRequestRejectingNotificationResolver(deps),
     NicovideoRegistrationRequestRequestEvent: mkNicovideoRegistrationRequestRequestEventResolver(deps),
     NicovideoVideoSource: resolverNicovideoVideoSource(deps),
     NicovideoVideoSourceCreateEvent: resolveNicovideoVideoSourceCreateEvent(deps),
     NicovideoVideoSourceEvent: resolveNicovideoVideoSourceEvent(),
-    Notification: resolverNotification(deps),
     NotificationConnection: resolverNotificationConnection(),
     Query: resolveQuery(deps),
     Semitag: resolveSemitag(deps),
@@ -224,14 +226,14 @@ export const makeResolvers = (deps: ResolverDeps) =>
     SoundcloudRegistrationRequestAcceptEvent: mkSoundcloudRegistrationRequestAcceptEventResolver(deps),
     SoundcloudRegistrationRequestAccepting: resolverSoundcloudRegistrationRequestAccepting(deps),
     SoundcloudRegistrationRequestAcceptingNotification:
-      resolverSoundcloudRegistrationRequestAcceptingNotification(deps),
+      mkSoundcloudRegistrationRequestAcceptingNotificationResolver(deps),
     SoundcloudRegistrationRequestConnection: resolverSoundcloudRegistrationRequestConnection(),
     SoundcloudRegistrationRequestEvent: mkSoundcloudRegistrationRequestEventResolver(deps),
     SoundcloudRegistrationRequestEventConnection: mkSoundcloudRegistrationRequestEventConnectionResolver(deps),
     SoundcloudRegistrationRequestRejectEvent: mkSoundcloudRegistrationRequestRejectEventResolver(deps),
     SoundcloudRegistrationRequestRejecting: mkSoundcloudRegistrationRequestRejectingResolver(deps),
     SoundcloudRegistrationRequestRejectingNotification:
-      resolverSoundcloudRegistrationRequestRejectingNotification(deps),
+      mkSoundcloudRegistrationRequestRejectingNotificationResolver(deps),
     SoundcloudRegistrationRequestRequestEvent: mkSoundcloudRegistrationRequestRequestEventResolver(deps),
     Tag: resolveTag(deps),
     TagConnection: mkTagConnectionResolver(deps),
@@ -272,13 +274,13 @@ export const makeResolvers = (deps: ResolverDeps) =>
     YoutubeRegistrationRequest: resolverYoutubeRegistrationRequest(deps),
     YoutubeRegistrationRequestAcceptEvent: mkYoutubeRegistrationRequestAcceptEventResolver(deps),
     YoutubeRegistrationRequestAccepting: resolverYoutubeRegistrationRequestAccepting(deps),
-    YoutubeRegistrationRequestAcceptingNotification: resolverYoutubeRegistrationRequestAcceptingNotification(deps),
+    YoutubeRegistrationRequestAcceptingNotification: mkYoutubeRegistrationRequestAcceptingNotificationResolver(deps),
     YoutubeRegistrationRequestConnection: resolverYoutubeRegistrationRequestConnection(),
     YoutubeRegistrationRequestEvent: mkYoutubeRegistrationRequestEventResolver(deps),
     YoutubeRegistrationRequestEventConnection: mkYoutubeRegistrationRequestEventConnectionResolver(deps),
     YoutubeRegistrationRequestRejectEvent: mkYoutubeRegistrationRequestRejectEventResolver(deps),
     YoutubeRegistrationRequestRejecting: resolverYoutubeRegistrationRequestRejecting(deps),
-    YoutubeRegistrationRequestRejectingNotification: resolverYoutubeRegistrationRequestRejectingNotification(deps),
+    YoutubeRegistrationRequestRejectingNotification: mkYoutubeRegistrationRequestRejectingNotificationResolver(deps),
     YoutubeRegistrationRequestRequestEvent: mkYoutubeRegistrationRequestRequestEventResolver(deps),
     YoutubeVideoSource: resolveYoutubeVideoSource(deps),
     YoutubeVideoSourceCreateEvent: resolveYoutubeVideoSourceCreateEvent(deps),

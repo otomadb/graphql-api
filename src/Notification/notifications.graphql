@@ -1,0 +1,21 @@
+type Query {
+  "通知を取得する．未ログインなら`null`を返す．"
+  notifications(input: NotificationsInput!): NotificationConnection @auth(optional: true)
+}
+
+input NotificationsInput {
+  after: String
+  before: String
+  first: Int
+  last: Int
+  orderBy: NotificationsOrderBy! = { createdAt: DESC }
+  filter: NotificationsFilter! = {}
+}
+
+input NotificationsOrderBy {
+  createdAt: SortOrder
+}
+
+input NotificationsFilter {
+  watched: Boolean
+}

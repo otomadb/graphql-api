@@ -4,13 +4,13 @@ import { GraphQLError } from "graphql";
 import z from "zod";
 
 import { NicovideoRegistrationRequestConnectionDTO } from "../NicovideoRegistrationRequest/dto.js";
+import { NotificationConnectionDTO } from "../Notification/NotificationConnection.dto.js";
 import { cursorOptions } from "../resolvers/connection.js";
 import { MylistShareRange as GqlMylistShareRange, Resolvers, UserResolvers, UserRole } from "../resolvers/graphql.js";
 import { buildGqlId, parseGqlID3 } from "../resolvers/id.js";
 import { MylistModel } from "../resolvers/Mylist/model.js";
 import { MylistConnectionModel } from "../resolvers/MylistConnection/model.js";
 import { MylistRegistrationModel } from "../resolvers/MylistRegistration/model.js";
-import { NotificationConnectionModel } from "../resolvers/NotificationConnection/model.js";
 import { parseOrderBy } from "../resolvers/parseSortOrder.js";
 import { ResolverDeps } from "../resolvers/types.js";
 import { err, isErr, ok, Result } from "../utils/Result.js";
@@ -297,6 +297,6 @@ export const resolveUser = ({ prisma, logger, userService }: Pick<ResolverDeps, 
           }),
         connectionArgs.data,
         { resolveInfo: info, ...cursorOptions },
-      ).then((c) => NotificationConnectionModel.fromPrisma(c));
+      ).then((c) => NotificationConnectionDTO.fromPrisma(c));
     },
   }) satisfies Resolvers["User"];

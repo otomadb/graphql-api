@@ -85,24 +85,6 @@ type NicovideoRegistrationRequestRejecting {
   rejectedBy: User!
 }
 
-type NicovideoRegistrationRequestAcceptingNotification implements Node & Notification {
-  id: ID!
-  createdAt: DateTime!
-  notifyTo: User!
-  watched: Boolean!
-
-  accepting: NicovideoRegistrationRequestAccepting!
-}
-
-type NicovideoRegistrationRequestRejectingNotification implements Node & Notification {
-  id: ID!
-  createdAt: DateTime!
-  notifyTo: User!
-  watched: Boolean!
-
-  rejecting: NicovideoRegistrationRequestRejecting!
-}
-
 union NicovideoRegistrationRequestChecking =
     NicovideoRegistrationRequestAccepting
   | NicovideoRegistrationRequestRejecting

@@ -2,15 +2,22 @@ import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection
 import { GraphQLError } from "graphql";
 import z from "zod";
 
-import { isErr } from "../../../utils/Result.js";
-import { cursorOptions } from "../../connection.js";
-import { QueryResolvers } from "../../graphql.js";
-import { NotificationConnectionModel } from "../../NotificationConnection/model.js";
-import { parseOrderBy } from "../../parseSortOrder.js";
-import { ResolverDeps } from "../../types.js";
+import { cursorOptions } from "../resolvers/connection.js";
+import { parseOrderBy } from "../resolvers/parseSortOrder.js";
+import { MkQueryResolver } from "../utils/MkResolver.js";
+import { isErr } from "../utils/Result.js";
+import { NotificationConnectionDTO } from "./NotificationConnection.dto.js";
 
-export const resolverNotifications = ({ prisma, logger }: Pick<ResolverDeps, "prisma" | "logger">) =>
-  (async (_parent, { orderBy: unparsedOrderBy, filter, ...unparsedConnectionArgs }, { currentUser: ctxUser }, info) => {
+export const resolverNotifications: MkQueryResolver<"notifications", "prisma" | "logger"> =
+  ({ prisma, logger }) =>
+  async (
+    _parent,
+    { input: { orderBy: unparsedOrderBy, filter, ...unparsedConnectionArgs } },
+    { currentUser: ctxUser },
+    info,
+  ) => {
+    if (!ctxUser) return null;
+
     const connectionArgs = z
       .union([
         z.object({
@@ -53,5 +60,5 @@ export const resolverNotifications = ({ prisma, logger }: Pick<ResolverDeps, "pr
         }),
       connectionArgs.data,
       { resolveInfo: info, ...cursorOptions },
-    ).then((c) => NotificationConnectionModel.fromPrisma(c));
-  }) satisfies QueryResolvers["notifications"];
+    ).then((c) => NotificationConnectionDTO.fromPrisma(c));
+  };

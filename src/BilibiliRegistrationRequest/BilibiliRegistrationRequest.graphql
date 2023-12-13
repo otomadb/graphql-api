@@ -1,11 +1,3 @@
-type BilibiliRegistrationRequestRejectingNotification implements Node & Notification {
-  id: ID!
-  createdAt: DateTime!
-  notifyTo: User!
-  watched: Boolean!
-
-  rejecting: BilibiliRegistrationRequestRejecting!
-}
 type BilibiliRegistrationRequestRejecting {
   request: BilibiliRegistrationRequest!
 
@@ -23,14 +15,6 @@ type BilibiliRegistrationRequestConnection {
 type BilibiliRegistrationRequestEdge {
   cursor: String!
   node: BilibiliRegistrationRequest!
-}
-type BilibiliRegistrationRequestAcceptingNotification implements Node & Notification {
-  id: ID!
-  createdAt: DateTime!
-  notifyTo: User!
-  watched: Boolean!
-
-  accepting: BilibiliRegistrationRequestAccepting!
 }
 type BilibiliRegistrationRequestAccepting {
   request: BilibiliRegistrationRequest!
