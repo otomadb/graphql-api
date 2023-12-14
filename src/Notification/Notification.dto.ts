@@ -50,4 +50,4 @@ export {
   NotificationDTO as SoundcloudRegistrationRequestRejectingNotificationDTO,
   NotificationDTO as YoutubeRegistrationRequestAcceptingNotificationDTO,
   NotificationDTO as YoutubeRegistrationRequestRejectingNotificationDTO,
-} from "./Notification.dto.js";
+};

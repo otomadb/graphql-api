@@ -34,6 +34,33 @@ type YoutubeMadRequestedTimelineEvent implements TimelineEvent {
 }
 
 """
+Youtubeの音MAD登録リクエストが受理されたことを表すタイムラインイベント
+"""
+type YoutubeMadRequestAcceptedTimelineEvent implements TimelineEvent {
+  createdAt: DateTime!
+
+  event: YoutubeRegistrationRequestAcceptedEvent!
+}
+
+"""
+Youtubeの音MAD登録リクエストが拒否されたことを表すタイムラインイベント
+"""
+type YoutubeMadRequestRejectedTimelineEvent implements TimelineEvent {
+  createdAt: DateTime!
+
+  event: YoutubeRegistrationRequestRejectedEvent!
+}
+
+"""
+Youtubeの音MAD登録リクエストが既存の音MADに解決されたことを表すタイムラインイベント
+"""
+type YoutubeMadRequestResolvedTimelineEvent implements TimelineEvent {
+  createdAt: DateTime!
+
+  event: YoutubeRegistrationRequestResolvedEvent!
+}
+
+"""
 SoundCloudの音MADがリクエストされたことを表すタイムラインイベント
 """
 type SoundcloudMadRequestedTimelineEvent implements TimelineEvent {

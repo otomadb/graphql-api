@@ -41,6 +41,7 @@ import { UserService } from "./User/service.js";
 import { mkVideoService } from "./Video/Video.service.js";
 import { mkVideoEventService } from "./Video/VideoEvent.service.js";
 import { mkYoutubeRegistrationRequestService } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequest.service.js";
+import { mkYoutubeRegistrationRequestCheckingEventService } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestCheckingEvent.service.js";
 import { mkYoutubeRegistrationRequestEventService } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.service.js";
 
 const jwksClient = createJwksClient({
@@ -197,6 +198,10 @@ const yoga = createYoga<ServerContext, UserContext>({
       YoutubeRegistrationRequestEventService: mkYoutubeRegistrationRequestEventService({
         prisma: prismaClient,
         logger: logger.child({ service: "YoutubeRegistrationRequestEventService" }),
+      }),
+      YoutubeRegistrationRequestCheckingEventService: mkYoutubeRegistrationRequestCheckingEventService({
+        prisma: prismaClient,
+        logger: logger.child({ service: "YoutubeRegistrationRequestCheckingEventService" }),
       }),
       VideoEventService: mkVideoEventService({
         prisma: prismaClient,

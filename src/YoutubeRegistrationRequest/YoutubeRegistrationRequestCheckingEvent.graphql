@@ -1,0 +1,44 @@
+interface YoutubeRegistrationRequestCheckingEvent implements Node & Event {
+  id: ID! @deprecated(reason: "Use `series`")
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  checking: YoutubeRegistrationRequestChecking!
+}
+
+"""
+Youtubeの音MAD登録リクエストが承認された時に発生するイベント
+"""
+type YoutubeRegistrationRequestAcceptedEvent implements Node & Event & YoutubeRegistrationRequestCheckingEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  checking: YoutubeRegistrationRequestChecking!
+}
+
+"""
+Youtubeの音MAD登録リクエストが拒否された時に発生するイベント
+"""
+type YoutubeRegistrationRequestRejectedEvent implements Node & Event & YoutubeRegistrationRequestCheckingEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  checking: YoutubeRegistrationRequestChecking!
+}
+
+"""
+Youtubeの音MAD登録リクエストが既存の音MADに解決された時に発生するイベント
+"""
+type YoutubeRegistrationRequestResolvedEvent implements Node & Event & YoutubeRegistrationRequestCheckingEvent {
+  id: ID!
+  series: String!
+  createdAt: DateTime!
+  user: User!
+
+  checking: YoutubeRegistrationRequestChecking!
+}

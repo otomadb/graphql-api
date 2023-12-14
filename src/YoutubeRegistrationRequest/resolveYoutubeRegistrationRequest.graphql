@@ -1,0 +1,17 @@
+type Mutation {
+  resolveYoutubeRegistrationRequest(
+    input: ResolveYoutubeRegistrationRequestInput!
+  ): ResolveYoutubeRegistrationRequestResult!
+}
+
+input ResolveYoutubeRegistrationRequestInput {
+  requestId: ID!
+  madId: ID!
+}
+
+union ResolveYoutubeRegistrationRequestResult = ResolveYoutubeRegistrationRequestSuccess
+
+type ResolveYoutubeRegistrationRequestSuccess {
+  request: YoutubeRegistrationRequest!
+  source: YoutubeVideoSource!
+}

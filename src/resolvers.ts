@@ -107,7 +107,10 @@ import {
   mkMadRegisteredTimelineEventResolver,
   mkNicovideoMadRequestedTimelineEventResolver,
   mkSoundcloudMadRequestedTimelineEventResolver,
+  mkYoutubeMadRequestAcceptedTimelineEventResolver,
   mkYoutubeMadRequestedTimelineEventResolver,
+  mkYoutubeMadRequestRejectedTimelineEventResolver,
+  mkYoutubeMadRequestResolvedTimelineEventResolver,
 } from "./Timeline/TimelineEvent.resolver.js";
 import { resolveUser } from "./User/User.resolver.js";
 import { resolveVideo } from "./Video/Video.resolver.js";
@@ -138,14 +141,17 @@ import {
 } from "./Video/VideoTitleEvent.resolver.js";
 import { resolverYoutubeRegistrationRequest } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequest.resolver.js";
 import { resolverYoutubeRegistrationRequestAccepting } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestAccepting.resolver.js";
+import { mkYoutubeRegistrationRequestCheckingResolver } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestChecking.resolver.js";
+import {
+  mkYoutubeRegistrationRequestAcceptedEventResolver,
+  mkYoutubeRegistrationRequestRejectedEventResolver,
+  mkYoutubeRegistrationRequestResolvedEventResolver,
+} from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestCheckingEvent.resolver.js";
 import { resolverYoutubeRegistrationRequestConnection } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestConnection.resolver.js";
 import {
-  mkYoutubeRegistrationRequestAcceptEventResolver,
   mkYoutubeRegistrationRequestEventResolver,
-  mkYoutubeRegistrationRequestRejectEventResolver,
   mkYoutubeRegistrationRequestRequestEventResolver,
 } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.resolver.js";
-import { mkYoutubeRegistrationRequestEventConnectionResolver } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestEventConnection.resolver.js";
 import { resolverYoutubeRegistrationRequestRejecting } from "./YoutubeRegistrationRequest/YoutubeRegistrationRequestRejecting.resolver.js";
 import { resolveYoutubeVideoSource } from "./YoutubeVideoSource/YoutubeVideoSource.resolver.js";
 import {
@@ -268,20 +274,25 @@ export const makeResolvers = (deps: ResolverDeps) =>
     VideoTitleCreateEvent: resolveVideoTitleCreateEvent(deps),
     VideoTitleEvent: resolveVideoTitleEvent(),
     VideoTitleSetPrimaryEvent: resolveVideoTitleSetPrimaryEvent(deps),
+    // YoutubeRegistrationRequestEventConnection: mkYoutubeRegistrationRequestEventConnectionResolver(deps),
     VideoTitleUnsetPrimaryEvent: resolveVideoTitleUnsetPrimaryEvent(deps),
+    YoutubeMadRequestAcceptedTimelineEvent: mkYoutubeMadRequestAcceptedTimelineEventResolver(deps),
+    YoutubeMadRequestRejectedTimelineEvent: mkYoutubeMadRequestRejectedTimelineEventResolver(deps),
+    YoutubeMadRequestResolvedTimelineEvent: mkYoutubeMadRequestResolvedTimelineEventResolver(deps),
     YoutubeMadRequestedTimelineEvent: mkYoutubeMadRequestedTimelineEventResolver(deps),
     YoutubeOriginalSource: mkYoutubeOriginalSourceResolver(deps),
     YoutubeRegistrationRequest: resolverYoutubeRegistrationRequest(deps),
-    YoutubeRegistrationRequestAcceptEvent: mkYoutubeRegistrationRequestAcceptEventResolver(deps),
+    YoutubeRegistrationRequestAcceptedEvent: mkYoutubeRegistrationRequestAcceptedEventResolver(deps),
     YoutubeRegistrationRequestAccepting: resolverYoutubeRegistrationRequestAccepting(deps),
     YoutubeRegistrationRequestAcceptingNotification: mkYoutubeRegistrationRequestAcceptingNotificationResolver(deps),
+    YoutubeRegistrationRequestChecking: mkYoutubeRegistrationRequestCheckingResolver(deps),
     YoutubeRegistrationRequestConnection: resolverYoutubeRegistrationRequestConnection(),
     YoutubeRegistrationRequestEvent: mkYoutubeRegistrationRequestEventResolver(deps),
-    YoutubeRegistrationRequestEventConnection: mkYoutubeRegistrationRequestEventConnectionResolver(deps),
-    YoutubeRegistrationRequestRejectEvent: mkYoutubeRegistrationRequestRejectEventResolver(deps),
+    YoutubeRegistrationRequestRejectedEvent: mkYoutubeRegistrationRequestRejectedEventResolver(deps),
     YoutubeRegistrationRequestRejecting: resolverYoutubeRegistrationRequestRejecting(deps),
     YoutubeRegistrationRequestRejectingNotification: mkYoutubeRegistrationRequestRejectingNotificationResolver(deps),
     YoutubeRegistrationRequestRequestEvent: mkYoutubeRegistrationRequestRequestEventResolver(deps),
+    YoutubeRegistrationRequestResolvedEvent: mkYoutubeRegistrationRequestResolvedEventResolver(deps),
     YoutubeVideoSource: resolveYoutubeVideoSource(deps),
     YoutubeVideoSourceCreateEvent: resolveYoutubeVideoSourceCreateEvent(deps),
     YoutubeVideoSourceEvent: resolveYoutubeVideoSourceEvent(),

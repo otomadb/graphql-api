@@ -133,19 +133,25 @@ generates:
         VideoTitleEvent: ../Video/dto.js#VideoTitleEventDTO
         VideoTitleSetPrimaryEvent: ../Video/dto.js#VideoTitleEventDTO
         VideoTitleUnsetPrimaryEvent: ../Video/dto.js#VideoTitleEventDTO
+        YoutubeMadRequestAcceptedTimelineEvent: ../Timeline/TimelineEvent.dto.js#YoutubeMadRequestAcceptedTimelineEventDTO
         YoutubeMadRequestedTimelineEvent: ../Timeline/TimelineEvent.dto.js#YoutubeMadRequestedTimelineEventDTO
+        YoutubeMadRequestRejectedTimelineEvent: ../Timeline/TimelineEvent.dto.js#YoutubeMadRequestRejectedTimelineEventDTO
+        YoutubeMadRequestResolvedTimelineEvent: ../Timeline/TimelineEvent.dto.js#YoutubeMadRequestResolvedTimelineEventDTO
         YoutubeOriginalSource: ../FetchExternal/YoutubeOriginalSource.dto.js#YoutubeOriginalSourceDTO
         YoutubeRegistrationRequest: ../YoutubeRegistrationRequest/YoutubeRegistrationRequest.dto.js#YoutubeRegistrationRequestDTO
-        YoutubeRegistrationRequestAcceptEvent: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.dto.js#YoutubeRegistrationRequestAcceptEventDTO
+        YoutubeRegistrationRequestChecking: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestChecking.dto.js#YoutubeRegistrationRequestCheckingDTO
+        YoutubeRegistrationRequestAcceptedEvent: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestCheckingEvent.dto.js#YoutubeRegistrationRequestAcceptedEventDTO
         YoutubeRegistrationRequestAccepting: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestAccepting.dto.js#YoutubeRegistrationRequestAcceptingDTO
         YoutubeRegistrationRequestAcceptingNotification: ../Notification/Notification.dto.js#YoutubeRegistrationRequestAcceptingNotificationDTO
+        YoutubeRegistrationRequestCheckingEvent: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestCheckingEvent.dto.js#YoutubeRegistrationRequestCheckingEventDTO
         YoutubeRegistrationRequestConnection: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestConnection.dto.js#YoutubeRegistrationRequestConnectionDTO
         YoutubeRegistrationRequestEvent: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.dto.js#YoutubeRegistrationRequestEventDTO
         YoutubeRegistrationRequestEventConnection: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestEventConnection.dto.js#YoutubeRegistrationRequestEventConnectionDTO
-        YoutubeRegistrationRequestRejectEvent: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.dto.js#YoutubeRegistrationRequestRejectEventDTO
+        YoutubeRegistrationRequestRejectedEvent: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestCheckingEvent.dto.js#YoutubeRegistrationRequestRejectedEventDTO
         YoutubeRegistrationRequestRejecting: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestRejecting.dto.js#YoutubeRegistrationRequestRejectingDTO
         YoutubeRegistrationRequestRejectingNotification: ../Notification/Notification.dto.js#YoutubeRegistrationRequestRejectingNotificationDTO
         YoutubeRegistrationRequestRequestEvent: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.dto.js#YoutubeRegistrationRequestRequestEventDTO
+        YoutubeRegistrationRequestResolvedEvent: ../YoutubeRegistrationRequest/YoutubeRegistrationRequestCheckingEvent.dto.js#YoutubeRegistrationRequestResolvedEventDTO
         YoutubeVideoSource: ../YoutubeVideoSource/dto.js#YoutubeVideoSourceDTO
         YoutubeVideoSourceCreateEvent: ../YoutubeVideoSource/dto.js#YoutubeVideoSourceEventDTO
         YoutubeVideoSourceEvent: ../YoutubeVideoSource/dto.js#YoutubeVideoSourceEventDTO

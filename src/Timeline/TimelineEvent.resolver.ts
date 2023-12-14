@@ -4,7 +4,10 @@ import {
   MadRegisteredTimelineEventDTO,
   NicovideoMadRequestedTimelineEventDTO,
   SoundcloudMadRequestedTimelineEventDTO,
+  YoutubeMadRequestAcceptedTimelineEventDTO,
   YoutubeMadRequestedTimelineEventDTO,
+  YoutubeMadRequestRejectedTimelineEventDTO,
+  YoutubeMadRequestResolvedTimelineEventDTO,
 } from "./TimelineEvent.dto.js";
 
 export const mkMadRegisteredTimelineEventResolver: MkResolverWithInclude<
@@ -36,8 +39,41 @@ export const mkYoutubeMadRequestedTimelineEventResolver: MkResolverWithInclude<
   __isTypeOf: (v) => v instanceof YoutubeMadRequestedTimelineEventDTO,
   createdAt: ({ createdAt }) => createdAt,
   request: ({ requestId }) => YoutubeRegistrationRequestService.getByIdOrThrow(requestId),
-  event: ({ eventId }) => {
-    return YoutubeRegistrationRequestEventService.getByIdOrThrow(eventId);
+  event: ({ requestId }) => {
+    return YoutubeRegistrationRequestEventService.createRequestRequestEvent(requestId);
+  },
+});
+
+export const mkYoutubeMadRequestAcceptedTimelineEventResolver: MkResolverWithInclude<
+  "YoutubeMadRequestAcceptedTimelineEvent",
+  "YoutubeRegistrationRequestCheckingEventService"
+> = ({ YoutubeRegistrationRequestCheckingEventService }) => ({
+  __isTypeOf: (v) => v instanceof YoutubeMadRequestAcceptedTimelineEventDTO,
+  createdAt: ({ createdAt }) => createdAt,
+  event: ({ checkingId }) => {
+    return YoutubeRegistrationRequestCheckingEventService.createAcceptedEvent(checkingId);
+  },
+});
+
+export const mkYoutubeMadRequestRejectedTimelineEventResolver: MkResolverWithInclude<
+  "YoutubeMadRequestRejectedTimelineEvent",
+  "YoutubeRegistrationRequestCheckingEventService"
+> = ({ YoutubeRegistrationRequestCheckingEventService }) => ({
+  __isTypeOf: (v) => v instanceof YoutubeMadRequestRejectedTimelineEventDTO,
+  createdAt: ({ createdAt }) => createdAt,
+  event: ({ checkingId }) => {
+    return YoutubeRegistrationRequestCheckingEventService.createRejectedEvent(checkingId);
+  },
+});
+
+export const mkYoutubeMadRequestResolvedTimelineEventResolver: MkResolverWithInclude<
+  "YoutubeMadRequestResolvedTimelineEvent",
+  "YoutubeRegistrationRequestCheckingEventService"
+> = ({ YoutubeRegistrationRequestCheckingEventService }) => ({
+  __isTypeOf: (v) => v instanceof YoutubeMadRequestResolvedTimelineEventDTO,
+  createdAt: ({ createdAt }) => createdAt,
+  event: ({ checkingId }) => {
+    return YoutubeRegistrationRequestCheckingEventService.createResolvedEvent(checkingId);
   },
 });
 
