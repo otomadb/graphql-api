@@ -410,6 +410,7 @@ describe("Register video by Prisma", () => {
           updatedAt: expect.any(Date),
           videoId,
           sourceId: "sm1",
+          registeredAt: null,
         } satisfies NicovideoVideoSource,
       ]),
     );
