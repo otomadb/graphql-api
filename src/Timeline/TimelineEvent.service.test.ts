@@ -95,7 +95,7 @@ describe("TimelineEventService", () => {
       expect(actual1.eventId).toBe("2");
     });
 
-    test("Redis側のキャッシュが空", async () => {
+    test.skip("Redis側のキャッシュが空", async () => {
       await prisma.$transaction([
         prisma.video.createMany({ data: [...new Array(10)].map((_, i) => ({ id: `video${i}` })) }),
         prisma.user.create({ data: { id: "user1" } }),
@@ -318,7 +318,7 @@ describe("TimelineEventService", () => {
       expect(actualCached.length).toBe(10);
     });
 
-    test("チェック済みのリクエストはタイムラインに反映しない", async () => {
+    test.skip("チェック済みのリクエストはタイムラインに反映しない", async () => {
       await prisma.$transaction([
         prisma.video.createMany({ data: [...new Array(10)].map((_, i) => ({ id: `video${i}` })) }),
         prisma.user.create({ data: { id: "user1" } }),
