@@ -722,7 +722,7 @@ model YoutubeVideoSource {
 
   events YoutubeVideoSourceEvent[]
 
-  @@unique([sourceId, videoId])
+  YoutubeRegistrationRequestChecking YoutubeRegistrationRequestChecking[]
 }
 
 model YoutubeVideoSourceEvent {
@@ -797,7 +797,7 @@ model YoutubeRegistrationRequestSemitagging {
 }
 
 model YoutubeRegistrationRequestChecking {
-  id String @id
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -811,7 +811,15 @@ model YoutubeRegistrationRequestChecking {
   video   Video?  @relation(fields: [videoId], references: [id])
   videoId String?
 
+  videoSource   YoutubeVideoSource? @relation(fields: [videoSourceId], references: [id])
+  videoSourceId String?
+
   note String?
+
+  resolved Boolean @default(false)
+
+  notification   Notification? @relation(fields: [notificationId], references: [id])
+  notificationId String?       @unique
 }
 
 model YoutubeRegistrationRequestEvent {
@@ -835,6 +843,8 @@ enum YoutubeRegistrationRequestEventType {
 
   ACCEPT
   REJECT
+
+  RESOLVE
 }
 
 model SoundcloudRegistrationRequest {
@@ -978,15 +988,21 @@ model Notification {
 
   type    NotificationType
   payload Json
+
+  YoutubeRegistrationRequestChecking YoutubeRegistrationRequestChecking?
 }
 
 enum NotificationType {
   ACCEPTING_NICOVIDEO_REGISTRATION_REQUEST
   REJECTING_NICOVIDEO_REGISTRATION_REQUEST
+
   ACCEPTING_YOUTUBE_REGISTRATION_REQUEST
   REJECTING_YOUTUBE_REGISTRATION_REQUEST
+  RESOLVING_YOUTUBE_REGISTRATION_REQUEST
+
   ACCEPTING_BILIBILI_REGISTRATION_REQUEST
   REJECTING_BILIBILI_REGISTRATION_REQUEST
+
   ACCEPTING_SOUNDCLOUD_REGISTRATION_REQUEST
   REJECTING_SOUNDCLOUD_REGISTRATION_REQUEST
 }

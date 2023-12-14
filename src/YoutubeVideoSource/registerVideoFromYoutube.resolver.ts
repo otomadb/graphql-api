@@ -1,13 +1,10 @@
 import {
-  Notification,
-  Prisma,
   SemitagEventType,
   Video,
   VideoEventType,
   VideoTagEventType,
   VideoThumbnailEventType,
   VideoTitleEventType,
-  YoutubeRegistrationRequest,
   YoutubeVideoSourceEventType,
 } from "@prisma/client";
 import { GraphQLError } from "graphql";
@@ -21,111 +18,6 @@ import { checkDuplicate } from "../utils/checkDuplicate.js";
 import { isValidYoutubeSourceId } from "../utils/isValidYoutubeSourceId.js";
 import { err, isErr, ok, Result } from "../utils/Result.js";
 import { VideoDTO } from "../Video/dto.js";
-
-async function mkAcceptTransaction(
-  prisma: ResolverDeps["prisma"],
-  requestId: string | null,
-  {
-    videoId,
-    userId,
-  }: {
-    videoId: string;
-    userId: string;
-  },
-): Promise<
-  Result<
-    | { type: "REQUEST_NOT_FOUND"; requestId: string }
-    | { type: "REQUEST_ALREADY_CHECKED"; requestId: string }
-    | { type: "INTERNAL_SERVER_ERROR"; error: unknown },
-    (
-      | Prisma.Prisma__YoutubeRegistrationRequestClient<unknown, never>
-      | Prisma.Prisma__NotificationClient<unknown, never>
-    )[]
-  >
-> {
-  if (!requestId) return ok([]);
-
-  const request = await prisma.youtubeRegistrationRequest.findUnique({ where: { id: requestId } });
-
-  if (!request) return err({ type: "REQUEST_NOT_FOUND", requestId });
-  if (request.isChecked) return err({ type: "REQUEST_ALREADY_CHECKED", requestId });
-
-  const checkingId = ulid();
-  return ok([
-    prisma.youtubeRegistrationRequest.update({
-      where: { id: requestId },
-      data: {
-        isChecked: true,
-        checking: {
-          create: {
-            id: checkingId,
-            video: { connect: { id: videoId } },
-            checkedBy: { connect: { id: userId } },
-          },
-        },
-        events: { create: { userId, type: "ACCEPT" } },
-      },
-    }),
-    prisma.notification.create({
-      data: {
-        notifyToId: request.requestedById,
-        type: "ACCEPTING_YOUTUBE_REGISTRATION_REQUEST",
-        payload: { id: checkingId },
-      },
-    }),
-  ]);
-}
-
-export const getRequestCheck = async (
-  prisma: ResolverDeps["prisma"],
-  { requestId, videoId, userId }: { requestId: string | null; userId: string; videoId: string },
-): Promise<
-  Result<
-    | { type: "REQUEST_NOT_FOUND"; requestId: string }
-    | { type: "REQUEST_ALREADY_CHECKED"; requestId: string }
-    | { type: "INTERNAL_SERVER_ERROR"; error: unknown },
-    (
-      | Prisma.Prisma__YoutubeRegistrationRequestClient<YoutubeRegistrationRequest, never>
-      | Prisma.Prisma__NotificationClient<Notification, never>
-    )[]
-  >
-> => {
-  if (!requestId) return ok([]);
-
-  try {
-    const request = await prisma.youtubeRegistrationRequest.findUnique({ where: { id: requestId } });
-    if (!request) return err({ type: "REQUEST_NOT_FOUND", requestId });
-    if (request.isChecked) return err({ type: "REQUEST_ALREADY_CHECKED", requestId });
-
-    const checkingId = ulid();
-    const tx = [
-      prisma.youtubeRegistrationRequest.update({
-        where: { id: requestId },
-        data: {
-          isChecked: true,
-          checking: {
-            create: {
-              id: checkingId,
-              video: { connect: { id: videoId } },
-              checkedBy: { connect: { id: userId } },
-            },
-          },
-          events: { create: { userId, type: "ACCEPT" } },
-        },
-      }),
-      prisma.notification.create({
-        data: {
-          notifyToId: request.requestedById,
-          type: "ACCEPTING_YOUTUBE_REGISTRATION_REQUEST",
-          payload: { id: checkingId },
-        },
-      }),
-    ];
-    return ok(tx);
-  } catch (e) {
-    return err({ type: "INTERNAL_SERVER_ERROR", error: e });
-  }
-};
 
 export const registerVideoInNeo4j = async (
   { prisma, neo4j }: Pick<ResolverDeps, "prisma" | "logger" | "neo4j">,
@@ -229,29 +121,42 @@ export const register = async (
     sourceId,
   }));
 
-  const checkRequest = await getRequestCheck(prisma, { requestId, videoId, userId: authUserId });
-  if (isErr(checkRequest)) return checkRequest;
-
-  const transactionReq = await mkAcceptTransaction(prisma, requestId, { userId: authUserId, videoId });
-  if (isErr(transactionReq)) {
-    switch (transactionReq.error.type) {
-      case "REQUEST_NOT_FOUND":
-        return err({
-          type: "REQUEST_NOT_FOUND",
-          requestId: transactionReq.error.requestId,
-        });
-      case "REQUEST_ALREADY_CHECKED":
-        return err({
-          type: "REQUEST_ALREADY_CHECKED",
-          requestId: transactionReq.error.requestId,
-        });
-      case "INTERNAL_SERVER_ERROR":
-        return err({
-          type: "INTERNAL_SERVER_ERROR",
-          error: transactionReq.error.error,
-        });
-    }
-  }
+  const reqTransaction = await (requestId
+    ? prisma.youtubeRegistrationRequest
+        .findUniqueOrThrow({
+          where: { id: requestId, isChecked: false },
+        })
+        .then((req) => [
+          prisma.youtubeRegistrationRequestChecking.create({
+            data: {
+              checkedBy: { connect: { id: authUserId } },
+              request: { connect: { id: req.id } },
+              videoSource: {
+                create: {
+                  events: { create: { type: "CREATE", userId: authUserId, payload: {} } },
+                  sourceId: req.sourceId,
+                  videoId,
+                },
+              },
+            },
+            include: { request: true, videoSource: true },
+          }),
+          prisma.youtubeRegistrationRequest.update({
+            where: { id: req.id },
+            data: {
+              events: { create: { userId: authUserId, type: "ACCEPT" } },
+              isChecked: true,
+            },
+          }),
+          prisma.notification.create({
+            data: {
+              notifyToId: req.requestedById,
+              type: "ACCEPTING_YOUTUBE_REGISTRATION_REQUEST",
+              payload: { id: req.id },
+            },
+          }),
+        ])
+    : []);
 
   const [video] = await prisma.$transaction([
     prisma.video.create({
@@ -336,7 +241,7 @@ export const register = async (
         })),
       ],
     }),
-    ...transactionReq.data,
+    ...reqTransaction,
   ]);
 
   return ok(video);

@@ -49,7 +49,8 @@ export type NodeType =
   | "BilibiliRegistrationRequest"
   | "BilibiliRegistrationRequestEvent"
   | "BilibiliRegistrationRequestTagging"
-  | "BilibiliRegistrationRequestSemitagging";
+  | "BilibiliRegistrationRequestSemitagging"
+  | "YoutubeRegistrationRequestChecking";
 
 export const buildGqlId = (type: NodeType, dbId: string): string =>
   Buffer.from(`${type}:${dbId}`).toString("base64url");

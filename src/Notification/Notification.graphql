@@ -67,6 +67,7 @@ type YoutubeRegistrationRequestRejectingNotification implements Node & Notificat
 
   rejecting: YoutubeRegistrationRequestRejecting!
 }
+
 type YoutubeRegistrationRequestAcceptingNotification implements Node & Notification {
   id: ID!
   createdAt: DateTime!

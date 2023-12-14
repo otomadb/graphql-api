@@ -1,0 +1,5 @@
+type YoutubeRegistrationRequestChecking implements Node {
+  id: ID!
+
+  request: YoutubeRegistrationRequest!
+}

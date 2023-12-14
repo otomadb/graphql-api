@@ -8,7 +8,10 @@ import {
   MadRegisteredTimelineEventDTO,
   NicovideoMadRequestedTimelineEventDTO,
   SoundcloudMadRequestedTimelineEventDTO,
+  YoutubeMadRequestAcceptedTimelineEventDTO,
   YoutubeMadRequestedTimelineEventDTO,
+  YoutubeMadRequestRejectedTimelineEventDTO,
+  YoutubeMadRequestResolvedTimelineEventDTO,
 } from "./TimelineEvent.dto.js";
 
 export type RegisterVideoCache = {
@@ -27,8 +30,29 @@ export type RequestYoutubeCache = {
   type: "REQUEST_YOUTUBE";
   requestId: string;
   createdAt: Date;
-  eventId: string;
 };
+
+export const schemaAcceptedYoutubeRequestCache = z.object({
+  type: z.literal("ACCEPTED_YOUTUBE_REQUEST"),
+  createdAt: z.union([z.date(), z.string().datetime()]),
+  checkingId: z.string(),
+});
+export type AcceptedYoutubeRequestCache = z.infer<typeof schemaAcceptedYoutubeRequestCache>;
+
+export const schemaRejectedYoutubeRequestCache = z.object({
+  type: z.literal("REJECTED_YOUTUBE_REQUEST"),
+  createdAt: z.union([z.date(), z.string().datetime()]),
+  checkingId: z.string(),
+});
+export type RejectedYoutubeRequestCache = z.infer<typeof schemaRejectedYoutubeRequestCache>;
+
+export const schemaResolvedYoutubeRequestCache = z.object({
+  type: z.literal("RESOLVED_YOUTUBE_REQUEST"),
+  createdAt: z.union([z.date(), z.string().datetime()]),
+  checkingId: z.string(),
+});
+export type ResolvedYoutubeRequestCache = z.infer<typeof schemaResolvedYoutubeRequestCache>;
+
 export type RequestSoundcloudCache = {
   type: "REQUEST_SOUNDCLOUD";
   requestId: string;
@@ -63,7 +87,16 @@ export const mkTimelineEventService = ({
       userId: string,
       { take, skip, filter }: { take: number; skip: number; filter: Filter },
     ): Promise<
-      (MadRegisteredTimelineEventDTO | NicovideoMadRequestedTimelineEventDTO | YoutubeMadRequestedTimelineEventDTO)[]
+      (
+        | MadRegisteredTimelineEventDTO
+        | NicovideoMadRequestedTimelineEventDTO
+        | SoundcloudMadRequestedTimelineEventDTO
+        | SoundcloudMadRequestedTimelineEventDTO
+        | YoutubeMadRequestAcceptedTimelineEventDTO
+        | YoutubeMadRequestedTimelineEventDTO
+        | YoutubeMadRequestRejectedTimelineEventDTO
+        | YoutubeMadRequestResolvedTimelineEventDTO
+      )[]
     > {
       const redisKey = `timeline:${userId}:${JSON.stringify(filter)}`;
       const cached = await redis.get(redisKey).then((v) => JSON.parse(v ?? "[]"));
@@ -100,6 +133,9 @@ export const mkTimelineEventService = ({
               requestId: z.string(),
               eventId: z.string(),
             }),
+            schemaAcceptedYoutubeRequestCache,
+            schemaRejectedYoutubeRequestCache,
+            schemaResolvedYoutubeRequestCache,
           ]),
         )
         .safeParse(cached);
@@ -119,24 +155,25 @@ export const mkTimelineEventService = ({
                 return new SoundcloudMadRequestedTimelineEventDTO(createdAt, v);
               case "REQUEST_BILIBILI":
                 return new BilibiliMadRequestedTimelineEventDTO(createdAt, v);
+              case "ACCEPTED_YOUTUBE_REQUEST":
+                return new YoutubeMadRequestAcceptedTimelineEventDTO(createdAt, v);
+              case "REJECTED_YOUTUBE_REQUEST":
+                return new YoutubeMadRequestRejectedTimelineEventDTO(createdAt, v);
+              case "RESOLVED_YOUTUBE_REQUEST":
+                return new YoutubeMadRequestResolvedTimelineEventDTO(createdAt, v);
             }
           });
       } else {
         logger.warn(parsedCached.error);
       }
 
-      const [v, nr, yr, sr, br] = await prisma.$transaction([
+      const [v, nr, sr, br, yr, yrc] = await prisma.$transaction([
         prisma.videoEvent.findMany({
           where: { type: "REGISTER" },
           orderBy: { createdAt: "desc" },
           take: take + skip,
         }),
         prisma.nicovideoRegistrationRequestEvent.findMany({
-          where: { type: "REQUEST", request: { isChecked: false } },
-          orderBy: { createdAt: "desc" },
-          take: take + skip,
-        }),
-        prisma.youtubeRegistrationRequestEvent.findMany({
           where: { type: "REQUEST", request: { isChecked: false } },
           orderBy: { createdAt: "desc" },
           take: take + skip,
@@ -151,7 +188,17 @@ export const mkTimelineEventService = ({
           orderBy: { createdAt: "desc" },
           take: take + skip,
         }),
+        prisma.youtubeRegistrationRequest.findMany({
+          where: { checking: null },
+          orderBy: { createdAt: "desc" },
+          take: take + skip,
+        }),
+        prisma.youtubeRegistrationRequestChecking.findMany({
+          orderBy: { createdAt: "desc" },
+          take: take + skip,
+        }),
       ]);
+
       const merged = [
         ...v.map(
           ({ createdAt, videoId, id }) =>
@@ -171,15 +218,6 @@ export const mkTimelineEventService = ({
               eventId: id,
             }) satisfies RequestNicovideoCache,
         ),
-        ...yr.map(
-          ({ createdAt, requestId, id }) =>
-            ({
-              type: "REQUEST_YOUTUBE" as const,
-              requestId,
-              createdAt,
-              eventId: id,
-            }) satisfies RequestYoutubeCache,
-        ),
         ...sr.map(
           ({ createdAt, requestId, id }) =>
             ({
@@ -198,6 +236,34 @@ export const mkTimelineEventService = ({
               eventId: id,
             }) satisfies RequestBilibiliCache,
         ),
+        ...yr.map(
+          ({ createdAt, id }) =>
+            ({
+              type: "REQUEST_YOUTUBE" as const,
+              createdAt,
+              requestId: id,
+            }) satisfies RequestYoutubeCache,
+        ),
+        ...yrc.map(({ createdAt, id: checkingId, videoSourceId, resolved }) => {
+          if (videoSourceId === null)
+            return {
+              type: "REJECTED_YOUTUBE_REQUEST",
+              createdAt,
+              checkingId,
+            } satisfies RejectedYoutubeRequestCache;
+          else if (resolved)
+            return {
+              type: "RESOLVED_YOUTUBE_REQUEST" as const,
+              createdAt,
+              checkingId,
+            } satisfies ResolvedYoutubeRequestCache;
+          else
+            return {
+              type: "ACCEPTED_YOUTUBE_REQUEST" as const,
+              createdAt,
+              checkingId,
+            } satisfies AcceptedYoutubeRequestCache;
+        }),
       ]
         .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
         .slice(0, skip + take);
@@ -211,6 +277,12 @@ export const mkTimelineEventService = ({
             return new NicovideoMadRequestedTimelineEventDTO(createdAt, v);
           case "REQUEST_YOUTUBE":
             return new YoutubeMadRequestedTimelineEventDTO(createdAt, v);
+          case "ACCEPTED_YOUTUBE_REQUEST":
+            return new YoutubeMadRequestAcceptedTimelineEventDTO(createdAt, v);
+          case "REJECTED_YOUTUBE_REQUEST":
+            return new YoutubeMadRequestRejectedTimelineEventDTO(createdAt, v);
+          case "RESOLVED_YOUTUBE_REQUEST":
+            return new YoutubeMadRequestResolvedTimelineEventDTO(createdAt, v);
           case "REQUEST_SOUNDCLOUD":
             return new SoundcloudMadRequestedTimelineEventDTO(createdAt, v);
           case "REQUEST_BILIBILI":
