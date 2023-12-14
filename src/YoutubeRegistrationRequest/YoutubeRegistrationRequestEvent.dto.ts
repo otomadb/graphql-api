@@ -1,13 +1,18 @@
-import { YoutubeRegistrationRequestEvent } from "@prisma/client";
-
 export class YoutubeRegistrationRequestEventDTO {
-  protected constructor(protected readonly event: YoutubeRegistrationRequestEvent) {}
+  protected constructor(
+    protected readonly event: {
+      requestId: string;
+      firedBy: string;
+      createdAt: Date;
+    },
+  ) {}
 
   get id() {
-    return this.event.id;
+    return this.createdAt.getTime();
   }
+
   get series() {
-    return this.id;
+    return this.createdAt.getTime();
   }
 
   get createdAt() {
@@ -15,7 +20,7 @@ export class YoutubeRegistrationRequestEventDTO {
   }
 
   get userId() {
-    return this.event.userId;
+    return this.event.firedBy;
   }
 
   get requestId() {
@@ -24,19 +29,7 @@ export class YoutubeRegistrationRequestEventDTO {
 }
 
 export class YoutubeRegistrationRequestRequestEventDTO extends YoutubeRegistrationRequestEventDTO {
-  constructor(event: YoutubeRegistrationRequestEvent) {
-    super(event);
-  }
-}
-
-export class YoutubeRegistrationRequestAcceptEventDTO extends YoutubeRegistrationRequestEventDTO {
-  constructor(event: YoutubeRegistrationRequestEvent) {
-    super(event);
-  }
-}
-
-export class YoutubeRegistrationRequestRejectEventDTO extends YoutubeRegistrationRequestEventDTO {
-  constructor(event: YoutubeRegistrationRequestEvent) {
+  constructor(event: { createdAt: Date; firedBy: string; requestId: string }) {
     super(event);
   }
 }

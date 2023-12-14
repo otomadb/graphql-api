@@ -1,5 +1,4 @@
-import { MkResolver } from "../utils/MkResolver.js";
-
+/*
 export const mkYoutubeRegistrationRequestEventConnectionResolver: MkResolver<
   "YoutubeRegistrationRequestEventConnection",
   "YoutubeRegistrationRequestEventService"
@@ -10,3 +9,4 @@ export const mkYoutubeRegistrationRequestEventConnectionResolver: MkResolver<
   pageInfo: ({ pageInfo }) => pageInfo,
   totalCount: ({ totalCount }) => totalCount,
 });
+*/

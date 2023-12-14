@@ -1,30 +1,13 @@
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection";
-import { PrismaClient, YoutubeRegistrationRequestEvent } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { Logger } from "pino";
 
 import { cursorOptions } from "../resolvers/connection.js";
-import {
-  YoutubeRegistrationRequestAcceptEventDTO,
-  YoutubeRegistrationRequestRejectEventDTO,
-  YoutubeRegistrationRequestRequestEventDTO,
-} from "./YoutubeRegistrationRequestEvent.dto.js";
+import { YoutubeRegistrationRequestRequestEventDTO } from "./YoutubeRegistrationRequestEvent.dto.js";
 import { YoutubeRegistrationRequestEventConnectionDTO } from "./YoutubeRegistrationRequestEventConnection.dto.js";
 
 export const mkYoutubeRegistrationRequestEventService = ({ prisma }: { prisma: PrismaClient; logger: Logger }) => {
   return {
-    switchit(v: YoutubeRegistrationRequestEvent) {
-      switch (v.type) {
-        case "REQUEST":
-          return new YoutubeRegistrationRequestRequestEventDTO(v);
-        case "ACCEPT":
-          return new YoutubeRegistrationRequestAcceptEventDTO(v);
-        case "REJECT":
-          return new YoutubeRegistrationRequestRejectEventDTO(v);
-      }
-    },
-    getByIdOrThrow(id: string) {
-      return prisma.youtubeRegistrationRequestEvent.findUniqueOrThrow({ where: { id } }).then((v) => this.switchit(v));
-    },
     findConnection(
       id: string,
       args:
@@ -44,6 +27,16 @@ export const mkYoutubeRegistrationRequestEventService = ({ prisma }: { prisma: P
         args,
         { ...cursorOptions },
       ).then((c) => YoutubeRegistrationRequestEventConnectionDTO.fromPrisma(c));
+    },
+    createRequestRequestEvent(requestId: string): Promise<YoutubeRegistrationRequestRequestEventDTO> {
+      return prisma.youtubeRegistrationRequest.findUniqueOrThrow({ where: { id: requestId } }).then(
+        (req) =>
+          new YoutubeRegistrationRequestRequestEventDTO({
+            requestId: req.id,
+            createdAt: req.createdAt,
+            firedBy: req.requestedById,
+          }),
+      );
     },
   };
 };

@@ -31,6 +31,7 @@ import { resolverRegisterTag } from "./Tag/registerTag.resolver.js";
 import { resolverRegisterTagParentRelation } from "./Tag/registerTagParentRelation.resolver.js";
 import { resolverRemoveTagFromVideo } from "./Tag/removeTagFromVideo.resolver.js";
 import { mkRequestYoutubeRegistrationResolver } from "./YoutubeRegistrationRequest/requestYoutubeRegistration.resolver.js";
+import { mkResolveYoutubeRegistrationRequestResolver } from "./YoutubeRegistrationRequest/resolveYoutubeRegistrationRequest.resolver.js";
 import { resolverRegisterVideoFromYoutube } from "./YoutubeVideoSource/registerVideoFromYoutube.resolver.js";
 
 export const resolveMutation = (deps: ResolverDeps) =>
@@ -62,6 +63,12 @@ export const resolveMutation = (deps: ResolverDeps) =>
     requestNicovideoRegistration: resolverRequestNicovideoRegistration(deps),
     requestSoundcloudRegistration: mkRequestSoundcloudRegistrationResolver(deps),
     requestYoutubeRegistration: mkRequestYoutubeRegistrationResolver(deps),
+    resolveYoutubeRegistrationRequest: mkResolveYoutubeRegistrationRequestResolver({
+      ...deps,
+      logger: deps.logger.child({
+        resolver: "Mutation.resolveYoutubeRegistrationRequest",
+      }),
+    }),
     resovleSemitag: resolverResolveSemitag(deps),
     undoLikeVideo: resolverUndoLikeVideo(deps),
     watchNotifications: resolverWatchNotifications(deps),
