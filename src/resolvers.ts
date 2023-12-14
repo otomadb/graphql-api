@@ -36,7 +36,7 @@ import {
 } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.resolver.js";
 import { mkNicovideoRegistrationRequestEventConnectionResolver } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestEventConnection.resolver.js";
 import { resolverNicovideoRegistrationRequestRejecting } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestRejecting.resolver.js";
-import { resolverNicovideoVideoSource } from "./NicovideoVideoSource/NicovideoVideoSource.resolver.js";
+import { mkNicovideoVideoSourceResolver } from "./NicovideoVideoSource/NicovideoVideoSource.resolver.js";
 import {
   resolveNicovideoVideoSourceCreateEvent,
   resolveNicovideoVideoSourceEvent,
@@ -203,7 +203,7 @@ export const makeResolvers = (deps: ResolverDeps) =>
     NicovideoRegistrationRequestRejectingNotification:
       mkNicovideoRegistrationRequestRejectingNotificationResolver(deps),
     NicovideoRegistrationRequestRequestEvent: mkNicovideoRegistrationRequestRequestEventResolver(deps),
-    NicovideoVideoSource: resolverNicovideoVideoSource(deps),
+    NicovideoVideoSource: mkNicovideoVideoSourceResolver(deps),
     NicovideoVideoSourceCreateEvent: resolveNicovideoVideoSourceCreateEvent(deps),
     NicovideoVideoSourceEvent: resolveNicovideoVideoSourceEvent(),
     NotificationConnection: resolverNotificationConnection(),

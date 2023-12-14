@@ -7,6 +7,9 @@ type NicovideoVideoSource implements Node & VideoSource {
   embedUrl: String!
 
   events(input: NicovideoVideoSourceEventsInput!): NicovideoVideoSourceEventConnection!
+
+  "ニコニコ動画側における投稿時刻"
+  registeredAt: DateTime
 }
 
 input NicovideoVideoSourceEventsInput {
