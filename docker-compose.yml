@@ -3,7 +3,7 @@ version: "3.9"
 
 services:
   postgres:
-    image: postgres:15@sha256:450fae6f2da9f779008780eb834e05d1d677929306fdc1cce0820893634bdf16
+    image: postgres:15@sha256:e01f532a5983facbed9dc9df6b34aab4ede236fc40a288055050b334fb44fcc4
     healthcheck:
       test: pg_isready
       interval: 10s
