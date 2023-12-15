@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import type { AppMetadata, ManagementClient, User, UserMetadata } from "auth0";
+import type { GetUsers200ResponseOneOfInner, ManagementClient } from "auth0";
 import type { Redis } from "ioredis";
 import type { Logger } from "pino";
 import { z } from "zod";
@@ -9,7 +9,7 @@ import { UserDTO } from "./dto.js";
 export class UserService {
   private constructor(
     private readonly prisma: PrismaClient,
-    private readonly auth0Management: ManagementClient<AppMetadata, UserMetadata>,
+    private readonly auth0Management: ManagementClient,
     private readonly logger: Logger,
     private readonly redis: Redis,
     private readonly env: {
@@ -26,7 +26,7 @@ export class UserService {
     env,
   }: {
     prisma: PrismaClient;
-    auth0Management: ManagementClient<AppMetadata, UserMetadata>;
+    auth0Management: ManagementClient;
     logger: Logger;
     redis: Redis;
     env: {
@@ -37,7 +37,7 @@ export class UserService {
     return new UserService(prisma, auth0Management, logger, redis, env);
   }
 
-  public async fromAuth0User(auth0user: User<AppMetadata, UserMetadata>) {
+  public async fromAuth0User(auth0user: GetUsers200ResponseOneOfInner) {
     const parsed = z
       .object({
         user_id: z.string(),
@@ -99,7 +99,7 @@ export class UserService {
     }
 
     try {
-      const auth0user = await this.auth0Management.getUser({ id: userId });
+      const auth0user = (await this.auth0Management.users.get({ id: userId })).data;
       const user = await this.fromAuth0User(auth0user);
       return user;
     } catch (error) {
@@ -109,7 +109,7 @@ export class UserService {
   }
 
   public async findByName(name: string) {
-    const auth0user = (await this.auth0Management.getUsers({ q: `username:"${name}"` })).at(0);
+    const auth0user = (await this.auth0Management.users.getAll({ q: `username:"${name}"` })).data.at(0);
     if (!auth0user) {
       this.logger.info({ userName: name }, "User not found");
       return null;
@@ -135,7 +135,7 @@ export class UserService {
       this.logger.error({ error, userId, role }, "Failed to check role from redis");
     }
     try {
-      const roles = await this.auth0Management.getUserRoles({ id: userId });
+      const roles = (await this.auth0Management.users.getRoles({ id: userId })).data;
 
       const isEditor = roles.some(({ id }) => id === this.env.editorRoleId);
       await this.redis.setex(`auth0:${userId}:is-editor`, 60 * 3, isEditor ? 1 : 0);
@@ -158,7 +158,7 @@ export class UserService {
 
   public async changeDisplayName(userId: string, renameTo: string): Promise<UserDTO> {
     try {
-      const updated = await this.auth0Management.updateUser({ id: userId }, { nickname: renameTo });
+      const updated = (await this.auth0Management.users.update({ id: userId }, { nickname: renameTo })).data;
       await this.redis.del(`auth0:${userId}`);
       return this.fromAuth0User(updated);
     } catch (error) {
