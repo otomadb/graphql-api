@@ -2,7 +2,6 @@ import { IncomingMessage, ServerResponse } from "node:http";
 
 import { PromiseClient } from "@connectrpc/connect";
 import { PrismaClient } from "@prisma/client";
-import { AppMetadata, User, UserMetadata } from "auth0";
 import { MeiliSearch } from "meilisearch";
 import { Driver as Neo4jDriver } from "neo4j-driver";
 import { Logger } from "pino";
@@ -27,8 +26,6 @@ import { VideoEventService } from "../Video/VideoEvent.service.js";
 import { YoutubeRegistrationRequestService } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequest.service.js";
 import { YoutubeRegistrationRequestCheckingEventService } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestCheckingEvent.service.js";
 import { YoutubeRegistrationRequestEventService } from "../YoutubeRegistrationRequest/YoutubeRegistrationRequestEvent.service.js";
-
-export type Auth0User = User<AppMetadata, UserMetadata>;
 
 export type ResolverDeps = {
   BilibiliMADSourceService: BilibiliMADSourceService;
