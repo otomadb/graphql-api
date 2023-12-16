@@ -324,6 +324,7 @@ describe("Register video by Prisma", () => {
           updatedAt: expect.any(Date),
           videoId,
           sourceId: "Q16KpquGsIc",
+          isOriginal: true,
         } satisfies YoutubeVideoSource,
       ]),
     );

@@ -596,6 +596,8 @@ model NicovideoVideoSource {
 
   registeredAt DateTime?
 
+  isOriginal Boolean @default(true) // 転載などのケースでは`false`
+
   @@unique([sourceId, videoId])
 }
 
@@ -723,6 +725,8 @@ model YoutubeVideoSource {
   video   Video  @relation(fields: [videoId], references: [id])
 
   events YoutubeVideoSourceEvent[]
+
+  isOriginal Boolean @default(true) // 転載などのケースでは`false`
 
   YoutubeRegistrationRequestChecking YoutubeRegistrationRequestChecking[]
 }
@@ -954,6 +958,8 @@ model SoundcloudVideoSource {
 
   events SoundcloudVideoSourceEvent[]
 
+  isOriginal Boolean @default(true) // 転載などのケースでは`false`
+
   @@unique([sourceId, videoId])
 }
 
@@ -1021,6 +1027,8 @@ model BilibiliMADSource {
   video   Video  @relation(fields: [videoId], references: [id])
 
   events BilibiliMADSourceEvent[]
+
+  isOriginal Boolean @default(true) // 転載などのケースでは`false`
 
   @@unique([sourceId, videoId])
 }

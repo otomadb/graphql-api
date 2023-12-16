@@ -6,10 +6,27 @@ input FindMadsByOffsetInput {
   offset: Int!
   take: Int!
   orderBy: FindMadsByOffsetInputOrderBy! = { createdAt: DESC }
+  filter: FindMadsByOffsetInputFilter! = {}
 }
 
 input FindMadsByOffsetInputOrderBy {
   createdAt: SortOrder
+}
+
+input FindMadsByOffsetInputFilter {
+  """
+  (ソース元の投稿時刻) ≦ (入力)
+
+  *ソース元の投稿時刻が不明な場合，このフィルターを入れると全て無視されることに注意．*
+  """
+  registeredAtLte: DateTime
+
+  """
+  (ソース元の投稿時刻) ≧ (入力)
+
+  *ソース元の投稿時刻が不明な場合，このフィルターを入れると全て無視されることに注意．*
+  """
+  registeredAtGte: DateTime
 }
 
 type FindMadsByOffsetPayload {
