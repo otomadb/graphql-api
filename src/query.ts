@@ -48,6 +48,7 @@ import { resolverFindTags } from "./Tag/findTags.resolver.js";
 import { resolverGetTag } from "./Tag/getTag.resolver.js";
 import { resolverSearchTags } from "./Tag/searchTags.resolver.js";
 import { mkShowTimelineResolver } from "./Timeline/showTimeline.resolver.js";
+import { mkEnsuredViewerResolver } from "./User/ensuredViewer.resolver.js";
 import { resolverFindUser } from "./User/findUser.resolver.js";
 import { resolverGetUser } from "./User/getUser.resolver.js";
 import { mkViewerResolver } from "./User/viewer.resolver.js";
@@ -72,9 +73,8 @@ export const resolveQuery = (deps: ResolverDeps) =>
     countAllMads: mkCountAllMadsResolver(deps),
     countAllTags: mkCountAllTagsResolver(deps),
     countUnwatchedNotifications: mkCountUnwatchedNotificationsResolver(deps),
-    ensuredViewer: mkViewerResolver({
+    ensuredViewer: mkEnsuredViewerResolver({
       ...deps,
-      logger: deps.logger.child({ resolver: "Query.ensuredViewer" }),
     }),
     fetchBilibili: resolverFetchBilibili(deps),
     fetchNicovideo: fetchNicovideo(),

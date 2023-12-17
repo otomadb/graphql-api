@@ -204,6 +204,18 @@ export const resolveUser = ({ prisma, logger, userService }: Pick<ResolverDeps, 
       return new MylistModel(mylist);
     },
 
+    allMylists: async ({ id: holderId }) => {
+      const mylists = await prisma.mylist.findMany({
+        where: {
+          holderId,
+          slug: {
+            not: "likes", // TODO: いずれ削除する
+          },
+        },
+      });
+      return mylists.map((v) => new MylistModel(v));
+    },
+
     publicLikes: async ({ id: holderId }) => {
       const mylist = await prisma.mylist.findFirst({
         where: { slug: "likes", holderId, shareRange: MylistShareRange.PUBLIC },
