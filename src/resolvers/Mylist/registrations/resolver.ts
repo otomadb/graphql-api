@@ -43,12 +43,12 @@ export const resolverMylistRegistrations = ({ prisma, logger }: Pick<ResolverDep
       (args) =>
         prisma.mylistRegistration.findMany({
           ...args,
-          where: { mylistId },
+          where: { mylistId, isRemoved: false },
           orderBy: orderBy.data,
         }),
       () =>
         prisma.mylistRegistration.count({
-          where: { mylistId },
+          where: { mylistId, isRemoved: false },
         }),
       connectionArgs.data,
       { resolveInfo: info, ...cursorOptions },
