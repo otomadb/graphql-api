@@ -7,6 +7,7 @@ import { mkRequestBilibiliRegistrationResolver } from "./BilibiliRegistrationReq
 import { mkAddVideoToMylistResolver } from "./Mylist/addVideoToMylist.resolver.js";
 import { mkRemoveVideoFromMylistResolver } from "./Mylist/removeVideoFromMylist.js";
 import { mkUpdateMylistSlugUpdate } from "./Mylist/updateMylistSlug.resolver.js";
+import { mkUpdateMylistTitleUpdate } from "./Mylist/updateMylistTitle.resolver.js";
 import { resolverRejectRequestNicovideoRegistration } from "./NicovideoRegistrationRequest/rejectNicovideoRegistrationRequest.resolver.js";
 import { resolverRequestNicovideoRegistration } from "./NicovideoRegistrationRequest/requestNicovideoRegistration.resolver.js";
 import { resolverRegisterVideoFromNicovideo } from "./NicovideoVideoSource/registerVideoFromNicovideo.resolver.js";
@@ -78,6 +79,10 @@ export const resolveMutation = (deps: ResolverDeps) =>
     updateMylistSlug: mkUpdateMylistSlugUpdate({
       ...deps,
       logger: deps.logger.child({ resolver: "Mutation.updateMylistSlug" }),
+    }),
+    updateMylistTitle: mkUpdateMylistTitleUpdate({
+      ...deps,
+      logger: deps.logger.child({ resolver: "Mutation.updateMylistTitle" }),
     }),
     watchNotifications: resolverWatchNotifications(deps),
   }) satisfies Required<Resolvers["Mutation"]>;

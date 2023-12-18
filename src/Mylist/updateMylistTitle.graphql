@@ -1,0 +1,16 @@
+type Mutation {
+  updateMylistTitle(input: UpdateMylistTitleInput!): UpdateMylistTitleReturnUnion! @auth
+}
+
+input UpdateMylistTitleInput {
+  mylistId: ID!
+
+  "新しいタイトル"
+  newTitle: String!
+}
+
+union UpdateMylistTitleReturnUnion = UpdateMylistTitleSucceededPayload
+
+type UpdateMylistTitleSucceededPayload {
+  mylist: Mylist!
+}
