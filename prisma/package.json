@@ -1,0 +1,6 @@
+{
+  "name": "@otomadb/postgres-migration",
+  "devDependencies": {
+    "prisma": "5.7.0"
+  }
+}
