@@ -1,35 +1,30 @@
 # Builder
-FROM node:20.10.0-slim@sha256:363a50faa3a561618775c1bab18dae9b4d0910a28f249bf8b72c0251c83791ff AS builder
-WORKDIR /app
+FROM node:20.10.0-slim@sha256:e941e22afee9c5d1e96f7e3db939894c053f015e45ad9920793d78a6234dfe11 AS builder
+WORKDIR /build
 
+# To install faster
+RUN npm set progress=false
+
+# install OpenSSL
+# hadolint ignore=DL3008
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends openssl=3.0.11-1~deb12u1 \
+  && apt-get install -y --no-install-recommends openssl \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-COPY package.json package-lock.json .npmrc ./
+COPY ./package.json ./package-lock.json ./
 RUN npm ci --ignore-scripts
 
-COPY ./prisma/schema.prisma ./prisma/schema.prisma
-RUN npm run prisma:client
-
-COPY buf.gen.yaml ./
-COPY proto ./proto
-RUN npm run buf:generate
-
-COPY ./codegen.yml ./
-COPY ./src ./src
-RUN npm run codegen
-
-COPY ./tsconfig.json rollup.config.js ./
-RUN npm run rollup:build
+COPY . .
+RUN npm run build
 
 # Runner
-FROM node:20.10.0-slim@sha256:363a50faa3a561618775c1bab18dae9b4d0910a28f249bf8b72c0251c83791ff AS runner
+FROM node:20.10.0-slim@sha256:e941e22afee9c5d1e96f7e3db939894c053f015e45ad9920793d78a6234dfe11 AS runner
 WORKDIR /app
 
+# hadolint ignore=DL3008
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends openssl=3.0.11-1~deb12u1 \
+  && apt-get install -y --no-install-recommends openssl \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -39,13 +34,10 @@ RUN chmod +x /bin/tini
 
 ## install production-only node.js dependencies
 ENV NODE_ENV production
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev --ignore-scripts
 
 ## copy build dist
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules/.prisma/client ./node_modules/.prisma/client
+COPY --from=builder /build/node_modules/.prisma/client/libquery_engine-debian-openssl-3.0.x.so.node ./node_modules/@prisma/client/libquery_engine-debian-openssl-3.0.x.so.node
+COPY --from=builder /build/dist ./dist
 
 ENTRYPOINT ["tini", "--"]
-CMD ["node", "dist/index.mjs"]
-
+CMD ["node", "./dist/index.mjs"]
