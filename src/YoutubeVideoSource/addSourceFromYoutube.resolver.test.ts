@@ -36,7 +36,6 @@ describe("Mutation.addSourceFromYoutube", () => {
           input: {
             madId: "invalid",
             title: { title: "title", locale: "ja" },
-            thumbnailUrl: "https://example.com",
             sourceId: "source:1",
             isOriginal: true,
           },
@@ -63,7 +62,6 @@ describe("Mutation.addSourceFromYoutube", () => {
         input: {
           madId: buildGqlId("Video", "video_1"),
           title: { title: "title", locale: "ja" },
-          thumbnailUrl: "https://example.com",
           sourceId: "source:1",
           isOriginal: true,
         },
