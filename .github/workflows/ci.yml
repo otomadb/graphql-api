@@ -60,10 +60,7 @@ jobs:
           node-version-file: .node-version
           cache: npm
       - run: npm ci --ignore-scripts
-      - run: npm run codegen
-      - run: npm run prisma:client
-      - run: npm run buf:generate
-      - run: npm run typecheck
+      - run: npm run prebuild
       - run: npm run test
         env:
           PRISMA_DATABASE_URL: postgres://${{ env.POSTGRES_USERNAME }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DATABASE }}
