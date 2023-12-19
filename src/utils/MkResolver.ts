@@ -1,3 +1,5 @@
+import { Logger } from "pino";
+
 import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers/graphql.js";
 import { ResolverDeps } from "../resolvers/types.js";
 
@@ -18,3 +20,8 @@ export type MkMutationResolver<
   D extends keyof MutationResolvers,
   DI extends keyof ResolverDeps | undefined = undefined,
 > = (inject: Pick<ResolverDeps, Exclude<DI, undefined>>) => Exclude<MutationResolvers[D], undefined>; // TODO: Excludeがなぜ必要なのかわからない
+
+export type MkMutationResolver2<
+  D extends keyof MutationResolvers,
+  DI extends Exclude<keyof ResolverDeps, "logger"> | undefined = undefined,
+> = (logger: Logger, inject: Pick<ResolverDeps, Exclude<DI, undefined>>) => Exclude<MutationResolvers[D], undefined>; // TODO: Excludeがなぜ必要なのかわからない

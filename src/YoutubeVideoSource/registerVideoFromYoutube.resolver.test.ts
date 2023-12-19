@@ -110,6 +110,7 @@ describe("Register video by Prisma", () => {
       updatedAt: expect.any(Date),
       isPrimary: true,
       title: "Video 1",
+      locale: "ja-JP",
       videoId,
     } satisfies VideoTitle);
 
@@ -124,6 +125,7 @@ describe("Register video by Prisma", () => {
           isPrimary: false,
           title: "Video 1.1",
           videoId,
+          locale: "ja-JP",
         } satisfies VideoTitle,
         {
           id: expect.any(String),
@@ -132,6 +134,7 @@ describe("Register video by Prisma", () => {
           isPrimary: false,
           title: "Video 1.2",
           videoId,
+          locale: "ja-JP",
         } satisfies VideoTitle,
       ]),
     );
@@ -325,6 +328,7 @@ describe("Register video by Prisma", () => {
           videoId,
           sourceId: "Q16KpquGsIc",
           isOriginal: true,
+          thumbnailUrl: null,
         } satisfies YoutubeVideoSource,
       ]),
     );
