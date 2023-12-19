@@ -68,6 +68,7 @@ const auth0Management = process.env.AUTH0_MANAGEMENT_API_TOKEN
 
 const logger = pino({
   level: process.env.NODE_ENV === "production" ? "info" : "trace",
+  /*
   transport: {
     targets: [
       {
@@ -85,6 +86,7 @@ const logger = pino({
       },
     ],
   },
+  */
 });
 
 const prismaClient = new PrismaClient();
