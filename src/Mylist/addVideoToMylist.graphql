@@ -1,0 +1,16 @@
+type Mutation {
+  addVideoToMylist(input: AddVideoToMylistInput!): AddVideoToMylistReturnUnion!
+    @auth(scopes: ["update:mylist_registration"])
+}
+
+input AddVideoToMylistInput {
+  videoId: ID!
+  mylistId: ID!
+  note: String
+}
+
+union AddVideoToMylistReturnUnion = AddVideoToMylistSucceededPayload
+
+type AddVideoToMylistSucceededPayload {
+  registration: MylistRegistration!
+}

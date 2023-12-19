@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package proxy.v2;
+
+option go_package = "otomadb.com/ixgyohn/gen/proxy/v2;proxyv2";
+
+service ProxyService {
+  rpc ProxyUrl(ProxyUrlRequest) returns (ProxyUrlResponse) {}
+}
+
+message ProxyUrlRequest {
+  string url = 1;
+
+  uint32 width = 2;
+  uint32 height = 3;
+}
+
+message ProxyUrlResponse {
+  string proxied_url = 1;
+}

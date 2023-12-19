@@ -58,8 +58,15 @@ export const resolveMylist = ({
       }
 
       const [count, nodes] = await prisma.$transaction([
-        prisma.mylistRegistration.count({ where: { mylistId } }),
-        prisma.mylistRegistration.findMany({ orderBy: orderBy.data, skip: offset, take, where: { mylistId } }),
+        prisma.mylistRegistration.count({
+          where: { mylistId, isRemoved: false },
+        }),
+        prisma.mylistRegistration.findMany({
+          orderBy: orderBy.data,
+          skip: offset,
+          take,
+          where: { mylistId, isRemoved: false },
+        }),
       ]);
       return {
         hasMore: offset + take < count,

@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        with:
+          submodules: true
       - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4
         with:
           node-version-file: .node-version
@@ -55,15 +57,14 @@ jobs:
           - 6379:6379
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        with:
+          submodules: true
       - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4
         with:
           node-version-file: .node-version
           cache: npm
       - run: npm ci --ignore-scripts
-      - run: npm run codegen
-      - run: npm run prisma:client
-      - run: npm run buf:generate
-      - run: npm run typecheck
+      - run: npm run prebuild
       - run: npm run test
         env:
           PRISMA_DATABASE_URL: postgres://${{ env.POSTGRES_USERNAME }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DATABASE }}

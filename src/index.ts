@@ -21,13 +21,14 @@ import { mkAbstractGroupService } from "./AbstractGroup/AbstractGroup.service.js
 import { mkBilibiliMADSourceService } from "./BilibiliMADSource/BilibiliMADSource.service.js";
 import { mkBilibiliRegistrationRequestService } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequest.service.js";
 import { mkBilibiliRegistrationRequestEventService } from "./BilibiliRegistrationRequest/BilibiliRegistrationRequestEvent.service.js";
-import { ImagesService } from "./Common/Images.service.js";
+import { mkImageService } from "./Common/Images.service.js";
 import { mkLoggerService } from "./Common/Logger.service.js";
 import { mkNicovideoService } from "./Common/Nicovideo.service.js";
 import { mkSoundcloudService } from "./Common/Soundcloud.service.js";
 import { mkNeo4jService } from "./Neo4j/Neo4j.service.js";
 import { mkNicovideoRegistrationRequestService } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequest.service.js";
 import { mkNicovideoRegistrationRequestEventService } from "./NicovideoRegistrationRequest/NicovideoRegistrationRequestEvent.service.js";
+import { ProxyService } from "./protobuf/ixgyohn/proxy/v2/proxy_connect.js";
 import { NicochuuService } from "./protobuf/nicochuu_connect.js";
 import { makeResolvers } from "./resolvers.js";
 import { CurrentUser, ServerContext, UserContext } from "./resolvers/types.js";
@@ -155,8 +156,11 @@ const yoga = createYoga<ServerContext, UserContext>({
           adminRoleId: process.env.AUTH0_ADMIN_ROLE_ID,
         },
       }),
-      ImagesService: ImagesService.make({
-        env: { baseUrl: process.env.IXGYOHN_BASE_URL },
+      ImagesService: mkImageService({
+        i: createPromiseClient(
+          ProxyService,
+          createConnectTransport({ baseUrl: process.env.IXGYOHN_BASE_URL, httpVersion: "1.1" }),
+        ),
       }),
       BilibiliMADSourceService: mkBilibiliMADSourceService({
         prisma: prismaClient,

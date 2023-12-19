@@ -1,0 +1,16 @@
+type Mutation {
+  removeVideoFromMylist(input: RemoveVideoFromMylistInput!): RemoveVideoFromMylistPayload!
+    @auth(scopes: ["update:mylist_registration"])
+}
+
+input RemoveVideoFromMylistInput {
+  videoId: ID!
+  mylistId: ID!
+}
+
+union RemoveVideoFromMylistPayload = RemoveVideoFromMylistSucceededPayload
+
+type RemoveVideoFromMylistSucceededPayload {
+  video: Video!
+  mylist: Mylist!
+}

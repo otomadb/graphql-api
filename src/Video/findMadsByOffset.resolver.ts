@@ -6,12 +6,17 @@ import { isErr } from "../utils/Result.js";
 
 export const mkFindMadsByOffsetResolver: MkQueryResolver<"findMadsByOffset", "VideoService" | "logger"> =
   ({ VideoService, logger }) =>
-  async (_, { input: { offset, take, orderBy: unparsedOrderBy } }, _ctx, info) => {
+  async (_, { input: { offset, take, orderBy: unparsedOrderBy, filter: unparsedFilter } }, _ctx, info) => {
     const orderBy = parseOrderBy(unparsedOrderBy);
     if (isErr(orderBy)) {
       logger.error({ path: info.path, args: unparsedOrderBy }, "OrderBy args error");
       throw new GraphQLError("Wrong args");
     }
 
-    return VideoService.findByOffset({ offset, take, orderBy: orderBy.data });
+    const filter = {
+      registeredAtLte: unparsedFilter?.registeredAtLte || null,
+      registeredAtGte: unparsedFilter?.registeredAtGte || null,
+    };
+
+    return VideoService.findByOffset({ offset, take, orderBy: orderBy.data, filter });
   };

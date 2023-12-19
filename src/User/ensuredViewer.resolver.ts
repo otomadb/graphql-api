@@ -2,7 +2,7 @@ import { GraphQLError } from "graphql";
 
 import { MkQueryResolver } from "../utils/MkResolver.js";
 
-export const mkViewerResolver: MkQueryResolver<"viewer", "userService"> =
+export const mkEnsuredViewerResolver: MkQueryResolver<"ensuredViewer", "userService"> =
   ({ userService }) =>
   async (_parent, _args, { currentUser }) => {
     try {

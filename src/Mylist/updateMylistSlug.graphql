@@ -1,0 +1,16 @@
+type Mutation {
+  updateMylistSlug(input: UpdateMylistSlugInput!): UpdateMylistSlugReturnUnion! @auth
+}
+
+input UpdateMylistSlugInput {
+  mylistId: ID!
+
+  "新しいslug"
+  newSlug: String!
+}
+
+union UpdateMylistSlugReturnUnion = UpdateMylistSlugSucceededPayload
+
+type UpdateMylistSlugSucceededPayload {
+  mylist: Mylist!
+}

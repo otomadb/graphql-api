@@ -9,6 +9,9 @@ type User implements Node {
   "非公開なものも含めてマイリストを取得する．見つからなかった場合は`null`．"
   mylist(slug: String!): Mylist @auth
 
+  "非公開なものも含めて**全ての**マイリストを取得する．"
+  allMylists: [Mylist!]! @auth
+
   "公開されているマイリストを取得する．見つからなかった場合は`null`．"
   publicMylist(slug: String!): Mylist
 

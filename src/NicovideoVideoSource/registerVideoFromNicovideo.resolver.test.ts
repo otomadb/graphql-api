@@ -411,6 +411,7 @@ describe("Register video by Prisma", () => {
           videoId,
           sourceId: "sm1",
           registeredAt: null,
+          isOriginal: true,
         } satisfies NicovideoVideoSource,
       ]),
     );
