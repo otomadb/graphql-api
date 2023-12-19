@@ -2,8 +2,8 @@
 
 dist/
 
-# migrations
-src/db/migrations/
+# submodules
+prisma/
 
 # codegen
 src/resolvers/graphql.ts

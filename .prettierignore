@@ -5,22 +5,11 @@ pnpm-lock.yaml
 
 dist/
 
-# Nix
-flake.lock
-
-# migrations
-src/db/migrations/
+# submodules
+prisma/
 
 # codegen
 schema.graphql
 src/resolvers/graphql.ts
 src/gql
-
-# ESLint
-.eslint-report.json
-
-# GraphQL Schema Linter
-.graphql-schema-linter-report.json
-
-# generated files
 src/protobuf
