@@ -8,7 +8,7 @@
     "nodemon": "nodemon -w dist dist/index.mjs",
     "codegen": "graphql-codegen-esm",
     "codegen:watch": "graphql-codegen-esm --watch",
-    "prisma:client": "prisma generate",
+    "prisma:generate": "prisma generate",
     "buf:generate": "buf generate ./proto",
     "prebuild": "run-s 'buf:generate' 'prisma:generate' 'codegen'",
     "build": "tsx ./build.ts",
