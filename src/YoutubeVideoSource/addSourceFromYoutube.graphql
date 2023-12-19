@@ -1,0 +1,25 @@
+type Mutation {
+  """
+  既存の音MADに対してYoutubeの動画をソースとして追加する
+  """
+  addSourceFromYoutube(input: AddSourceFromYoutubeInput!): AddSourceFromYoutubePayload! @auth(scopes: ["create:video"])
+}
+
+input AddSourceFromYoutubeInput {
+  madId: ID!
+
+  title: TitleInput!
+
+  "Youtubeの動画ID"
+  sourceId: String!
+
+  "転載などの場合は`false`にする"
+  isOriginal: Boolean! = true
+}
+
+union AddSourceFromYoutubePayload = AddSourceFromYoutubeSuccess
+
+type AddSourceFromYoutubeSuccess {
+  video: Video!
+  source: YoutubeVideoSource!
+}

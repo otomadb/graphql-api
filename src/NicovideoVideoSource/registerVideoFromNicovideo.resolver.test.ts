@@ -197,6 +197,7 @@ describe("Register video by Prisma", () => {
       isPrimary: true,
       title: "Video 1",
       videoId,
+      locale: "ja-JP",
     } satisfies VideoTitle);
 
     const videoExtraTitles = await prisma.videoTitle.findMany({ where: { videoId, isPrimary: false } });
@@ -210,6 +211,7 @@ describe("Register video by Prisma", () => {
           isPrimary: false,
           title: "Video 1.1",
           videoId,
+          locale: "ja-JP",
         } satisfies VideoTitle,
         {
           id: expect.any(String),
@@ -218,6 +220,7 @@ describe("Register video by Prisma", () => {
           isPrimary: false,
           title: "Video 1.2",
           videoId,
+          locale: "ja-JP",
         } satisfies VideoTitle,
       ]),
     );
@@ -412,6 +415,8 @@ describe("Register video by Prisma", () => {
           sourceId: "sm1",
           registeredAt: null,
           isOriginal: true,
+          thumbnailUrl: null,
+          accountId: null,
         } satisfies NicovideoVideoSource,
       ]),
     );

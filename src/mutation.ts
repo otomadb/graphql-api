@@ -34,12 +34,19 @@ import { resolverRegisterTagParentRelation } from "./Tag/registerTagParentRelati
 import { resolverRemoveTagFromVideo } from "./Tag/removeTagFromVideo.resolver.js";
 import { mkRequestYoutubeRegistrationResolver } from "./YoutubeRegistrationRequest/requestYoutubeRegistration.resolver.js";
 import { mkResolveYoutubeRegistrationRequestResolver } from "./YoutubeRegistrationRequest/resolveYoutubeRegistrationRequest.resolver.js";
+import { mkAddSourceFromYoutubeResolver } from "./YoutubeVideoSource/addSourceFromYoutube.resolver.js";
 import { resolverRegisterVideoFromYoutube } from "./YoutubeVideoSource/registerVideoFromYoutube.resolver.js";
 
 export const resolveMutation = (deps: ResolverDeps) =>
   ({
     addMylistToMylistGroup: addMylistToMylistGroup(deps),
     addSemitagToVideo: addSemitagToVideo(deps),
+    addSourceFromYoutube: mkAddSourceFromYoutubeResolver(
+      deps.logger.child({
+        resolver: "Mutation.addSourceFromYoutube",
+      }),
+      deps,
+    ),
     addTagToVideo: resolverAddTagToVideo(deps),
     addVideoToMylist: mkAddVideoToMylistResolver(deps),
     changeMylistShareRange: resolverChangeMylistShareRange(deps),

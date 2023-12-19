@@ -5,7 +5,7 @@ import { YoutubeVideoSource } from "@prisma/client";
 import { AbstractConnectionModel } from "../resolvers/connection.js";
 
 export class YoutubeVideoSourceDTO {
-  private constructor(private readonly source: { id: string; sourceId: string; videoId: string }) {}
+  public constructor(private readonly source: { id: string; sourceId: string; videoId: string }) {}
 
   public static fromPrisma(source: YoutubeVideoSource) {
     return new YoutubeVideoSourceDTO(source);

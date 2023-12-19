@@ -6,7 +6,7 @@ services:
     image: postgres:15@sha256:e01f532a5983facbed9dc9df6b34aab4ede236fc40a288055050b334fb44fcc4
     ports:
       - target: 5432
-        published: 5433
+        published: 35432
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
@@ -26,7 +26,7 @@ services:
     image: neo4j:5.14@sha256:677d3ad677cbf3993db10b60cf990b0df394687210df3f1ce124459ae8542e64
     ports:
       - target: 7687
-        published: 7688
+        published: 37687
     environment:
       NEO4J_AUTH: neo4j/password
 
@@ -34,4 +34,4 @@ services:
     image: redis:7.2@sha256:396b0f027ba2f33bf385771a621b58c1fd834fd2c522c35c98fd24fc17863c2f
     ports:
       - target: 6379
-        published: 6380
+        published: 36379

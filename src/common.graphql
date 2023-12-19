@@ -14,6 +14,12 @@ enum SortOrder {
   DESC
 }
 
+"タイトル入力時のセット"
+input TitleInput {
+  title: String!
+  locale: String! = "ja"
+}
+
 "VideoのIDとして無効なIDを入力した場合のエラー"
 type MutationInvalidVideoIdError {
   "無効なID"
