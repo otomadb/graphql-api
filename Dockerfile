@@ -2,9 +2,6 @@
 FROM node:20.10.0-slim@sha256:e941e22afee9c5d1e96f7e3db939894c053f015e45ad9920793d78a6234dfe11 AS builder
 WORKDIR /build
 
-# To install faster
-RUN npm set progress=false
-
 # install OpenSSL
 # hadolint ignore=DL3008
 RUN apt-get update \
@@ -36,7 +33,7 @@ RUN chmod +x /bin/tini
 ENV NODE_ENV production
 
 ## copy build dist
-COPY --from=builder /build/node_modules/.prisma/client/libquery_engine-debian-openssl-3.0.x.so.node ./node_modules/@prisma/client/libquery_engine-debian-openssl-3.0.x.so.node
+COPY --from=builder /build/node_modules/.prisma/client/libquery_engine-debian-openssl-3.0.x.so.node ./node_modules/.prisma/client/libquery_engine-debian-openssl-3.0.x.so.node
 COPY --from=builder /build/dist ./dist
 
 ENTRYPOINT ["tini", "--"]

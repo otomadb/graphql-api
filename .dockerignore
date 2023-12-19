@@ -5,3 +5,6 @@
 # codegen
 src/resolvers/graphql.ts
 src/resolvers/schema.graphql
+
+# protobuf
+src/protobuf
