@@ -3,7 +3,7 @@ version: "3.9"
 
 services:
   postgres:
-    image: postgres:15@sha256:97e08598143b44b85edf33e670ab3df58c5cb675b2c7e6d56f50485efbf2c0a6
+    image: postgres:15@sha256:4d15cb8c1b38dc2c0351cf7f3b3f1c663e493a76fa52be6179c8b12660021772
     ports:
       - target: 5432
         published: 35432
