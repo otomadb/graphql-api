@@ -28,7 +28,7 @@ services:
         published: 8081
 
   neo4j:
-    image: neo4j:5.15@sha256:ec19bf1d7eb3d23f7194779a81dbf2c68b8dc830a52c9b66332e0993bb820df1
+    image: neo4j:5.15@sha256:d9e2fb1ba398536e50d22ebc3d5d585baa086c1c0cf8e5b96bdc9e11e87e002a
     ports:
       # http
       - target: 7474
