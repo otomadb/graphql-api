@@ -1,5 +1,5 @@
 # Builder
-FROM node:20.11.0-slim@sha256:ecc9a2581f8588014a49a523a9ed146d27963f6d988d11bd16bbdcb3598f5f98 AS builder
+FROM node:20.11.1-slim@sha256:357deca6eb61149534d32faaf5e4b2e4fa3549c2be610ee1019bf340ea8c51ec AS builder
 WORKDIR /build
 
 # install OpenSSL
@@ -16,7 +16,7 @@ COPY . .
 RUN npm run build
 
 # Runner
-FROM node:20.11.0-slim@sha256:ecc9a2581f8588014a49a523a9ed146d27963f6d988d11bd16bbdcb3598f5f98 AS runner
+FROM node:20.11.1-slim@sha256:357deca6eb61149534d32faaf5e4b2e4fa3549c2be610ee1019bf340ea8c51ec AS runner
 WORKDIR /app
 
 # hadolint ignore=DL3008
